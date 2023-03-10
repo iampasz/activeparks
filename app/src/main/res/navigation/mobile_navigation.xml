@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.app.activeparks.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_maps"
+        android:name="com.app.activeparks.ui.maps.MapsFragment"
+        android:label="@string/title_maps"
+        tools:layout="@layout/fragment_maps" />
+
+    <fragment
+        android:id="@+id/navigation_scaner"
+        android:name="com.app.activeparks.ui.scaner.ScanerFragment"
+        android:label="@string/title_scaner"
+        tools:layout="@layout/fragment_scaner" />
+    <fragment
+        android:id="@+id/navigation_user"
+        android:name="com.app.activeparks.ui.user.UserFragment"
+        android:label="@string/title_user"
+        tools:layout="@layout/fragment_user"/>
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="com.app.activeparks.ui.notification.NotificationFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_notification" />
+</navigation>

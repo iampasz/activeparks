@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="280dp"
+    android:layout_height="280dp">
+
+        <android.widget.Button
+            android:id="@+id/menu_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/vector_menu_1" />
+
+        <android.widget.Button
+            android:id="@+id/menu_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/vector_menu_2" />
+
+        <android.widget.Button
+            android:id="@+id/menu_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:layout_marginBottom="31dp"
+            android:background="@drawable/vector_menu_3"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <android.widget.Button
+            android:id="@+id/menu_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/vector_menu_4" />
+
+        <android.widget.Button
+            android:id="@+id/menu_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|bottom"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="36dp"
+            android:background="@drawable/vector_menu_5" />
+
+        <android.widget.Button
+            android:id="@+id/menu_6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/vector_menu_6"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <android.widget.Button
+            android:id="@+id/cloded"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_center_closed" />
+    </FrameLayout>

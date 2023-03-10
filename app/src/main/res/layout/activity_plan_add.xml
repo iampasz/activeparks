@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/theme_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EDEDF0"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="left"
+            android:text="Створити тренування"
+            android:textColor="@color/color_park"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/closed"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_close" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/backround_edit_text"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="8dp"
+                    android:text=""
+                    android:textColor="@color/text_color"
+                    android:textSize="18sp" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:background="@color/fon"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text="Назва"
+                    android:textColor="@color/text_color"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/title_week"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Дні тренування:"
+                android:textColor="@color/text_color"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+                        <com.google.android.material.tabs.TabLayout
+                            android:id="@+id/select_week"
+                            style="@style/Base.Widget.Design.TabLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp">
+
+                            <com.google.android.material.tabs.TabItem
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Пн" />
+
+                            <com.google.android.material.tabs.TabItem
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Вт" />
+
+                            <com.google.android.material.tabs.TabItem
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Ср" />
+
+                            <com.google.android.material.tabs.TabItem
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Чт" />
+
+                            <com.google.android.material.tabs.TabItem
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Пт" />
+
+                            <com.google.android.material.tabs.TabItem
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Сб" />
+
+                            <com.google.android.material.tabs.TabItem
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Нд" />
+
+                        </com.google.android.material.tabs.TabLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Оберіть час:"
+                android:textColor="@color/text_color"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Початок:"
+                    android:textColor="@color/color_park"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginRight="16dp"
+                    app:srcCompat="@drawable/ic_clock" />
+
+                <LinearLayout
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/button_gray"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/hource_start"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:maxLength="2"
+                        android:inputType="number"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="8dp"
+                        android:text="00"
+                        android:textColor="@color/text_color"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text=":"
+                        android:textColor="@color/color_park"
+                        android:textSize="22sp"/>
+
+                    <EditText
+                        android:id="@+id/minutes_start"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:maxLength="2"
+                        android:inputType="number"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="8dp"
+                        android:text="00"
+                        android:textColor="@color/text_color"
+                        android:textSize="18sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Закінчення:"
+                    android:textColor="@color/color_park"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginRight="16dp"
+                    app:srcCompat="@drawable/ic_clock" />
+
+                <LinearLayout
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/button_gray"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/hource_finish"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:maxLength="2"
+                        android:inputType="number"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="8dp"
+                        android:text="00"
+                        android:textColor="@color/text_color"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text=":"
+                        android:textColor="@color/color_park"
+                        android:textSize="22sp"/>
+
+                    <EditText
+                        android:id="@+id/minutes_finish"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:maxLength="2"
+                        android:inputType="number"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="8dp"
+                        android:text="00"
+                        android:textColor="@color/text_color"
+                        android:textSize="18sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Періодичне"
+                    android:textColor="@color/text_color"
+                    android:textSize="18sp" />
+
+                <Switch
+                    android:id="@+id/isOnce"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Разове"
+                    android:textColor="@color/text_color"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Пункти тренування:"
+                android:textColor="@color/text_color"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_notes"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/backround_edit_text"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textColor="@color/text_color"
+                    android:textSize="22sp" />
+
+                <ImageView
+                    android:id="@+id/send_notes"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:padding="2dp"
+                    app:srcCompat="@drawable/ic_send_message" />
+
+            </LinearLayout>
+
+            <android.widget.Button
+                android:id="@+id/create_action"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_grean"
+                android:gravity="left|center_vertical"
+                android:drawableLeft="@drawable/ic_file_on"
+                android:drawablePadding="8dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:text="Опублікувати тренування"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <android.widget.Button
+                android:id="@+id/cancel_action"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="left|center_vertical"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_gray"
+                android:drawableLeft="@drawable/ic_closed"
+                android:drawablePadding="8dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:text="Скасувати"
+                android:textColor="@color/text_color"
+                android:textStyle="bold" />
+
+            <android.widget.Button
+                android:id="@+id/remove_action"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="50dp"
+                android:gravity="left|center_vertical"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_gray"
+                android:drawableLeft="@drawable/ic_remove"
+                android:drawablePadding="8dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:text="Видалити тренування"
+                android:textColor="@color/text_color"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>

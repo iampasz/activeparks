@@ -1,0 +1,46 @@
+<resources>
+
+    <style name="Widget.Theme.ActiveParks.MyView" parent="">
+        <item name="android:background">@color/gray_400</item>
+        <item name="exampleColor">@color/light_blue_400</item>
+    </style>
+
+    <style name="Base.Widget.Design.TabLayout" parent="android:Widget">
+        <item name="tabIndicatorColor">?attr/colorAccent</item>
+        <item name="tabIndicatorHeight">4dp</item>
+        <item name="tabPaddingStart">12dp</item>
+        <item name="tabPaddingEnd">12dp</item>
+        <item name="tabBackground">?attr/selectableItemBackground</item>
+        <item name="tabTextAppearance">@style/TextAppearance.Design.Tab</item>
+        <item name="tabSelectedTextColor">@color/text_color</item>
+    </style>
+
+    <style name="SeekBar" parent="Widget.AppCompat.SeekBar.Discrete">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/button_style_gren</item>
+        <item name="colorPrimaryDark">@color/button_style_gren</item>
+        <item name="colorAccent">@color/button_style_gren</item>
+        <item name="android:textColorSecondary">@color/text_color</item>
+        <item name="android:itemBackground">@color/text_color</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
+    <style name="CustomCalendarMonth" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">@color/text_color</item>
+    </style>
+
+    <style name="CustomCalendarDay" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
+    <style name="CustomCalendarWeek" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
+
+        <style name="CircularDeterminateProgressBar">
+            <item name="android:indeterminateOnly">false</item>
+            <item name="android:progressDrawable">@drawable/circle_progressbar</item>
+        </style>
+
+</resources>

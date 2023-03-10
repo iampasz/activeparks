@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.app.activeparks.ui.maps.MapsFragment">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/select_map"
+        style="@style/Base.Widget.Design.TabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="16dp"
+        android:background="@color/background">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Мапа" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Список" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <FrameLayout
+        android:id="@+id/select_maps"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/mapview"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent">
+
+        </org.osmdroid.views.MapView>
+
+        <android.widget.Button
+            android:id="@+id/location_action"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="right"
+            android:layout_marginTop="36dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/ic_map_location"
+            android:text="" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:padding="8dp">
+
+            <android.widget.Button
+                android:id="@+id/max_zoom"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:background="@drawable/ic_map_zoom_plus"
+                android:text="" />
+
+            <android.widget.Button
+                android:id="@+id/min_zoom"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/ic_map_zoom_min"
+                android:text="" />
+
+
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/radius_filter"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:layout_width="280dp"
+            android:layout_height="40dp"
+            android:layout_gravity="top|center"
+            android:layout_marginTop="32dp"
+            android:progressDrawable="@drawable/seekbar_drawable_progress"
+            android:thumb="@drawable/seekbar_drawable_thumb"
+            android:tickMark="@drawable/seekbar_drawable_mark"
+            android:max="5"
+            android:progress="3" />
+
+        <android.widget.Button
+            android:id="@+id/action_search"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:visibility="invisible"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/button_style_gren"
+            android:textStyle="bold"
+            android:elevation="16dp"
+            android:textColor="@color/text_color"
+            android:padding="8dp"
+            android:drawablePadding="8dp"
+            android:text="Шукати в цьому районі" />
+
+        <ImageView
+            android:id="@+id/action_update_search"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="32dp"
+            android:layout_marginRight="32dp"
+            android:background="@drawable/button_style_gren"
+            android:textStyle="bold"
+            android:elevation="16dp"
+            android:src="@drawable/ic_search"
+            android:padding="8dp"
+            android:text="Пошук" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/select_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/search_city"
+                style="@style/EditText"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/backround_edit_text"
+                android:drawableLeft="@drawable/ic_search"
+                android:drawablePadding="8dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:hint="Назва парку" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/maps_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="70dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            />
+
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "97103190835",
+    "project_id": "active-park",
+    "storage_bucket": "active-park.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97103190835:android:c2d828bfdb4cfd21d77c46",
+        "android_client_info": {
+          "package_name": "com.technodreams.activeparks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "97103190835-m56h66rdq64os2dsi78f769f22uuaejb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZRmSRRhZ_Wy_l4Z67SVPUZUoSCpFl6RI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "97103190835-m56h66rdq64os2dsi78f769f22uuaejb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Активні парки</string>
+    <string name="title_home">Головна</string>
+    <string name="title_maps">Мапа</string>
+    <string name="title_scaner">Сканування</string>
+    <string name="title_notifications">Сповіщення</string>
+    <string name="title_user">Користувач</string>
+    <string name="title_activity_notification">notification</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+
+    <string-array name="sex">
+        <item>Чоловік</item>
+        <item>Жінка</item>
+    </string-array>
+    <string name="title_activity_test_update">TestUpdate</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+</resources>
