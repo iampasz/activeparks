@@ -16,6 +16,11 @@ public class LoadImage extends AsyncTask<Object, Void, Bitmap> {
     private LevelListDrawable mDrawable;
 
     public Listener charSequence;
+    public int weight;
+
+    public LoadImage(int weight) {
+        this.weight = weight;
+    }
 
     @Override
     protected Bitmap doInBackground(Object... params) {
@@ -39,7 +44,7 @@ public class LoadImage extends AsyncTask<Object, Void, Bitmap> {
         if (bitmap != null) {
             BitmapDrawable d = new BitmapDrawable(bitmap);
             mDrawable.addLevel(1, 1, d);
-            mDrawable.setBounds(0, 0, bitmap.getWidth(), bitmap.getHeight());
+            mDrawable.setBounds(0, 0, weight, (int) (weight / 1.5));
             mDrawable.setLevel(1);
             charSequence.onUpdate();
         }

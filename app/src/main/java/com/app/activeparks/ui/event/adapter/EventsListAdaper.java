@@ -18,7 +18,11 @@ import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.ViewHolder> {
 
@@ -61,7 +65,14 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
 
         holder.time.setText(list.get(position).getStartsAt() != null ? list.get(position).getStartsAt().substring(11, list.get(position).getStartsAt().length()) : "Недіомо");
 
-        holder.data.setText(list.get(position).getStartsAt() != null ? list.get(position).getStartsAt().substring(0, 10) : "Недіомо");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date date = format.parse(list.get(position).getStartsAt());
+            holder.data.setText( new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
 
         holder.status.setText(list.get(position).getHoldingStatusId() != null ? list.get(position).getHoldingStatusId() : "Недіомо");
 

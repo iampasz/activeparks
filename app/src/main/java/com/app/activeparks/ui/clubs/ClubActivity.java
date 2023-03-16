@@ -19,6 +19,11 @@ import com.app.activeparks.util.ButtonSelect;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class ClubActivity extends AppCompatActivity {
 
 
@@ -26,7 +31,7 @@ public class ClubActivity extends AppCompatActivity {
 
     private ImageView mImageView, mHideDescription;
 
-    private TextView mTitle, mUser, mDescription, mCreateAt, mPhone;
+    private TextView mTitle, subtitle, mUser, mDescription, mCreateAt, mPhone;
     private ButtonSelect news, event, people, qr, mApproved;
 
 
@@ -47,6 +52,7 @@ public class ClubActivity extends AppCompatActivity {
         mHideDescription = findViewById(R.id.ic_hide_description);
 
         mTitle = findViewById(R.id.title);
+        subtitle = findViewById(R.id.subtitle);
         mUser = findViewById(R.id.text_users);
         mDescription = findViewById(R.id.text_description);
         mCreateAt = findViewById(R.id.text_data_create);
@@ -63,8 +69,17 @@ public class ClubActivity extends AppCompatActivity {
             try {
                 Glide.with(this).load(clubs.getLogoUrl()).into(mImageView);
                 mTitle.setText(clubs.getName());
+                subtitle.setText(clubs.getTagline());
                 mDescription.setText(clubs.getDescription());
-                mCreateAt.setText(clubs.getCreatedAt().replace("-", "."));
+
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                try {
+                    Date date = format.parse(clubs.getCreatedAt());
+                    mCreateAt.setText( new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
                 mUser.setText(""+clubs.getMemberAmount());
                 mPhone.setText(clubs.getPhone());
 

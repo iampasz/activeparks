@@ -29,6 +29,7 @@ public class VideoViewModel extends ViewModel {
 
     public VideoViewModel() {
         mVideo = new MutableLiveData<>();
+        mUsersVideo = new MutableLiveData<>();
         mLiveDataVideoList = new MutableLiveData<>();
         repository = new Repository();
     }
@@ -38,7 +39,7 @@ public class VideoViewModel extends ViewModel {
     }
 
     public LiveData<Video> getUsersVideoModel() {
-        return mVideo;
+        return mUsersVideo;
     }
 
 

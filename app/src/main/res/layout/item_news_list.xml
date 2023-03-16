@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingBottom="8dp"
     android:orientation="vertical">
 
 
@@ -11,35 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:elevation="16dp"
-        app:cardCornerRadius="8dp">
+        app:cardCornerRadius="14dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:background="@color/white"
             android:orientation="vertical">
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/galary"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"  />
-
-            <ImageView
-                android:id="@+id/image_club"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/prew_active_park" />
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/list_tab"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:visibility="gone"
-                app:tabBackground="@drawable/tab_selector"
-                app:tabGravity="center"
-                app:tabIndicatorHeight="0dp"
-                android:layout_gravity="bottom" />
 
             <TextView
                 android:id="@+id/title"
@@ -47,13 +27,70 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:gravity="center_vertical"
-                android:layout_margin="8dp"
-                android:textSize="18sp"
-                android:text="dafsfdsad"
+                android:textAllCaps="true"
                 android:maxLines="2"
-                android:textStyle="bold"
+                android:text=""
                 android:textColor="@color/text_color"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/data"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/text_color"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_style_gren"
+                android:padding="4dp"
+                android:gravity="left"
+                android:textSize="16sp"
+                android:text="Опубліковано: невідомо" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/galary"
+                android:layout_marginTop="8dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"  />
+
+            <ImageView
+                android:id="@+id/image_club"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="8dp"
+                app:srcCompat="@drawable/prew_active_park" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/list_tab"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:visibility="gone"
+                android:layout_marginTop="8dp"
+                app:tabBackground="@drawable/tab_selector"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="0dp"
+                android:layout_gravity="bottom" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:maxLines="2"
+                android:text=""
+                android:textColor="@color/text_color"
+                android:textSize="16sp"
                 />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/color_park"
+                android:gravity="left"
+                android:textSize="16sp"
+                android:text="Докладніше" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

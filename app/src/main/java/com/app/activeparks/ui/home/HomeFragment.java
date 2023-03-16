@@ -37,6 +37,7 @@ import com.app.activeparks.ui.news.NewsActivity;
 import com.app.activeparks.ui.news.NewsFragment;
 import com.app.activeparks.ui.park.ParkActivity;
 import com.app.activeparks.util.FragmentInteface;
+import com.app.activeparks.util.ZoomOutPageTransformer;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -93,6 +94,13 @@ public class HomeFragment extends Fragment implements LocationListener {
                 }
             });
 
+            listParksView.setPageTransformer((page, position) -> {
+
+                    page.setTranslationX(page.getTranslationX() * position);
+                    float scaleFactor = 1 - (0.15f * Math.abs(position));
+                    page.setScaleY(scaleFactor);
+
+            });
             listParksView.setAdapter(adapterEvents);
 
             new TabLayoutMediator(binding.listParksTab, listParksView, (tab, position) -> {
@@ -136,11 +144,11 @@ public class HomeFragment extends Fragment implements LocationListener {
         });
 
 
-
-        if (viewModel.getUserAuth()){
+        if (viewModel.getUserAuth()) {
             binding.textClubs.setVisibility(View.VISIBLE);
             binding.listNull4.setVisibility(View.VISIBLE);
             binding.listClub.setVisibility(View.VISIBLE);
+            binding.allClubs.setVisibility(View.VISIBLE);
             binding.allActivities.setVisibility(View.VISIBLE);
             binding.panelUser.setVisibility(View.VISIBLE);
             viewModel.clubs();
@@ -218,11 +226,14 @@ public class HomeFragment extends Fragment implements LocationListener {
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {}
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
 
     @Override
-    public void onProviderEnabled(String provider) {}
+    public void onProviderEnabled(String provider) {
+    }
 
     @Override
-    public void onProviderDisabled(String provider) {}
+    public void onProviderDisabled(String provider) {
+    }
 }

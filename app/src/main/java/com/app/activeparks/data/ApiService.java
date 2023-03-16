@@ -84,6 +84,9 @@ public interface ApiService {
     @GET("/api/v1/sport-events{my}")
     Observable<SportEvents> getEvents(@Path(value = "my", encoded = true) String url, @QueryMap Map<String, String> options);
 
+    @GET("/api/v1/sport-events{my}")
+    Observable<SportEvents> getEvents(@Header("Authorization") String token, @Path(value = "my", encoded = true) String url, @QueryMap Map<String, String> options);
+
     //Заходи деталі
     @GET("/api/v1/sport-events/{id}")
     Observable<ItemEvent> getEventDetails(@Header("Authorization") String token, @Path("id") String id);

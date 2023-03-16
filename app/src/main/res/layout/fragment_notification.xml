@@ -33,8 +33,10 @@
             android:orientation="vertical" >
 
             <TextView
+                android:id="@+id/title_event"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
                 android:text="Заходи, які відбуваються зараз:"
@@ -46,6 +48,7 @@
                 android:id="@+id/list_null"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:gravity="center"
                 android:text="Заходів не знайдено"
                 android:textColor="@color/text_color"
@@ -55,12 +58,14 @@
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/list_notifications_horizontal"
+                android:visibility="gone"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"  />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
                 android:text="Загальні сповіщення:"
                 android:textColor="@color/text_color"

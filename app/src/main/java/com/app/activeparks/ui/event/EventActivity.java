@@ -37,6 +37,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class EventActivity extends AppCompatActivity implements LocationListener, EventScanerListener {
 
@@ -116,7 +117,14 @@ public class EventActivity extends AppCompatActivity implements LocationListener
                     mPhone.setText(events.getCreatedBy().getPhone());
                 }
 
-                mStartEvent.setText(events.getStartsAt() != null ? events.getStartsAt().substring(0, 10) : "Недіомо");
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                try {
+                    Date date = format.parse(events.getStartsAt());
+                    mStartEvent.setText( new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
                 mEndEvent.setText(events.getStartsAt() != null ? events.getStartsAt().substring(11, events.getStartsAt().length()) : "Недіомо");
                 mEventStatus.setText(mViewModel.statusMapper(events.getHoldingStatusId()));
 

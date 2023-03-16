@@ -3,6 +3,8 @@ package com.app.activeparks.ui.home.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,11 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.technodreams.activeparks.R;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class HorizontalAdaper extends RecyclerView.Adapter<HorizontalAdaper.ViewHolder> {
 
@@ -47,6 +54,28 @@ public class HorizontalAdaper extends RecyclerView.Adapter<HorizontalAdaper.View
         ItemNews news = list.getItems().get(position);
 
         holder.title.setText(news.getTitle() != null ? news.getTitle() : "Немає заголовку");
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            if (news.getCreatedAt() != null) {
+                Date data = format.parse(news.getCreatedAt());
+                holder.data.setText("Опубліковано: " + new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(data));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+
+        if (news.getBody() != null) {
+            String web = "<html><head><LINK href=\"https://web.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body>" + news.getBody() + "</body></html>";
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                holder.description.setText(Html.fromHtml(web, null, null));
+            } else {
+                holder.description.setText(Html.fromHtml(web));
+            }
+        }
 
 
         if (news.getPhotos().size() > 0) {
@@ -78,7 +107,7 @@ public class HorizontalAdaper extends RecyclerView.Adapter<HorizontalAdaper.View
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        final TextView title;
+        final TextView title, data, description;
         final ImageView image;
         final ViewPager2 galary;
         final TabLayout tabLayout;
@@ -86,6 +115,8 @@ public class HorizontalAdaper extends RecyclerView.Adapter<HorizontalAdaper.View
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
+            data = itemView.findViewById(R.id.data);
+            description = itemView.findViewById(R.id.description);
             image = itemView.findViewById(R.id.image_club);
             galary = itemView.findViewById(R.id.galary);
             tabLayout = itemView.findViewById(R.id.list_tab);

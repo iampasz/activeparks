@@ -1,12 +1,17 @@
 package com.app.activeparks.ui.profile;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -47,6 +52,11 @@ import com.app.activeparks.util.FragmentInteface;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class ProfileFragment extends Fragment {
 
@@ -114,9 +124,15 @@ public class ProfileFragment extends Fragment {
                     binding.findViewById(R.id.web_action).setVisibility(View.GONE);
                 }
 
+                try {
+                    Date date = new SimpleDateFormat("yyyy-MM-dd").parse(user.getBirthday());
+                    birthday.setText( new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
                 adress.setText(user.getCity());
                 time.setText(user.getUpdatedAt().replace("-", "."));
-                birthday.setText(user.getBirthday().replace("-", "."));
                 create.setText(user.getCreatedAt().replace("-", "."));
                 about.setText(user.getAboutMe());
 

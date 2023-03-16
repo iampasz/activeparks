@@ -46,7 +46,7 @@ public class NotificationViewModel extends ViewModel {
     }
 
     public void events() {
-        repository.events(5).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        repository.myEventsNotifications().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> eventsList.setValue(result),
                         error -> {});
     }

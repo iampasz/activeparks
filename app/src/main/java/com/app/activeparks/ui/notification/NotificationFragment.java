@@ -44,6 +44,8 @@ public class NotificationFragment extends Fragment {
 
         viewModel.getSportEventsList().observe(getViewLifecycleOwner(), events -> {
             if (events.getItems().size() > 0) {
+                binding.titleEvent.setVisibility(View.VISIBLE);
+                listNotificationsHorizontal.setVisibility(View.VISIBLE);
                 binding.listNull.setVisibility(View.GONE);
             }
 

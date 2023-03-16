@@ -29,15 +29,17 @@ public class AuthViewModel extends ViewModel {
         return mMessage;
     }
 
-    public void login(String email, String password){
+    public void login(String email, String password) {
         repository.login(email, password, "1").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                            if (result.getError() == null && result.getToken() != null ){
+                            if (result.getError() == null && result.getToken() != null) {
                                 preferences.setToken(result.getToken());
                                 preferences.setId(result.getPayload().getId());
-                                repository.setPush(result.getToken(), preferences.getPushToken());
+                                if (preferences.getPushToken() != null) {
+                                    repository.setPush(result.getToken(), preferences.getPushToken());
+                                }
                                 mMessage.setValue(new Default(true));
-                            }else {
+                            } else {
                                 mMessage.setValue(new Default(result.getError()));
                             }
                         },
@@ -45,10 +47,10 @@ public class AuthViewModel extends ViewModel {
                             try {
                                 Default def = new Gson().fromJson(error.getMessage(), Default.class);
                                 mMessage.setValue(def);
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 mMessage.setValue(new Default("Перевірте підключення до інтернету"));
                             }
                         }
-                                );
+                );
     }
 }

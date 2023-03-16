@@ -33,7 +33,6 @@ public class UserFragment extends Fragment {
             show(new AuthFragment());
         }
 
-
         return root;
     }
 

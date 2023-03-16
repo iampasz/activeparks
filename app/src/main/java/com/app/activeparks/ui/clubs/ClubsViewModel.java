@@ -46,11 +46,19 @@ public class ClubsViewModel extends ViewModel {
     }
 
     private void getClubsParticipantList(){
-        repository.getClubsParticipant();
+        repository.getClubsParticipant().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            clubsParticipantList.setValue(result);
+                        },
+                        error -> {});
     }
 
     public void getAllClubs(){
-        repository.getClubsAll();
+        repository.getClubsAll().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            clubsParticipantList.setValue(result);
+                        },
+                        error -> {});
     }
 
     public void getClubsDetail(String id){

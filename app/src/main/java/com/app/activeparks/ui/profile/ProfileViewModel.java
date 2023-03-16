@@ -103,17 +103,14 @@ public class ProfileViewModel extends ViewModel {
     }
 
     public void user() {
-        if (sharedPreferences.getUser() != null) {
-            user.setValue(userMapper(sharedPreferences.getUser().get(0)));
-        }
         repository.getUser().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> {
-            user.setValue(userMapper(result));
+            user.setValue(result);
             mProfile = result;
             List<User> users = new ArrayList<>();
             users.add(result);
             sharedPreferences.setUser(users);
         }, error -> {
-            if (sharedPreferences.getUser() != null) {
+            if (sharedPreferences.getUser() != null && sharedPreferences.getUser().size() != 0) {
                 user.setValue(userMapper(sharedPreferences.getUser().get(0)));
             }
             if (error.getMessage().contains("401")) {

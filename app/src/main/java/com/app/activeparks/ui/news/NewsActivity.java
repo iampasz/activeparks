@@ -1,14 +1,18 @@
 package com.app.activeparks.ui.news;
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LevelListDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,7 +43,6 @@ public class NewsActivity extends AppCompatActivity implements Html.ImageGetter 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
-
         viewModel =
                 new ViewModelProvider(this, new NewsModelFactory(this)).get(NewsViewModel.class);
 
@@ -85,7 +88,7 @@ public class NewsActivity extends AppCompatActivity implements Html.ImageGetter 
 
             if (news.getBody() != null) {
                 String web = "<html><head><LINK href=\"https://web.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body>" + news.getBody() + "</body></html>";
-
+                web = web.replace("<img ", "<br><img ");
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     html.setText(Html.fromHtml(web, this, null));
@@ -103,7 +106,7 @@ public class NewsActivity extends AppCompatActivity implements Html.ImageGetter 
         d.addLevel(0, 0, empty);
         d.setBounds(0, 0, empty.getIntrinsicWidth(), empty.getIntrinsicHeight());
 
-        new LoadImage().setListener(new LoadImage.Listener() {
+        new LoadImage(html.getWidth()).setListener(new LoadImage.Listener() {
             @Override
             public void onUpdate() {
                 CharSequence t = html.getText();

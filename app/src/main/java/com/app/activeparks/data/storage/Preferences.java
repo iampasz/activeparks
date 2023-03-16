@@ -55,7 +55,7 @@ public class Preferences {
     }
 
     public String getPushToken(){
-        return mSettings.getString("push_token", "");
+        return mSettings.getString("push_token", null);
     }
 
     public List<User> getUser() {

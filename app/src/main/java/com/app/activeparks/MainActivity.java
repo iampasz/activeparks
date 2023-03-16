@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         });
 
         new Dictionarie().init(this);
+
+        //startActivity(new Intent(this, TestUpdate.class));
     }
 
 

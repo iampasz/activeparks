@@ -21,22 +21,21 @@ public class PushManager {
 
 
     public void sendNotification(Context ctx, RemoteMessage remoteMessage){
-        Log.d("list_push", ""+remoteMessage.getData().toString());
-
-        String message = remoteMessage.getData().get("message");
+        String message = remoteMessage.getData().get("body");
 
         Intent intent = new Intent(ctx, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
         mNotificationManager = (NotificationManager) ctx.getSystemService(NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("WeWe", "WeWe", NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel channel = new NotificationChannel("activeparks", "Активні парки", NotificationManager.IMPORTANCE_HIGH);
             mNotificationManager.createNotificationChannel(channel);
         }
 
         Notification.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder = new Notification.Builder(ctx, "WeWe");
+            builder = new Notification.Builder(ctx, "activeparks");
         }else{
             builder = new Notification.Builder(ctx);
         }
@@ -44,6 +43,7 @@ public class PushManager {
         builder.setSmallIcon(R.drawable.logo_active_parks)
                 .setContentTitle("Активні парки")
                 .setContentText(message)
+                .setPriority(Notification.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
 

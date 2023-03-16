@@ -39,11 +39,12 @@ public class HomeViewModel extends ViewModel {
         repository = new Repository(sharedPreferences);
     }
 
-    public void setInitialData(){
+    public void setInitialData() {
         getDataUser();
         getParks();
         getNews();
         getSportEvents();
+        updatePushToken();
     }
 
     public LiveData<SportEvents> getSportEventsList() {
@@ -74,40 +75,50 @@ public class HomeViewModel extends ViewModel {
         return location;
     }
 
-    public void getParks(){
-        repository.sportsgrounds(5,"30","" + 30.37593, "" + 50.46710).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+    public void getParks() {
+        repository.sportsgrounds(5, "30", "" + 30.37593, "" + 50.46710).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> parksList.setValue(result),
-                        error -> {});
+                        error -> {
+                        });
     }
 
-    public void getParks(double lat, double lon){
-        repository.sportsgrounds(5,"30","" + lon, "" + lat).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+    public void getParks(double lat, double lon) {
+        repository.sportsgrounds(5, "30", "" + lon, "" + lat).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> parksList.setValue(result),
-                        error -> {});
+                        error -> {
+                        });
     }
 
-    public void getNews(){
+    public void getNews() {
         repository.news(5).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> newsList.setValue(result),
-                        error ->  Log.e("HomeViewModel", "getPokemons: " + error.getMessage()));
+                        error -> Log.e("HomeViewModel", "getPokemons: " + error.getMessage()));
     }
 
-    public void getSportEvents(){
+    public void getSportEvents() {
         repository.events(5).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> eventsList.setValue(result),
-                        error -> {});
+                        error -> {
+                        });
     }
 
     public void clubs() {
         repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         result -> clubList.setValue(result.getItems().getUserIsMember()),
-                        error -> {}
+                        error -> {
+                        }
                 );
     }
 
-    public void location(double lat, double lon){
+    public void updatePushToken() {
+        if (preferences.getPushToken() != null) {
+            repository.updatePushToken(preferences.getPushToken());
+        }
+    }
+
+    public void location(double lat, double lon) {
         repository.location(String.valueOf(lat), String.valueOf(lon)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             location.setValue("місцеположення визначено по геолокації - " + result.getAddress().getCity());

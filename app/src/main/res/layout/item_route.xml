@@ -3,10 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="16dp"
     android:gravity="center"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="42dp"
@@ -16,25 +20,25 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_marginLeft="8dp"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/text_point"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="0"
                 android:textColor="@color/text_color"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:text="0" />
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Точка"
                 android:textColor="@color/text_color"
-                android:textSize="16sp"
-                android:text="Точка" />
+                android:textSize="16sp" />
         </LinearLayout>
 
         <Space
@@ -51,47 +55,55 @@
                 android:id="@+id/time_point"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="---"
                 android:textColor="@color/text_color"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:text="---" />
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="110dp"
                 android:layout_height="match_parent"
-                android:textColor="@color/text_color"
                 android:gravity="center"
-                android:textSize="16sp"
-                android:text="Чекпоинт" />
+                android:text="Чекпоинт"
+                android:textColor="@color/text_color"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/point_status"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button_style_gren"
-        android:textColor="@color/text_color"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:text="Наступна точка" />
+        <TextView
+            android:id="@+id/point_status"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_style_gren"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingTop="4dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="4dp"
+            android:text="Наступна точка"
+            android:textColor="@color/text_color"
+            android:textSize="16sp" />
 
-    <ImageButton
-        android:id="@+id/qr_action"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_margin="16dp"
-        android:visibility="gone"
-        android:gravity="center"
-        android:background="@null"
-        android:src="@drawable/ic_qr_white"
-        app:tint="@color/text_color" />
+        <ImageButton
+            android:id="@+id/qr_action"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_margin="16dp"
+            android:background="@null"
+            android:gravity="center"
+            android:src="@drawable/ic_qr_white"
+            android:visibility="gone"
+            app:tint="@color/text_color" />
 
+    </LinearLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/gray_400" />
 </LinearLayout>

@@ -4,15 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.content.CursorLoader;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
 import com.app.activeparks.data.storage.Preferences;
 import com.app.activeparks.repository.Repository;
+import com.google.firebase.messaging.RemoteMessage;
 import com.technodreams.activeparks.R;
 
 import java.io.File;
@@ -30,10 +35,11 @@ public class TestUpdate extends AppCompatActivity {
         repository = new Repository(new Preferences(this));
 
         findViewById(R.id.button2).setOnClickListener(v -> {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 3);
+            testPush();
+//            Intent intent = new Intent();
+//            intent.setType("image/*");
+//            intent.setAction(Intent.ACTION_GET_CONTENT);
+//            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 3);
         });
     }
 
@@ -59,6 +65,21 @@ public class TestUpdate extends AppCompatActivity {
 
             }
         }
+    }
+
+    public void testPush() {
+
+        Notification.Builder  builder = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder = new Notification.Builder(getApplicationContext(), "activeparks");
+        }
+        builder.setSmallIcon(R.drawable.logo_active_parks)
+                .setContentTitle("My Notification")
+                .setContentText("This is the content of my notification")
+                .setPriority(Notification.PRIORITY_DEFAULT);
+
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0, builder.build());
     }
 
 

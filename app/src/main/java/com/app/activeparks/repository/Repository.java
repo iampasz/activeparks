@@ -130,7 +130,18 @@ public class Repository {
         data.put("offset", "0");
         data.put("limit", "30");
 
-        return service.getEvents("/my", data);
+        return service.getEvents(token, "/my", data);
+    }
+
+    public Observable<SportEvents> myEventsNotifications() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Map<String, String> data = new HashMap<>();
+        data.put("offset", "0");
+        data.put("limit", "10");
+        data.put("filters[startsFrom]", dateFormat.format(new Date()));
+        data.put("sort[createdAt]", "asc");
+
+        return service.getEvents(token, "/my", data);
     }
 
     public Observable<SportEvents> getMyResult() {
@@ -138,7 +149,7 @@ public class Repository {
         data.put("offset", "0");
         data.put("limit", "20");
 
-        return service.getEvents("/my-results", data);
+        return service.getEvents(token, "/my-results", data);
     }
 
     public Observable<SportEvents> getClubEvents(String clubId) {
@@ -147,7 +158,7 @@ public class Repository {
         data.put("limit", "20");
         data.put("filters[clubId]", clubId);
 
-        return service.getEvents("", data);
+        return service.getEvents(token, "", data);
     }
 
     public Observable<SportEvents> events(int limit) {
@@ -373,6 +384,12 @@ public class Repository {
     public Repository setPush(String token, String pushToken){
        service.setPush("Bearer " + token, pushToken);
        return this;
+    }
+
+    public Repository updatePushToken(String pushToken){
+        Log.d("token_push_update", " "+ pushToken);
+        service.setPush(token, pushToken);
+        return this;
     }
 
     public Observable<City> searchCity(String city) {

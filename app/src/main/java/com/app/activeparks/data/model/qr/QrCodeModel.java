@@ -8,7 +8,7 @@ public class QrCodeModel {
     @SerializedName("clubId")
     @Expose
     private String clubId;
-    @SerializedName("title")
+    @SerializedName("sportEventId")
     @Expose
     private String sportEventId;
     @SerializedName("qrCode")

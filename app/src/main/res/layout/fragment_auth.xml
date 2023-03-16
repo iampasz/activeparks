@@ -51,7 +51,6 @@
                 android:background="@drawable/backround_edit_text"
                 android:ems="10"
                 android:hint="Пошта"
-                android:text="r-us2@i.ua"
                 android:inputType="textEmailAddress" />
 
             <EditText
@@ -62,7 +61,6 @@
                 android:layout_marginTop="16dp"
                 android:background="@drawable/backround_edit_text"
                 android:ems="10"
-                android:text="Pass9ad7"
                 android:hint="Пароль"
                 android:inputType="textPassword" />
 

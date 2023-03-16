@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.uservideo.UserVideoItem;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
+import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 
 import java.util.List;
@@ -42,7 +43,6 @@ public class UserVideoAdapter extends RecyclerView.Adapter<UserVideoAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.title.setText(list.get(position).getTitle());
-        holder.description.setText(list.get(position).getDescription());
 
         holder.itemView.setOnClickListener(view -> {
             userVideoListener.onInfo(list.get(position));
@@ -54,6 +54,8 @@ public class UserVideoAdapter extends RecyclerView.Adapter<UserVideoAdapter.View
             holder.linerHeader.setVisibility(View.GONE);
         }
 
+        Glide.with(holder.itemView.getContext()).load(list.get(position).getMainPhoto()).error(R.drawable.ic_video).into(holder.imageVideo);
+
         holder.actionCreate.setOnClickListener(v -> {userVideoListener.onCreate();});
     }
 
@@ -64,17 +66,17 @@ public class UserVideoAdapter extends RecyclerView.Adapter<UserVideoAdapter.View
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        final TextView title, description, status;
-        final ImageView actionCreate;
+        final TextView title, status;
+        final ImageView imageVideo, actionCreate;
         final LinearLayout linerHeader;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.name_video);
-            description = itemView.findViewById(R.id.description);
             status = itemView.findViewById(R.id.status);
             linerHeader = itemView.findViewById(R.id.liner_header);
             actionCreate = itemView.findViewById(R.id.action_create);
+            imageVideo = itemView.findViewById(R.id.image_video);
         }
     }
 
