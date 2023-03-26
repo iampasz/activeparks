@@ -9,6 +9,8 @@ import com.app.activeparks.data.model.uservideo.UserVideo;
 import com.app.activeparks.data.model.uservideo.UserVideoItem;
 import com.app.activeparks.data.storage.Preferences;
 
+import java.io.File;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -69,6 +71,19 @@ public class UserVideoViewModel extends ViewModel {
                         },
                         error -> {
                         });
+    }
+
+    public void updateFile(File file) {
+        repository.updateFile(file, "image").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            if (result.getUrl() != null){
+                                mVideoItem.setMainPhoto(result.getUrl());
+                            }
+                        },
+                        error -> {
+
+                        }
+                );
     }
 
     public void sendUserVideo() {

@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.app.activeparks.data.model.video.Files;
 import com.app.activeparks.ui.video.adapter.VideoAdaper;
 import com.technodreams.activeparks.R;
 
@@ -124,9 +125,17 @@ public class VideoActivity extends AppCompatActivity {
             mTitle.setText(videoModel.getItems().get(0).getTitle());
             mDescription.setText(videoModel.getItems().get(0).getDescription());
 
-            Uri video = Uri.parse(videoModel.getItems().get(0).getFiles().getLow());
-            mVideoView.setVideoURI(video);
-            mVideoView.start();
+            Files files = videoModel.getItems().get(0).getFiles();
+            if (files.getHigh() != null){
+                Uri video = Uri.parse(files.getLow());
+                mVideoView.setVideoURI(video);
+                mVideoView.start();
+            }else{
+                Uri video = Uri.parse(files.getLow());
+                mVideoView.setVideoURI(video);
+                mVideoView.start();
+            }
+
 
             VideoAdaper adapter = new VideoAdaper(this, videoModel.getItems())
                     .setOnClickListener(new VideoAdaper.VideoAdaperListener() {

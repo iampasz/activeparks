@@ -53,7 +53,15 @@ public class SupportViewModel extends ViewModel {
     }
 
     public void getSupportDetails(String id) {
-        repository.getSupportDetails(id);
+        repository.getSupportDetails(id).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            if (result != null) {
+                                mSupportDetails.setValue(result);
+                            }
+                        },
+                        error -> {
+                        });
     }
 
     public void createSupport() {

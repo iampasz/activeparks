@@ -28,7 +28,7 @@
 
             <ImageView
                 android:id="@+id/photo"
-                android:layout_width="130dp"
+                android:layout_width="100dp"
                 android:layout_height="130dp"
                 android:background="@drawable/button_gray"
                 android:scaleType="centerCrop"
@@ -122,28 +122,14 @@
             android:layout_marginLeft="8dp"
             android:text="---"
             android:textColor="@color/text_color"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <ImageView
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            app:srcCompat="@drawable/ic_raiting_two" />
 
-        <TextView
-            android:id="@+id/text_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:text="0.0"
-            android:textColor="@color/text_color"
-            android:textSize="18sp"
-            android:textStyle="bold" />
 
     </LinearLayout>
     </LinearLayout>

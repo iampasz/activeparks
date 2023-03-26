@@ -27,6 +27,10 @@ public class Default {
     @Expose
     private String message;
 
+    @SerializedName("lastRequestTimestamp")
+    @Expose
+    private String lastRequestTimestamp;
+
     @SerializedName("url")
     @Expose
     private String url;
@@ -49,6 +53,10 @@ public class Default {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getLastRequestTimestamp() {
+        return lastRequestTimestamp;
     }
 
     public List<Errors> getErrors() {

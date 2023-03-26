@@ -1,5 +1,6 @@
 package com.app.activeparks.ui.participants;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.app.activeparks.data.model.user.User;
 import com.app.activeparks.ui.participants.adapter.UsersAdaper;
+import com.app.activeparks.ui.people.UserActivity;
 import com.technodreams.activeparks.databinding.FragmentUsersBinding;
 
 public class ParticipantsFragment extends Fragment {
@@ -58,24 +60,55 @@ public class ParticipantsFragment extends Fragment {
             if (item.getItems().size() > 0) {
                 binding.listNull.setVisibility(View.GONE);
             }
-            binding.listHeads.setAdapter(new UsersAdaper(getActivity(), item.getItems()));
+            binding.listHeads.setAdapter(new UsersAdaper(getActivity(), item.getItems()).setOnClubsListener(new UsersAdaper.UsersListener() {
+                @Override
+                public void onInfo(String id) {
+                    startActivity(new Intent(getActivity(), UserActivity.class).putExtra("id", id));
+                }
+
+                @Override
+                public void approve(String user) {
+                    mViewModel.approveUser(id, user);
+                }
+
+                @Override
+                public void reject(String user) {
+                    mViewModel.rejectUser(id, user);
+                }
+            }));
         });
 
         mViewModel.getUserMembers().observe(getViewLifecycleOwner(), item -> {
             if (item.getItems().size() > 0) {
                 binding.listNullTwo.setVisibility(View.GONE);
             }
-            binding.listMembers.setAdapter(new UsersAdaper(getActivity(), item.getItems()));
+            binding.listMembers.setAdapter(new UsersAdaper(getActivity(), item.getItems()).setOnClubsListener(new UsersAdaper.UsersListener() {
+                @Override
+                public void onInfo(String id) {
+                    startActivity(new Intent(getActivity(), UserActivity.class).putExtra("id", id));
+                }
+
+                @Override
+                public void approve(String user) {
+                    mViewModel.approveUser(id, user);
+                }
+
+                @Override
+                public void reject(String user) {
+                    mViewModel.rejectUser(id, user);
+                }
+            }));
         });
 
         mViewModel.getUserApplying().observe(getViewLifecycleOwner(), item -> {
             if (item.getItems().size() > 0) {
                 binding.applying.setVisibility(View.VISIBLE);
             }
+
             binding.listApplying.setAdapter(new UsersAdaper(getActivity(), item.getItems()).setOnClubsListener(new UsersAdaper.UsersListener() {
                 @Override
-                public void onInfo(User itemClub) {
-
+                public void onInfo(String id) {
+                    startActivity(new Intent(getActivity(), UserActivity.class).putExtra("id", id));
                 }
 
                 @Override

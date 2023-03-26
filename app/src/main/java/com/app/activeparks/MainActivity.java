@@ -88,7 +88,9 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
     @Override
     public void message(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        if (msg != null) {
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        }
     }
 
 }

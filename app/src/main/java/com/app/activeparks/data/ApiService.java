@@ -62,7 +62,7 @@ public interface ApiService {
     //Регистрація
     @POST("/api/v1/auth/signup")
     @FormUrlEncoded
-    Observable<Signup> signup(@Field("email") String email, @Field("password") String password, @Field("code") String code, @Field("nickname") String nickname);
+    Observable<Signup> signup(@Field("nickname") String nickname, @Field("password") String password, @Field("email") String email, @Field("code") String code);
 
     //Новини
     @GET("/api/v1/news?offset=0&sort[publishedAt]=desc")
@@ -90,6 +90,9 @@ public interface ApiService {
     //Заходи деталі
     @GET("/api/v1/sport-events/{id}")
     Observable<ItemEvent> getEventDetails(@Header("Authorization") String token, @Path("id") String id);
+
+    @GET("/api/v1/sport-events/{id}")
+    Observable<ItemEvent> getEventDetails(@Path("id") String id);
 
     //Запис івента
     @GET("/api/v1/meetings/meeting_records.php")
@@ -243,7 +246,7 @@ public interface ApiService {
     Observable<ResponseBody> removeUser(@Header("Authorization") String token, @Path("id") String id, @Field("userId") String userId);
 
     //Get Support List
-    @GET("/api/v1/support-tickets?offset=0&limit=40&sort[createdAt]=asc")
+    @GET("/api/v1/support-tickets?offset=0&limit=40&sort[publishedAt]=desc")
     Observable<Support> getSupportList(@Header("Authorization") String token);
 
     //Створиння питання

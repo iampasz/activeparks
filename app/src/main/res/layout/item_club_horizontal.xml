@@ -52,7 +52,7 @@
 
 
             <android.widget.Button
-                android:id="@+id/map_action"
+                android:id="@+id/status"
                 android:background="@drawable/button_color"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"

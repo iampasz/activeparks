@@ -3,6 +3,7 @@ package com.app.activeparks.ui.clubs;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,6 +20,8 @@ public class ClubsListActivity extends AppCompatActivity {
     private ClubsViewModel mViewModel;
     private RecyclerView listClubOwner, listClubMember;
     private ButtonSelect mClubOwner, mClubMember;
+
+    private EditText searchText;
     private ClubsAdaper adaper;
 
     @Override
@@ -35,23 +38,25 @@ public class ClubsListActivity extends AppCompatActivity {
         mClubOwner = findViewById(R.id.club_owner_action);
         mClubMember = findViewById(R.id.club_member_action);
 
+        searchText = findViewById(R.id.search_text);
+
         mViewModel.getClubsCreator().observe(this, clubs -> {
-            if (clubs.getItems().size() > 0) {
+            if (clubs.size() > 0) {
                 findViewById(R.id.list_null_two).setVisibility(View.GONE);
             }
-            listClubOwner.setAdapter(new ClubsAdaper(this, clubs.getItems()).setOnClubsListener(new ClubsAdaper.ClubsListener() {
+            listClubOwner.setAdapter(new ClubsAdaper(this, clubs).setOnClubsListener(new ClubsAdaper.ClubsListener() {
                 @Override
                 public void onInfo(ItemClub itemClub) {
-                   startActivity(new Intent(getApplicationContext(), ClubActivity.class).putExtra("id", itemClub.getId()));
+                    startActivity(new Intent(getApplicationContext(), ClubActivity.class).putExtra("id", itemClub.getId()));
                 }
             }));
         });
 
         mViewModel.getClubsParticipant().observe(this, clubs -> {
-            if (clubs.getItems().size() > 0) {
+            if (clubs.size() > 0) {
                 findViewById(R.id.list_null_two).setVisibility(View.GONE);
             }
-            listClubMember.setAdapter(new ClubsAdaper(this, clubs.getItems()).setOnClubsListener(new ClubsAdaper.ClubsListener() {
+            listClubMember.setAdapter(new ClubsAdaper(this, clubs).setOnClubsListener(new ClubsAdaper.ClubsListener() {
                 @Override
                 public void onInfo(ItemClub itemClub) {
                     startActivity(new Intent(getApplicationContext(), ClubActivity.class).putExtra("id", itemClub.getId()));
@@ -63,14 +68,14 @@ public class ClubsListActivity extends AppCompatActivity {
             finish();
         });
 
-        mClubOwner.setOnClickListener(v ->{
+        mClubOwner.setOnClickListener(v -> {
             if (mViewModel.owner == true) {
                 mViewModel.owner = false;
                 mClubOwner.off();
                 findViewById(R.id.title_club_owner).setVisibility(View.GONE);
                 findViewById(R.id.list_null).setVisibility(View.GONE);
                 findViewById(R.id.list_club_owner).setVisibility(View.GONE);
-            }else{
+            } else {
                 mViewModel.owner = true;
                 mClubOwner.on();
                 findViewById(R.id.title_club_owner).setVisibility(View.VISIBLE);
@@ -80,7 +85,7 @@ public class ClubsListActivity extends AppCompatActivity {
             openSearch();
         });
 
-        mClubMember.setOnClickListener(v ->{
+        mClubMember.setOnClickListener(v -> {
             if (mViewModel.member == true) {
                 mViewModel.member = false;
                 mClubMember.off();
@@ -88,7 +93,7 @@ public class ClubsListActivity extends AppCompatActivity {
                 findViewById(R.id.title_club_member).setVisibility(View.GONE);
                 findViewById(R.id.list_null_two).setVisibility(View.GONE);
                 findViewById(R.id.list_club_member).setVisibility(View.GONE);
-            }else{
+            } else {
                 mViewModel.member = true;
                 mClubMember.on();
                 findViewById(R.id.title_club_member).setVisibility(View.VISIBLE);
@@ -98,11 +103,15 @@ public class ClubsListActivity extends AppCompatActivity {
             openSearch();
         });
 
+        findViewById(R.id.search_action).setOnClickListener(v -> {
+            mViewModel.filterData(searchText.getText().toString());
+        });
+
         openSearch();
     }
 
-    void openSearch(){
-        if (adaper != null){
+    void openSearch() {
+        if (adaper != null) {
             adaper.clear();
             adaper.notifyDataSetChanged();
         }
@@ -111,13 +120,13 @@ public class ClubsListActivity extends AppCompatActivity {
             findViewById(R.id.list_club_member).setVisibility(View.VISIBLE);
             mViewModel.getAllClubs();
             mViewModel.getClubsParticipant().observe(this, clubs -> {
-                if (clubs == null){
+                if (clubs == null) {
                     return;
                 }
-                if (clubs.getItems().size() > 0) {
+                if (clubs.size() > 0) {
                     findViewById(R.id.list_null_two).setVisibility(View.GONE);
                 }
-                adaper = new ClubsAdaper(this, clubs.getItems()).setOnClubsListener(new ClubsAdaper.ClubsListener() {
+                adaper = new ClubsAdaper(this, clubs).setOnClubsListener(new ClubsAdaper.ClubsListener() {
                     @Override
                     public void onInfo(ItemClub itemClub) {
                         startActivity(new Intent(getApplicationContext(), ClubActivity.class).putExtra("id", itemClub.getId()));
@@ -125,7 +134,7 @@ public class ClubsListActivity extends AppCompatActivity {
                 });
                 listClubMember.setAdapter(adaper);
             });
-        }else{
+        } else {
             findViewById(R.id.search_panel).setVisibility(View.GONE);
             mViewModel.getClubsCreatorList();
         }

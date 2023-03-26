@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.uservideo.UserVideoItem;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
+import com.app.activeparks.util.Statuses;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 
@@ -26,6 +27,7 @@ public class UserVideoAdapter extends RecyclerView.Adapter<UserVideoAdapter.View
     private final LayoutInflater inflater;
     private UserVideoListener userVideoListener;
 
+    private Statuses statuses = new Statuses();
 
     public UserVideoAdapter(Context context, List<UserVideoItem> list){
         this.inflater = LayoutInflater.from(context);
@@ -55,6 +57,9 @@ public class UserVideoAdapter extends RecyclerView.Adapter<UserVideoAdapter.View
         }
 
         Glide.with(holder.itemView.getContext()).load(list.get(position).getMainPhoto()).error(R.drawable.ic_video).into(holder.imageVideo);
+
+        holder.status.setText(statuses.title(list.get(position).getStatusId()));
+        holder.status.setBackground(inflater.getContext().getResources().getDrawable(statuses.color(list.get(position).getStatusId())));
 
         holder.actionCreate.setOnClickListener(v -> {userVideoListener.onCreate();});
     }

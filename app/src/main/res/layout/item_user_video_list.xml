@@ -64,6 +64,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_medium"
                 android:letterSpacing="0.01"
+                android:maxLines="2"
                 android:textStyle="bold"
                 android:text="Немає"
                 android:textColor="@color/text_color"

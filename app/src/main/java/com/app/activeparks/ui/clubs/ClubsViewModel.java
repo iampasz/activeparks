@@ -9,6 +9,10 @@ import com.app.activeparks.data.model.clubs.Clubs;
 import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.storage.Preferences;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -17,8 +21,9 @@ public class ClubsViewModel extends ViewModel {
 
     private final Preferences sharedPreferences;
     private Repository repository;
-    private MutableLiveData<Clubs> clubsCreatorList = new MutableLiveData<>();
-    private MutableLiveData<Clubs> clubsParticipantList = new MutableLiveData<>();
+    private MutableLiveData<List<ItemClub>> clubsCreatorList = new MutableLiveData<>();
+    private MutableLiveData<List<ItemClub>> clubsParticipantList = new MutableLiveData<>();
+    private List<ItemClub> filter = new ArrayList<>();
     private MutableLiveData<ItemClub> mClubsDetails = new MutableLiveData<>();
     public Boolean admin = false, apply = false, userInClub = false,  owner = false, member  = false;
     public String mId;
@@ -28,11 +33,11 @@ public class ClubsViewModel extends ViewModel {
         repository = new Repository(sharedPreferences);
     }
 
-    public LiveData<Clubs> getClubsCreator() {
+    public LiveData<List<ItemClub>> getClubsCreator() {
         return clubsCreatorList;
     }
 
-    public LiveData<Clubs> getClubsParticipant() {
+    public LiveData<List<ItemClub>> getClubsParticipant() {
         return clubsParticipantList;
     }
 
@@ -48,7 +53,7 @@ public class ClubsViewModel extends ViewModel {
     private void getClubsParticipantList(){
         repository.getClubsParticipant().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                            clubsParticipantList.setValue(result);
+                            clubsParticipantList.setValue(result.getItems());
                         },
                         error -> {});
     }
@@ -56,7 +61,8 @@ public class ClubsViewModel extends ViewModel {
     public void getAllClubs(){
         repository.getClubsAll().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                            clubsParticipantList.setValue(result);
+                            clubsParticipantList.setValue(result.getItems());
+                            filter.addAll(result.getItems());
                         },
                         error -> {});
     }
@@ -89,6 +95,19 @@ public class ClubsViewModel extends ViewModel {
             }
         }
     }
+
+    void filterData(String search) {
+        if (search.length() > 2) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                List<ItemClub> beerDrinkers = filter.stream()
+                        .filter(p -> p.getName().toLowerCase().contains(search.toLowerCase())).collect(Collectors.toList());
+                clubsParticipantList.setValue(beerDrinkers);
+            }
+        }else{
+            clubsParticipantList.setValue(filter);
+        }
+    }
+
 
     public void rejectUser(){
         repository.rejectUser(mId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())

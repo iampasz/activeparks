@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.activeparks.data.model.clubs.ItemClub;
+import com.app.activeparks.util.Statuses;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 
@@ -22,6 +24,8 @@ public class ClubsAdaper extends RecyclerView.Adapter<ClubsAdaper.ViewHolder> {
     private final List<ItemClub> list;
     private final LayoutInflater inflater;
     private ClubsListener clubsListener;
+
+    private Statuses statuses = new Statuses();
 
     public ClubsAdaper(Context context, List<ItemClub> list){
         this.inflater = LayoutInflater.from(context);
@@ -42,6 +46,9 @@ public class ClubsAdaper extends RecyclerView.Adapter<ClubsAdaper.ViewHolder> {
 
         Glide.with(holder.itemView.getContext()).load(list.get(position).getLogoUrl()).into(holder.logo);
 
+        holder.status.setText(statuses.title(list.get(position).getStatusId()));
+        holder.status.setBackground(inflater.getContext().getResources().getDrawable(statuses.color(list.get(position).getStatusId())));
+
         holder.itemView.setOnClickListener(v -> {
             clubsListener.onInfo(list.get(position));
         });
@@ -55,6 +62,7 @@ public class ClubsAdaper extends RecyclerView.Adapter<ClubsAdaper.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
         final ImageView logo;
+        final Button status;
         final TextView title, city;
 
         public ViewHolder(@NonNull View itemView) {
@@ -62,6 +70,7 @@ public class ClubsAdaper extends RecyclerView.Adapter<ClubsAdaper.ViewHolder> {
             logo = itemView.findViewById(R.id.image_club);
             title = itemView.findViewById(R.id.title);
             city = itemView.findViewById(R.id.city);
+            status = itemView.findViewById(R.id.status);
         }
     }
 

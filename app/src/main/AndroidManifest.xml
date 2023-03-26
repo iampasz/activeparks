@@ -82,6 +82,7 @@
         <activity android:name="com.app.activeparks.ui.support.SupportAddActivity" />
         <activity android:name="com.app.activeparks.ui.news.NewsCreateActivity" />
         <activity android:name="com.app.activeparks.ui.event.EventsListActivity" />
+        <activity android:name="com.app.activeparks.ui.people.UserActivity" />
         <activity
             android:name="com.app.activeparks.ui.video.VideoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

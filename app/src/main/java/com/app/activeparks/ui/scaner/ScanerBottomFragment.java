@@ -83,6 +83,7 @@ public class ScanerBottomFragment extends BottomSheetDialogFragment {
 
         mViewModel.getPointQrCode().observe(getViewLifecycleOwner(), result -> {
             if (result != null) {
+                eventScanerListener.update();
                 dismiss();
             } else {
                 Toast.makeText(getContext(), "QR код для точки не дійсний", Toast.LENGTH_LONG).show();

@@ -180,7 +180,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:maxLines="3"
-                                android:text="Немає"
+                                android:text="Немає інформації"
                                 android:textColor="@color/color_park"
                                 android:textSize="16sp" />
                         </LinearLayout>

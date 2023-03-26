@@ -1,12 +1,15 @@
 package com.app.activeparks.ui.register;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,10 +20,16 @@ import com.app.activeparks.ui.auth.AuthFragment;
 import com.app.activeparks.util.FragmentInteface;
 import com.technodreams.activeparks.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class RegisterFragment extends Fragment {
 
     private RegisterViewModel mViewModel;
-
+    private TextView timer;
+    private Button sendCode, regAction;
     private View binding;
 
     public static RegisterFragment newInstance() {
@@ -40,8 +49,10 @@ public class RegisterFragment extends Fragment {
         EditText code = binding.findViewById(R.id.code);
 
         ImageView closed = binding.findViewById(R.id.closed);
-        Button sendCode = binding.findViewById(R.id.sendCode);
-        Button regAction = binding.findViewById(R.id.reg_action);
+        sendCode = binding.findViewById(R.id.sendCode);
+        regAction = binding.findViewById(R.id.reg_action);
+
+        timer = binding.findViewById(R.id.timer);
 
 
         closed.setOnClickListener(v-> {
@@ -60,10 +71,27 @@ public class RegisterFragment extends Fragment {
                     password.getText().toString(),
                     email.getText().toString(),
                     code.getText().toString());
-            mViewModel.getMessage().observe(getViewLifecycleOwner(), msg -> {
-                ((FragmentInteface) getActivity()).message(msg);
-            });
+
         });
+
+        mViewModel.getMessage().observe(getViewLifecycleOwner(), msg -> {
+            if (msg != null) {
+                if (msg.contains("1")) {
+                    sendCode.setEnabled(false);
+                    startTimer();
+                }else if (msg.contains("2")) {
+                    Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container_user, new AuthFragment())
+                            .commit();
+                } else {
+                    sendCode.setEnabled(true);
+                    Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
 
 
         return binding;
@@ -74,5 +102,24 @@ public class RegisterFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
+    }
+
+    void startTimer() {
+        timer.setVisibility(View.VISIBLE);
+            new CountDownTimer(60000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+
+                    long Seconds = millisUntilFinished / 1000 % 60;
+                    timer.setText("Отримати код повторно через " + String.format("%02d", Seconds));
+                }
+
+                public void onFinish() {
+                    cancel();
+                    sendCode.setEnabled(false);
+                    timer.setVisibility(View.GONE);
+
+                }
+            }.start();
     }
 }

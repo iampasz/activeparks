@@ -22,7 +22,6 @@ public class UsersAdaper extends RecyclerView.Adapter<UsersAdaper.ViewHolder> {
 
     private final List<User> list;
     private final LayoutInflater inflater;
-    private UsersListener clubsListener;
 
     public UsersAdaper(Context context, List<User> list){
         this.inflater = LayoutInflater.from(context);
@@ -51,7 +50,7 @@ public class UsersAdaper extends RecyclerView.Adapter<UsersAdaper.ViewHolder> {
         }
 
         holder.itemView.setOnClickListener(v -> {
-            clubsListener.onInfo(list.get(position));
+            clubsListener.onInfo(list.get(position).getId());
         });
 
         holder.no.setOnClickListener(v -> {
@@ -85,8 +84,11 @@ public class UsersAdaper extends RecyclerView.Adapter<UsersAdaper.ViewHolder> {
         }
     }
 
+
+    public UsersListener clubsListener;
+
     public interface UsersListener{
-        void onInfo(User itemClub);
+        void onInfo(String  id);
         void approve(String id);
         void reject(String id);
     }

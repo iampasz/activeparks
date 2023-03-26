@@ -1,5 +1,6 @@
 package com.app.activeparks.data.model.authorisation;
 
+import com.app.activeparks.data.model.Errors;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -55,6 +56,10 @@ public class Signup {
     @SerializedName("regions")
     @Expose
     private List<Object> regions = null;
+
+    @SerializedName("errors")
+    @Expose
+    private List<Errors> errors;
 
     public String getId() {
         return id;
@@ -154,6 +159,10 @@ public class Signup {
 
     public String getError() {
         return error;
+    }
+
+    public List<Errors> getErrors() {
+        return errors;
     }
 
 }

@@ -97,7 +97,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void getSportEvents() {
-        repository.events(5).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        repository.eventsHome(5).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> eventsList.setValue(result),
                         error -> {
                         });

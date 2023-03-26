@@ -17,7 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="58dp"
             android:background="#EDEDF0"
-            android:gravity="center|center_vertical"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
             android:elevation="16dp"
             android:orientation="horizontal">
 
@@ -29,7 +30,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_logo_vector" />
 
             <LinearLayout
@@ -37,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -47,6 +48,7 @@
                     android:layout_marginRight="8dp"
                     android:drawableLeft="@drawable/ic_rating"
                     android:drawablePadding="8dp"
+                    android:visibility="gone"
                     android:text="0.0"
                     android:textColor="@color/text_color"
                     android:textSize="20sp"

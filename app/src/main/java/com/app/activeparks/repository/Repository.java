@@ -162,6 +162,14 @@ public class Repository {
     }
 
     public Observable<SportEvents> events(int limit) {
+        Map<String, String> data = new HashMap<>();
+        data.put("offset", "0");
+        data.put("limit", String.valueOf(limit));
+
+        return service.getEvents(token, "", data);
+    }
+
+    public Observable<SportEvents> eventsHome(int limit) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Map<String, String> data = new HashMap<>();
         data.put("filters[startsFrom]", dateFormat.format(new Date()));
@@ -175,6 +183,18 @@ public class Repository {
     public Observable<ResponseBody> pintRequest(String eventId, String pointId){
 
         return service.pintRequest(token, eventId, pointId);
+    }
+
+    public Observable<WorkoutModel> journal(String userId) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Map<String, String> data = new HashMap<>();
+        data.put("userId", String.valueOf(userId));
+        data.put("direction", "next");
+        data.put("date", dateFormat.format(new Date()));
+        data.put("offset", "0");
+        data.put("limit", "20");
+
+        return service.workout(token, "journal", data);
     }
 
     public Observable<WorkoutModel> journal() {
@@ -242,6 +262,16 @@ public class Repository {
         return service.workoutRemoveRequest(token, id);
     }
 
+    public Observable<WorkoutModel> plans(String userId){
+        Map<String, String> data = new HashMap<>();
+        data.put("userId", String.valueOf(userId));
+        data.put("week", "0");
+        data.put("offset", "0");
+        data.put("limit", "20");
+
+        return service.workout(token, "plan", data);
+    }
+
     public Observable<WorkoutModel> plans(){
         Map<String, String> data = new HashMap<>();
         data.put("userId", String.valueOf(userId));
@@ -253,7 +283,11 @@ public class Repository {
     }
 
     public Observable<ItemEvent> getEventDetails(String id) {
-        return service.getEventDetails(token, id);
+        if (token.length() > 10) {
+            return service.getEventDetails(token, id);
+        }else{
+            return service.getEventDetails(id);
+        }
     }
 
     public Observable<MeetingsModel> meetings(String id) {
@@ -286,6 +320,10 @@ public class Repository {
 
     public Observable<ClubsUserIsMemberModel> getMyClubs() {
         return service.getClubs(token, userId);
+    }
+
+    public Observable<ClubsUserIsMemberModel> getClubsUser(String id) {
+        return service.getClubs(token, id);
     }
 
 
@@ -359,8 +397,17 @@ public class Repository {
         });
     }
 
-    public Observable<Signup> signup(String email, String password, String code, String nickname) {
-        return service.signup(email, password, code, nickname);
+    public Observable<Signup> signup(String nickname, String password, String email, String code) {
+        return service.signup(nickname, password, email, code).onErrorResumeNext(throwable -> {
+            if (throwable instanceof HttpException) {
+                HttpException httpException = (HttpException) throwable;
+                if (httpException.code() == 400) {
+                    ResponseBody errorBody = httpException.response().errorBody();
+                    return Observable.error(new Exception(errorBody.string()));
+                }
+            }
+            return Observable.error(throwable);
+        });
     }
 
     public Observable<Default> restorePassword(String email, String code, String password) {
@@ -407,6 +454,18 @@ public class Repository {
 
     public Observable<User> getUser() {
         return service.getUser(token, userId).onErrorResumeNext(throwable -> {
+            if (throwable instanceof HttpException) {
+                HttpException httpException = (HttpException) throwable;
+                if (httpException.code() == 401) {
+                    return Observable.error(new Exception("401"));
+                }
+            }
+            return Observable.error(throwable);
+        });
+    }
+
+    public Observable<User> getUser(String id) {
+        return service.getUser(token, id + "/free").onErrorResumeNext(throwable -> {
             if (throwable instanceof HttpException) {
                 HttpException httpException = (HttpException) throwable;
                 if (httpException.code() == 401) {

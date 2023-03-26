@@ -242,6 +242,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:visibility="gone"
                     android:src="@drawable/ic_raiting_two" />
 
                 <TextView
@@ -250,6 +251,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
                     android:textColor="@color/text_color"
+                    android:visibility="gone"
                     android:text="0.00"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -593,15 +595,6 @@
                 android:background="@color/button_style"
                 />
 
-                <TextView
-                    android:id="@+id/list_status"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:gravity="center"
-                    android:text="Немає даних"
-                    android:textColor="@color/text_color"
-                    android:textSize="18sp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -615,6 +608,17 @@
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 </RelativeLayout>
+
+
+                <TextView
+                    android:id="@+id/list_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:gravity="center"
+                    android:text="Немає даних"
+                    android:textColor="@color/text_color"
+                    android:textSize="18sp" />
             </LinearLayout>
 
         </LinearLayout>
