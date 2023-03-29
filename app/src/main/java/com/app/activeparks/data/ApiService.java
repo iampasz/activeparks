@@ -207,7 +207,7 @@ public interface ApiService {
     Observable<Clubs> getClubsAll(@Header("Authorization") String token);
 
     //Get clubs
-    @GET("/api/v1/clubs/my?offset=0&limit=15")
+    @GET("/api/v1/clubs/my?offset=0&limit=20")
     Observable<ClubsUserIsMemberModel> getClubs(@Header("Authorization") String token, @Query("userId") String id);
 
     //Get club details

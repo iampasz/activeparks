@@ -15,4 +15,12 @@ public class ClubsUserId {
         return userIsMember;
     }
 
+    @SerializedName("userIsHead")
+    @Expose
+    private List<ItemClub> userIsHead;
+
+    public List<ItemClub> getUserIsHead() {
+        return userIsHead;
+    }
+
 }

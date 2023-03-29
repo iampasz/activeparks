@@ -20,17 +20,17 @@ public class ParticipantsFragment extends Fragment {
     public ParticipantsFragment() {
     }
 
-    public ParticipantsFragment(String id, boolean admin, boolean event) {
+    public ParticipantsFragment(String id, boolean isAdmin, boolean event) {
         this.id = id;
-        this.admin = admin;
-        this.event = event;
+        this.isAdmin = isAdmin;
+        this.isEvent = event;
     }
 
     private FragmentUsersBinding binding;
     private ParticipantsViewModel mViewModel;
     private String id = null;
-    private Boolean admin = null;
-    private Boolean event = false;
+    private Boolean isAdmin = null;
+    private Boolean isEvent = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -40,11 +40,11 @@ public class ParticipantsFragment extends Fragment {
         binding = FragmentUsersBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        if (event != false) {
+        if (isEvent != false) {
             mViewModel.getEventUser(id, true);
         } else {
-            if (admin == true) {
-                mViewModel.getClubsUserApplying(id);
+            if (isAdmin == true) {
+                mViewModel.getClubsUser(id);
             } else {
                 mViewModel.getClubsUser(id);
             }

@@ -108,7 +108,16 @@ public class PeopleViewModel extends ViewModel {
     }
 
     public void clubs(String id) {
-        repository.getClubsUser(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> clubsList.setValue(result.getItems().getUserIsMember()), error -> {
+        repository.getClubsUser(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()
+        ).subscribe(result ->
+        {
+            List<ItemClub> itemClubs = new ArrayList<>();
+            itemClubs.addAll(result.getItems().getUserIsMember());
+            itemClubs.addAll(result.getItems().getUserIsHead());
+
+            clubsList.setValue(itemClubs);
+        }
+                , error -> {
         });
     }
 

@@ -59,7 +59,7 @@ public class AuthFragment extends Fragment {
 
         directoryAction.setOnClickListener(v-> {
             startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://e.sportforall.gov.ua/infolist/start")));
+                    Uri.parse("https://ap.sportforall.gov.ua/infolist/start")));
         });
 
         mViewModel.getMessage().observe(getViewLifecycleOwner(), msg -> {

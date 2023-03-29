@@ -86,7 +86,6 @@ public class RegisterFragment extends Fragment {
                             .replace(R.id.fragment_container_user, new AuthFragment())
                             .commit();
                 } else {
-                    sendCode.setEnabled(true);
                     Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
                 }
             }
@@ -105,6 +104,7 @@ public class RegisterFragment extends Fragment {
     }
 
     void startTimer() {
+        sendCode.setEnabled(false);
         timer.setVisibility(View.VISIBLE);
             new CountDownTimer(60000, 1000) {
 
@@ -116,7 +116,7 @@ public class RegisterFragment extends Fragment {
 
                 public void onFinish() {
                     cancel();
-                    sendCode.setEnabled(false);
+                    sendCode.setEnabled(true);
                     timer.setVisibility(View.GONE);
 
                 }

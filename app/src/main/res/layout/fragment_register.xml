@@ -70,6 +70,16 @@
                 android:hint="Пароль"
                 android:inputType="textPassword" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="left"
+                    android:text="Пароль повинен містити великі, маленькі літери та цифри"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+
+
                 <EditText
                     android:id="@+id/email"
                     style="@style/EditText"

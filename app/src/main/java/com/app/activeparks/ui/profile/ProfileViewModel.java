@@ -120,8 +120,16 @@ public class ProfileViewModel extends ViewModel {
     }
 
     public void clubs() {
-        repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> clubsList.setValue(result.getItems().getUserIsMember()), error -> {
-        });
+        repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            List<ItemClub> itemClubs = new ArrayList<>();
+                            itemClubs.addAll(result.getItems().getUserIsMember());
+                            itemClubs.addAll(result.getItems().getUserIsHead());
+
+                            clubsList.setValue(itemClubs);
+                        },
+                        error -> {
+                        });
     }
 
     public void event() {
@@ -186,7 +194,7 @@ public class ProfileViewModel extends ViewModel {
                                 if (def.getErrors() != null) {
                                     message.setValue(def.getErrors().get(0).getMsg());
                                 }
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 message.setValue("Перевірте підключення до інтернету");
                             }
                         }
@@ -196,7 +204,7 @@ public class ProfileViewModel extends ViewModel {
     public void updateFile(File file) {
         repository.updateFile(file, "avatar").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                            if (result.getUrl() != null){
+                            if (result.getUrl() != null) {
                                 mProfile.setPhoto(result.getUrl());
                                 updateUser();
                             }
