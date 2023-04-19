@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.app.activeparks.data.model.Default;
 import com.app.activeparks.data.model.clubs.Clubs;
+import com.app.activeparks.data.model.dictionaries.BaseDictionaries;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.data.model.workout.WorkoutModel;
 import com.app.activeparks.repository.Repository;
@@ -53,6 +54,8 @@ public class ProfileViewModel extends ViewModel {
     private List<String> mRegion = new ArrayList<>();
     private List<String> mDictionaries = new ArrayList<>();
     private List<String> mDictionariesId = new ArrayList<>();
+
+    public int select = 0;
     private String districtId, regionId;
     public User mProfile;
 
@@ -103,15 +106,18 @@ public class ProfileViewModel extends ViewModel {
     }
 
     public void user() {
+        if (sharedPreferences.getUser() != null) {
+            User users = sharedPreferences.getUser();
+            user.setValue(users);
+            mProfile = users;
+        }
         repository.getUser().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> {
             user.setValue(result);
             mProfile = result;
-            List<User> users = new ArrayList<>();
-            users.add(result);
-            sharedPreferences.setUser(users);
+            sharedPreferences.setUser(result);
         }, error -> {
-            if (sharedPreferences.getUser() != null && sharedPreferences.getUser().size() != 0) {
-                user.setValue(userMapper(sharedPreferences.getUser().get(0)));
+            if (sharedPreferences.getUser() != null) {
+                user.setValue(userMapper(sharedPreferences.getUser()));
             }
             if (error.getMessage().contains("401")) {
                 logout();
@@ -120,6 +126,7 @@ public class ProfileViewModel extends ViewModel {
     }
 
     public void clubs() {
+        select = 0;
         repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             List<ItemClub> itemClubs = new ArrayList<>();
@@ -133,20 +140,40 @@ public class ProfileViewModel extends ViewModel {
     }
 
     public void event() {
-        repository.myEvents().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> eventsList.setValue(result.getItems()), error -> {
-        });
+        select = 1;
+        repository.myevents().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            try {
+                                List<ItemEvent> events = new ArrayList<>();
+                                for (ItemEvent items : result.getItems()) {
+                                    if (items.getHoldingStatusId() != null) {
+                                        items.setHoldingStatusId(statusMapper(items.getHoldingStatusId()));
+                                        events.add(items);
+                                    }
+                                }
+                                eventsList.setValue(events);
+                            } catch (Exception e) {
+
+                            }
+                        },
+                        error -> {
+                        });
     }
 
     public void result() {
-        repository.getMyResult();
+        repository.getMyResult().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> {
+        }, error -> {
+        });
     }
 
     public void userVideoList() {
+        select = 3;
         repository.getUserVideos().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> userVideoList.setValue(result), error -> {
         });
     }
 
     public void journal() {
+        select = 2;
         repository.journal().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> journalList.setValue(result.getItems()), error -> Log.e("ProfileViewModel", "getPokemons: " + error.getMessage()));
     }
 
@@ -190,6 +217,7 @@ public class ProfileViewModel extends ViewModel {
                         },
                         error -> {
                             try {
+                                Log.d("error", error.getMessage());
                                 Default def = new Gson().fromJson(error.getMessage(), Default.class);
                                 if (def.getErrors() != null) {
                                     message.setValue(def.getErrors().get(0).getMsg());
@@ -216,35 +244,47 @@ public class ProfileViewModel extends ViewModel {
     }
 
     public void removeUser() {
-        repository.removeUser();
-        sharedPreferences.setToken("");
-        sharedPreferences.setId("");
+        repository.removeUser().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> {
+        }, error -> {
+        });
         sharedPreferences.clear();
     }
 
 
     public List<String> getRegions() {
         mRegion.clear();
-        for (Region region : sharedPreferences.getDictionarie().get(0).getRegions()) {
+        for (Region region : sharedPreferences.getDictionarie().getRegions()) {
             mRegion.add(region.getTitle());
         }
         return mRegion;
     }
 
     public String getRegionId(int id) {
-        return sharedPreferences.getDictionarie().get(0).getRegions().get(id).getId();
+        return sharedPreferences.getDictionarie().getRegions().get(id).getId();
     }
 
     public List<String> getDictionarie(int index) {
         mDictionaries.clear();
-        String getRegionId = sharedPreferences.getDictionarie().get(0).getRegions().get(index).getId();
-        for (District district : sharedPreferences.getDictionarie().get(0).getDistricts()) {
+        String getRegionId = sharedPreferences.getDictionarie().getRegions().get(index).getId();
+        for (District district : sharedPreferences.getDictionarie().getDistricts()) {
             if (district.getRegionId().equals(getRegionId)) {
                 mDictionaries.add(district.getTitle());
                 mDictionariesId.add(district.getId());
             }
         }
         return mDictionaries;
+    }
+
+    public String statusMapper(String status) {
+        if (sharedPreferences.getDictionarie() != null) {
+            for (BaseDictionaries eventHoldingStatuses : sharedPreferences.getDictionarie().getEventHoldingStatuses()) {
+                if (status.equals(eventHoldingStatuses.getId())) {
+                    return eventHoldingStatuses.getTitle();
+                }
+            }
+
+        }
+        return "не відомо";
     }
 
     public String getDictionarieId(int id) {
@@ -273,21 +313,34 @@ public class ProfileViewModel extends ViewModel {
     }
 
     public User userMapper(User user) {
-        for (District district : sharedPreferences.getDictionarie().get(0).getDistricts()) {
-            if (district.getId().equals(user.getDistrictId())) {
-                user.setDistrictId(district.getTitle());
+        if (sharedPreferences.getDictionarie() != null) {
+            for (District district : sharedPreferences.getDictionarie().getDistricts()) {
+                if (district.getId().equals(user.getDistrictId())) {
+                    user.setDistrictId(district.getTitle());
+                }
             }
-        }
-        for (Region region : sharedPreferences.getDictionarie().get(0).getRegions()) {
-            if (region.getId().equals(user.getRegionId())) {
-                user.setRegionId(region.getAlterTitle());
+            for (Region region : sharedPreferences.getDictionarie().getRegions()) {
+                if (region.getId().equals(user.getRegionId())) {
+                    user.setRegionId(region.getAlterTitle());
+                }
             }
         }
         return user;
     }
 
+    public String isRole(String role) {
+        if (sharedPreferences.getDictionarie() != null) {
+            for (BaseDictionaries baseDictionaries : sharedPreferences.getDictionarie().getUserRoles()) {
+                if (baseDictionaries.getId().equals(role)) {
+                    return baseDictionaries.getTitle();
+                }
+            }
+        }
+        return "Користувач";
+    }
+
     public Boolean isProfile(String roleId) {
-        return roleId.contains("62fe0318-c64a-490c-859d-9d313eacbf41") || roleId.contains("a2c99acd-0014-4fb3-8274-ad6a842f50ac1");
+        return roleId.contains("631db81f-fa07-42e2-b394-062c9be66b09") || roleId.contains("09efbeb2-f45a-418d-89b0-b2a4c37f6122") || roleId.contains("5dcf0363-d171-45db-9280-cb337ca5e101") || roleId.contains("d379ecaa-fee7-48a4-84df-a176f47820e6");
     }
 
     public void logout() {
@@ -295,5 +348,13 @@ public class ProfileViewModel extends ViewModel {
         sharedPreferences.setToken(null);
         sharedPreferences.setId(null);
         sharedPreferences.clear();
+    }
+
+    public void setServer(Boolean type) {
+        sharedPreferences.setServer(type);
+    }
+
+    public Boolean getServer() {
+        return sharedPreferences.getServer();
     }
 }

@@ -42,7 +42,7 @@ public class ParkHorizontalAdaper extends RecyclerView.Adapter<ParkHorizontalAda
         holder.distance.setVisibility(View.VISIBLE);
         holder.distance.setText("Дистанція: " + round(event.getDistanceToPoint(), 2)  + " км.");
 
-        Glide.with(holder.itemView.getContext()).load(event.getPhoto()).into(holder.imageView);
+        Glide.with(holder.itemView.getContext()).load(event.getPhoto()).error(R.drawable.ic_prew).into(holder.imageView);
 
 
         holder.itemView.setOnClickListener(v -> {

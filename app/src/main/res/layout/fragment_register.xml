@@ -135,10 +135,11 @@
                 <Button
                     android:id="@+id/reg_action"
                     style="@style/Button"
+                    android:background="@drawable/button_style"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:padding="16dp"
+                    android:padding="8dp"
                     android:text="Відправити" />
 
             </LinearLayout>

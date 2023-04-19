@@ -12,6 +12,7 @@ import com.app.activeparks.ui.maps.MapsFragment;
 import com.app.activeparks.ui.profile.EditProfileActivity;
 import com.app.activeparks.util.Dictionarie;
 import com.app.activeparks.util.FragmentInteface;
+import com.app.activeparks.util.cropper.CropImage;
 import com.technodreams.activeparks.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -41,9 +42,9 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
-        binding.actionScaner.setOnClickListener(v -> {
-            navigation(R.id.navigation_scaner);
-        });
+//        binding.actionScaner.setOnClickListener(v -> {
+//            navigation(R.id.navigation_scaner);
+//        });
 
         new Dictionarie().init(this);
 
@@ -55,10 +56,11 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 3) {
+        if (requestCode == 3 || requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             EditProfileActivity fragment = (EditProfileActivity) getSupportFragmentManager().findFragmentByTag("MY_FRAGMENT_TAG");
             fragment.onActivityResult(requestCode, resultCode, data);
         }
+
 
         if (data == null) {
             return;

@@ -16,6 +16,11 @@ import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class HorizontalAdaperEvents extends RecyclerView.Adapter<HorizontalAdaperEvents.ViewHolder> {
 
     private final SportEvents list;
@@ -39,7 +44,15 @@ public class HorizontalAdaperEvents extends RecyclerView.Adapter<HorizontalAdape
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ItemEvent event = list.getItems().get(position);
         holder.title.setText(event.getTitle());
-        Glide.with(holder.itemView.getContext()).load(event.getImageUrl()).into(holder.imageView);
+        Glide.with(holder.itemView.getContext()).load(event.getImageUrl()).error(R.drawable.ic_prew).into(holder.imageView);
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date date = format.parse(event.getStartsAt());
+            holder.distance.setText( new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
 
         holder.itemView.setOnClickListener(v -> {
@@ -54,12 +67,13 @@ public class HorizontalAdaperEvents extends RecyclerView.Adapter<HorizontalAdape
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        final TextView title;
+        final TextView title, distance;
         final ImageView imageView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
+            distance = itemView.findViewById(R.id.distance);
             imageView = itemView.findViewById(R.id.image_club);
         }
     }

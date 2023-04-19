@@ -42,7 +42,7 @@ public class VideoAdaper extends RecyclerView.Adapter<VideoAdaper.ViewHolder> {
 
         holder.nameVideo.setText(item.getTitle());
 
-        Glide.with(holder.itemView.getContext()).load(item.getMainPhoto()).into(holder.imageView);
+        Glide.with(holder.itemView.getContext()).load(item.getMainPhoto()).error(R.drawable.ic_prew).into(holder.imageView);
 
         holder.itemView.setOnClickListener(v -> {
             videoAdaperListener.onClick(item.getId(), item.getCategoryId(), item.getExerciseDifficultyLevelId());

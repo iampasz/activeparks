@@ -18,7 +18,11 @@ import com.app.activeparks.ui.notification.adapter.EventsAdaper;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class SupportAdaper extends RecyclerView.Adapter<SupportAdaper.ViewHolder> {
 
@@ -47,12 +51,19 @@ public class SupportAdaper extends RecyclerView.Adapter<SupportAdaper.ViewHolder
 
         holder.title.setText(item.getTopic());
         holder.status.setText(item.getStatusId());
-        holder.data.setText(item.getCreatedAt());
 
         if (item.getCreatedBy() != null) {
             if (item.getCreatedBy().getPhoto() != null) {
-                Glide.with(holder.itemView.getContext()).load(list.get(position).getCreatedBy().getPhoto()).into(holder.photo);
+                Glide.with(holder.itemView.getContext()).load(list.get(position).getCreatedBy().getPhoto()).error(R.drawable.ic_prew).into(holder.photo);
             }
+        }
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date date = format.parse(item.getCreatedAt());
+            holder.data.setText( new SimpleDateFormat("dd.MM.yyyy HH:mm", new Locale("uk", "UA")).format(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
         holder.itemView.setOnClickListener(v -> {

@@ -20,9 +20,7 @@ public class Dictionarie {
         sharedPreferences = new Preferences(context);
         new Repository().getDictionaries().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                            List<Dictionaries> dictionarie = new ArrayList<>();
-                            dictionarie.add(result);
-                            sharedPreferences.setDictionarie(dictionarie);
+                            sharedPreferences.setDictionarie(result);
                         },
                         error -> {
                         });

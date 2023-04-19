@@ -17,16 +17,19 @@
 
         <ImageView
             android:id="@+id/closed"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginLeft="8dp"
-            android:src="@drawable/ic_close" />
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/ic_back_action" />
 
-        <ImageView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="36dp"
-            android:src="@drawable/ic_logo_vector" />
+            android:layout_marginLeft="16dp"
+            android:text="Мої клуби"
+            android:textColor="@color/text_color"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -47,17 +50,7 @@
                 android:padding="16dp"
                 android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="Мої клуби"
-        android:textColor="@color/text_color"
-        android:textSize="22sp"
-        android:textStyle="bold" />
-
-    <LinearLayout
+                <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -79,7 +72,7 @@
             android:text="Я власник"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textStyle="bold"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textAllCaps="false"
             android:textColor="@color/text_color" />
 
@@ -99,7 +92,7 @@
             android:text="Я учасник"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textStyle="bold"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textAllCaps="false"
             android:textColor="@color/text_color" />
 
@@ -186,10 +179,10 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:gravity="center"
-            android:text="Немає даних"
+            android:text="Ви ще не створили жодний клуб"
             android:textColor="@color/text_color"
             android:layout_marginTop="16dp"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -220,10 +213,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Немає даних"
+            android:text="Ви ще не вступили жоден клуб"
             android:textColor="@color/text_color"
             android:layout_marginTop="16dp"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"

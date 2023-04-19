@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/prew_active_park" />
+                app:srcCompat="@drawable/ic_prew" />
 
             <TextView
                 android:id="@+id/title"

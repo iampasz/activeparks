@@ -15,41 +15,6 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/applying"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Заявки"
-            android:visibility="gone"
-            android:textColor="@color/text_color"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/list_null_applying"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:visibility="gone"
-            android:text="Немає інформації"
-            android:textColor="@color/text_color"
-            android:textSize="18sp" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_applying"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-        </RelativeLayout>
-
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Організатори"
@@ -81,8 +46,10 @@
         </RelativeLayout>
 
         <TextView
+            android:id="@+id/list_title_two"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_marginTop="16dp"
             android:text="Учасники"
             android:textColor="@color/text_color"
@@ -93,6 +60,7 @@
             android:id="@+id/list_null_two"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="Немає інформації"
@@ -107,6 +75,40 @@
                 android:id="@+id/list_members"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/list_null_applying"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="Немає інформації"
+            android:textColor="@color/text_color"
+            android:textSize="18sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/applying"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Заявки"
+            android:textColor="@color/text_color"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_applying"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 

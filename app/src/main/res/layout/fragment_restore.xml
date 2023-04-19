@@ -75,14 +75,14 @@
             <EditText
                 android:id="@+id/code"
                 style="@style/EditText"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/backround_edit_text"
                 android:ems="10"
                 android:hint="Код із ел. пошти"
-                android:inputType="textPassword" />
+                android:inputType="number"
+                android:visibility="gone" />
 
 
             <EditText

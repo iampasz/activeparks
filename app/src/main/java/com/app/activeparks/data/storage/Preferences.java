@@ -21,16 +21,19 @@ import javax.inject.Inject;
 public class Preferences {
 
     private SharedPreferences mSettings;
+    private SharedPreferences mSettingApp;
 
     public Preferences(){
     }
     @Inject
     public Preferences(Context context){
         mSettings = context.getSharedPreferences("APP_PREFERENCES", Context.MODE_PRIVATE);
+        mSettingApp = context.getSharedPreferences("APP_SETTING", Context.MODE_PRIVATE);
     }
 
     public Preferences Preferences(Context context){
         mSettings = context.getSharedPreferences("APP_PREFERENCES", Context.MODE_PRIVATE);
+        mSettingApp = context.getSharedPreferences("APP_SETTING", Context.MODE_PRIVATE);
         return this;
     }
 
@@ -58,68 +61,57 @@ public class Preferences {
         return mSettings.getString("push_token", null);
     }
 
-    public List<User> getUser() {
-        String data = mSettings.getString("user", null);
-        Type listType = new TypeToken<ArrayList<User>>(){}.getType();
+    public User getUser() {
+        String data = mSettings.getString("profile", null);
         Gson gson = new Gson();
-        List<User> list = gson.fromJson(data, listType);
-        return list != null ? list : null;
+        User user = gson.fromJson(data, User.class);
+        return user != null ? user : null;
     }
 
-    public void setUser(List<User> lstApp) {
+    public void setUser(User user) {
         Gson gson = new Gson();
-        String data = gson.toJson(lstApp);
-        mSettings.edit().putString("user", data).apply();
+        String data = gson.toJson(user);
+        mSettings.edit().putString("profile", data).apply();
     }
 
-    public List<Notifications> getNotification() {
+    public Notifications getNotification() {
         String data = mSettings.getString("notifications", null);
-        Type listType = new TypeToken<ArrayList<Notifications>>(){}.getType();
         Gson gson = new Gson();
-        List<Notifications> list = gson.fromJson(data, listType);
-        return list != null ? list : null;
+        Notifications notifications = gson.fromJson(data, Notifications.class);
+        return notifications != null ? notifications : null;
     }
 
-    public void setNotification(List<Notifications> lstApp) {
+    public void setNotification(Notifications notifications) {
         Gson gson = new Gson();
-        String data = gson.toJson(lstApp);
+        String data = gson.toJson(notifications);
         mSettings.edit().putString("notifications", data).apply();
     }
 
-    public List<Dictionaries> getDictionarie() {
-        String data = mSettings.getString("dictionaries", null);
-        Type listType = new TypeToken<ArrayList<Dictionaries>>(){}.getType();
+    public Dictionaries getDictionarie() {
+        String data = mSettingApp.getString("dictionaries", null);
         Gson gson = new Gson();
-        List<Dictionaries> list = gson.fromJson(data, listType);
-        return list != null ? list : null;
+        Dictionaries dictionaries = gson.fromJson(data, Dictionaries.class);
+        return dictionaries != null ? dictionaries : null;
     }
 
-    public void setDictionarie(List<Dictionaries> lstApp) {
+    public void setDictionarie(Dictionaries dictionaries) {
         try{
         Gson gson = new Gson();
-        String data = gson.toJson(lstApp);
-        mSettings.edit().putString("dictionaries", data).apply();
+        String data = gson.toJson(dictionaries);
+        mSettingApp.edit().putString("dictionaries", data).apply();
         }catch (Exception e){}
     }
 
-    public List<SportEvents> getSportEvents() {
-        String data = mSettings.getString("sportevents", null);
-        Type listType = new TypeToken<ArrayList<SportEvents>>(){}.getType();
-        Gson gson = new Gson();
-        List<SportEvents> list = gson.fromJson(data, listType);
-        return list != null ? list : null;
+    public void setServer(Boolean type){
+        mSettingApp.edit().putBoolean("server", type).apply();
     }
 
-    public void setSportEvents(List<SportEvents> lstApp) {
-        try{
-            Gson gson = new Gson();
-            String data = gson.toJson(lstApp);
-            mSettings.edit().putString("sportevents", data).apply();
-        }catch (Exception e){}
+    public Boolean getServer(){
+        return mSettingApp.getBoolean("server", false);
     }
 
     public void clear(){
-        mSettings.edit().clear().commit();
+        mSettings.edit().clear().apply();
     }
 
 }

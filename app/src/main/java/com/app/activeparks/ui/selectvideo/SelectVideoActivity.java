@@ -57,6 +57,10 @@ public class SelectVideoActivity extends AppCompatActivity implements ContentVid
     }
 
     void initClickListener(){
+        findViewById(R.id.closed).setOnClickListener(v -> {
+            onBackPressed();
+        });
+
         findViewById(R.id.ic_bottom_one).setOnClickListener(v -> {
             mViewModel.rozmenka();
         });
@@ -80,14 +84,28 @@ public class SelectVideoActivity extends AppCompatActivity implements ContentVid
 
     @Override
     public void onSelectType(int result) {
-        LevelVideoFragment fragment = new LevelVideoFragment(result == 3);
-        fragment.callback = this;
-        seletcFrament(fragment);
-        mViewModel.selectActivePark(result);
+        if (result == -1) {
+            ContentTypeVideoFragment fragment = new ContentTypeVideoFragment();
+            fragment.callback = this;
+            seletcFrament(fragment);
+        }else{
+            LevelVideoFragment fragment = new LevelVideoFragment(result == 3);
+            fragment.callback = this;
+            seletcFrament(fragment);
+            mViewModel.selectActivePark(result);
+        }
     }
 
     @Override
     public void onSelectLevel(int result) {
         mViewModel.type(result);
     }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+    }
+
 }

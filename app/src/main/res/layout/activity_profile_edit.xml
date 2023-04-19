@@ -52,7 +52,7 @@
                 android:layout_height="180dp"
                 android:scaleType="centerCrop"
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/ic_avatar_prew" />
+                android:src="@drawable/ic_prew" />
 
             <android.widget.Button
                 android:id="@+id/photo_action"
@@ -80,6 +80,7 @@
                 <EditText
                     android:id="@+id/phone"
                     android:layout_width="match_parent"
+                    android:focusable="false"
                     android:layout_height="50dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/backround_edit_text"
@@ -87,8 +88,8 @@
                     android:paddingLeft="16dp"
                     android:paddingRight="8dp"
                     android:textSize="18sp"
-                    android:textColor="@color/text_color"
-                    android:text="" />
+                    android:textColor="@color/gray_400"
+                    android:text="+380XXXXXXXX" />
 
 
                 <TextView
@@ -112,7 +113,7 @@
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:enabled="false"
+                    android:focusable="false"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/backround_edit_text"
                     android:gravity="center_vertical"
@@ -160,8 +161,7 @@
                     android:paddingLeft="16dp"
                     android:paddingRight="8dp"
                     android:textSize="18sp"
-                    android:textColor="@color/text_color"
-                    android:text="" />
+                    android:textColor="@color/text_color" />
 
 
                 <TextView
@@ -171,8 +171,8 @@
                     android:background="@color/fon"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
-                    android:text="Ім’я"
                     android:textColor="@color/text_color"
+                    android:text="Ім'я"
                     android:textStyle="bold" />
             </FrameLayout>
 
@@ -293,6 +293,7 @@
                     android:clickable="false"
                     android:cursorVisible="false"
                     android:focusable="false"
+                    android:hint="дд.мм.рррр"
                     android:focusableInTouchMode="false" />
 
                 <TextView
@@ -381,6 +382,7 @@
                     android:gravity="top"
                     android:padding="16dp"
                     android:textSize="18sp"
+                    android:hint="Розкажіть про себе"
                     android:textColor="@color/text_color" />
 
                 <TextView
@@ -409,6 +411,7 @@
                     android:gravity="top"
                     android:padding="16dp"
                     android:textSize="18sp"
+                    android:hint="Розкажіть про своє здоровя"
                     android:textColor="@color/text_color" />
 
                 <TextView

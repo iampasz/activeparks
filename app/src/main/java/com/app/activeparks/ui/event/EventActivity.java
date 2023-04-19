@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LevelListDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,9 +14,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,8 +29,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.activeparks.ui.event.adapter.MeetingListAdaper;
 import com.app.activeparks.ui.participants.ParticipantsFragment;
+import com.app.activeparks.ui.scaner.ScanerBottomFragment;
 import com.app.activeparks.ui.web.WebActivity;
 import com.app.activeparks.util.ButtonSelect;
+import com.app.activeparks.util.LoadImage;
 import com.app.activeparks.util.MapsViewControler;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
@@ -39,10 +45,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class EventActivity extends AppCompatActivity implements LocationListener, EventScanerListener {
+import me.zhanghai.android.materialratingbar.MaterialRatingBar;
+
+public class EventActivity extends AppCompatActivity implements LocationListener, EventScanerListener, Html.ImageGetter {
 
     private EventViewModel mViewModel;
     private ImageView mImageView;
+
+    private MaterialRatingBar ratingBar;
     private ButtonSelect mDescriptionAction, mLocationAction, mRecordsAction, mPeopleAction, mStatusAction, mJoinAction;
     private TextView mTitle, mAddress, mPhone, mStartEvent, mEndEvent, mDescription, mClubName, mEventStatus, mDay, mHour, mMinutes, mSeconds;
     public MapView mapView;
@@ -56,6 +66,8 @@ public class EventActivity extends AppCompatActivity implements LocationListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
+        overridePendingTransition(R.anim.start, R.anim.end);
+
         mViewModel = new ViewModelProvider(this, new EventModelFactory(this)).get(EventViewModel.class);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -75,6 +87,8 @@ public class EventActivity extends AppCompatActivity implements LocationListener
 
         mPanelPhone = findViewById(R.id.panel_phone);
 
+        ratingBar = findViewById(R.id.ratingBar);
+
         mDay = findViewById(R.id.day_time);
         mHour = findViewById(R.id.hour_time);
         mMinutes = findViewById(R.id.minutes_time);
@@ -93,7 +107,7 @@ public class EventActivity extends AppCompatActivity implements LocationListener
 
         mViewModel.getEventDetails().observe(this, events -> {
             try {
-                Glide.with(this).load(events.getImageUrl()).into(mImageView);
+                Glide.with(this).load(events.getImageUrl()).error(R.drawable.ic_prew).into(mImageView);
                 mTitle.setText(events.getTitle());
                 if (events.getSportsground() != null) {
                     mAddress.setText(events.getSportsground().getTitle());
@@ -107,35 +121,41 @@ public class EventActivity extends AppCompatActivity implements LocationListener
                             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                             startActivity(intent);
                         });
-                    }else{
+                    } else {
                         findViewById(R.id.layout_address).setVisibility(View.GONE);
                     }
                 }
 
-                if (events.getCreatedBy().getPhone() != null) {
-                    mPanelPhone.setVisibility(View.VISIBLE);
-                    mPhone.setText(events.getCreatedBy().getPhone());
+//                if (events.getCreatedBy().getPhone() != null) {
+//                    mPanelPhone.setVisibility(View.VISIBLE);
+//                    mPhone.setText(events.getCreatedBy().getPhone());
+//                }
+
+                if (events.getEventEstimation() != null){
+                    ratingBar.setRating(events.getEventEstimation());
                 }
 
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
                     Date date = format.parse(events.getStartsAt());
-                    mStartEvent.setText( new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
+                    mStartEvent.setText(new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                mEndEvent.setText(events.getStartsAt() != null ? events.getStartsAt().substring(11, events.getStartsAt().length()) : "Недіомо");
+                mEndEvent.setText(events.getStartsAt() != null ? events.getStartsAt().substring(11, events.getStartsAt().length() - 3) : "Недіомо");
                 mEventStatus.setText(mViewModel.statusMapper(events.getHoldingStatusId()));
 
 
                 if (events.getFullDescription() != null) {
                     mDescriptionAction.setVisibility(View.VISIBLE);
-                    String web = "<html><head><LINK href=\"https://web.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body><br>" + events.getFullDescription() + "</body></html>";
+                    String web = "<html><head><LINK href=\"https://web.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body>" + events.getFullDescription() + "</body></html>";
+                    web = web.replace("<img ", "<br><img ");
+                    mDescription.setMovementMethod(LinkMovementMethod.getInstance());
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        mDescription.setText("Про захід" + Html.fromHtml(web, Html.FROM_HTML_MODE_COMPACT));
+                        mDescription.setText(Html.fromHtml(web, this, null));
                     } else {
-                        mDescription.setText("Про захід" + Html.fromHtml(web));
+                        mDescription.setText(Html.fromHtml(web));
                     }
                 }
                 if (events.getClub() != null) {
@@ -148,25 +168,30 @@ public class EventActivity extends AppCompatActivity implements LocationListener
                     mLocationAction.setVisibility(View.VISIBLE);
                     findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
                     mapsViewControler.setMarker(events.getRoutePoints().get(0).getLocation().get(0), events.getRoutePoints().get(0).getLocation().get(1));
+
                 } else if (events.getTypeId().contains("848e3121-4a2b-413d-8a8f-ebdd4ecf2840")) {
 
-                    mLocationAction.setVisibility(View.VISIBLE);
                     findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
                     mapsViewControler.setMarker(events.getRoutePoints().get(0).getLocation().get(0), events.getRoutePoints().get(0).getLocation().get(1));
 
                 } else if (events.getTypeId().contains("e58e5c86-5ca7-412f-94f0-88effd1a45a8")) {
-                    findViewById(R.id.layout_timer).setVisibility(View.VISIBLE);
-                    startTimer(events.getStartsAt());
-                    if (events.getConferenceLink() != null && mViewModel.getUserAuth() && events.getEventUser() != null) {
-                        mStatusAction.setVisibility(View.VISIBLE);
-                        mStatusAction.setOnClickListener(v -> {
-                            startActivity(new Intent(this, WebActivity.class)
-                                    .putExtra("TITLE", "Трансляція")
-                                    .putExtra("WEB_URL", events.getConferenceLink()));
-                        });
-                    }
-                    if (events.getMeetingRecordsCount() != null && events.getMeetingRecordsCount() > 0) {
-                        mRecordsAction.setVisibility(View.VISIBLE);
+
+                    if (events.getHoldingStatusId().contains("0q8a6xc0-1nb4-1pr4-h5at-4sw3m0l387yp")) {
+                        if (events.getMeetingRecordsCount() != null && events.getMeetingRecordsCount() > 0) {
+                            mRecordsAction.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        if (events.getConferenceLink() != null && events.getConferenceLink().length() > 0) {
+                            mStatusAction.setVisibility(View.VISIBLE);
+                            mStatusAction.setOnClickListener(v -> {
+                                startActivity(new Intent(this, WebActivity.class)
+                                        .putExtra("TITLE", "Трансляція")
+                                        .putExtra("WEB_URL", events.getConferenceLink()));
+                            });
+                        } else {
+                            findViewById(R.id.layout_timer).setVisibility(View.VISIBLE);
+                            startTimer(events.getStartsAt());
+                        }
                     }
                 }
 
@@ -174,12 +199,14 @@ public class EventActivity extends AppCompatActivity implements LocationListener
                     if (events.getEventUser().getIsApproved() == true) {
                         mJoinAction.setText("Покинути захід");
                         onStartLocationUpdates();
+                        if (events.getHoldingStatusId().contains("0q8a6xc0-1nb4-1pr4-h5at-4sw3m0l387yp")) {
+                            findViewById(R.id.layout_rating).setVisibility(View.VISIBLE);
+                        }
                     } else {
                         mJoinAction.setText("Відмінити запрошення");
                     }
                 } else {
                     mJoinAction.setText("Приєднатись до заходу");
-                    mRecordsAction.setVisibility(View.GONE);
                 }
 
             } catch (Exception e) {
@@ -187,7 +214,7 @@ public class EventActivity extends AppCompatActivity implements LocationListener
 
         });
 
-        if (mViewModel.getUserAuth()){
+        if (mViewModel.getUserAuth()) {
             mJoinAction.setVisibility(View.VISIBLE);
         }
 
@@ -204,7 +231,7 @@ public class EventActivity extends AppCompatActivity implements LocationListener
 
     void initClickListener() {
         findViewById(R.id.closed).setOnClickListener((View v) -> {
-            finish();
+            onBackPressed();
         });
 
         mDescriptionAction.setOnClickListener(v -> {
@@ -222,6 +249,7 @@ public class EventActivity extends AppCompatActivity implements LocationListener
 
         mRecordsAction.setOnClickListener(v -> {
             mViewModel.meetingRecords();
+            findViewById(R.id.event_fragment).setVisibility(View.GONE);
             replaceButton();
             mRecordsAction.on();
         });
@@ -234,6 +262,16 @@ public class EventActivity extends AppCompatActivity implements LocationListener
 
         mJoinAction.setOnClickListener(v -> {
             mViewModel.applyUser();
+        });
+
+//        ratingBar.setOnClickListener(v -> {
+//            mViewModel.setEstimation(ratingBar.getRating());
+//        });
+        ratingBar.setOnRatingBarChangeListener(new MaterialRatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                mViewModel.setEstimation(rating);
+            }
         });
 
         findViewById(R.id.copy_action).setOnClickListener((View v) -> {
@@ -315,17 +353,45 @@ public class EventActivity extends AppCompatActivity implements LocationListener
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {}
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
 
     @Override
-    public void onProviderEnabled(String provider) {}
+    public void onProviderEnabled(String provider) {
+    }
 
     @Override
-    public void onProviderDisabled(String provider) {}
+    public void onProviderDisabled(String provider) {
+    }
 
     @Override
     public void update() {
         mViewModel.getUpdateEvent();
         mViewModel.meetingRecords();
+        setFragment(new RoutePointFragment(mViewModel.routePoints, mViewModel.isCoordinator, this));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+    }
+
+    @Override
+    public Drawable getDrawable(String source) {
+        LevelListDrawable d = new LevelListDrawable();
+        Drawable empty = getResources().getDrawable(R.drawable.logo_active_parks);
+        d.addLevel(0, 0, empty);
+        d.setBounds(0, 0, empty.getIntrinsicWidth(), empty.getIntrinsicHeight());
+
+        new LoadImage(mDescription.getWidth()).setListener(new LoadImage.Listener() {
+            @Override
+            public void onUpdate() {
+                CharSequence t = mDescription.getText();
+                mDescription.setText(t);
+            }
+        }).execute(source, d);
+
+        return d;
     }
 }

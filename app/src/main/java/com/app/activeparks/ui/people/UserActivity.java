@@ -68,13 +68,12 @@ public class UserActivity extends AppCompatActivity {
         photo = findViewById(R.id.photo);
 
         TextView name = findViewById(R.id.name);
-        TextView login = findViewById(R.id.text_login);
+        TextView role = findViewById(R.id.role);
         TextView sex = findViewById(R.id.sex);
         TextView birthday = findViewById(R.id.birthday);
-        TextView time = findViewById(R.id.time);
         TextView adress = findViewById(R.id.adress);
-        TextView create = findViewById(R.id.create);
         TextView about = findViewById(R.id.about);
+        TextView healt = findViewById(R.id.healt);
         TextView height = findViewById(R.id.height);
         TextView weight = findViewById(R.id.weight);
         TextView phone = findViewById(R.id.phone);
@@ -93,10 +92,18 @@ public class UserActivity extends AppCompatActivity {
 
         viewModel.getUser().observe(this, user -> {
             try {
-                name.setText(user.getFirstName() + " " + user.getLastName());
-                login.setText(user.getNickname());
+                if (user.getFirstName().length() + user.getLastName().length() > 1){
+                    name.setVisibility(View.VISIBLE);
+                    name.setText(user.getFirstName() + " " + user.getLastName());
+                }else{
+                    name.setText(user.getNickname());
+                }
+
+                role.setText(viewModel.isRole());
+
                 if (user.getSex() != null) {
-                    sex.setText(user.getSex().equals("male") ? "Чоловік" : user.getSex() == "female" ? "Жінка" : "Невідомо");
+                    findViewById(R.id.layout_sex).setVisibility(View.VISIBLE);
+                    sex.setText(user.getSex().equals("male") ? "Чоловік" : user.getSex().equals("female") ? "Жінка" : "Невідомо");
                 }
 
                 if (user.getAge() != 0){
@@ -107,10 +114,22 @@ public class UserActivity extends AppCompatActivity {
                     }
                 }
 
-                adress.setText(user.getCity());
-                time.setText(user.getUpdatedAt().replace("-", "."));
-                create.setText(user.getCreatedAt().replace("-", "."));
-                about.setText(user.getAboutMe());
+                if (user.getCity().length() > 1) {
+                    findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
+                    adress.setText(user.getCity());
+                }
+
+                if (user.getAboutMe().length() > 1) {
+                    findViewById(R.id.title_about).setVisibility(View.VISIBLE);
+                    about.setVisibility(View.VISIBLE);
+                    about.setText(user.getAboutMe());
+                }
+
+                if (user.getHealthState().length() > 1) {
+                    findViewById(R.id.title_healt).setVisibility(View.VISIBLE);
+                    healt.setVisibility(View.VISIBLE);
+                    healt.setText(user.getHealthState());
+                }
 
                 if (user.getHeight() != null){
                     findViewById(R.id.icon_weight).setVisibility(View.VISIBLE);
@@ -126,10 +145,14 @@ public class UserActivity extends AppCompatActivity {
                     weight.setText(user.getWeight() + " кг");
                 }
 
-                phone.setText(user.getPhone());
+                if (user.getPhone().length() > 1) {
+                    findViewById(R.id.phone_item).setVisibility(View.VISIBLE);
+                    phone.setText(user.getPhone());
+                }
+
                 email.setText(user.getEmail());
                 profileFilling.setProgress(user.getProfileFilling());
-                Glide.with(this).load(user.getPhoto()).into(photo);
+                Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(photo);
             } catch (Exception e) {
             }
         });

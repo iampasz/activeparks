@@ -21,7 +21,7 @@ public class MapsViewModel extends ViewModel implements MapEventsReceiver {
     private final MutableLiveData<Sportsgrounds> sportsgroundsList = new MutableLiveData<>();
 
     private Repository apiRepository;
-    private Double lat = 30.37593, lon = 50.46710;
+    private Double lat = 30.51814, lon = 50.44812, myLat = 30.51814, myLon = 50.44812;
     //private Double lat, lon;
 
     public MapsViewModel() {
@@ -49,6 +49,11 @@ public class MapsViewModel extends ViewModel implements MapEventsReceiver {
     void setGeolocation(double lat, double lon){
         this.lat = lon;
         this.lon = lat;
+    }
+
+    void setMylocation(double lat, double lon){
+        this.myLat = lon;
+        this.myLon = lat;
     }
 
 

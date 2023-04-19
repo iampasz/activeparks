@@ -9,14 +9,11 @@ import com.app.activeparks.data.model.notification.Notifications;
 import com.app.activeparks.data.storage.Preferences;
 
 public class ResultViewModel extends ViewModel {
-
-    private final Preferences sharedPreferences;
     private Repository apiRepository;
     private MutableLiveData<Notifications> mResult;
 
     public ResultViewModel(Preferences sharedPreferences)   {
-        this.sharedPreferences = sharedPreferences;
-        this.apiRepository = new Repository();
+        this.apiRepository = new Repository(sharedPreferences);
         this.mResult = new MutableLiveData<>();
         getResultList();
     }

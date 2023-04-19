@@ -18,6 +18,11 @@ import com.app.activeparks.ui.adapter.PhotosAdaper;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class HomeAdaper extends RecyclerView.Adapter<HomeAdaper.ViewHolder> {
 
     private final News list;
@@ -49,10 +54,19 @@ public class HomeAdaper extends RecyclerView.Adapter<HomeAdaper.ViewHolder> {
             holder.galary.setAdapter(new PhotosAdaper(holder.itemView.getContext(), news.getPhotos()));
             holder.galary.setVisibility(View.VISIBLE);
             holder.image.setVisibility(View.GONE);
+            holder.distance.setVisibility(View.GONE);
         }else {
-            Glide.with(holder.itemView.getContext()).load(news.getImageUrl()).into(holder.image);
+            Glide.with(holder.itemView.getContext()).load(news.getImageUrl()).error(R.drawable.ic_prew).into(holder.image);
             holder.galary.setVisibility(View.GONE);
             holder.image.setVisibility(View.VISIBLE);
+        }
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date date = format.parse(news.getPublishedAt());
+            holder.distance.setText( new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
 
@@ -68,13 +82,14 @@ public class HomeAdaper extends RecyclerView.Adapter<HomeAdaper.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        final TextView title;
+        final TextView title, distance;
         final ImageView image;
         final ViewPager2 galary;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
+            distance = itemView.findViewById(R.id.distance);
             image = itemView.findViewById(R.id.image_club);
             galary = itemView.findViewById(R.id.galary);
         }

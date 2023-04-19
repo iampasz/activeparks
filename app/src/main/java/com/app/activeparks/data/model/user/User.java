@@ -161,7 +161,7 @@ public class User {
         this.sex = sex;
     }
 
-    public Object getHeight() {
+    public String getHeight() {
         return height;
     }
 
@@ -169,7 +169,7 @@ public class User {
         this.height = height;
     }
 
-    public Object getWeight() {
+    public String getWeight() {
         return weight;
     }
 

@@ -28,6 +28,7 @@ public class ClubsListActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clubs);
+        overridePendingTransition(R.anim.start, R.anim.end);
 
         mViewModel =
                 new ViewModelProvider(this, new ClubsModelFactory(this)).get(ClubsViewModel.class);
@@ -47,7 +48,7 @@ public class ClubsListActivity extends AppCompatActivity {
             listClubOwner.setAdapter(new ClubsAdaper(this, clubs).setOnClubsListener(new ClubsAdaper.ClubsListener() {
                 @Override
                 public void onInfo(ItemClub itemClub) {
-                    startActivity(new Intent(getApplicationContext(), ClubActivity.class).putExtra("id", itemClub.getId()));
+                    startActivity(new Intent(ClubsListActivity.this, ClubActivity.class).putExtra("id", itemClub.getId()));
                 }
             }));
         });
@@ -59,13 +60,13 @@ public class ClubsListActivity extends AppCompatActivity {
             listClubMember.setAdapter(new ClubsAdaper(this, clubs).setOnClubsListener(new ClubsAdaper.ClubsListener() {
                 @Override
                 public void onInfo(ItemClub itemClub) {
-                    startActivity(new Intent(getApplicationContext(), ClubActivity.class).putExtra("id", itemClub.getId()));
+                    startActivity(new Intent(ClubsListActivity.this, ClubActivity.class).putExtra("id", itemClub.getId()));
                 }
             }));
         });
 
         findViewById(R.id.closed).setOnClickListener((View v) -> {
-            finish();
+            onBackPressed();
         });
 
         mClubOwner.setOnClickListener(v -> {
@@ -129,7 +130,7 @@ public class ClubsListActivity extends AppCompatActivity {
                 adaper = new ClubsAdaper(this, clubs).setOnClubsListener(new ClubsAdaper.ClubsListener() {
                     @Override
                     public void onInfo(ItemClub itemClub) {
-                        startActivity(new Intent(getApplicationContext(), ClubActivity.class).putExtra("id", itemClub.getId()));
+                        startActivity(new Intent(ClubsListActivity.this, ClubActivity.class).putExtra("id", itemClub.getId()));
                     }
                 });
                 listClubMember.setAdapter(adaper);
@@ -138,6 +139,12 @@ public class ClubsListActivity extends AppCompatActivity {
             findViewById(R.id.search_panel).setVisibility(View.GONE);
             mViewModel.getClubsCreatorList();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
 
 }

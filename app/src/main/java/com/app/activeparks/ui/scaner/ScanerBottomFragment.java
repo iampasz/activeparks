@@ -2,6 +2,7 @@ package com.app.activeparks.ui.scaner;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.app.activeparks.ui.clubs.ClubActivity;
+import com.app.activeparks.ui.dialog.BottomPhoneDialog;
 import com.app.activeparks.ui.event.EventActivity;
 import com.app.activeparks.ui.event.EventScanerListener;
 import com.app.activeparks.ui.profile.EditProfileActivity;
@@ -116,6 +118,24 @@ public class ScanerBottomFragment extends BottomSheetDialogFragment {
         } else {
             mCodeScanner.startPreview();
         }
+    }
+
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        super.onCancel(dialog);
+        //mListener.onUpdate();
+    }
+
+    public interface OnScanerBottomlListener {
+        void onUpdate();
+    }
+
+    private OnScanerBottomlListener mListener;
+
+    public ScanerBottomFragment onListener(OnScanerBottomlListener listener) {
+        this.mListener = listener;
+        return this;
     }
 
 

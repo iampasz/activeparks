@@ -12,6 +12,9 @@ public class WorkoutItem {
     @SerializedName("isActive")
     @Expose
     private Integer isActive;
+    @SerializedName("activityType")
+    @Expose
+    private String activityType;
     @SerializedName("title")
     @Expose
     private String title;
@@ -45,6 +48,13 @@ public class WorkoutItem {
     @SerializedName("createdAt")
     @Expose
     private String createdAt;
+    @SerializedName("startsAt")
+    @Expose
+    private String startsAt;
+
+    @SerializedName("finishesAt")
+    @Expose
+    private String finishesAt;
     @SerializedName("lastUpdatedAt")
     @Expose
     private String lastUpdatedAt;
@@ -79,6 +89,10 @@ public class WorkoutItem {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getActivityType() {
+        return activityType;
     }
 
     public void setTitle(String title) {
@@ -163,6 +177,22 @@ public class WorkoutItem {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getStartsAt() {
+        return startsAt;
+    }
+
+    public void setStartsAt(String startsAt) {
+        this.startsAt = startsAt;
+    }
+
+    public String getFinishesAt() {
+        return finishesAt;
+    }
+
+    public void setFinishesAt(String finishesAt) {
+        this.finishesAt = finishesAt;
     }
 
     public String getLastUpdatedAt() {

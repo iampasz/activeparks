@@ -15,6 +15,7 @@ import com.app.activeparks.data.model.sportsgrounds.Sportsgrounds;
 import com.app.activeparks.data.model.user.User;
 import com.app.activeparks.data.storage.Preferences;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -76,7 +77,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void getParks() {
-        repository.sportsgrounds(5, "30", "" + 30.37593, "" + 50.46710).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        repository.sportsgrounds(5, "30", "" + 30.51814, "" + 50.44812).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> parksList.setValue(result),
                         error -> {
                         });
@@ -106,7 +107,12 @@ public class HomeViewModel extends ViewModel {
     public void clubs() {
         repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        result -> clubList.setValue(result.getItems().getUserIsMember()),
+                        result -> {
+                            List<ItemClub> itemClubs = new ArrayList<>();
+                            itemClubs.addAll(result.getItems().getUserIsMember());
+                            itemClubs.addAll(result.getItems().getUserIsHead());
+
+                            clubList.setValue(itemClubs);},
                         error -> {
                         }
                 );
@@ -130,7 +136,7 @@ public class HomeViewModel extends ViewModel {
 
     private void getDataUser() {
         if (preferences.getUser() != null) {
-            user.setValue(preferences.getUser().get(0));
+            user.setValue(preferences.getUser());
         }
     }
 

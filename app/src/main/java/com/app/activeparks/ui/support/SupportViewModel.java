@@ -97,7 +97,7 @@ public class SupportViewModel extends ViewModel {
     }
 
     public void supportMapper(List<SupportItem> supportItems) {
-        List<BaseDictionaries> eventHoldingStatuses = sharedPreferences.getDictionarie().get(0).getSupportTicketStatuses();
+        List<BaseDictionaries> eventHoldingStatuses = sharedPreferences.getDictionarie().getSupportTicketStatuses();
         for (SupportItem supportItem : supportItems) {
             for (BaseDictionaries base : eventHoldingStatuses) {
                 if (supportItem.getStatusId().equals(base.getId())) {

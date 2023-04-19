@@ -65,12 +65,15 @@ public class RestoreViewModel extends ViewModel {
     public void restoreCode(String email, String code, String password){
         repository.restorePassword(email, code, password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                            if (result != null){
-                                mMessage.setValue(result);
-                            }
+                            mMessage.setValue(new Default("Пароль змінено"));
                         },
                         error -> {
-                            mMessage.setValue(new Default("Перевірте підключення до інтернету"));
+                            try {
+                                Default def = new Gson().fromJson(error.getMessage(), Default.class);
+                                mMessage.setValue(def);
+                            } catch (Exception e) {
+                                mMessage.setValue(new Default("Перевірте підключення до інтернету"));
+                            }
                         });
     }
 

@@ -21,6 +21,8 @@ import com.app.activeparks.ui.notification.adapter.EventsAdaper;
 import com.app.activeparks.ui.notification.adapter.NotificationAdaper;
 import com.app.activeparks.ui.profile.uservideo.UserAddVideoActivity;
 import com.app.activeparks.ui.selectvideo.SelectVideoActivity;
+import com.app.activeparks.util.FragmentInteface;
+import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 import com.technodreams.activeparks.databinding.FragmentNotificationBinding;
 
@@ -38,6 +40,7 @@ public class NotificationFragment extends Fragment {
         View root = binding.getRoot();
 
         ViewPager2 listNotificationsHorizontal = binding.listNotificationsHorizontal;
+        ViewPager2 listRaiting = binding.listRaiting;
         RecyclerView listNotifications = binding.listNotifications;
 
         listNotificationsHorizontal.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
@@ -46,10 +49,23 @@ public class NotificationFragment extends Fragment {
             if (events.getItems().size() > 0) {
                 binding.titleEvent.setVisibility(View.VISIBLE);
                 listNotificationsHorizontal.setVisibility(View.VISIBLE);
-                binding.listNull.setVisibility(View.GONE);
             }
 
-            listNotificationsHorizontal.setAdapter(new EventsAdaper(getActivity(), events).setOnCliclListener(new EventsAdaper.ParksAdaperListener() {
+            listNotificationsHorizontal.setAdapter(new EventsAdaper(getActivity(), events, false).setOnCliclListener(new EventsAdaper.ParksAdaperListener() {
+                @Override
+                public void onInfo(String id) {
+                    startActivity(new Intent(getActivity(), EventActivity.class).putExtra("id", id));
+                }
+            }));
+        });
+
+        viewModel.getSportRaitingEventsList().observe(getViewLifecycleOwner(), events -> {
+            if (events.getItems().size() > 0) {
+                binding.titleRaiting.setVisibility(View.VISIBLE);
+                listRaiting.setVisibility(View.VISIBLE);
+            }
+
+            listRaiting.setAdapter(new EventsAdaper(getActivity(), events, true).setOnCliclListener(new EventsAdaper.ParksAdaperListener() {
                 @Override
                 public void onInfo(String id) {
                     startActivity(new Intent(getActivity(), EventActivity.class).putExtra("id", id));
@@ -79,6 +95,17 @@ public class NotificationFragment extends Fragment {
             }));
         });
 
+        if (viewModel.getUserAuth()) {
+            binding.panelUser.setVisibility(View.VISIBLE);
+        }
+
+        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            binding.profileFilling.setProgress(user.getProfileFilling());
+            Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(binding.imageUser);
+            binding.imageUser.setOnClickListener(v -> {
+                ((FragmentInteface) getActivity()).navigation(R.id.navigation_user);
+            });
+        });
 
 
         viewModel.update();

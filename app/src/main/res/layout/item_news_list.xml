@@ -56,9 +56,9 @@
                 android:id="@+id/image_club"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:scaleType="centerCrop"
                 android:layout_marginTop="8dp"
-                app:srcCompat="@drawable/prew_active_park" />
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/ic_prew" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/list_tab"

@@ -8,7 +8,7 @@ import com.app.activeparks.repository.Repository;
 import com.app.activeparks.data.model.dictionaries.District;
 import com.app.activeparks.data.model.dictionaries.Region;
 import com.app.activeparks.data.model.user.User;
-import com.app.activeparks.data.model.user.UserClubs;
+import com.app.activeparks.data.model.user.UserParticipants;
 import com.app.activeparks.data.storage.Preferences;
 
 import java.util.ArrayList;
@@ -22,9 +22,12 @@ public class ParticipantsViewModel extends ViewModel {
 
     private final Preferences sharedPreferences;
     private Repository repository;
-    private MutableLiveData<UserClubs> mUserClubsHeads = new MutableLiveData<>();
-    private MutableLiveData<UserClubs> mUserClubsMembers = new MutableLiveData<>();
-    private MutableLiveData<UserClubs> mUserClubsApplying = new MutableLiveData<>();
+    private MutableLiveData<UserParticipants> mUserClubsHeads = new MutableLiveData<>();
+    private MutableLiveData<UserParticipants> mUserClubsMembers = new MutableLiveData<>();
+    private MutableLiveData<UserParticipants> mUserApplying = new MutableLiveData<>();
+
+    public boolean isEvent;
+
 
     public ParticipantsViewModel(Preferences sharedPreferences)   {
         this.sharedPreferences = sharedPreferences;
@@ -70,7 +73,19 @@ public class ParticipantsViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             if (result != null){
-                                mUserClubsApplying.setValue(userMapper(result));
+                                mUserApplying.setValue(userMapper(result));
+                            }
+                        },
+                        error -> {
+                        });
+    }
+
+    public void getEventUserApplying(String id){
+        repository.getEventUserApplying(id).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            if (result != null){
+                                mUserApplying.setValue(userMapper(result));
                             }
                         },
                         error -> {
@@ -85,21 +100,92 @@ public class ParticipantsViewModel extends ViewModel {
                         });
     }
 
+
+    public void leaveUser(String id, String user){
+        repository.rejectUser(id).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {},
+                        error -> {
+                        });
+    }
+
+    public void acceptEventUser(String id, String user){
+        repository.eventApplyingRequest(id, user, "accept").subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {},
+                        error -> {
+                        });
+    }
+
+    public void rejectEventUser(String id, String user){
+        repository.eventApplyingRequest(id, user, "reject").subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {},
+                        error -> {
+                        });
+    }
+
+    public void leavetEventUser(String id, String user){
+        repository.eventApplyingRequest(id, user, "leave").subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {},
+                        error -> {
+                        });
+    }
+
+    public void acceptClubUser(String id, String user){
+        repository.clubsApplyingRequest(id, user, "approve-user").subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {},
+                        error -> {
+                        });
+    }
+
+    public void rejectClubUser(String id, String user){
+        repository.clubsApplyingRequest(id, user, "reject-user").subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {},
+                        error -> {
+                        });
+    }
+
+    public void leavetClubUser(String id, String user){
+        repository.clubsApplyingRequest(id, user, "remove-user").subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {},
+                        error -> {
+                        });
+    }
+
+    public void acceptUser(String id, String user){
+        if (isEvent){
+            acceptEventUser(id, user);
+        }else {
+            acceptClubUser(id, user);
+        }
+    }
+
     public void rejectUser(String id, String user){
-//        new repository().rejectUser(sharedPreferences.getToken(), id, user).setOnListener(new repository.ResponseListener<Response<ResponseBody>>() {
-//            @Override
-//            public void onResponse(Response<ResponseBody> user) {
-//                if (user != null){
-//                }
-//            }
-//        });
+        if (isEvent){
+            rejectEventUser(id, user);
+        }else {
+            rejectClubUser(id, user);
+        }
+    }
+
+    public void removeUser(String id, String user){
+        if (isEvent){
+            leavetEventUser(id, user);
+        }else {
+            leavetClubUser(id, user);
+        }
     }
 
 
-    public UserClubs userMapper(UserClubs user){
+    public UserParticipants userMapper(UserParticipants user){
         List<User> mUsertItem = new ArrayList<>();
-        List<District> district = sharedPreferences.getDictionarie().get(0).getDistricts();
-        List<Region> region = sharedPreferences.getDictionarie().get(0).getRegions();
+        List<District> district = sharedPreferences.getDictionarie().getDistricts();
+        List<Region> region = sharedPreferences.getDictionarie().getRegions();
         for (User u : user.getItems()) {
             for (District d : district) {
                 if (u.getDistrictId() != null && u.getDistrictId().equals(d.getId())) {
@@ -108,19 +194,22 @@ public class ParticipantsViewModel extends ViewModel {
             }
             mUsertItem.add(u);
         }
-        UserClubs userClubs = new UserClubs().setItems(mUsertItem);
+        UserParticipants userClubs = new UserParticipants().setItems(mUsertItem);
         return userClubs;
     }
 
-    public LiveData<UserClubs> getUserHeads() {
+    public LiveData<UserParticipants> getUserHeads() {
         return mUserClubsHeads;
     }
 
-    public LiveData<UserClubs> getUserMembers() {
+    public LiveData<UserParticipants> getUserMembers() {
         return mUserClubsMembers;
     }
 
-    public LiveData<UserClubs> getUserApplying() {
-        return mUserClubsApplying;
+    public LiveData<UserParticipants> getUserApplying() {
+        return mUserApplying;
+    }
+    public void setIsEvent(boolean isEvent) {
+        this.isEvent = isEvent;
     }
 }

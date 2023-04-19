@@ -47,7 +47,7 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.title.setText(list.get(position).getTitle() != null ? list.get(position).getTitle() : "Недіомо");
 
-        if (list.get(position).getSportsground().getTitle() != null){
+        if (list.get(position).getSportsground() != null){
             holder.city.setText(list.get(position).getSportsground().getTitle());
         }else{
             if (list.get(position).getRoutePoints() != null && list.get(position).getRoutePoints().size() > 0) {
@@ -63,13 +63,15 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
             }
         }
 
-        holder.time.setText(list.get(position).getStartsAt() != null ? list.get(position).getStartsAt().substring(11, list.get(position).getStartsAt().length()) : "Недіомо");
+        holder.time.setText(list.get(position).getStartsAt() != null ? list.get(position).getStartsAt().substring(11, list.get(position).getStartsAt().length() - 3) : "Недіомо");
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
-            Date date = format.parse(list.get(position).getStartsAt());
-            holder.data.setText( new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
-        } catch (ParseException e) {
+            if (list.get(position).getStartsAt().length() > 16) {
+                Date date = format.parse(list.get(position).getStartsAt());
+                holder.data.setText(new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -79,16 +81,9 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
         holder.description.setText(list.get(position).getShortDescription() != null ? list.get(position).getShortDescription() : "Недіомо");
 
         if (list.get(position).getImageUrl() != null) {
-            Glide.with(holder.itemView.getContext()).load(list.get(position).getImageUrl()).into(holder.logo);
+            Glide.with(holder.itemView.getContext()).load(list.get(position).getImageUrl()).error(R.drawable.ic_prew).into(holder.logo);
         }
 
-        if (position != 0) {
-            if (list.get(position).getStartsAt().substring(0, 10).equals(list.get(position - 1).getStartsAt().substring(0, 10))) {
-                holder.data.setVisibility(View.GONE);
-            } else {
-                holder.data.setVisibility(View.VISIBLE);
-            }
-        }
 
         holder.itemView.setOnClickListener(v -> {
             eventListener.onInfo(list.get(position));

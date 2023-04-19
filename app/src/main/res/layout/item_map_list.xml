@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/background_white"
-    android:layout_margin="16dp"
+    android:layout_margin="8dp"
     android:padding="16dp"
     android:gravity="center_vertical"
     android:orientation="horizontal">
@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/image_club"
-            android:layout_width="96dp"
-            android:layout_height="84dp"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
             app:srcCompat="@drawable/map_marker" />
 
         <TextView
@@ -30,7 +30,9 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
-            android:padding="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textSize="14sp"
             android:textColor="@color/white"
             android:text="0 km" />
 
@@ -46,13 +48,12 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-
             android:layout_weight="1"
             android:fontFamily="@font/montserrat_medium"
             android:letterSpacing="0.01"
             android:text="Тонус м’язів з Юрієм Ткачем"
             android:textColor="@color/text_color"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
 
@@ -65,7 +66,7 @@
             <android.widget.Button
                 android:id="@+id/maps_action"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="38dp"
                 android:background="@drawable/button_color"
                 android:drawableLeft="@drawable/ic_baseline_follow"
                 android:drawablePadding="8dp"
@@ -77,8 +78,8 @@
 
             <ImageButton
                 android:id="@+id/info_park"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:layout_marginLeft="8dp"
                 android:background="@drawable/button_color"
                 android:src="@drawable/ic_info_wife"

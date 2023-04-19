@@ -1,8 +1,12 @@
 package com.app.activeparks.ui.maps;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,47 +30,53 @@ import com.app.activeparks.ui.maps.adapter.ParksAdaper.*;
 import com.app.activeparks.ui.dialog.BottomDialogActiveParkFragment;
 import com.app.activeparks.ui.park.ParkActivity;
 import com.app.activeparks.util.MapsViewControler;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.CancellationToken;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.technodreams.activeparks.R;
 import com.technodreams.activeparks.databinding.FragmentMapsBinding;
 import com.google.android.material.tabs.TabLayout;
+
+import org.osmdroid.util.GeoPoint;
 
 
 public class MapsFragment extends Fragment implements View.OnClickListener {
 
     private FragmentMapsBinding binding;
-    private MapsViewModel mapsViewModel;
+    private MapsViewModel viewModel;
 
+    private FusedLocationProviderClient mFusedLocationClient;
     public MapsViewControler mapsViewControler;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        mapsViewModel =
+        viewModel =
                 new ViewModelProvider(this).get(MapsViewModel.class);
 
         binding = FragmentMapsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
         binding.maxZoom.setOnClickListener(this);
         binding.minZoom.setOnClickListener(this);
 
-        //mapsViewModel.mapInit(binding.mapview, getContext());
         mapsViewControler = new MapsViewControler(binding.mapview, getContext());
-        mapsViewModel.getSportsgroundList(50);
+        mapsViewControler.homeView = true;
+        viewModel.getSportsgroundList(50);
 
         setUpMapIfNeeded(getContext());
 
         final RecyclerView recyclerView = binding.mapsList;
 
-        mapsViewModel.getSportsground().observe(getViewLifecycleOwner(), sportsgrounds -> {
+        viewModel.getSportsground().observe(getViewLifecycleOwner(), sportsgrounds -> {
 
             ParksAdaper adapter = new ParksAdaper(getActivity(), sportsgrounds.getSportsground());
             adapter.setOnCliclListener(new ParksAdaperListener() {
                 @Override
                 public void onClick(Double lat, Double lon) {
-//                    Intent intent = new Intent(Intent.ACTION_SEND);
-//                    intent.setData(Uri.parse("geo:" + lat + lon));
-//                    Intent chooser  = Intent.createChooser(intent, "Active Park");
-//                    startActivity(chooser);
                     String uri = "https://www.google.com/maps/search/?api=1&query=" + lat + "," + lon;
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                     startActivity(intent);
@@ -121,13 +131,17 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onPosition(double latitude, double longitude) {
-                mapsViewModel.setGeolocation(latitude, longitude);
+                viewModel.setGeolocation(latitude, longitude);
             }
         });
 
         binding.actionSearch.setOnClickListener(view -> {
-            mapsViewModel.getSportsgroundList(50);
+            viewModel.getSportsgroundList(50);
             binding.actionSearch.setVisibility(View.INVISIBLE);
+        });
+
+        binding.locationAction.setOnClickListener(view -> {
+            requestPermissions(getActivity());
         });
 
         binding.actionUpdateSearch.setOnClickListener(view -> {
@@ -136,12 +150,13 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLong(double lat, double lon) {
                             mapsViewControler.setPositionMap(lat, lon);
-                            mapsViewModel.setUpdateSportsgroundList(50, lat, lon);
+                            viewModel.setUpdateSportsgroundList(50, lat, lon);
                         }
                     });
             addPhotoBottomDialogFragment.show(getActivity().getSupportFragmentManager(),
                     "fragment_search");
         });
+
 
         return root;
     }
@@ -151,6 +166,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
         super.onDestroyView();
         binding = null;
     }
+
 
     private void setUpMapIfNeeded(Context ctx) {
         if (ActivityCompat.checkSelfPermission(ctx, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ctx, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -175,4 +191,66 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    public void requestPermissions(Context activity) {
+        if (PackageManager.PERMISSION_GRANTED != ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
+                && PackageManager.PERMISSION_GRANTED != ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION},
+                    1);
+        } else {
+            getLastLocation();
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    public void getLastLocation() {
+        mFusedLocationClient.getCurrentLocation(LocationRequest.QUALITY_LOW_POWER, new CancellationToken() {
+            @Override
+            public boolean isCancellationRequested() {
+                return false;
+            }
+
+            @NonNull
+            @Override
+            public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
+                return null;
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    mapsViewControler.mylocation();
+                    //binding.mapview.getController().animateTo(new GeoPoint(location.getLatitude(), location.getLongitude()));
+                    viewModel.setMylocation(location.getLatitude(), location.getLongitude());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getLastLocation();
+        }
+    }
+
+    @Override
+    public void  onResume() {
+        super.onResume();
+        mapsViewControler.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapsViewControler.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapsViewControler.onDestroy();
+    }
 }

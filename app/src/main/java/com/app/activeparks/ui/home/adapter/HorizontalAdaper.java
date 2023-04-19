@@ -88,7 +88,7 @@ public class HorizontalAdaper extends RecyclerView.Adapter<HorizontalAdaper.View
             new TabLayoutMediator(holder.tabLayout, holder.galary, (tab, pos) -> {
             }).attach();
         }else {
-            Glide.with(holder.itemView.getContext()).load(news.getImageUrl()).into(holder.image);
+            Glide.with(holder.itemView.getContext()).load(news.getImageUrl()).error(R.drawable.ic_prew).into(holder.image);
             holder.galary.setVisibility(View.GONE);
             holder.image.setVisibility(View.VISIBLE);
             holder.tabLayout.setVisibility(View.GONE);

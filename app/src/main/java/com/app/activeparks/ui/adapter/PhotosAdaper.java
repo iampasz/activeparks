@@ -39,7 +39,7 @@ public class PhotosAdaper extends RecyclerView.Adapter<PhotosAdaper.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Glide.with(holder.itemView.getContext()).load(list.get(position)).into(holder.photo);
+        Glide.with(holder.itemView.getContext()).load(list.get(position)).error(R.drawable.ic_prew).into(holder.photo);
     }
 
     @Override

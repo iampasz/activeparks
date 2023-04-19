@@ -17,12 +17,10 @@ public class RegisterViewModel extends ViewModel {
 
 
     private Repository repository;
-    private Preferences preferences;
     private MutableLiveData<String> mMessage;
 
     public RegisterViewModel(Preferences preferences) {
-        this.preferences = preferences;
-        this.repository = new Repository();
+        this.repository = new Repository(preferences);
         mMessage = new MutableLiveData<>();
     }
 

@@ -51,6 +51,7 @@
                 android:background="@drawable/backround_edit_text"
                 android:ems="10"
                 android:hint="Пошта"
+                android:text=""
                 android:inputType="textEmailAddress" />
 
             <EditText
@@ -62,6 +63,7 @@
                 android:background="@drawable/backround_edit_text"
                 android:ems="10"
                 android:hint="Пароль"
+                android:text=""
                 android:inputType="textPassword" />
 
             <Button
@@ -69,13 +71,15 @@
                 style="@style/Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/button_style"
                 android:layout_marginTop="16dp"
-                android:padding="16dp"
+                android:padding="8dp"
                 android:text="Увійти" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -94,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_weight="1"
-                    android:gravity="left"
+                    android:gravity="right"
                     android:text="Зареєструватись"
                     android:textColor="@color/link_color"
                     android:textSize="16sp" />
@@ -121,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_weight="1"
-                    android:gravity="left"
+                    android:gravity="right"
                     android:text="Відновити"
                     android:textColor="@color/link_color"
                     android:textSize="16sp" />
@@ -131,7 +135,7 @@
                 android:id="@+id/directory_action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:gravity="center"
                 android:text="База знань"
                 android:textColor="@color/link_color"

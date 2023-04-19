@@ -18,9 +18,19 @@
 
         <ImageView
             android:id="@+id/closed"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_close" />
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/ic_back_action" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:text="Новина"
+            android:textColor="@color/text_color"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/create"
@@ -62,7 +72,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/prew_active_park" />
+                        app:srcCompat="@drawable/ic_def" />
 
             </androidx.cardview.widget.CardView>
 
@@ -72,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:textColor="@color/text_color"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 tools:text="Новина" />
 
@@ -80,7 +90,7 @@
                 android:id="@+id/html"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 android:padding="8dp"
                 android:textColor="@color/text_color"
                 tools:text="Текст" />

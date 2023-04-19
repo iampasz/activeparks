@@ -80,6 +80,7 @@
         <SeekBar
             android:id="@+id/radius_filter"
             style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:visibility="gone"
             android:layout_width="280dp"
             android:layout_height="40dp"
             android:layout_gravity="top|center"
@@ -111,7 +112,7 @@
             android:layout_height="40dp"
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="32dp"
-            android:layout_marginRight="32dp"
+            android:layout_marginRight="16dp"
             android:background="@drawable/button_style_gren"
             android:textStyle="bold"
             android:elevation="16dp"

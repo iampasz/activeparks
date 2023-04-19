@@ -64,12 +64,12 @@ public class UserVideoItem {
     @SerializedName("equipment")
     @Expose
     private List<Object> equipment = null;
-    @SerializedName("createdBy")
-    @Expose
-    private String createdBy;
-    @SerializedName("updatedBy")
-    @Expose
-    private String updatedBy;
+//    @SerializedName("createdBy")
+//    @Expose
+//    private String createdBy;
+//    @SerializedName("updatedBy")
+//    @Expose
+//    private String updatedBy;
     @SerializedName("createdAt")
     @Expose
     private String createdAt;
@@ -232,21 +232,21 @@ public class UserVideoItem {
         this.equipment = equipment;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
+//    public String getCreatedBy() {
+//        return createdBy;
+//    }
+//
+//    public void setCreatedBy(String createdBy) {
+//        this.createdBy = createdBy;
+//    }
+//
+//    public String getUpdatedBy() {
+//        return updatedBy;
+//    }
+//
+//    public void setUpdatedBy(String updatedBy) {
+//        this.updatedBy = updatedBy;
+//    }
 
     public String getCreatedAt() {
         return createdAt;

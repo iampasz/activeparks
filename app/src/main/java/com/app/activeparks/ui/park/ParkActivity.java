@@ -89,6 +89,7 @@ public class ParkActivity extends AppCompatActivity {
             mTitle.setText(park.getTitle());
             Spanned textSpan  =  Html.fromHtml("<u>" + park.getLocation().get(0) + " " + park.getLocation().get(1) + "</u>");
             mCoordinator.setText(textSpan);
+            mCoordinator.setTextColor(getResources().getColor(R.color.color_park));
 
             mCoordinator.setOnClickListener(v ->{
                 String uri = "https://google.com/maps/search/?api=1&query=" + park.getLocation().get(0) + "," + park.getLocation().get(1);
@@ -100,7 +101,16 @@ public class ParkActivity extends AppCompatActivity {
             mAddressCity.setText(park.getCity() + " " +park.getStreet());
             mLighting.setText(park.getHasLighting() > 0 ? "Присутнє" : "Відсутнє");
             mTechnicalCondition.setText(park.getOnReconstruction() == false ? "Новий" : "Реконсту");
-            mFacebook.setText(park.getFacebookUrl() != null ? park.getFacebookUrl() : "Відсутнє");
+
+            if (park.getFacebookUrl() != null && park.getFacebookUrl().length() > 1){
+                mFacebook.setText(park.getFacebookUrl());
+                mFacebook.setTextColor(getResources().getColor(R.color.color_park));
+                mFacebook.setOnClickListener(v -> {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(park.getFacebookUrl())));
+                });
+            }else {
+                mFacebook.setText("Відсутнє");
+            }
             
             photosView.setAdapter(new PhotosAdaper(this, park.getPhotos()));
 
@@ -109,10 +119,10 @@ public class ParkActivity extends AppCompatActivity {
 
             mapsViewControler.setMarker(park.getLocation().get(0), park.getLocation().get(1));
 
-            Glide.with(this).load(park.getPhoto()).into(mImageView);
+            Glide.with(this).load(park.getPhoto()).error(R.drawable.ic_prew).into(mImageView);
 
             if (park.getCoordinators() != null) {
-                Glide.with(this).load(park.getCoordinators().get(0).getPhoto()).into(mPhotoCordenator);
+                Glide.with(this).load(park.getCoordinators().get(0).getPhoto()).error(R.drawable.ic_prew).into(mPhotoCordenator);
                 mItemCordenator.setVisibility(View.VISIBLE);
 
                 mNameCordenator.setText(park.getCoordinators().get(0).getFirstName() + " " + park.getCoordinators().get(0).getLastName());

@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:background="@drawable/background_white"
-        android:elevation="3dp"
+        android:elevation="1dp"
         android:orientation="vertical"
         android:padding="8dp">
 
@@ -30,7 +30,7 @@
                 android:layout_width="90dp"
                 android:layout_height="90dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_video" />
+                android:src="@drawable/ic_prew" />
 
 
         </androidx.cardview.widget.CardView>

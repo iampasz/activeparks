@@ -28,8 +28,14 @@ import com.app.activeparks.data.model.notification.ItemNotification;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,13 +77,32 @@ public class NotificationAdaper extends RecyclerView.Adapter<NotificationAdaper.
 
             setTextViewHTML(holder.description, msg);
         }
+        Date secondDate = new Date();
 
-        if (notification.getUser() != null) {
-            if (notification.getUser().getPhoto() != null) {
-                holder.title.setText(notification.getUser().getFirstName() + " " + notification.getUser().getLastName());
-                Glide.with(holder.itemView.getContext()).load(list.get(position).getUser().getPhoto()).into(holder.photo);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date firstDate = format.parse(notification.getCreatedAt());
+
+            long diffInMilliseconds = Math.abs(secondDate.getTime() - firstDate.getTime());
+
+
+
+            long days = TimeUnit.DAYS.convert(diffInMilliseconds, TimeUnit.MILLISECONDS);
+            long hours = TimeUnit.HOURS.convert(diffInMilliseconds, TimeUnit.MILLISECONDS);
+            long minutes = TimeUnit.HOURS.convert(diffInMilliseconds, TimeUnit.MILLISECONDS);
+
+            if (days > 1){
+                holder.date.setText(days + " д. тому");
+            }else if (hours > 0.9){
+                holder.date.setText(hours +  " год. тому");
+            }else{
+                holder.date.setText(minutes +  " хв. тому");
             }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
+
     }
 
     protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span) {
@@ -111,14 +136,12 @@ public class NotificationAdaper extends RecyclerView.Adapter<NotificationAdaper.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        final TextView title, description;
-        ImageView photo;
+        final TextView date, description;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
-            photo = itemView.findViewById(R.id.photo);
+            date = itemView.findViewById(R.id.date);
         }
     }
 

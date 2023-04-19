@@ -22,7 +22,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class EventViewModel extends ViewModel {
 
-    private Preferences preferences;
     private MutableLiveData<ItemEvent> mItemEvent;
     private MutableLiveData<SportEvents> mSportEvents;
     private MutableLiveData<String> location = new MutableLiveData<>();
@@ -38,11 +37,16 @@ public class EventViewModel extends ViewModel {
     private Repository repository;
 
     public EventViewModel(Preferences preferences) {
-        this.preferences = preferences;
         repository = new Repository(preferences);
         mItemEvent = new MutableLiveData<>();
         mSportEvents = new MutableLiveData<>();
-        eventHoldingStatuses = preferences.getDictionarie().get(0).getEventHoldingStatuses();
+
+        try {
+            if (preferences.getDictionarie() != null) {
+                eventHoldingStatuses = preferences.getDictionarie().getEventHoldingStatuses();
+            }
+        }catch (Exception e){
+        }
     }
 
     public LiveData<ItemEvent> getEventDetails() {
@@ -85,7 +89,7 @@ public class EventViewModel extends ViewModel {
     }
 
     public void getSportEvents() {
-        repository.events(20).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        repository.events(90).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> statusMapper(result.getItems()),
                         error -> {
                         });
@@ -111,6 +115,13 @@ public class EventViewModel extends ViewModel {
                                 });
             }
         }
+    }
+
+    public void setEstimation(float raiting) {
+        repository.eventEstimation(mId, "" + Math.round(raiting)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> getUpdateEvent(),
+                        error -> {
+                        });
     }
 
     public void meetingRecords() {
@@ -193,6 +204,6 @@ public class EventViewModel extends ViewModel {
     }
 
     public boolean getUserAuth() {
-        return preferences.getToken().length() > 1 ? true : false;
+        return repository.sharedPreferences.getToken().length() > 1 ? true : false;
     }
 }

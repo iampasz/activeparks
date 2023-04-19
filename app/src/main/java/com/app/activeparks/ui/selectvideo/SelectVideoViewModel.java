@@ -18,7 +18,7 @@ public class SelectVideoViewModel extends ViewModel {
     public SelectVideoViewModel(Preferences sharedPreferences)   {
         mIdVideo = new MutableLiveData<>();
         modelSelectCategory = new ModelSelectCategory();
-        mDistrict = sharedPreferences.getDictionarie().get(0);
+        mDistrict = sharedPreferences.getDictionarie();
     }
 
     public LiveData<ModelSelectCategory> showVideo() {

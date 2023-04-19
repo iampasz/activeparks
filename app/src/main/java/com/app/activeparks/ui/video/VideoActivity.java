@@ -38,9 +38,9 @@ public class VideoActivity extends AppCompatActivity {
     private Button mBack, mMap;
     private RecyclerView listVideo;
     private ProgressBar mProgressBar;
-    private LinearLayout mLinearLayout, mThemeLayout;
+    private LinearLayout mTopBarLinearLayout, mLinearLayout, mThemeLayout;
     private TextView mDescription, mTitle;
-    private ImageView mButtonPlay, mButtonFullScrean;
+    private ImageView mButtonPlay, mButtonFullScrean, closed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +59,11 @@ public class VideoActivity extends AppCompatActivity {
         listVideo = findViewById(R.id.list_video);
         mProgressBar = findViewById(R.id.progressBar);
 
+        mTopBarLinearLayout = findViewById(R.id.top_bar_view);
         mLinearLayout = findViewById(R.id.linear_layout);
         mThemeLayout = findViewById(R.id.theme_layout);
+
+        closed = findViewById(R.id.closed);
 
         frameLayout = findViewById(R.id.player_view);
         player = findViewById(R.id.youtube_player_view);
@@ -105,6 +108,10 @@ public class VideoActivity extends AppCompatActivity {
         });
 
         mBack.setOnClickListener((View v)->{
+            finish();
+        });
+
+        closed.setOnClickListener((View v)->{
             finish();
         });
 
@@ -192,12 +199,14 @@ public class VideoActivity extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
                     |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            mTopBarLinearLayout.setVisibility(View.GONE);
             mLinearLayout.setVisibility(View.GONE);
             mTitle.setVisibility(View.GONE);
             mThemeLayout.setBackground(ContextCompat.getDrawable(this, R.color.black));
             mViewModel.mFullScreen = false;
         }else {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            mTopBarLinearLayout.setVisibility(View.VISIBLE);
             mLinearLayout.setVisibility(View.VISIBLE);
             mTitle.setVisibility(View.VISIBLE);
             mThemeLayout.setBackground(ContextCompat.getDrawable(this, R.color.background));

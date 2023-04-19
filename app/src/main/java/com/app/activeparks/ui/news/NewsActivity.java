@@ -7,6 +7,7 @@ import android.graphics.drawable.LevelListDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -30,8 +31,12 @@ import com.app.activeparks.util.LoadImage;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
 
 public class NewsActivity extends AppCompatActivity implements Html.ImageGetter {
 
@@ -43,6 +48,8 @@ public class NewsActivity extends AppCompatActivity implements Html.ImageGetter 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
+        overridePendingTransition(R.anim.start, R.anim.end);
+
         viewModel =
                 new ViewModelProvider(this, new NewsModelFactory(this)).get(NewsViewModel.class);
 
@@ -65,23 +72,28 @@ public class NewsActivity extends AppCompatActivity implements Html.ImageGetter 
         ViewPager2 galary = findViewById(R.id.galary);
 
         closed.setOnClickListener(v -> {
-            finish();
+            onBackPressed();
         });
 
         viewModel.getNewsDetails().observe(this, news -> {
             titleText.setText(news.getTitle());
 
-            ArrayList<String> photos = (ArrayList<String>) getIntent().getSerializableExtra("photos");
 
-            createText.setText("Опубліковано: " + news.getPublishedAt());
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                Date date = format.parse(news.getPublishedAt());
+                createText.setText("Опубліковано: " + new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
-            if (photos != null && photos.size() > 0) {
+            if (news.getPhotos() != null && news.getPhotos().size() > 0) {
                 galary.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-                galary.setAdapter(new PhotosAdaper(this, photos));
+                galary.setAdapter(new PhotosAdaper(this, news.getPhotos()));
                 galary.setVisibility(View.VISIBLE);
                 imageNews.setVisibility(View.GONE);
             } else {
-                Glide.with(this).load(news.getImageUrl()).into(imageNews);
+                Glide.with(this).load(news.getImageUrl()).error(R.drawable.ic_prew).into(imageNews);
                 galary.setVisibility(View.GONE);
                 imageNews.setVisibility(View.VISIBLE);
             }
@@ -89,7 +101,7 @@ public class NewsActivity extends AppCompatActivity implements Html.ImageGetter 
             if (news.getBody() != null) {
                 String web = "<html><head><LINK href=\"https://web.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body>" + news.getBody() + "</body></html>";
                 web = web.replace("<img ", "<br><img ");
-
+                html.setMovementMethod(LinkMovementMethod.getInstance());
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     html.setText(Html.fromHtml(web, this, null));
                 } else {
@@ -117,4 +129,9 @@ public class NewsActivity extends AppCompatActivity implements Html.ImageGetter 
         return d;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+    }
 }

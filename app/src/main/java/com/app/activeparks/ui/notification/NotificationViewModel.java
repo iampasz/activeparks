@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.app.activeparks.data.model.user.User;
 import com.app.activeparks.repository.Repository;
 import com.app.activeparks.data.model.notification.Notifications;
 import com.app.activeparks.data.model.sportevents.SportEvents;
@@ -17,8 +18,10 @@ public class NotificationViewModel extends ViewModel {
     private Repository repository;
 
     private MutableLiveData<SportEvents> eventsList = new MutableLiveData<>();
+    private MutableLiveData<SportEvents> raitingEventsList = new MutableLiveData<>();
     private MutableLiveData<Notifications> notificationsList = new MutableLiveData<>();
 
+    public MutableLiveData<User> user = new MutableLiveData<>();
 
     public NotificationViewModel(Preferences sharedPreferences) {
         this.repository = new Repository(sharedPreferences);
@@ -27,6 +30,8 @@ public class NotificationViewModel extends ViewModel {
     public void update(){
         events();
         notifications();
+        eventsRating();
+        getDataUser();
     }
 
     public LiveData<Notifications> getNotifications() {
@@ -35,6 +40,13 @@ public class NotificationViewModel extends ViewModel {
 
     public LiveData<SportEvents> getSportEventsList() {
         return eventsList;
+    }
+    public LiveData<SportEvents> getSportRaitingEventsList() {
+        return raitingEventsList;
+    }
+
+    public LiveData<User> getUser() {
+        return user;
     }
 
     public void notifications() {
@@ -49,5 +61,21 @@ public class NotificationViewModel extends ViewModel {
         repository.myEventsNotifications().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> eventsList.setValue(result),
                         error -> {});
+    }
+
+    public void eventsRating() {
+        repository.getRaitingEvents().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> raitingEventsList.setValue(result),
+                        error -> {});
+    }
+
+    public boolean getUserAuth() {
+        return repository.sharedPreferences.getToken().length() > 1 ? true : false;
+    }
+
+    private void getDataUser() {
+        if (repository.sharedPreferences.getUser() != null) {
+            user.setValue(repository.sharedPreferences.getUser());
+        }
     }
 }

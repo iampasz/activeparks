@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
+import com.applandeo.materialcalendarview.CalendarDay;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
@@ -29,12 +31,15 @@ public class EventsListActivity extends AppCompatActivity {
     private EventViewModel mViewModel;
     private String id = null;
     private CalendarView calendarView;
+    private TextView listStatus;
     private RecyclerView listClubOwner;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_events);
+        overridePendingTransition(R.anim.start, R.anim.end);
+
         mViewModel =
                 new ViewModelProvider(this, new EventModelFactory(this)).get(EventViewModel.class);
 
@@ -43,14 +48,18 @@ public class EventsListActivity extends AppCompatActivity {
 
         calendarView = findViewById(R.id.calendarView);
 
+        listStatus = findViewById(R.id.list_null);
+
         if (id !=  null){
             findViewById(R.id.panel_top).setVisibility(View.GONE);
+            findViewById(R.id.title).setVisibility(View.VISIBLE);
             mViewModel.getSportEvents(id);
         }else {
             mViewModel.getSportEvents();
             findViewById(R.id.panel_top).setVisibility(View.VISIBLE);
+            findViewById(R.id.title).setVisibility(View.GONE);
             findViewById(R.id.closed).setOnClickListener(v ->{
-               finish();
+                onBackPressed();
             });
         }
 
@@ -59,6 +68,7 @@ public class EventsListActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             setAdapter(mViewModel.filterData(dateFormat.format(cal.getTime())));
             setMaperAdapter(events);
+            listStatus.setText("Жодного запланованого заходу");
         });
 
         calendarView.setOnDayClickListener(new OnDayClickListener() {
@@ -70,8 +80,6 @@ public class EventsListActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     public void setMaperAdapter(SportEvents events) {
         List<EventDay> days = new ArrayList<>();
@@ -115,5 +123,9 @@ public class EventsListActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+    }
 }

@@ -15,6 +15,10 @@ public class ItemClub {
     @SerializedName("statusId")
     @Expose
     private String statusId;
+
+    @SerializedName("isUser")
+    @Expose
+    private String isUser;
     @SerializedName("logoUrl")
     @Expose
     private String logoUrl;
@@ -93,6 +97,10 @@ public class ItemClub {
 
     public String getLogoUrl() {
         return logoUrl;
+    }
+
+    public String isUser() {
+        return isUser;
     }
 
     public void setLogoUrl(String logoUrl) {

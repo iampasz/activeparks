@@ -86,6 +86,9 @@ public class ItemEvent {
     @SerializedName("conferenceLink")
     @Expose
     private String conferenceLink;
+    @SerializedName("eventEstimation")
+    @Expose
+    private Integer eventEstimation;
     @SerializedName("eventHost")
     @Expose
     private String eventHost;
@@ -306,6 +309,14 @@ public class ItemEvent {
 
     public void setConferenceLink(String conferenceLink) {
         this.conferenceLink = conferenceLink;
+    }
+
+    public Integer getEventEstimation() {
+        return eventEstimation;
+    }
+
+    public void setEventEstimation(Integer eventEstimation) {
+        this.eventEstimation = eventEstimation;
     }
 
     public String getEventHost() {

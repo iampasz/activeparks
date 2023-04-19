@@ -44,42 +44,50 @@ public class UserVideoAdapter extends RecyclerView.Adapter<UserVideoAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.title.setText(list.get(position).getTitle());
-
-        holder.itemView.setOnClickListener(view -> {
-            userVideoListener.onInfo(list.get(position));
-        });
 
         if (position == 0){
             holder.linerHeader.setVisibility(View.VISIBLE);
+            holder.linerBody.setVisibility(View.GONE);
+
+            holder.actionCreate.setOnClickListener(v -> {
+                userVideoListener.onCreate();
+            });
         }else{
+            UserVideoItem userVideoItem = list.get(position - 1);
+
+            holder.itemView.setOnClickListener(view -> {
+                userVideoListener.onInfo(userVideoItem);
+            });
+
+            holder.title.setText(userVideoItem.getTitle());
             holder.linerHeader.setVisibility(View.GONE);
+
+            Glide.with(holder.itemView.getContext()).load(userVideoItem.getMainPhoto()).error(R.drawable.ic_prew).error(R.drawable.ic_prew).into(holder.imageVideo);
+
+            holder.status.setText(statuses.title(userVideoItem.getStatusId()));
+            holder.status.setTextColor(statuses.color(userVideoItem.getStatusId()));
+
         }
 
-        Glide.with(holder.itemView.getContext()).load(list.get(position).getMainPhoto()).error(R.drawable.ic_video).into(holder.imageVideo);
-
-        holder.status.setText(statuses.title(list.get(position).getStatusId()));
-        holder.status.setBackground(inflater.getContext().getResources().getDrawable(statuses.color(list.get(position).getStatusId())));
-
-        holder.actionCreate.setOnClickListener(v -> {userVideoListener.onCreate();});
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list.size() + 1;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
         final TextView title, status;
         final ImageView imageVideo, actionCreate;
-        final LinearLayout linerHeader;
+        final LinearLayout linerHeader, linerBody;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.name_video);
             status = itemView.findViewById(R.id.status);
             linerHeader = itemView.findViewById(R.id.liner_header);
+            linerBody = itemView.findViewById(R.id.liner_body);
             actionCreate = itemView.findViewById(R.id.action_create);
             imageVideo = itemView.findViewById(R.id.image_video);
         }

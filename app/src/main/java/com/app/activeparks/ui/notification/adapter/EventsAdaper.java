@@ -23,9 +23,12 @@ public class EventsAdaper extends RecyclerView.Adapter<EventsAdaper.ViewHolder> 
     private final LayoutInflater inflater;
     public ParksAdaperListener parksAdaperListener;
 
-    public EventsAdaper(Context context, SportEvents list){
+    public Boolean type;
+
+    public EventsAdaper(Context context, SportEvents list, Boolean type){
         this.inflater = LayoutInflater.from(context);
         this.list = list;
+        this.type = type;
     }
 
 
@@ -41,8 +44,9 @@ public class EventsAdaper extends RecyclerView.Adapter<EventsAdaper.ViewHolder> 
         ItemEvent event = list.getItems().get(position);
         holder.title.setText(event.getTitle());
         holder.description.setText(event.getShortDescription());
-        Glide.with(holder.itemView.getContext()).load(event.getImageUrl()).into(holder.imageView);
+        Glide.with(holder.itemView.getContext()).load(event.getImageUrl()).error(R.drawable.ic_prew).into(holder.imageView);
 
+        holder.eventButton.setText(type == true ? "Оцінити захід" : "Перейти до заходу");
 
         holder.eventButton.setOnClickListener(v -> {
             parksAdaperListener.onInfo(event.getId());
@@ -58,7 +62,9 @@ public class EventsAdaper extends RecyclerView.Adapter<EventsAdaper.ViewHolder> 
 
 
         final ImageView imageView;
-        final TextView title, description, eventButton;
+
+        final Button eventButton;
+        final TextView title, description;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

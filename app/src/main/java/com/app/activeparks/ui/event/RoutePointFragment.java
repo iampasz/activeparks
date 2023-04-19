@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.activeparks.data.model.event.RoutePoint;
+import com.app.activeparks.ui.dialog.BottomPhoneDialog;
 import com.app.activeparks.ui.event.adapter.PointListAdaper;
 import com.app.activeparks.ui.profile.EditProfileActivity;
 import com.app.activeparks.ui.qr.QrCodeActivity;
@@ -69,11 +70,15 @@ public class RoutePointFragment extends Fragment {
             }
         }));
 
-
-
         binding.qrAction.setOnClickListener(v -> {
 
             ScanerBottomFragment dialog = new ScanerBottomFragment(eventScanerListener);
+            dialog.onListener(new ScanerBottomFragment.OnScanerBottomlListener() {
+                @Override
+                public void onUpdate() {
+                    //mListener.onUpdate();
+                }
+            });
             dialog.show(getActivity().getSupportFragmentManager(),
                     "edit_profile");
         });
@@ -90,6 +95,17 @@ public class RoutePointFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    public interface OnRoutePointListener {
+        void onUpdate();
+    }
+
+    private OnRoutePointListener mListener;
+
+    public RoutePointFragment onListener(OnRoutePointListener listener) {
+        this.mListener = listener;
+        return this;
     }
 
 }

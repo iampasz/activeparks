@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.app.activeparks.data.model.Default;
 import com.app.activeparks.data.model.clubs.ItemClub;
+import com.app.activeparks.data.model.dictionaries.BaseDictionaries;
 import com.app.activeparks.data.model.dictionaries.District;
 import com.app.activeparks.data.model.dictionaries.Region;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
@@ -101,8 +102,8 @@ public class PeopleViewModel extends ViewModel {
 
     public void user(String id) {
         repository.getUser(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> {
-            user.setValue(result);
             mProfile = result;
+            user.setValue(result);
         }, error -> {
         });
     }
@@ -156,30 +157,41 @@ public class PeopleViewModel extends ViewModel {
         repository.addWorkoutNote(id, msg).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         result -> notes(id),
-                        error -> Log.e("ProfileViewModel", "getPokemons: " + error.getMessage())
+                        error -> notes(id)
                 );
     }
 
 
     public List<String> getRegions() {
         mRegion.clear();
-        for (Region region : sharedPreferences.getDictionarie().get(0).getRegions()) {
+        for (Region region : sharedPreferences.getDictionarie().getRegions()) {
             mRegion.add(region.getTitle());
         }
         return mRegion;
     }
 
     public User userMapper(User user) {
-        for (District district : sharedPreferences.getDictionarie().get(0).getDistricts()) {
+        for (District district : sharedPreferences.getDictionarie().getDistricts()) {
             if (district.getId().equals(user.getDistrictId())) {
                 user.setDistrictId(district.getTitle());
             }
         }
-        for (Region region : sharedPreferences.getDictionarie().get(0).getRegions()) {
+        for (Region region : sharedPreferences.getDictionarie().getRegions()) {
             if (region.getId().equals(user.getRegionId())) {
                 user.setRegionId(region.getAlterTitle());
             }
         }
         return user;
+    }
+
+    public String isRole() {
+        if (sharedPreferences.getDictionarie() != null && mProfile != null) {
+            for (BaseDictionaries baseDictionaries : sharedPreferences.getDictionarie().getUserRoles()) {
+                if (baseDictionaries.getId().equals(mProfile.getRoleId())) {
+                    return baseDictionaries.getTitle();
+                }
+            }
+        }
+        return "Користувач";
     }
 }

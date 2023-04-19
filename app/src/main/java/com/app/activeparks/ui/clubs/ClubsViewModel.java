@@ -61,6 +61,7 @@ public class ClubsViewModel extends ViewModel {
     public void getAllClubs(){
         repository.getClubsAll().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
+                            filter.clear();
                             clubsParticipantList.setValue(result.getItems());
                             filter.addAll(result.getItems());
                         },
@@ -73,7 +74,7 @@ public class ClubsViewModel extends ViewModel {
                 .subscribe(result -> {
                             mClubsDetails.setValue(result);
                             if (result.getClubUser() != null){
-                                admin = result.getClubUser().getIsCoordinator();
+                                admin = (result.getClubUser().getIsCoordinator() || result.getClubUser().getIsActing());
                                 apply = true;
                             }else {
                                 apply = false;

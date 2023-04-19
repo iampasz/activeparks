@@ -18,17 +18,19 @@
 
         <ImageView
             android:id="@+id/closed"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginLeft="8dp"
-            android:src="@drawable/ic_close" />
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/ic_back_action" />
 
-
-        <ImageView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="32dp"
-            android:src="@drawable/ic_logo_vector" />
+            android:layout_marginLeft="16dp"
+            android:text="Активні парки"
+            android:textColor="@color/text_color"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
     <ScrollView
@@ -143,7 +145,7 @@
                 android:layout_height="wrap_content"
                 android:text="--"
                 android:textColor="@color/text_color"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -166,7 +168,7 @@
                 android:layout_height="wrap_content"
                 android:text="--"
                 android:textColor="@color/text_color"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -190,7 +192,7 @@
                 android:layout_height="wrap_content"
                 android:text="Відсутнє"
                 android:textColor="@color/text_color"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -214,7 +216,7 @@
                 android:layout_height="wrap_content"
                 android:text="Відсутнє"
                 android:textColor="@color/text_color"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -238,7 +240,7 @@
                 android:layout_height="wrap_content"
                 android:text="Немає даних"
                 android:textColor="@color/text_color"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -262,7 +264,7 @@
                 android:layout_height="wrap_content"
                 android:text="Не визначено"
                 android:textColor="@color/text_color"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -286,7 +288,7 @@
                 android:layout_height="wrap_content"
                 android:text="Майданчик"
                 android:textColor="@color/text_color"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -310,7 +312,7 @@
                 android:layout_height="wrap_content"
                 android:text="Не визначено"
                 android:textColor="@color/text_color"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -335,7 +337,7 @@
                 android:layout_height="wrap_content"
                 android:text="Не визначено"
                 android:textColor="@color/text_color"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -359,7 +361,7 @@
                 android:layout_height="wrap_content"
                 android:text="Не визначено"
                 android:textColor="@color/text_color"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -383,7 +385,7 @@
                 android:layout_height="wrap_content"
                 android:text="Не визначено"
                 android:textColor="@color/text_color"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -433,15 +435,15 @@
                     android:padding="8dp">
 
                     <androidx.cardview.widget.CardView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="70dp"
+                        android:layout_height="90dp"
                         android:elevation="10dp"
-                        app:cardCornerRadius="35dp">
+                        app:cardCornerRadius="16dp">
 
                         <ImageView
                             android:id="@+id/photo_cordenator"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
+                            android:layout_width="70dp"
+                            android:layout_height="90dp"
                             android:scaleType="centerCrop"
                             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
@@ -460,7 +462,8 @@
                             android:layout_height="wrap_content"
                             android:text="Немає"
                             android:textColor="@color/text_color"
-                            android:textSize="18sp" />
+                            android:textStyle="bold"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/email_cordenator"
@@ -468,7 +471,7 @@
                             android:layout_height="wrap_content"
                             android:text=""
                             android:textColor="@color/text_color"
-                            android:textSize="18sp" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/phone_cordenator"
@@ -476,7 +479,7 @@
                             android:layout_height="wrap_content"
                             android:text=""
                             android:textColor="@color/text_color"
-                            android:textSize="18sp" />
+                            android:textSize="16sp" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -497,7 +500,7 @@
                 android:layout_marginTop="16dp"
                 android:padding="16dp"
                 android:background="@drawable/button_gray"
-                >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/text_event"
@@ -506,7 +509,7 @@
                     android:text="Жодного запланованого заходу"
                     android:gravity="center_horizontal"
                     android:textColor="@color/text_color"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/park_event"

@@ -22,6 +22,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.app.activeparks.data.model.clubs.ItemClub;
@@ -94,14 +96,22 @@ public class HomeFragment extends Fragment implements LocationListener {
                 }
             });
 
-            listParksView.setPageTransformer((page, position) -> {
-
-                    page.setTranslationX(page.getTranslationX() * position);
-                    float scaleFactor = 1 - (0.15f * Math.abs(position));
-                    page.setScaleY(scaleFactor);
-
-            });
             listParksView.setAdapter(adapterEvents);
+
+            listParksView.setOffscreenPageLimit(3);
+
+            listParksView.setPageTransformer((page, position) -> {
+                float myOffset = position * -80;
+                if (position <= 1) {
+                    float scaleFactor = 1 - (0.20f * Math.abs(position));
+                    page.setTranslationX(myOffset);
+                    page.setScaleY(scaleFactor);
+                    page.setZ(scaleFactor);
+                } else {
+                    page.setTranslationX(myOffset);
+                    page.setZ(myOffset);
+                }
+            });
 
             new TabLayoutMediator(binding.listParksTab, listParksView, (tab, position) -> {
 
@@ -113,12 +123,29 @@ public class HomeFragment extends Fragment implements LocationListener {
                 binding.listNull2.setVisibility(View.GONE);
                 binding.listNewsTab.setVisibility(View.VISIBLE);
             }
+
             HomeAdaper adapterNews = new HomeAdaper(getActivity(), news).setOnCliclListener(itemNews -> {
                 startActivity(new Intent(getActivity(), NewsActivity.class)
                         .putExtra("id", itemNews.getId()));
             });
 
             listNewsView.setAdapter(adapterNews);
+            listNewsView.setOffscreenPageLimit(3);
+
+            listNewsView.setPageTransformer((page, position) -> {
+                float myOffset = position * - 80;
+                if (position <= 1) {
+                    float scaleFactor = 1 - (0.20f * Math.abs(position));
+                    page.setTranslationX(myOffset);
+                    page.setScaleY(scaleFactor);
+                    page.setZ(scaleFactor);
+                } else {
+                    page.setTranslationX(myOffset);
+                    page.setZ(myOffset);
+                }
+            });
+
+
 
             new TabLayoutMediator(binding.listNewsTab, listNewsView, (tab, position) -> {
             }).attach();
@@ -137,6 +164,20 @@ public class HomeFragment extends Fragment implements LocationListener {
             });
 
             listActivitiesView.setAdapter(adapterEvents);
+            listActivitiesView.setOffscreenPageLimit(3);
+
+            listActivitiesView.setPageTransformer((page, position) -> {
+                float myOffset = position * -80;
+                if (position <= 1) {
+                    float scaleFactor = 1 - (0.20f * Math.abs(position));
+                    page.setTranslationX(myOffset);
+                    page.setScaleY(scaleFactor);
+                    page.setZ(scaleFactor);
+                } else {
+                    page.setTranslationX(myOffset);
+                    page.setZ(myOffset);
+                }
+            });
 
             new TabLayoutMediator(binding.listEventsTab, listActivitiesView, (tab, position) -> {
 
@@ -169,7 +210,10 @@ public class HomeFragment extends Fragment implements LocationListener {
 
         viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             binding.profileFilling.setProgress(user.getProfileFilling());
-            Glide.with(this).load(user.getPhoto()).into(binding.imageUser);
+            Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(binding.imageUser);
+            binding.imageUser.setOnClickListener(v -> {
+                ((FragmentInteface) getActivity()).navigation(R.id.navigation_user);
+            });
         });
 
         viewModel.getLocation().observe(getViewLifecycleOwner(), location -> {

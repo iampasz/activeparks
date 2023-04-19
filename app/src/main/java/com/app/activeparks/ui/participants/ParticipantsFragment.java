@@ -40,27 +40,33 @@ public class ParticipantsFragment extends Fragment {
         binding = FragmentUsersBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        if (isEvent != false) {
-            mViewModel.getEventUser(id, true);
-        } else {
-            if (isAdmin == true) {
-                mViewModel.getClubsUser(id);
-            } else {
-                mViewModel.getClubsUser(id);
-            }
-        }
+        mViewModel.setIsEvent(isEvent);
+
+        update();
 
         initObserve();
 
         return root;
     }
 
+    public void update(){
+        if (isEvent != false) {
+            mViewModel.getEventUser(id, true);
+            if (isAdmin == true) {
+                mViewModel.getEventUserApplying(id);
+            }
+        } else {
+            mViewModel.getClubsUser(id);
+            if (isAdmin == true) {
+                mViewModel.getClubsUserApplying(id);
+            }
+        }
+    }
+
     public void initObserve() {
         mViewModel.getUserHeads().observe(getViewLifecycleOwner(), item -> {
-            if (item.getItems().size() > 0) {
-                binding.listNull.setVisibility(View.GONE);
-            }
-            binding.listHeads.setAdapter(new UsersAdaper(getActivity(), item.getItems()).setOnClubsListener(new UsersAdaper.UsersListener() {
+            binding.listNull.setVisibility(item.getItems().size() > 0 ? View.GONE  : View.VISIBLE);
+            binding.listHeads.setAdapter(new UsersAdaper(getActivity(), item.getItems(), 0).setOnClubsListener(new UsersAdaper.UsersListener() {
                 @Override
                 public void onInfo(String id) {
                     startActivity(new Intent(getActivity(), UserActivity.class).putExtra("id", id));
@@ -68,21 +74,17 @@ public class ParticipantsFragment extends Fragment {
 
                 @Override
                 public void approve(String user) {
-                    mViewModel.approveUser(id, user);
                 }
 
                 @Override
                 public void reject(String user) {
-                    mViewModel.rejectUser(id, user);
                 }
             }));
         });
 
         mViewModel.getUserMembers().observe(getViewLifecycleOwner(), item -> {
-            if (item.getItems().size() > 0) {
-                binding.listNullTwo.setVisibility(View.GONE);
-            }
-            binding.listMembers.setAdapter(new UsersAdaper(getActivity(), item.getItems()).setOnClubsListener(new UsersAdaper.UsersListener() {
+            binding.listTitleTwo.setVisibility(item.getItems().size() > 0 ? View.VISIBLE  : View.GONE);
+            binding.listMembers.setAdapter(new UsersAdaper(getActivity(), item.getItems(), isAdmin ? 1 : 0).setOnClubsListener(new UsersAdaper.UsersListener() {
                 @Override
                 public void onInfo(String id) {
                     startActivity(new Intent(getActivity(), UserActivity.class).putExtra("id", id));
@@ -90,22 +92,20 @@ public class ParticipantsFragment extends Fragment {
 
                 @Override
                 public void approve(String user) {
-                    mViewModel.approveUser(id, user);
                 }
 
                 @Override
                 public void reject(String user) {
-                    mViewModel.rejectUser(id, user);
+                    mViewModel.removeUser(id, user);
+                    update();
                 }
             }));
         });
 
         mViewModel.getUserApplying().observe(getViewLifecycleOwner(), item -> {
-            if (item.getItems().size() > 0) {
-                binding.applying.setVisibility(View.VISIBLE);
-            }
+            binding.applying.setVisibility(item.getItems().size() > 0 ? View.VISIBLE  : View.GONE);
 
-            binding.listApplying.setAdapter(new UsersAdaper(getActivity(), item.getItems()).setOnClubsListener(new UsersAdaper.UsersListener() {
+            binding.listApplying.setAdapter(new UsersAdaper(getActivity(), item.getItems(), isAdmin ? 2  : 0).setOnClubsListener(new UsersAdaper.UsersListener() {
                 @Override
                 public void onInfo(String id) {
                     startActivity(new Intent(getActivity(), UserActivity.class).putExtra("id", id));
@@ -113,12 +113,14 @@ public class ParticipantsFragment extends Fragment {
 
                 @Override
                 public void approve(String user) {
-                    mViewModel.approveUser(id, user);
+                    mViewModel.acceptUser(id, user);
+                    update();
                 }
 
                 @Override
                 public void reject(String user) {
                     mViewModel.rejectUser(id, user);
+                    update();
                 }
             }));
         });

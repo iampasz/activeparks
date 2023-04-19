@@ -2,6 +2,7 @@ package com.app.activeparks.ui.profile;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,6 +11,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,11 +26,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,6 +55,7 @@ import com.app.activeparks.ui.workout.adapter.plan.PlanListAdaper;
 import com.app.activeparks.util.ButtonSelect;
 import com.app.activeparks.util.FragmentInteface;
 import com.bumptech.glide.Glide;
+import com.technodreams.activeparks.BuildConfig;
 import com.technodreams.activeparks.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -64,9 +70,10 @@ public class ProfileFragment extends Fragment {
 
     private View binding;
     private ImageView photo;
-
     private RecyclerView profileList;
     private ProgressBar profileFilling;
+
+    private TextView statusView;
     private ButtonSelect clubs, event, result, video, journal, plan;
 
     public static ProfileFragment newInstance() {
@@ -86,14 +93,15 @@ public class ProfileFragment extends Fragment {
 
         photo = binding.findViewById(R.id.photo);
 
+        statusView = binding.findViewById(R.id.list_status);
+
         TextView name = binding.findViewById(R.id.name);
-        TextView login = binding.findViewById(R.id.text_login);
+        TextView role = binding.findViewById(R.id.role);
         TextView sex = binding.findViewById(R.id.sex);
         TextView birthday = binding.findViewById(R.id.birthday);
-        TextView time = binding.findViewById(R.id.time);
         TextView adress = binding.findViewById(R.id.adress);
-        TextView create = binding.findViewById(R.id.create);
         TextView about = binding.findViewById(R.id.about);
+        TextView healt = binding.findViewById(R.id.healt);
         TextView height = binding.findViewById(R.id.height);
         TextView weight = binding.findViewById(R.id.weight);
         TextView phone = binding.findViewById(R.id.phone);
@@ -113,47 +121,73 @@ public class ProfileFragment extends Fragment {
 
         viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             try {
-                name.setText(user.getFirstName() + " " + user.getLastName());
-                login.setText(user.getNickname());
+                if (user.getFirstName().length() + user.getLastName().length() > 1){
+                    name.setVisibility(View.VISIBLE);
+                    name.setText(user.getFirstName() + " " + user.getLastName());
+                }else{
+                    name.setText(user.getNickname());
+                }
+
+
+                role.setText(viewModel.isRole(user.getRoleId()));
+
                 if (user.getSex() != null) {
+                    binding.findViewById(R.id.layout_sex).setVisibility(View.VISIBLE);
                     sex.setText(user.getSex().equals("male") ? "Чоловік" : user.getSex() == "female" ? "Жінка" : "Невідомо");
                 }
 
-                if (viewModel.isProfile(user.getRoleId())){
-                    binding.findViewById(R.id.web_title_action).setVisibility(View.GONE);
-                    binding.findViewById(R.id.web_action).setVisibility(View.GONE);
+                if (viewModel.isProfile(user.getRoleId()) == true){
+                    binding.findViewById(R.id.web_title_action).setVisibility(View.VISIBLE);
+                    binding.findViewById(R.id.web_action).setVisibility(View.VISIBLE);
                 }
 
                 try {
+                    binding.findViewById(R.id.layout_birthday).setVisibility(View.VISIBLE);
                     Date date = new SimpleDateFormat("yyyy-MM-dd").parse(user.getBirthday());
                     birthday.setText( new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
                 } catch (ParseException e) {
+                    birthday.setVisibility(View.GONE);
                     e.printStackTrace();
                 }
 
-                adress.setText(user.getCity());
-                time.setText(user.getUpdatedAt().replace("-", "."));
-                create.setText(user.getCreatedAt().replace("-", "."));
-                about.setText(user.getAboutMe());
+                if (user.getCity().length() > 1) {
+                    binding.findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
+                    adress.setText(user.getCity());
+                }
 
-                if (user.getHeight() != null){
-                    binding.findViewById(R.id.icon_weight).setVisibility(View.VISIBLE);
-                    binding.findViewById(R.id.title_weight).setVisibility(View.VISIBLE);
+
+                if (user.getAboutMe().length() > 1) {
+                    binding.findViewById(R.id.title_about).setVisibility(View.VISIBLE);
+                    about.setVisibility(View.VISIBLE);
+                    about.setText(user.getAboutMe());
+                }
+
+                if (user.getHealthState().length() > 1) {
+                    binding.findViewById(R.id.title_healt).setVisibility(View.VISIBLE);
+                    healt.setVisibility(View.VISIBLE);
+                    healt.setText(user.getHealthState());
+                }
+
+                if (user.getHeight() != null && user.getHeight().length() > 1){
+                    binding.findViewById(R.id.item_height).setVisibility(View.VISIBLE);
                     height.setVisibility(View.VISIBLE);
                     height.setText(user.getHeight() + " cм");
                 }
 
-                if (user.getWeight() != null){
-                    binding.findViewById(R.id.icon_height).setVisibility(View.VISIBLE);
-                    binding.findViewById(R.id.title_height).setVisibility(View.VISIBLE);
+                if (user.getWeight() != null && user.getWeight().length() > 1){
+                    binding.findViewById(R.id.item_weight).setVisibility(View.VISIBLE);
                     weight.setVisibility(View.VISIBLE);
                     weight.setText(user.getWeight() + " кг");
                 }
 
-                phone.setText(user.getPhone());
+                if (user.getPhone().length() > 1) {
+                    binding.findViewById(R.id.phone_item).setVisibility(View.VISIBLE);
+                    phone.setText(user.getPhone());
+                }
+
                 email.setText(user.getEmail());
                 profileFilling.setProgress(user.getProfileFilling());
-                Glide.with(this).load(user.getPhoto()).into(photo);
+                Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(photo);
             } catch (Exception e) {
             }
         });
@@ -247,7 +281,7 @@ public class ProfileFragment extends Fragment {
 
         TextView webAction = binding.findViewById(R.id.web_action);
         int indexText = webAction.getText().toString().indexOf("веб");
-        SpannableString spannableString = new SpannableString("Адміністрування доступне у веб-версії Активних парків");
+        SpannableString spannableString = new SpannableString("Для адміністрування зокрема і таких, як створення заходів та клубів потрібно перейти на веб-версію Активних парків");
         spannableString.setSpan(clickableSpan, indexText, indexText + 10, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         webAction.setText(spannableString);
         webAction.setMovementMethod(LinkMovementMethod.getInstance());
@@ -256,8 +290,22 @@ public class ProfileFragment extends Fragment {
 
         viewModel.user();
         viewModel.clubs();
+        viewModel.select = 0;
 
         return binding;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        statusView.setVisibility(View.VISIBLE);
+        switch (viewModel.select){
+            case 0: viewModel.clubs(); break;
+            case 1: viewModel.event(); break;
+            case 2: viewModel.journal(); break;
+            case 3: viewModel.userVideoList(); break;
+        }
     }
 
 
@@ -269,7 +317,9 @@ public class ProfileFragment extends Fragment {
     private void observeData() {
         viewModel.getClubs().observe(getViewLifecycleOwner(), clubs -> {
             if (clubs.size() > 0) {
-                binding.findViewById(R.id.list_status).setVisibility(View.GONE);
+                statusView.setVisibility(View.GONE);
+            }else {
+                statusView.setText("Ви ще не вступили \n в жоден клуб");
             }
             profileList.setAdapter(new ClubsAdaper(getContext(), clubs).setOnClubsListener(new ClubsAdaper.ClubsListener() {
                 @Override
@@ -282,7 +332,9 @@ public class ProfileFragment extends Fragment {
 
         viewModel.getEvents().observe(getViewLifecycleOwner(), result -> {
             if (result.size() > 0) {
-                binding.findViewById(R.id.list_status).setVisibility(View.GONE);
+                statusView.setVisibility(View.GONE);
+            }else {
+                statusView.setText("Ви ще не вступили \n в жоден захід");
             }
             profileList.setAdapter(new EventsListAdaper(getContext(), result).setOnEventListener(new EventsListAdaper.EventsListener() {
                 @Override
@@ -299,7 +351,7 @@ public class ProfileFragment extends Fragment {
 
         viewModel.getResult().observe(getViewLifecycleOwner(), result -> {
             if (result.getItems().size() > 0) {
-                binding.findViewById(R.id.list_status).setVisibility(View.GONE);
+                statusView.setVisibility(View.GONE);
             }
             profileList.setAdapter(new EventsListAdaper(getContext(), result.getItems()).setOnEventListener(new EventsListAdaper.EventsListener() {
                 @Override
@@ -316,7 +368,9 @@ public class ProfileFragment extends Fragment {
 
         viewModel.getUserVideo().observe(getViewLifecycleOwner(), video -> {
             if (video.getItems().size() > 0) {
-                binding.findViewById(R.id.list_status).setVisibility(View.GONE);
+                statusView.setVisibility(View.GONE);
+            }else {
+                statusView.setText("Не додали жодного відео");
             }
             profileList.setAdapter(new UserVideoAdapter(getActivity(), video.getItems()).setOnUserVideoListener(new UserVideoAdapter.UserVideoListener() {
                 @Override
@@ -333,13 +387,15 @@ public class ProfileFragment extends Fragment {
 
         viewModel.getJournal().observe(getViewLifecycleOwner(), journal -> {
             if (journal.size() > 0) {
-                binding.findViewById(R.id.list_status).setVisibility(View.GONE);
+                statusView.setVisibility(View.GONE);
+            }else {
+                statusView.setText("Немая жодних активностей");
             }
             JournalListAdaper adaper = new JournalListAdaper(getActivity(), journal);
             profileList.setAdapter(adaper.setListener(new JournalListAdaper.JournalListener() {
                 @Override
                 public void onInfo(WorkoutItem workoutItem) {
-
+                    startActivity(new Intent(getContext(), EventActivity.class).putExtra("id", workoutItem.getId()));
                 }
 
                 @Override
@@ -352,7 +408,7 @@ public class ProfileFragment extends Fragment {
 
                 @Override
                 public void sendMessage(String id, String idNotes, String msg, boolean edit) {
-                    if (edit == true){
+                    if (edit == true && idNotes != null){
                         viewModel.cangeNotes(id, idNotes, msg);
                     }else {
                         viewModel.sendNotes(id, msg);
@@ -363,7 +419,7 @@ public class ProfileFragment extends Fragment {
 
         viewModel.getPlan().observe(getViewLifecycleOwner(), plan -> {
             if (plan.size() > 0) {
-                binding.findViewById(R.id.list_status).setVisibility(View.GONE);
+                statusView.setVisibility(View.GONE);
             }
             profileList.setAdapter(new PlanListAdaper(getActivity(), plan).setListener(new PlanListAdaper.PlanListener() {
                 @Override
@@ -384,7 +440,8 @@ public class ProfileFragment extends Fragment {
         journal.off();
         plan.off();
         profileList.removeAllViewsInLayout();
-        binding.findViewById(R.id.list_status).setVisibility(View.VISIBLE);
+        statusView.setText("Завантаження...");
+        statusView.setVisibility(View.VISIBLE);
     }
 
     void dialogShow() {
@@ -395,13 +452,18 @@ public class ProfileFragment extends Fragment {
         editAction.setOnClickListener(view -> {
             //startActivity(new Intent(getActivity(), EditProfileActivity.class));
             EditProfileActivity dialog = EditProfileActivity.newInstance();
-            dialog.show(getActivity().getSupportFragmentManager(),
+            dialog.setOnEditProfile(new EditProfileActivity.EditProfileInterfece() {
+                @Override
+                public void onUpdate() {
+                    viewModel.user();
+                }
+            }).show(getActivity().getSupportFragmentManager(),
                     "edit_profile");
             bottomSheetDialog.dismiss();
         });
         LinearLayout settingAction = bottomSheetDialog.findViewById(R.id.setting_action);
         settingAction.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Кеш очищено", Toast.LENGTH_LONG).show();
+            dialogSetting();
             bottomSheetDialog.dismiss();
         });
 
@@ -439,6 +501,42 @@ public class ProfileFragment extends Fragment {
             builder.setMessage("Ви дійсно бажаєте видалити свій обліковий запис?").setPositiveButton("Так", dialogClickListener)
                     .setNegativeButton("Ні", dialogClickListener).show();
         });
+
+        LinearLayout cancel = bottomSheetDialog.findViewById(R.id.cancel);
+        cancel.setOnClickListener(view -> {
+            bottomSheetDialog.dismiss();
+        });
+        bottomSheetDialog.show();
+    }
+
+    void dialogSetting() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.CustomBottomSheetDialogTheme);
+        bottomSheetDialog.setContentView(R.layout.dialog_bottom_setting);
+
+        Switch server = bottomSheetDialog.findViewById(R.id.server);
+        server.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Для активації функції потрібно заново авторизуватися", Toast.LENGTH_LONG).show();
+            viewModel.setServer(!viewModel.getServer());
+        });
+
+        server.setChecked(viewModel.getServer());
+
+        LinearLayout cacheAction = bottomSheetDialog.findViewById(R.id.cache_action);
+        cacheAction.setOnClickListener(view -> {
+            Toast.makeText(getContext(), "Кеш очищено", Toast.LENGTH_LONG).show();
+            bottomSheetDialog.dismiss();
+        });
+
+        LinearLayout googleplayAction = bottomSheetDialog.findViewById(R.id.google_play_action);
+        googleplayAction.setOnClickListener(view -> {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/details?id=com.technodreams.activeparks")));
+            bottomSheetDialog.dismiss();
+        });
+
+        TextView version  = bottomSheetDialog.findViewById(R.id.version);
+
+        version.setText("Версія: " + BuildConfig.VERSION_NAME);
 
         LinearLayout cancel = bottomSheetDialog.findViewById(R.id.cancel);
         cancel.setOnClickListener(view -> {

@@ -44,10 +44,12 @@ public class NewsFragment extends Fragment {
 
         if (id != null){
             binding.panelTop.setVisibility(View.GONE);
+            binding.titleNews.setVisibility(View.VISIBLE);
             mViewModel.getNewsId(id);
         }else {
             mViewModel.getNews();
             binding.panelTop.setVisibility(View.VISIBLE);
+            binding.titleNews.setVisibility(View.GONE);
         }
 
         mViewModel.getNewsList().observe(getViewLifecycleOwner(), news -> {
@@ -59,7 +61,7 @@ public class NewsFragment extends Fragment {
                 if (id != null){
                     startActivity(new Intent(getActivity(), NewsActivity.class)
                             .putExtra("id", itemNews.getId())
-                            .putExtra("clubId", itemNews.getId()));
+                            .putExtra("clubId", id));
                 }else {
                     startActivity(new Intent(getActivity(), NewsActivity.class)
                             .putExtra("id", itemNews.getId()));

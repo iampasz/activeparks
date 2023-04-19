@@ -37,15 +37,17 @@ public class ClubActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_club);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_club);
+        overridePendingTransition(R.anim.start, R.anim.end);
+
         mViewModel =
                 new ViewModelProvider(this, new ClubsModelFactory(this)).get(ClubsViewModel.class);
 
         mViewModel.getClubsDetail(getIntent().getStringExtra("id"));
 
         findViewById(R.id.closed).setOnClickListener((View v) -> {
-            finish();
+            onBackPressed();
         });
 
         mImageView = findViewById(R.id.image_club);
@@ -67,7 +69,7 @@ public class ClubActivity extends AppCompatActivity {
 
         mViewModel.getEventDetails().observe(this, clubs -> {
             try {
-                Glide.with(this).load(clubs.getLogoUrl()).into(mImageView);
+                Glide.with(this).load(clubs.getLogoUrl()).error(R.drawable.ic_prew).into(mImageView);
                 mTitle.setText(clubs.getName());
                 subtitle.setText(clubs.getTagline());
                 mDescription.setText(clubs.getDescription());
@@ -75,87 +77,88 @@ public class ClubActivity extends AppCompatActivity {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
                     Date date = format.parse(clubs.getCreatedAt());
-                    mCreateAt.setText( new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
+                    mCreateAt.setText(new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                mUser.setText(""+clubs.getMemberAmount());
+                mUser.setText("" + clubs.getMemberAmount());
                 mPhone.setText(clubs.getPhone());
 
-                if (clubs.getClubUser() != null){
-                    if(clubs.getClubUser().getIsApproved() == true){
+                if (clubs.getClubUser() != null) {
+                    if (clubs.getClubUser().getIsApproved() == true) {
                         mApproved.setText("Вийти");
-                    }else{
+                    } else {
                         mApproved.setText("Відмінити");
                     }
-                }else {
+                } else {
                     mApproved.setText("Приєднатись");
                 }
 
-                if (clubs.getTelegramUrl() != null){
+                if (clubs.getTelegramUrl() != null) {
                     setView(findViewById(R.id.action_telegram), clubs.getTelegramUrl());
                 }
 
-                if (clubs.getYoutubeUrl() != null){
+                if (clubs.getYoutubeUrl() != null) {
                     setView(findViewById(R.id.action_youtube), clubs.getYoutubeUrl());
                 }
 
-                if (clubs.getFacebookUrl() != null){
+                if (clubs.getFacebookUrl() != null) {
                     setView(findViewById(R.id.action_facebook), clubs.getFacebookUrl());
                 }
 
-                if (clubs.getInstagramUrl() != null){
+                if (clubs.getInstagramUrl() != null) {
                     setView(findViewById(R.id.action_instagram), clubs.getInstagramUrl());
                 }
 
                 mApproved.setEnabled(true);
 
-            }catch (Exception e){}
+            } catch (Exception e) {
+            }
         });
 
         setFragment(new NewsFragment(mViewModel.mId));
 
-        news.setOnClickListener(v ->{
+        news.setOnClickListener(v -> {
             setFragment(new NewsFragment(mViewModel.mId));
             replaceButton();
             news.on();
         });
 
-        event.setOnClickListener(v ->{
+        event.setOnClickListener(v -> {
             setFragment(new EventsListFragment(mViewModel.mId));
             replaceButton();
             event.on();
         });
 
-        people.setOnClickListener(v ->{
+        people.setOnClickListener(v -> {
             setFragment(new ParticipantsFragment(mViewModel.mId, mViewModel.admin, false));
             replaceButton();
             people.on();
         });
 
-        mHideDescription.setOnClickListener(v ->{
-            if (mDescription.getVisibility() == View.VISIBLE){
+        mHideDescription.setOnClickListener(v -> {
+            if (mDescription.getVisibility() == View.VISIBLE) {
                 mHideDescription.setImageResource(R.drawable.ic_down_button);
                 mDescription.setVisibility(View.GONE);
-            }else {
+            } else {
                 mHideDescription.setImageResource(R.drawable.ic_top_button);
                 mDescription.setVisibility(View.VISIBLE);
             }
         });
 
-        if (mViewModel.admin == true){
+        if (mViewModel.admin == true) {
             qr.setVisibility(View.VISIBLE);
             qr.setVisibility(View.GONE);
-            qr.setOnClickListener(v ->{
+            qr.setOnClickListener(v -> {
                 startActivity(new Intent(this, QrCodeActivity.class)
                         .putExtra("club", true)
                         .putExtra("clubId", mViewModel.mId));
             });
-        }else {
+        } else {
             qr.setVisibility(View.GONE);
             mApproved.setVisibility(View.VISIBLE);
-            mApproved.setOnClickListener(v ->{
+            mApproved.setOnClickListener(v -> {
                 mViewModel.applyUser();
                 mApproved.setEnabled(false);
             });
@@ -163,25 +166,31 @@ public class ClubActivity extends AppCompatActivity {
 
     }
 
-    void setFragment(Fragment fragment){
+    void setFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.club_fragment, fragment)
                 .commit();
     }
 
-    void setView(View view, String url){
+    void setView(View view, String url) {
         view.setVisibility(View.VISIBLE);
-        view.setOnClickListener(v ->{
+        view.setOnClickListener(v -> {
             startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse(url)));
         });
     }
 
-    void replaceButton(){
+    void replaceButton() {
         news.off();
         event.off();
         people.off();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
 
 }

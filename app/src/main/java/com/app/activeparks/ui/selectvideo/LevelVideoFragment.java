@@ -35,7 +35,9 @@ public class LevelVideoFragment extends Fragment implements View.OnClickListener
         super.onViewCreated(view, savedInstanceState);
 
         binding.findViewById(R.id.cloded).setOnClickListener((View v) -> {
-            getActivity().finish();
+            if (callback != null) {
+                callback.onSelectType(-1);
+            }
         });
 
         if (bottom == true){

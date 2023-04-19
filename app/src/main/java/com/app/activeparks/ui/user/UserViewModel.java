@@ -13,7 +13,7 @@ public class UserViewModel extends ViewModel {
 
     UserViewModel(Preferences sharedPreferences)   {
         this.sharedPreferences = sharedPreferences;
-        this.apiRepository = new Repository();
+        this.apiRepository = new Repository(sharedPreferences);
     }
 
 

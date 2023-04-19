@@ -21,7 +21,7 @@ public class AuthViewModel extends ViewModel {
 
     public AuthViewModel(Preferences preferences) {
         this.preferences = preferences;
-        this.repository = new Repository();
+        this.repository = new Repository(preferences);
         this.mMessage = new MutableLiveData<>();
     }
 
