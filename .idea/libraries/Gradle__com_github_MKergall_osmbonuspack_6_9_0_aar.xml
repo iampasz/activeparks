@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.MKergall:osmbonuspack:6.9.0@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d9ce4e9d46fc534658815c755d69b344/transformed/osmbonuspack-6.9.0/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/d9ce4e9d46fc534658815c755d69b344/transformed/osmbonuspack-6.9.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d9ce4e9d46fc534658815c755d69b344/transformed/osmbonuspack-6.9.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d605ae38e582f5c26ba65b3b85f88f3c/transformed/osmbonuspack-6.9.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/d605ae38e582f5c26ba65b3b85f88f3c/transformed/osmbonuspack-6.9.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d605ae38e582f5c26ba65b3b85f88f3c/transformed/osmbonuspack-6.9.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.MKergall/osmbonuspack/6.9.0/4cc35adcbef932c88a36b3d8cc5c09f2706a1935/osmbonuspack-6.9.0-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.MKergall/osmbonuspack/6.9.0/3bd249e28eca7a69fa5febf732bbe9f021dedf18/osmbonuspack-6.9.0-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

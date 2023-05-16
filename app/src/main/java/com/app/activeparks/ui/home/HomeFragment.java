@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
@@ -55,13 +56,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 
-public class HomeFragment extends Fragment implements LocationListener {
+public class HomeFragment extends Fragment implements LocationListener, SwipeRefreshLayout.OnRefreshListener {
 
-    public FragmentInteface fragmentInteface;
     private FragmentHomeBinding binding;
     private HomeViewModel viewModel;
-    private ViewPager2 listNewsView, listActivitiesView, listParksView;
-    private RecyclerView listClub;
     private LocationManager locationManager;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -74,14 +72,11 @@ public class HomeFragment extends Fragment implements LocationListener {
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        listNewsView = binding.listNews;
-        listActivitiesView = binding.listActivities;
-        listParksView = binding.listParks;
-        listClub = binding.listClub;
+        binding.swipeRefreshLayout.setOnRefreshListener(this);
 
-        listNewsView.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-        listActivitiesView.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-        listParksView.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        binding.listNews.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        binding.listActivities.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        binding.listParks.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
 
         viewModel.setInitialData();
         viewModel.getParksList().observe(getViewLifecycleOwner(), events -> {
@@ -96,11 +91,11 @@ public class HomeFragment extends Fragment implements LocationListener {
                 }
             });
 
-            listParksView.setAdapter(adapterEvents);
+            binding.listParks.setAdapter(adapterEvents);
 
-            listParksView.setOffscreenPageLimit(3);
+            binding.listParks.setOffscreenPageLimit(3);
 
-            listParksView.setPageTransformer((page, position) -> {
+            binding.listParks.setPageTransformer((page, position) -> {
                 float myOffset = position * -80;
                 if (position <= 1) {
                     float scaleFactor = 1 - (0.20f * Math.abs(position));
@@ -113,7 +108,7 @@ public class HomeFragment extends Fragment implements LocationListener {
                 }
             });
 
-            new TabLayoutMediator(binding.listParksTab, listParksView, (tab, position) -> {
+            new TabLayoutMediator(binding.listParksTab, binding.listParks, (tab, position) -> {
 
             }).attach();
         });
@@ -129,10 +124,10 @@ public class HomeFragment extends Fragment implements LocationListener {
                         .putExtra("id", itemNews.getId()));
             });
 
-            listNewsView.setAdapter(adapterNews);
-            listNewsView.setOffscreenPageLimit(3);
+            binding.listNews.setAdapter(adapterNews);
+            binding.listNews.setOffscreenPageLimit(3);
 
-            listNewsView.setPageTransformer((page, position) -> {
+            binding.listNews.setPageTransformer((page, position) -> {
                 float myOffset = position * - 80;
                 if (position <= 1) {
                     float scaleFactor = 1 - (0.20f * Math.abs(position));
@@ -145,28 +140,26 @@ public class HomeFragment extends Fragment implements LocationListener {
                 }
             });
 
-
-
-            new TabLayoutMediator(binding.listNewsTab, listNewsView, (tab, position) -> {
+            new TabLayoutMediator(binding.listNewsTab, binding.listNews, (tab, position) -> {
             }).attach();
         });
 
-        viewModel.getSportEventsList().observe(getViewLifecycleOwner(), events -> {
-            if (events.getItems().size() > 0) {
+        viewModel.getSportEventsList().observe(getViewLifecycleOwner(), items -> {
+            if (items.size() > 0) {
                 binding.listNull3.setVisibility(View.GONE);
                 binding.listEventsTab.setVisibility(View.VISIBLE);
             }
-            HorizontalAdaperEvents adapterEvents = new HorizontalAdaperEvents(getActivity(), events).setOnCliclListener(new HorizontalAdaperEvents.ParksAdaperListener() {
+            HorizontalAdaperEvents adapterEvents = new HorizontalAdaperEvents(getActivity(), items).setOnCliclListener(new HorizontalAdaperEvents.ParksAdaperListener() {
                 @Override
                 public void onInfo(String id) {
                     startActivity(new Intent(getActivity(), EventActivity.class).putExtra("id", id));
                 }
             });
 
-            listActivitiesView.setAdapter(adapterEvents);
-            listActivitiesView.setOffscreenPageLimit(3);
+            binding.listActivities.setAdapter(adapterEvents);
+            binding.listActivities.setOffscreenPageLimit(3);
 
-            listActivitiesView.setPageTransformer((page, position) -> {
+            binding.listActivities.setPageTransformer((page, position) -> {
                 float myOffset = position * -80;
                 if (position <= 1) {
                     float scaleFactor = 1 - (0.20f * Math.abs(position));
@@ -179,7 +172,7 @@ public class HomeFragment extends Fragment implements LocationListener {
                 }
             });
 
-            new TabLayoutMediator(binding.listEventsTab, listActivitiesView, (tab, position) -> {
+            new TabLayoutMediator(binding.listEventsTab, binding.listActivities, (tab, position) -> {
 
             }).attach();
         });
@@ -191,7 +184,8 @@ public class HomeFragment extends Fragment implements LocationListener {
             binding.listClub.setVisibility(View.VISIBLE);
             binding.allClubs.setVisibility(View.VISIBLE);
             binding.allActivities.setVisibility(View.VISIBLE);
-            binding.panelUser.setVisibility(View.VISIBLE);
+            binding.frameAvatar.setVisibility(View.VISIBLE);
+            binding.autchStatus.setVisibility(View.GONE);
             viewModel.clubs();
         }
 
@@ -199,7 +193,7 @@ public class HomeFragment extends Fragment implements LocationListener {
             if (clubs.size() > 0) {
                 binding.listNull4.setVisibility(View.GONE);
             }
-            listClub.setAdapter(new ClubsAdaper(getContext(), clubs).setOnClubsListener(new ClubsAdaper.ClubsListener() {
+            binding.listClub.setAdapter(new ClubsAdaper(getContext(), clubs).setOnClubsListener(new ClubsAdaper.ClubsListener() {
                 @Override
                 public void onInfo(ItemClub itemClub) {
                     startActivity(new Intent(getContext(), ClubActivity.class)
@@ -211,13 +205,14 @@ public class HomeFragment extends Fragment implements LocationListener {
         viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             binding.profileFilling.setProgress(user.getProfileFilling());
             Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(binding.imageUser);
-            binding.imageUser.setOnClickListener(v -> {
-                ((FragmentInteface) getActivity()).navigation(R.id.navigation_user);
-            });
         });
 
         viewModel.getLocation().observe(getViewLifecycleOwner(), location -> {
             binding.statusLocation.setText(location);
+        });
+
+        binding.panelUser.setOnClickListener(v -> {
+            ((FragmentInteface) getActivity()).navigation(R.id.navigation_user);
         });
 
         binding.allNews.setOnClickListener(v -> {
@@ -245,12 +240,11 @@ public class HomeFragment extends Fragment implements LocationListener {
         super.onResume();
 
         // Request location updates
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 50, this);
+        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 50, this);
     }
 
     @Override
@@ -279,5 +273,11 @@ public class HomeFragment extends Fragment implements LocationListener {
 
     @Override
     public void onProviderDisabled(String provider) {
+    }
+
+    @Override
+    public void onRefresh() {
+        binding.swipeRefreshLayout.setRefreshing(false);
+        viewModel.setInitialData();
     }
 }

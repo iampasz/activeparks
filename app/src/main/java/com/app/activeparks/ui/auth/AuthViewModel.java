@@ -36,7 +36,7 @@ public class AuthViewModel extends ViewModel {
                                 preferences.setToken(result.getToken());
                                 preferences.setId(result.getPayload().getId());
                                 if (preferences.getPushToken() != null) {
-                                    repository.setPush(result.getToken(), preferences.getPushToken());
+                                    new Repository(preferences).setPush(preferences.getPushToken());
                                 }
                                 mMessage.setValue(new Default(true));
                             } else {

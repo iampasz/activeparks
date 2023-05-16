@@ -8,19 +8,19 @@
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            app:srcCompat="@drawable/ic_medal_two" />
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:srcCompat="@drawable/ic_point" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:text="0"
                 android:textColor="@color/text_color"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:text="Точка"
                 android:textColor="@color/text_color"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
         <Space
@@ -46,8 +46,9 @@
             android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -57,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:text="---"
                 android:textColor="@color/text_color"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -66,7 +67,7 @@
                 android:gravity="center"
                 android:text="Чекпоинт"
                 android:textColor="@color/text_color"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
         <Space
@@ -75,7 +76,7 @@
 
         <TextView
             android:id="@+id/point_status"
-            android:layout_width="120dp"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:background="@drawable/button_style_gren"
             android:gravity="center"
@@ -83,9 +84,9 @@
             android:paddingTop="4dp"
             android:paddingRight="16dp"
             android:paddingBottom="4dp"
-            android:text="Наступна точка"
+            android:text="Пройдена точка"
             android:textColor="@color/text_color"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <ImageButton
             android:id="@+id/qr_action"
@@ -103,7 +104,7 @@
     <View
         android:layout_width="wrap_content"
         android:layout_height="1dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@color/gray_400" />
 </LinearLayout>

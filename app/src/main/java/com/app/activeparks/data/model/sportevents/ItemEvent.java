@@ -2,7 +2,7 @@ package com.app.activeparks.data.model.sportevents;
 
 import com.app.activeparks.data.model.clubs.ClubUser;
 import com.app.activeparks.data.model.clubs.ItemClub;
-import com.app.activeparks.data.model.event.RoutePoint;
+import com.app.activeparks.data.model.points.RoutePoint;
 import com.app.activeparks.data.model.news.CreatedBy;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -35,12 +35,14 @@ public class ItemEvent {
     @SerializedName("holdingStatusId")
     @Expose
     private String holdingStatusId;
+
+    private String holdingStatusText;
     @SerializedName("imageUrl")
     @Expose
     private String imageUrl = "";
-    @SerializedName("routeStart")
+    @SerializedName("routeStartedAt")
     @Expose
-    private Object routeStart;
+    private String routeStartedAt;
     @SerializedName("routeFinish")
     @Expose
     private Object routeFinish;
@@ -183,6 +185,14 @@ public class ItemEvent {
         this.holdingStatusId = holdingStatusId;
     }
 
+    public String getHoldingStatusText() {
+        return holdingStatusText;
+    }
+
+    public void setHoldingStatusText(String holdingStatusText) {
+        this.holdingStatusText = holdingStatusText;
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }
@@ -191,12 +201,12 @@ public class ItemEvent {
         this.imageUrl = imageUrl;
     }
 
-    public Object getRouteStart() {
-        return routeStart;
+    public String  getRouteStartAt() {
+        return routeStartedAt;
     }
 
-    public void setRouteStart(Object routeStart) {
-        this.routeStart = routeStart;
+    public void setRouteStartAt(String routeStart) {
+        this.routeStartedAt = routeStart;
     }
 
     public Object getRouteFinish() {

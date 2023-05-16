@@ -46,11 +46,11 @@ public class Preferences {
     }
 
     public void setPushToken(String value){
-        mSettings.edit().putString("push_token", value).apply();;
+        mSettingApp.edit().putString("push_token", value).apply();;
     }
 
     public String getToken(){
-        return mSettings.getString("token", "");
+        return mSettings.getString("token", null);
     }
 
     public String getId(){
@@ -58,7 +58,7 @@ public class Preferences {
     }
 
     public String getPushToken(){
-        return mSettings.getString("push_token", null);
+        return mSettingApp.getString("push_token", null);
     }
 
     public User getUser() {

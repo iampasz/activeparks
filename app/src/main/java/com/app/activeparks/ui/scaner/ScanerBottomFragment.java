@@ -31,19 +31,10 @@ import com.google.zxing.Result;
 
 public class ScanerBottomFragment extends BottomSheetDialogFragment {
 
-    private EventScanerListener eventScanerListener;
     private FragmentScanerBinding binding;
     private CodeScanner mCodeScanner;
 
     private ScanerViewModel mViewModel;
-//
-//    public  static ScanerBottomFragment newInstance() {
-//        return new ScanerBottomFragment();
-//    }
-
-    public ScanerBottomFragment(EventScanerListener eventScanerListener){
-        this.eventScanerListener = eventScanerListener;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,7 +76,7 @@ public class ScanerBottomFragment extends BottomSheetDialogFragment {
 
         mViewModel.getPointQrCode().observe(getViewLifecycleOwner(), result -> {
             if (result != null) {
-                eventScanerListener.update();
+                mListener.update();
                 dismiss();
             } else {
                 Toast.makeText(getContext(), "QR код для точки не дійсний", Toast.LENGTH_LONG).show();
@@ -105,7 +96,7 @@ public class ScanerBottomFragment extends BottomSheetDialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        eventScanerListener.update();
+        mListener.update();
     }
 
 
@@ -124,11 +115,11 @@ public class ScanerBottomFragment extends BottomSheetDialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
-        //mListener.onUpdate();
+        mListener.update();
     }
 
     public interface OnScanerBottomlListener {
-        void onUpdate();
+        void update();
     }
 
     private OnScanerBottomlListener mListener;

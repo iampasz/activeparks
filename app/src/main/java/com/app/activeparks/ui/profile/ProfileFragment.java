@@ -36,6 +36,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
@@ -64,14 +65,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private ProfileViewModel viewModel;
-
-    private View binding;
+    private View view;
     private ImageView photo;
     private RecyclerView profileList;
     private ProgressBar profileFilling;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private TextView statusView;
     private ButtonSelect clubs, event, result, video, journal, plan;
@@ -87,107 +88,113 @@ public class ProfileFragment extends Fragment {
 
         viewModel = new ViewModelProvider(this, new ProfileModelFactory(getContext())).get(ProfileViewModel.class);
 
-        binding = inflater.inflate(R.layout.fragment_profile, container, false);
+        view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
 
-        photo = binding.findViewById(R.id.photo);
+        photo = view.findViewById(R.id.photo);
 
-        statusView = binding.findViewById(R.id.list_status);
+        statusView = view.findViewById(R.id.list_status);
 
-        TextView name = binding.findViewById(R.id.name);
-        TextView role = binding.findViewById(R.id.role);
-        TextView sex = binding.findViewById(R.id.sex);
-        TextView birthday = binding.findViewById(R.id.birthday);
-        TextView adress = binding.findViewById(R.id.adress);
-        TextView about = binding.findViewById(R.id.about);
-        TextView healt = binding.findViewById(R.id.healt);
-        TextView height = binding.findViewById(R.id.height);
-        TextView weight = binding.findViewById(R.id.weight);
-        TextView phone = binding.findViewById(R.id.phone);
-        TextView email = binding.findViewById(R.id.email);
-        TextView exit = binding.findViewById(R.id.exit_action);
+        TextView name = view.findViewById(R.id.name);
+        TextView role = view.findViewById(R.id.role);
+        TextView sex = view.findViewById(R.id.sex);
+        TextView birthday = view.findViewById(R.id.birthday);
+        TextView address = view.findViewById(R.id.address);
+        TextView about = view.findViewById(R.id.about);
+        TextView healt = view.findViewById(R.id.healt);
+        TextView height = view.findViewById(R.id.height);
+        TextView weight = view.findViewById(R.id.weight);
+        TextView phone = view.findViewById(R.id.phone);
+        TextView email = view.findViewById(R.id.email);
+        TextView exit = view.findViewById(R.id.exit_action);
 
-        profileList = binding.findViewById(R.id.profile_list);
 
-        profileFilling = binding.findViewById(R.id.profileFilling);
+        profileList = view.findViewById(R.id.profile_list);
 
-        clubs = binding.findViewById(R.id.clubs_action);
-        event = binding.findViewById(R.id.event_action);
-        result = binding.findViewById(R.id.result_action);
-        video = binding.findViewById(R.id.video_action);
-        journal = binding.findViewById(R.id.journal_action);
-        plan = binding.findViewById(R.id.plan_action);
+        profileFilling = view.findViewById(R.id.profileFilling);
+
+        clubs = view.findViewById(R.id.clubs_action);
+        event = view.findViewById(R.id.event_action);
+        result = view.findViewById(R.id.result_action);
+        video = view.findViewById(R.id.video_action);
+        journal = view.findViewById(R.id.journal_action);
+        plan = view.findViewById(R.id.plan_action);
+
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             try {
-                if (user.getFirstName().length() + user.getLastName().length() > 1){
+                if (user.getFirstName().length() + user.getLastName().length() > 1) {
                     name.setVisibility(View.VISIBLE);
                     name.setText(user.getFirstName() + " " + user.getLastName());
-                }else{
+                } else {
                     name.setText(user.getNickname());
                 }
 
+                Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(photo);
 
                 role.setText(viewModel.isRole(user.getRoleId()));
 
                 if (user.getSex() != null) {
-                    binding.findViewById(R.id.layout_sex).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.layout_sex).setVisibility(View.VISIBLE);
                     sex.setText(user.getSex().equals("male") ? "Чоловік" : user.getSex() == "female" ? "Жінка" : "Невідомо");
                 }
 
-                if (viewModel.isProfile(user.getRoleId()) == true){
-                    binding.findViewById(R.id.web_title_action).setVisibility(View.VISIBLE);
-                    binding.findViewById(R.id.web_action).setVisibility(View.VISIBLE);
+                if (viewModel.isProfile(user.getRoleId()) == true) {
+                    view.findViewById(R.id.web_title_action).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.web_action).setVisibility(View.VISIBLE);
                 }
 
                 try {
-                    binding.findViewById(R.id.layout_birthday).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.layout_birthday).setVisibility(View.VISIBLE);
                     Date date = new SimpleDateFormat("yyyy-MM-dd").parse(user.getBirthday());
-                    birthday.setText( new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
+                    birthday.setText(new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
                 } catch (ParseException e) {
                     birthday.setVisibility(View.GONE);
                     e.printStackTrace();
                 }
 
                 if (user.getCity().length() > 1) {
-                    binding.findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
-                    adress.setText(user.getCity());
+                    view.findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
+                    address.setText(user.getCity());
                 }
 
 
                 if (user.getAboutMe().length() > 1) {
-                    binding.findViewById(R.id.title_about).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.title_about).setVisibility(View.VISIBLE);
                     about.setVisibility(View.VISIBLE);
                     about.setText(user.getAboutMe());
                 }
 
                 if (user.getHealthState().length() > 1) {
-                    binding.findViewById(R.id.title_healt).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.title_healt).setVisibility(View.VISIBLE);
                     healt.setVisibility(View.VISIBLE);
                     healt.setText(user.getHealthState());
                 }
 
-                if (user.getHeight() != null && user.getHeight().length() > 1){
-                    binding.findViewById(R.id.item_height).setVisibility(View.VISIBLE);
+                if (user.getHeight() != null && user.getHeight().length() > 1) {
+                    view.findViewById(R.id.item_height).setVisibility(View.VISIBLE);
                     height.setVisibility(View.VISIBLE);
                     height.setText(user.getHeight() + " cм");
                 }
 
-                if (user.getWeight() != null && user.getWeight().length() > 1){
-                    binding.findViewById(R.id.item_weight).setVisibility(View.VISIBLE);
+                if (user.getWeight() != null && user.getWeight().length() > 1) {
+                    view.findViewById(R.id.item_weight).setVisibility(View.VISIBLE);
                     weight.setVisibility(View.VISIBLE);
                     weight.setText(user.getWeight() + " кг");
                 }
 
                 if (user.getPhone().length() > 1) {
-                    binding.findViewById(R.id.phone_item).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.phone_item).setVisibility(View.VISIBLE);
                     phone.setText(user.getPhone());
                 }
 
                 email.setText(user.getEmail());
                 profileFilling.setProgress(user.getProfileFilling());
-                Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(photo);
+
             } catch (Exception e) {
             }
         });
@@ -254,17 +261,17 @@ public class ProfileFragment extends Fragment {
             plan.on();
         });
 
-        binding.findViewById(R.id.setting_action).setOnClickListener(v -> {
+        view.findViewById(R.id.setting_action).setOnClickListener(v -> {
             dialogShow();
         });
 
-        binding.findViewById(R.id.phone).setOnClickListener(v -> {
+        view.findViewById(R.id.phone).setOnClickListener(v -> {
             ClipData clip = ClipData.newPlainText("", phone.getText().toString());
             clipboard.setPrimaryClip(clip);
             ((FragmentInteface) getActivity()).message("Скопійовано");
         });
 
-        binding.findViewById(R.id.email).setOnClickListener(v -> {
+        view.findViewById(R.id.email).setOnClickListener(v -> {
             ClipData clip = ClipData.newPlainText("", email.getText().toString());
             clipboard.setPrimaryClip(clip);
             ((FragmentInteface) getActivity()).message("Скопійовано");
@@ -279,7 +286,7 @@ public class ProfileFragment extends Fragment {
             }
         };
 
-        TextView webAction = binding.findViewById(R.id.web_action);
+        TextView webAction = view.findViewById(R.id.web_action);
         int indexText = webAction.getText().toString().indexOf("веб");
         SpannableString spannableString = new SpannableString("Для адміністрування зокрема і таких, як створення заходів та клубів потрібно перейти на веб-версію Активних парків");
         spannableString.setSpan(clickableSpan, indexText, indexText + 10, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -292,7 +299,7 @@ public class ProfileFragment extends Fragment {
         viewModel.clubs();
         viewModel.select = 0;
 
-        return binding;
+        return view;
     }
 
 
@@ -300,11 +307,19 @@ public class ProfileFragment extends Fragment {
     public void onResume() {
         super.onResume();
         statusView.setVisibility(View.VISIBLE);
-        switch (viewModel.select){
-            case 0: viewModel.clubs(); break;
-            case 1: viewModel.event(); break;
-            case 2: viewModel.journal(); break;
-            case 3: viewModel.userVideoList(); break;
+        switch (viewModel.select) {
+            case 0:
+                viewModel.clubs();
+                break;
+            case 1:
+                viewModel.event();
+                break;
+            case 2:
+                viewModel.journal();
+                break;
+            case 3:
+                viewModel.userVideoList();
+                break;
         }
     }
 
@@ -318,7 +333,7 @@ public class ProfileFragment extends Fragment {
         viewModel.getClubs().observe(getViewLifecycleOwner(), clubs -> {
             if (clubs.size() > 0) {
                 statusView.setVisibility(View.GONE);
-            }else {
+            } else {
                 statusView.setText("Ви ще не вступили \n в жоден клуб");
             }
             profileList.setAdapter(new ClubsAdaper(getContext(), clubs).setOnClubsListener(new ClubsAdaper.ClubsListener() {
@@ -333,7 +348,7 @@ public class ProfileFragment extends Fragment {
         viewModel.getEvents().observe(getViewLifecycleOwner(), result -> {
             if (result.size() > 0) {
                 statusView.setVisibility(View.GONE);
-            }else {
+            } else {
                 statusView.setText("Ви ще не вступили \n в жоден захід");
             }
             profileList.setAdapter(new EventsListAdaper(getContext(), result).setOnEventListener(new EventsListAdaper.EventsListener() {
@@ -369,7 +384,7 @@ public class ProfileFragment extends Fragment {
         viewModel.getUserVideo().observe(getViewLifecycleOwner(), video -> {
             if (video.getItems().size() > 0) {
                 statusView.setVisibility(View.GONE);
-            }else {
+            } else {
                 statusView.setText("Не додали жодного відео");
             }
             profileList.setAdapter(new UserVideoAdapter(getActivity(), video.getItems()).setOnUserVideoListener(new UserVideoAdapter.UserVideoListener() {
@@ -388,8 +403,8 @@ public class ProfileFragment extends Fragment {
         viewModel.getJournal().observe(getViewLifecycleOwner(), journal -> {
             if (journal.size() > 0) {
                 statusView.setVisibility(View.GONE);
-            }else {
-                statusView.setText("Немая жодних активностей");
+            } else {
+                statusView.setText("Немає жодних активностей");
             }
             JournalListAdaper adaper = new JournalListAdaper(getActivity(), journal);
             profileList.setAdapter(adaper.setListener(new JournalListAdaper.JournalListener() {
@@ -408,9 +423,9 @@ public class ProfileFragment extends Fragment {
 
                 @Override
                 public void sendMessage(String id, String idNotes, String msg, boolean edit) {
-                    if (edit == true && idNotes != null){
+                    if (edit == true && idNotes != null) {
                         viewModel.cangeNotes(id, idNotes, msg);
-                    }else {
+                    } else {
                         viewModel.sendNotes(id, msg);
                     }
                 }
@@ -418,13 +433,15 @@ public class ProfileFragment extends Fragment {
         });
 
         viewModel.getPlan().observe(getViewLifecycleOwner(), plan -> {
-            if (plan.size() > 0) {
+            if (plan != null && plan.size() > 0) {
                 statusView.setVisibility(View.GONE);
+            }else{
+                statusView.setText("Немая жодних активностей");
             }
             profileList.setAdapter(new PlanListAdaper(getActivity(), plan).setListener(new PlanListAdaper.PlanListener() {
                 @Override
                 public void onInfo(String id) {
-                    TrainingDialog dialog = TrainingDialog.newInstance(id);
+                    TrainingDialog dialog = TrainingDialog.newInstance(id, viewModel.mProfile.getId());
                     dialog.show(getActivity().getSupportFragmentManager(),
                             "training_dialog");
                 }
@@ -534,14 +551,34 @@ public class ProfileFragment extends Fragment {
             bottomSheetDialog.dismiss();
         });
 
-        TextView version  = bottomSheetDialog.findViewById(R.id.version);
+        TextView version = bottomSheetDialog.findViewById(R.id.version);
 
-        version.setText("Версія: " + BuildConfig.VERSION_NAME);
+        version.setText("Вироблено під замовлення ВЦФЗН «Спорт для всіх» \n made by «TechnoDreams Group» \n\n Версія: " + BuildConfig.VERSION_NAME);
 
         LinearLayout cancel = bottomSheetDialog.findViewById(R.id.cancel);
         cancel.setOnClickListener(view -> {
             bottomSheetDialog.dismiss();
         });
         bottomSheetDialog.show();
+    }
+
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(false);
+        viewModel.user();
+        switch (viewModel.select) {
+            case 0:
+                viewModel.clubs();
+                break;
+            case 1:
+                viewModel.event();
+                break;
+            case 2:
+                viewModel.journal();
+                break;
+            case 3:
+                viewModel.userVideoList();
+                break;
+        }
     }
 }

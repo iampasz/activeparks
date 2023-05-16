@@ -62,9 +62,6 @@ public class SupportMessageAdaper extends RecyclerView.Adapter<SupportMessageAda
             }
         }
 
-        holder.itemView.setOnClickListener(v -> {
-            supportAdaperListener.onInfo(item.getId());
-        });
     }
 
     @Override

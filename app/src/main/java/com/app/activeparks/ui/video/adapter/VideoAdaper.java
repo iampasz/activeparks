@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.app.activeparks.data.model.video.Item;
+import com.app.activeparks.data.model.video.VideoItem;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 
@@ -19,11 +19,11 @@ import java.util.List;
 
 public class VideoAdaper extends RecyclerView.Adapter<VideoAdaper.ViewHolder> {
 
-    private final List<Item> list;
+    private final List<VideoItem> list;
     private final LayoutInflater inflater;
     private  VideoAdaperListener videoAdaperListener;
 
-    public VideoAdaper(Context context, List<Item> list){
+    public VideoAdaper(Context context, List<VideoItem> list){
         this.inflater = LayoutInflater.from(context);
         this.list = list;
     }
@@ -38,7 +38,7 @@ public class VideoAdaper extends RecyclerView.Adapter<VideoAdaper.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Item item = list.get(position);
+        VideoItem item = list.get(position);
 
         holder.nameVideo.setText(item.getTitle());
 

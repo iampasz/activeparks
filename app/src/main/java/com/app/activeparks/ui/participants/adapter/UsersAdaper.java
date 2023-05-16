@@ -24,11 +24,13 @@ public class UsersAdaper extends RecyclerView.Adapter<UsersAdaper.ViewHolder> {
     private final List<User> list;
     private final LayoutInflater inflater;
 
+    private boolean isUserHeads = false;
     private int applying = 0;
 
-    public UsersAdaper(Context context, List<User> list, int applying ){
+    public UsersAdaper(Context context, List<User> list, boolean isUserHeads, int applying ){
         this.inflater = LayoutInflater.from(context);
         this.list = list;
+        this.isUserHeads = isUserHeads;
         this.applying = applying;
     }
 
@@ -57,7 +59,7 @@ public class UsersAdaper extends RecyclerView.Adapter<UsersAdaper.ViewHolder> {
             holder.sex.setText(user.getSex().contains("female") ? "Жінка" : "Чоловік");
         }
 
-        if (user.getPhone() != null && user.getPhone().length() > 0) {
+        if (user.getPhone() != null && user.getPhone().length() > 0 && isUserHeads == true) {
             holder.phoneLayout.setVisibility(View.VISIBLE);
             holder.phone.setText(user.getPhone());
         }

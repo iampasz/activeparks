@@ -31,7 +31,6 @@ public class SupportViewModel extends ViewModel {
     public SupportViewModel(Preferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
         this.repository = new Repository(sharedPreferences);
-        getSupport();
     }
 
     public LiveData<Support> getSupportList() {
@@ -78,8 +77,8 @@ public class SupportViewModel extends ViewModel {
     }
 
     public void updateSupport(String topic, String text) {
-        mSupportUpdate.setTopic(topic);
-        mSupportUpdate.setText(text);
+        mSupportUpdate.setTopic(topic != null ? topic : mSupportUpdate.getTopic());
+        mSupportUpdate.setText(text != null ? text : mSupportUpdate.getText());
         repository.updateSupport(mSupportUpdate.getId(), mSupportUpdate).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> sendSupportMessage(),

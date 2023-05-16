@@ -35,9 +35,11 @@
 
     </LinearLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="32dp"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -79,12 +81,12 @@
                 android:id="@+id/title_week"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/montserrat_bold"
                 android:text="Дні тренування:"
                 android:textColor="@color/text_color"
-                android:textSize="22sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
                         <com.google.android.material.tabs.TabLayout
@@ -133,12 +135,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/montserrat_bold"
                 android:text="Оберіть час:"
                 android:textColor="@color/text_color"
-                android:textSize="22sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -154,7 +156,7 @@
                     android:fontFamily="@font/montserrat_bold"
                     android:text="Початок:"
                     android:textColor="@color/color_park"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -164,7 +166,7 @@
                     app:srcCompat="@drawable/ic_clock" />
 
                 <LinearLayout
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:background="@drawable/button_gray"
                     android:gravity="center_vertical"
@@ -172,17 +174,16 @@
 
                     <EditText
                         android:id="@+id/hource_start"
-                        android:layout_width="20dp"
+                        android:layout_width="50dp"
                         android:layout_height="match_parent"
                         android:maxLength="2"
                         android:inputType="number"
                         android:layout_weight="1"
                         android:background="@null"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="8dp"
-                        android:text="00"
+                        android:gravity="center"
+                        android:hint="12"
                         android:textColor="@color/text_color"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -192,21 +193,20 @@
                         android:fontFamily="@font/montserrat_bold"
                         android:text=":"
                         android:textColor="@color/color_park"
-                        android:textSize="22sp"/>
+                        android:textSize="16sp"/>
 
                     <EditText
                         android:id="@+id/minutes_start"
-                        android:layout_width="20dp"
+                        android:layout_width="50dp"
                         android:layout_height="match_parent"
                         android:maxLength="2"
                         android:inputType="number"
                         android:layout_weight="1"
                         android:background="@null"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="8dp"
-                        android:text="00"
+                        android:gravity="center"
+                        android:hint="30"
                         android:textColor="@color/text_color"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -224,7 +224,7 @@
                     android:fontFamily="@font/montserrat_bold"
                     android:text="Закінчення:"
                     android:textColor="@color/color_park"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -234,7 +234,7 @@
                     app:srcCompat="@drawable/ic_clock" />
 
                 <LinearLayout
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:background="@drawable/button_gray"
                     android:gravity="center_vertical"
@@ -242,17 +242,16 @@
 
                     <EditText
                         android:id="@+id/hource_finish"
-                        android:layout_width="20dp"
+                        android:layout_width="50dp"
                         android:layout_height="match_parent"
                         android:maxLength="2"
                         android:inputType="number"
                         android:layout_weight="1"
                         android:background="@null"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="8dp"
-                        android:text="00"
+                        android:gravity="center"
+                        android:hint="12"
                         android:textColor="@color/text_color"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -262,21 +261,20 @@
                         android:fontFamily="@font/montserrat_bold"
                         android:text=":"
                         android:textColor="@color/color_park"
-                        android:textSize="22sp"/>
+                        android:textSize="16sp"/>
 
                     <EditText
                         android:id="@+id/minutes_finish"
-                        android:layout_width="20dp"
+                        android:layout_width="50dp"
                         android:layout_height="match_parent"
                         android:maxLength="2"
                         android:inputType="number"
                         android:layout_weight="1"
                         android:background="@null"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="8dp"
-                        android:text="00"
+                        android:gravity="center"
+                        android:hint="30"
                         android:textColor="@color/text_color"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -317,12 +315,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/montserrat_bold"
                 android:text="Пункти тренування:"
                 android:textColor="@color/text_color"
-                android:textSize="22sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <RelativeLayout
@@ -339,8 +337,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="16dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="32dp"
                 android:background="@drawable/backround_edit_text"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -352,15 +350,16 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:gravity="center_vertical"
+                    android:paddingLeft="8dp"
                     android:text=""
                     android:textColor="@color/text_color"
-                    android:textSize="22sp" />
+                    android:textSize="18sp" />
 
                 <ImageView
                     android:id="@+id/send_notes"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:padding="2dp"
+                    android:layout_marginRight="8dp"
                     app:srcCompat="@drawable/ic_send_message" />
 
             </LinearLayout>
@@ -369,7 +368,8 @@
                 android:id="@+id/create_action"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/button_grean"
                 android:gravity="left|center_vertical"
                 android:drawableLeft="@drawable/ic_file_on"
@@ -385,7 +385,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="left|center_vertical"
-                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/button_gray"
                 android:drawableLeft="@drawable/ic_closed"
                 android:drawablePadding="8dp"
@@ -401,7 +401,7 @@
                 android:visibility="gone"
                 android:layout_height="50dp"
                 android:gravity="left|center_vertical"
-                android:layout_marginTop="16dp"
+                android:layout_marginBottom="32dp"
                 android:background="@drawable/button_gray"
                 android:drawableLeft="@drawable/ic_remove"
                 android:drawablePadding="8dp"
@@ -412,7 +412,7 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
 </LinearLayout>

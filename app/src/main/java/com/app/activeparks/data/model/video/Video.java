@@ -9,7 +9,7 @@ public class Video {
 
     @SerializedName("items")
     @Expose
-    private List<Item> items = null;
+    private List<VideoItem> items = null;
     @SerializedName("total")
     @Expose
     private Integer total;
@@ -20,11 +20,11 @@ public class Video {
     @Expose
     private Integer limit;
 
-    public List<Item> getItems() {
+    public List<VideoItem> getItems() {
         return items;
     }
 
-    public void setItems(List<Item> items) {
+    public void setItems(List<VideoItem> items) {
         this.items = items;
     }
 

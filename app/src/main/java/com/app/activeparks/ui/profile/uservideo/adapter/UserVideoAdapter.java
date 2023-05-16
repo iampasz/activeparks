@@ -62,7 +62,7 @@ public class UserVideoAdapter extends RecyclerView.Adapter<UserVideoAdapter.View
             holder.title.setText(userVideoItem.getTitle());
             holder.linerHeader.setVisibility(View.GONE);
 
-            Glide.with(holder.itemView.getContext()).load(userVideoItem.getMainPhoto()).error(R.drawable.ic_prew).error(R.drawable.ic_prew).into(holder.imageVideo);
+            Glide.with(holder.itemView.getContext()).load(userVideoItem.getMainPhoto()).error(R.drawable.ic_prew).into(holder.imageVideo);
 
             holder.status.setText(statuses.title(userVideoItem.getStatusId()));
             holder.status.setTextColor(statuses.color(userVideoItem.getStatusId()));

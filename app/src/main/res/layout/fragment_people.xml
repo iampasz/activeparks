@@ -129,7 +129,7 @@
                             android:src="@drawable/ic_location_profile" />
 
                         <TextView
-                            android:id="@+id/adress"
+                            android:id="@+id/address"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="8dp"
@@ -415,7 +415,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:onClick="stater"
-                        android:text="Мої клуби"
+                        android:text="Клуби"
                         android:textAllCaps="false"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                         android:textColor="@color/text_color"
@@ -430,13 +430,13 @@
 
 
                     <com.app.activeparks.util.ButtonSelect
-                        android:id="@+id/result_action"
+                        android:id="@+id/event_action"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
                         android:layout_marginRight="4dp"
                         android:layout_weight="1"
-                        android:text="Результати"
+                        android:text="Заходи"
                         android:textAllCaps="false"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                         android:textColor="@color/text_color"
@@ -444,49 +444,28 @@
                         android:textStyle="bold"
                         app:backgroundTint="#DEDFE1"
                         app:cornerRadius="10dp"
-                        app:icon="@drawable/ic_file"
+                        app:icon="@drawable/ic_calendar"
                         app:iconGravity="textStart"
                         app:iconPadding="8dp"
                         app:iconTint="#444F60" />
                 </LinearLayout>
 
-
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="25dp"
+                    android:layout_marginBottom="16dp"
                     android:layout_weight="1"
                     android:orientation="horizontal">
-
-                    <com.app.activeparks.util.ButtonSelect
-                        android:id="@+id/journal_action"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="4dp"
-                        android:layout_weight="1"
-                        android:text="Журнал"
-                        android:textAllCaps="false"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        android:textColor="@color/text_color"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:backgroundTint="#DEDFE1"
-                        app:cornerRadius="10dp"
-                        app:icon="@drawable/ic_journal"
-                        app:iconGravity="textStart"
-                        app:iconPadding="8dp"
-                        app:iconTint="#444F60" />
 
                     <com.app.activeparks.util.ButtonSelect
                         android:id="@+id/plan_action"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
+                        android:visibility="gone"
                         android:layout_gravity="center"
                         android:layout_marginLeft="4dp"
                         android:layout_weight="1"
-                        android:text="Тренування"
+                        android:text="План тренування"
                         android:textAllCaps="false"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                         android:textColor="@color/text_color"

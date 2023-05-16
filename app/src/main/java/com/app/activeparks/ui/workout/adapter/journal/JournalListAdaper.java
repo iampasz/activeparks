@@ -13,9 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.workout.WorkoutItem;
-import com.app.activeparks.ui.workout.adapter.list.ListAdapter;
+import com.app.activeparks.ui.workout.adapter.list.TrainingAdapter;
 import com.technodreams.activeparks.R;
 
 import java.text.ParseException;
@@ -70,16 +69,18 @@ public class JournalListAdaper extends RecyclerView.Adapter<JournalListAdaper.Vi
             }
         }
 
-        if (item.getStartsAt() != null) {
-            holder.start.setText(item.getStartsAt().substring(11, item.getStartsAt().length() - 3));
+        if (item.getStartsAt() != null && item.getStartsAt().length() > 14) {
+            int startIndex = Math.min(item.getStartsAt().length(), item.getStartsAt().length() - 3);
+            holder.start.setText(item.getStartsAt().substring(11, startIndex));
         }
 
-        if (item.getFinishesAt() != null) {
-            holder.finish.setText(item.getFinishesAt().substring(11, item.getFinishesAt().length() - 3));
+        if (item.getFinishesAt() != null && item.getFinishesAt().length() > 14) {
+            int endIndex = Math.min(item.getFinishesAt().length(), item.getFinishesAt().length() - 3);
+            holder.start.setText(item.getStartsAt().substring(11, endIndex));
         }
 
         if (item.getExercises() != null) {
-            holder.list.setAdapter(new ListAdapter(inflater.getContext(), item.getExercises()));
+            holder.list.setAdapter(new TrainingAdapter(inflater.getContext(), item.getExercises(), false));
         }
 
         if (item.getActivityType().contains("sport_event")){

@@ -33,7 +33,7 @@ import io.reactivex.schedulers.Schedulers;
 public class ProfileViewModel extends ViewModel {
 
 
-    private final Preferences sharedPreferences;
+    public final Preferences sharedPreferences;
     private Repository repository;
 
     public MutableLiveData<User> user = new MutableLiveData<>();
@@ -130,8 +130,14 @@ public class ProfileViewModel extends ViewModel {
         repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             List<ItemClub> itemClubs = new ArrayList<>();
-                            itemClubs.addAll(result.getItems().getUserIsMember());
-                            itemClubs.addAll(result.getItems().getUserIsHead());
+                            for (ItemClub item: result.getItems().getUserIsMember()){
+                                item.isUser("userIsMember");
+                                itemClubs.add(item);
+                            }
+                            for (ItemClub item: result.getItems().getUserIsHead()){
+                                item.isUser("userIsHead");
+                                itemClubs.add(item);
+                            }
 
                             clubsList.setValue(itemClubs);
                         },
@@ -147,7 +153,7 @@ public class ProfileViewModel extends ViewModel {
                                 List<ItemEvent> events = new ArrayList<>();
                                 for (ItemEvent items : result.getItems()) {
                                     if (items.getHoldingStatusId() != null) {
-                                        items.setHoldingStatusId(statusMapper(items.getHoldingStatusId()));
+                                        items.setHoldingStatusText(statusMapper(items.getHoldingStatusId()));
                                         events.add(items);
                                     }
                                 }
@@ -189,7 +195,7 @@ public class ProfileViewModel extends ViewModel {
         repository.plans().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         result -> planList.setValue(result.getItems()),
-                        error -> Log.e("ProfileViewModel", "getPokemons: " + error.getMessage())
+                        error -> planList.setValue(null)
                 );
     }
 

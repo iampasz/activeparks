@@ -42,20 +42,27 @@ public class ClubsAdaper extends RecyclerView.Adapter<ClubsAdaper.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.title.setText(list.get(position).getName());
+        ItemClub item = list.get(position);
 
-        Glide.with(holder.itemView.getContext()).load(list.get(position).getLogoUrl()).error(R.drawable.ic_prew).into(holder.logo);
+        holder.title.setText(item.getName());
+        holder.description.setText(item.getDescription());
 
+        Glide.with(holder.itemView.getContext()).load(item.getLogoUrl()).error(R.drawable.ic_prew).into(holder.logo);
 
-
-        if (list.get(position).isUser() == "userIsMember"){
-            holder.status.setText("Ви учасник");
-            holder.status.setTextColor(inflater.getContext().getResources().getColor(R.color.white));
-            holder.status.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.button_yellow));
+        if (item.isUser() != null) {
+            if (item.isUser().contains("userIsMember")) {
+                holder.status.setText("Ви учасник");
+                holder.status.setTextColor(inflater.getContext().getResources().getColor(R.color.white));
+                holder.status.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.button_yellow));
+            } else {
+                holder.status.setText("Ви координатор");
+                holder.status.setTextColor(inflater.getContext().getResources().getColor(R.color.text_color));
+                holder.status.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.button_gray));
+            }
         }else{
-            holder.status.setText("Ви координатор");
-            holder.status.setTextColor(inflater.getContext().getResources().getColor(R.color.text_color));
-            holder.status.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.button_gray));
+            holder.status.setText(statuses.title(item.getStatusId()));
+            holder.status.setTextColor(inflater.getContext().getResources().getColor(statuses.textColor(item.getStatusId())));
+            holder.status.setBackground(inflater.getContext().getResources().getDrawable(statuses.color(item.getStatusId())));
         }
 
         holder.itemView.setOnClickListener(v -> {
@@ -72,13 +79,13 @@ public class ClubsAdaper extends RecyclerView.Adapter<ClubsAdaper.ViewHolder> {
 
         final ImageView logo;
         final Button status;
-        final TextView title, city;
+        final TextView title, description;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             logo = itemView.findViewById(R.id.image_club);
             title = itemView.findViewById(R.id.title);
-            city = itemView.findViewById(R.id.city);
+            description = itemView.findViewById(R.id.description);
             status = itemView.findViewById(R.id.status);
         }
     }

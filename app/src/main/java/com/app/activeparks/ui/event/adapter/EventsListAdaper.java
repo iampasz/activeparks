@@ -45,48 +45,56 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.title.setText(list.get(position).getTitle() != null ? list.get(position).getTitle() : "Недіомо");
+        ItemEvent item = list.get(position);
 
-        if (list.get(position).getSportsground() != null){
-            holder.city.setText(list.get(position).getSportsground().getTitle());
-        }else{
-            if (list.get(position).getRoutePoints() != null && list.get(position).getRoutePoints().size() > 0) {
-                holder.panelLocation.setVisibility(View.VISIBLE);
-                holder.city.setText("Показати на мапі");
-                holder.panelLocation.setOnClickListener(v -> {
-                    double lat = list.get(position).getRoutePoints().get(0).getLocation().get(0);
-                    double lon = list.get(position).getRoutePoints().get(0).getLocation().get(1);
-                    eventListener.onOpenMaps(lat, lon);
-                });
-            }else {
-                holder.panelLocation.setVisibility(View.GONE);
-            }
+        holder.title.setText(item.getTitle() != null ? item.getTitle() : "Недіомо");
+
+        if (item.getRoutePoints() != null && item.getRoutePoints().size() > 0) {
+            holder.panelLocation.setVisibility(View.VISIBLE);
+            holder.city.setText("Показати на мапі");
+            holder.panelLocation.setOnClickListener(v -> {
+                double lat = item.getRoutePoints().get(0).getLocation().get(0);
+                double lon =item.getRoutePoints().get(0).getLocation().get(1);
+                eventListener.onOpenMaps(lat, lon);
+            });
+        }else {
+            holder.panelLocation.setVisibility(View.GONE);
         }
 
-        holder.time.setText(list.get(position).getStartsAt() != null ? list.get(position).getStartsAt().substring(11, list.get(position).getStartsAt().length() - 3) : "Недіомо");
+        if (item.getStartsAt() != null && item.getFinishesAt() != null ){
+            String startsAt = item.getStartsAt().substring(11, item.getStartsAt().length() - 3);
+            String finishesAt = item.getFinishesAt().substring(11, item.getFinishesAt().length() - 3);
+            holder.time.setText(startsAt + " - " + finishesAt);
+        }
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
-            if (list.get(position).getStartsAt().length() > 16) {
-                Date date = format.parse(list.get(position).getStartsAt());
+            if (item.getStartsAt().length() > 16) {
+                Date date = format.parse(item.getStartsAt());
                 holder.data.setText(new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        holder.status.setText(item.getHoldingStatusText() != null ? item.getHoldingStatusText() : "Недіомо");
 
-        holder.status.setText(list.get(position).getHoldingStatusId() != null ? list.get(position).getHoldingStatusId() : "Недіомо");
-
-        holder.description.setText(list.get(position).getShortDescription() != null ? list.get(position).getShortDescription() : "Недіомо");
-
-        if (list.get(position).getImageUrl() != null) {
-            Glide.with(holder.itemView.getContext()).load(list.get(position).getImageUrl()).error(R.drawable.ic_prew).into(holder.logo);
+        if (!item.getHoldingStatusId().contains("0q8a6xc0-1nb4-1pr4-h5at-4sw3m0l387yp")) {
+            holder.status.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.button_color));
+            holder.status.setTextColor(inflater.getContext().getResources().getColor(R.color.white));
+        }else {
+            holder.status.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.button_gray));
+            holder.status.setTextColor(inflater.getContext().getResources().getColor(R.color.text_color));
         }
 
+        holder.description.setText(item.getShortDescription() != null ? item.getShortDescription() : "Недіомо");
+
+        if (item.getImageUrl() != null) {
+            Glide.with(holder.itemView.getContext()).load(item.getImageUrl()).error(R.drawable.ic_prew).into(holder.logo);
+        }
 
         holder.itemView.setOnClickListener(v -> {
-            eventListener.onInfo(list.get(position));
+            eventListener.onInfo(item);
         });
     }
 

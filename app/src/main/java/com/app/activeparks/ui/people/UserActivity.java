@@ -48,12 +48,12 @@ import java.util.Locale;
 public class UserActivity extends AppCompatActivity {
 
     private PeopleViewModel viewModel;
-
     private ImageView photo, closed;
 
+    private TextView listStatus;
     private RecyclerView profileList;
     private ProgressBar profileFilling;
-    private ButtonSelect clubs, result, journal, plan;
+    private ButtonSelect clubs, event, plan;
 
 
     @Override
@@ -71,13 +71,15 @@ public class UserActivity extends AppCompatActivity {
         TextView role = findViewById(R.id.role);
         TextView sex = findViewById(R.id.sex);
         TextView birthday = findViewById(R.id.birthday);
-        TextView adress = findViewById(R.id.adress);
+        TextView address = findViewById(R.id.address);
         TextView about = findViewById(R.id.about);
         TextView healt = findViewById(R.id.healt);
         TextView height = findViewById(R.id.height);
         TextView weight = findViewById(R.id.weight);
         TextView phone = findViewById(R.id.phone);
         TextView email = findViewById(R.id.email);
+
+        listStatus = findViewById(R.id.list_status);
 
         profileList = findViewById(R.id.profile_list);
 
@@ -86,18 +88,20 @@ public class UserActivity extends AppCompatActivity {
         closed = findViewById(R.id.closed);
 
         clubs = findViewById(R.id.clubs_action);
-        result = findViewById(R.id.result_action);
-        journal = findViewById(R.id.journal_action);
+        event = findViewById(R.id.event_action);
         plan = findViewById(R.id.plan_action);
 
         viewModel.getUser().observe(this, user -> {
             try {
-                if (user.getFirstName().length() + user.getLastName().length() > 1){
+                if (user.getFirstName().length() + user.getLastName().length() > 1) {
                     name.setVisibility(View.VISIBLE);
                     name.setText(user.getFirstName() + " " + user.getLastName());
-                }else{
+                } else {
                     name.setText(user.getNickname());
                 }
+
+                Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(photo);
+
 
                 role.setText(viewModel.isRole());
 
@@ -106,17 +110,17 @@ public class UserActivity extends AppCompatActivity {
                     sex.setText(user.getSex().equals("male") ? "Чоловік" : user.getSex().equals("female") ? "Жінка" : "Невідомо");
                 }
 
-                if (user.getAge() != 0){
-                    if (user.getAge() > 50){
+                if (user.getAge() != 0) {
+                    if (user.getAge() > 50) {
                         birthday.setText(user.getSex() == "male" ? "Зрілий" : user.getSex() == "female" ? "Зріла" : "Невідомо");
-                    }else{
+                    } else {
                         birthday.setText(user.getSex() == "male" ? "Молодий" : user.getSex() == "female" ? "Молода" : "Невідомо");
                     }
                 }
 
                 if (user.getCity().length() > 1) {
                     findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
-                    adress.setText(user.getCity());
+                    address.setText(user.getCity());
                 }
 
                 if (user.getAboutMe().length() > 1) {
@@ -125,25 +129,18 @@ public class UserActivity extends AppCompatActivity {
                     about.setText(user.getAboutMe());
                 }
 
-                if (user.getHealthState().length() > 1) {
-                    findViewById(R.id.title_healt).setVisibility(View.VISIBLE);
-                    healt.setVisibility(View.VISIBLE);
-                    healt.setText(user.getHealthState());
-                }
-
-                if (user.getHeight() != null){
-                    findViewById(R.id.icon_weight).setVisibility(View.VISIBLE);
-                    findViewById(R.id.title_weight).setVisibility(View.VISIBLE);
+                if (user.getHeight() != null && !user.getHeight().isEmpty()) {
+                    findViewById(R.id.item_height).setVisibility(View.VISIBLE);
                     height.setVisibility(View.VISIBLE);
                     height.setText(user.getHeight() + " cм");
                 }
 
-                if (user.getWeight() != null){
-                    findViewById(R.id.icon_height).setVisibility(View.VISIBLE);
-                    findViewById(R.id.title_height).setVisibility(View.VISIBLE);
+                if (user.getWeight() != null && !user.getWeight().isEmpty()) {
+                    findViewById(R.id.item_weight).setVisibility(View.VISIBLE);
                     weight.setVisibility(View.VISIBLE);
                     weight.setText(user.getWeight() + " кг");
                 }
+
 
                 if (user.getPhone().length() > 1) {
                     findViewById(R.id.phone_item).setVisibility(View.VISIBLE);
@@ -152,11 +149,13 @@ public class UserActivity extends AppCompatActivity {
 
                 email.setText(user.getEmail());
                 profileFilling.setProgress(user.getProfileFilling());
-                Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(photo);
+
+                if (user.getPermissionUser() == true) {
+                    plan.setVisibility(View.VISIBLE);
+                }
             } catch (Exception e) {
             }
         });
-
 
 
         closed.setOnClickListener(v -> {
@@ -169,17 +168,12 @@ public class UserActivity extends AppCompatActivity {
             clubs.on();
         });
 
-        result.setOnClickListener(v -> {
-            viewModel.result();
+        event.setOnClickListener(v -> {
+            viewModel.event();
             replaceButton();
-            result.on();
+            event.on();
         });
 
-        journal.setOnClickListener(v -> {
-            viewModel.journal();
-            replaceButton();
-            journal.on();
-        });
 
         plan.setOnClickListener(v -> {
             viewModel.plan();
@@ -214,11 +208,12 @@ public class UserActivity extends AppCompatActivity {
     }
 
 
-
     private void observeData() {
         viewModel.getClubs().observe(this, clubs -> {
             if (clubs.size() > 0) {
-                findViewById(R.id.list_status).setVisibility(View.GONE);
+                listStatus.setVisibility(View.GONE);
+            } else {
+                listStatus.setText("Користувач не вступив \n у жоден клуб");
             }
             profileList.setAdapter(new ClubsAdaper(this, clubs).setOnClubsListener(new ClubsAdaper.ClubsListener() {
                 @Override
@@ -231,7 +226,9 @@ public class UserActivity extends AppCompatActivity {
 
         viewModel.getEvents().observe(this, result -> {
             if (result.size() > 0) {
-                findViewById(R.id.list_status).setVisibility(View.GONE);
+                listStatus.setVisibility(View.GONE);
+            }else{
+                listStatus.setText("Користувач не вступив у жоден захід");
             }
             profileList.setAdapter(new EventsListAdaper(this, result).setOnEventListener(new EventsListAdaper.EventsListener() {
                 @Override
@@ -248,7 +245,7 @@ public class UserActivity extends AppCompatActivity {
 
         viewModel.getResult().observe(this, result -> {
             if (result.getItems().size() > 0) {
-                findViewById(R.id.list_status).setVisibility(View.GONE);
+                listStatus.setVisibility(View.GONE);
             }
             profileList.setAdapter(new EventsListAdaper(this, result.getItems()).setOnEventListener(new EventsListAdaper.EventsListener() {
                 @Override
@@ -263,26 +260,9 @@ public class UserActivity extends AppCompatActivity {
             }));
         });
 
-        viewModel.getUserVideo().observe(this, video -> {
-            if (video.getItems().size() > 0) {
-                findViewById(R.id.list_status).setVisibility(View.GONE);
-            }
-            profileList.setAdapter(new UserVideoAdapter(this, video.getItems()).setOnUserVideoListener(new UserVideoAdapter.UserVideoListener() {
-                @Override
-                public void onInfo(UserVideoItem itemClub) {
-                    startActivity(new Intent(getApplicationContext(), UserAddVideoActivity.class).putExtra("id", itemClub.getId()));
-                }
-
-                @Override
-                public void onCreate() {
-                    startActivity(new Intent(getApplicationContext(), UserAddVideoActivity.class));
-                }
-            }));
-        });
-
         viewModel.getJournal().observe(this, journal -> {
             if (journal.size() > 0) {
-                findViewById(R.id.list_status).setVisibility(View.GONE);
+                listStatus.setVisibility(View.GONE);
             }
             JournalListAdaper adaper = new JournalListAdaper(this, journal);
             profileList.setAdapter(adaper.setListener(new JournalListAdaper.JournalListener() {
@@ -308,12 +288,12 @@ public class UserActivity extends AppCompatActivity {
 
         viewModel.getPlan().observe(this, plan -> {
             if (plan.size() > 0) {
-                findViewById(R.id.list_status).setVisibility(View.GONE);
+                listStatus.setVisibility(View.GONE);
             }
             profileList.setAdapter(new PlanListAdaper(this, plan).setListener(new PlanListAdaper.PlanListener() {
                 @Override
                 public void onInfo(String id) {
-                    TrainingDialog dialog = TrainingDialog.newInstance(id);
+                    TrainingDialog dialog = TrainingDialog.newInstance(id, viewModel.mProfile.getId());
                     dialog.show(getSupportFragmentManager(),
                             "training_dialog");
                 }
@@ -323,11 +303,10 @@ public class UserActivity extends AppCompatActivity {
 
     void replaceButton() {
         clubs.off();
-        result.off();
-        journal.off();
+        event.off();
         plan.off();
         profileList.removeAllViewsInLayout();
-        findViewById(R.id.list_status).setVisibility(View.VISIBLE);
+        listStatus.setVisibility(View.VISIBLE);
     }
 
 

@@ -19,15 +19,16 @@ import com.technodreams.activeparks.R;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class HorizontalAdaperEvents extends RecyclerView.Adapter<HorizontalAdaperEvents.ViewHolder> {
 
-    private final SportEvents list;
+    private final List<ItemEvent> list;
     private final LayoutInflater inflater;
     public ParksAdaperListener parksAdaperListener;
 
-    public HorizontalAdaperEvents(Context context, SportEvents list){
+    public HorizontalAdaperEvents(Context context, List<ItemEvent> list){
         this.inflater = LayoutInflater.from(context);
         this.list = list;
     }
@@ -42,7 +43,7 @@ public class HorizontalAdaperEvents extends RecyclerView.Adapter<HorizontalAdape
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ItemEvent event = list.getItems().get(position);
+        ItemEvent event = list.get(position);
         holder.title.setText(event.getTitle());
         Glide.with(holder.itemView.getContext()).load(event.getImageUrl()).error(R.drawable.ic_prew).into(holder.imageView);
 
@@ -62,7 +63,7 @@ public class HorizontalAdaperEvents extends RecyclerView.Adapter<HorizontalAdape
 
     @Override
     public int getItemCount() {
-        return list.getItems().size() > 5 ? 5 : list.getItems().size();
+        return list.size() > 5 ? 5 : list.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

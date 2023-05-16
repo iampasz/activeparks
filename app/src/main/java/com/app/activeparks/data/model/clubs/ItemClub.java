@@ -15,9 +15,6 @@ public class ItemClub {
     @SerializedName("statusId")
     @Expose
     private String statusId;
-
-    @SerializedName("isUser")
-    @Expose
     private String isUser;
     @SerializedName("logoUrl")
     @Expose
@@ -31,6 +28,10 @@ public class ItemClub {
     @SerializedName("phone")
     @Expose
     private String phone;
+
+    @SerializedName("permissionUser")
+    @Expose
+    private Boolean permissionUser;
     @SerializedName("address")
     @Expose
     private Object address;
@@ -103,6 +104,10 @@ public class ItemClub {
         return isUser;
     }
 
+    public void isUser(String isUser) {
+        this.isUser = isUser;
+    }
+
     public void setLogoUrl(String logoUrl) {
         this.logoUrl = logoUrl;
     }
@@ -125,6 +130,9 @@ public class ItemClub {
 
     public String getPhone() {
         return phone;
+    }
+    public Boolean permissionUser() {
+        return permissionUser;
     }
 
     public void setPhone(String phone) {

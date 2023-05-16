@@ -11,12 +11,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.app.activeparks.data.model.calendar.CalendarItem;
+import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
 import com.applandeo.materialcalendarview.CalendarDay;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
+import com.applandeo.materialcalendarview.listeners.OnCalendarPageChangeListener;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.technodreams.activeparks.R;
 
@@ -24,11 +27,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class EventsListActivity extends AppCompatActivity {
 
-    private EventViewModel mViewModel;
+    private EventViewModel viewModel;
     private String id = null;
     private CalendarView calendarView;
     private TextView listStatus;
@@ -40,9 +44,8 @@ public class EventsListActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_events);
         overridePendingTransition(R.anim.start, R.anim.end);
 
-        mViewModel =
+        viewModel =
                 new ViewModelProvider(this, new EventModelFactory(this)).get(EventViewModel.class);
-
 
         listClubOwner = findViewById(R.id.list_events);
 
@@ -50,25 +53,21 @@ public class EventsListActivity extends AppCompatActivity {
 
         listStatus = findViewById(R.id.list_null);
 
-        if (id !=  null){
-            findViewById(R.id.panel_top).setVisibility(View.GONE);
-            findViewById(R.id.title).setVisibility(View.VISIBLE);
-            mViewModel.getSportEvents(id);
-        }else {
-            mViewModel.getSportEvents();
-            findViewById(R.id.panel_top).setVisibility(View.VISIBLE);
-            findViewById(R.id.title).setVisibility(View.GONE);
-            findViewById(R.id.closed).setOnClickListener(v ->{
-                onBackPressed();
-            });
-        }
+        viewModel.getEventsList();
+        viewModel.calendarEvent();
+        findViewById(R.id.panel_top).setVisibility(View.VISIBLE);
+        findViewById(R.id.title).setVisibility(View.GONE);
+        findViewById(R.id.closed).setOnClickListener(v -> {
+            onBackPressed();
+        });
 
-        mViewModel.getSportEventsList().observe(this, events -> {
-            Calendar cal = Calendar.getInstance();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            setAdapter(mViewModel.filterData(dateFormat.format(cal.getTime())));
-            setMaperAdapter(events);
+        viewModel.getSportEventsList().observe(this, events -> {
+            setAdapter(events);
             listStatus.setText("Жодного запланованого заходу");
+        });
+
+        viewModel.getCalendar().observe(this, events -> {
+            setMaperAdapter(events);
         });
 
         calendarView.setOnDayClickListener(new OnDayClickListener() {
@@ -76,22 +75,23 @@ public class EventsListActivity extends AppCompatActivity {
             public void onDayClick(EventDay eventDay) {
                 Calendar cal = eventDay.getCalendar();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                setAdapter(mViewModel.filterData(dateFormat.format(cal.getTime())));
+                viewModel.eventsDay(dateFormat.format(cal.getTime()));
             }
         });
+
     }
 
-    public void setMaperAdapter(SportEvents events) {
+    public void setMaperAdapter(CalendarModel calendarItem) {
         List<EventDay> days = new ArrayList<>();
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        for (ItemEvent itemEvent : events.getItems()){
+        for (CalendarItem item : calendarItem.getItems()) {
             try {
-                if (itemEvent.getStartsAt() != null) {
+                if (item.data() != null) {
                     calendar = Calendar.getInstance();
-                    calendar.setTime(sdf.parse(itemEvent.getStartsAt().substring(0, 10)));
+                    calendar.setTime(sdf.parse(item.data()));
                     days.add(new EventDay(calendar, R.drawable.seekbar_drawable_mark));
                 }
             } catch (ParseException e) {

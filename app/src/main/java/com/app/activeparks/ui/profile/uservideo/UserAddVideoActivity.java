@@ -73,11 +73,11 @@ public class UserAddVideoActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.closed).setOnClickListener(view -> {
-            mViewModel.mVideoItem.setUrl(url.getText().toString());
-            mViewModel.mVideoItem.setTitle(name.getText().toString());
-            mViewModel.mVideoItem.setDescription(description.getText().toString());
-            mViewModel.setCategoryId(category.getSelectedItemPosition());
-            mViewModel.setExerciseDifficultyLevelId(level.getSelectedItemPosition());
+            mViewModel.setModelVideo(url.getText().toString(),
+                    name.getText().toString(),
+                    description.getText().toString(),
+                    category.getSelectedItemPosition(),
+                    level.getSelectedItemPosition());
             mViewModel.updateUserVideo();
         });
 
@@ -87,7 +87,9 @@ public class UserAddVideoActivity extends AppCompatActivity {
         });
 
         mViewModel.getUserVideoItem().observe(this, item -> {
-            Glide.with(this).load(item.getMainPhoto()).error(R.drawable.ic_prew).error(R.drawable.ic_prew).into(imageVideo);
+            if (!item.getMainPhoto().isEmpty()) {
+                Glide.with(this).load(item.getMainPhoto()).error(R.drawable.ic_prew).into(imageVideo);
+            }
             url.setText(item.getUrl());
             name.setText(item.getTitle());
             description.setText(item.getDescription());
@@ -114,18 +116,17 @@ public class UserAddVideoActivity extends AppCompatActivity {
         if (requestCode == 3 && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 Uri uri = data.getData();
+                Bitmap bm = null;
 
                 try {
-
                     File file = saveImageToFile(uri);
-
                     mViewModel.updateFile(file);
-
-                    Bitmap bm = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-                    imageVideo.setImageBitmap(bm);
+                    bm = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                imageVideo.setImageBitmap(bm);
             }
         }
     }

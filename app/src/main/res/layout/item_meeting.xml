@@ -19,16 +19,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_color"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:text="Дата:" />
+                android:text="Дата" />
 
             <TextView
                 android:id="@+id/text_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_color"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:text="Точка" />
         </LinearLayout>
 
@@ -47,16 +47,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_color"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:text="Час:" />
+                android:text="Час" />
 
             <TextView
                 android:id="@+id/text_time"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textColor="@color/text_color"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:text="Чекпоинт" />
         </LinearLayout>
 
@@ -71,16 +71,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/text_color"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:text="Тривалість:" />
+            android:text="Тривалість" />
 
         <TextView
             android:id="@+id/text_lenght"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="@color/text_color"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:text="Чекпоинт" />
     </LinearLayout>
 
@@ -96,16 +96,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/text_color"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:text="Учасників:" />
+            android:text="Учасників" />
 
         <TextView
             android:id="@+id/text_user"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="@color/text_color"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:text="0" />
     </LinearLayout>
 

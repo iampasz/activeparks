@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:layout_gravity="bottom"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/panel_top"
@@ -13,8 +18,8 @@
         android:background="#EDEDF0"
         android:elevation="4dp"
         android:gravity="center"
-        android:visibility="gone"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/closed"
@@ -41,42 +46,43 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Календар заходів"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/text_color"
                 android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Календар заходів"
+                android:textColor="@color/text_color"
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
-                        <com.applandeo.materialcalendarview.CalendarView
-                            android:id="@+id/calendarView"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="16dp"
-                            app:type="one_day_picker"
-                            app:eventsEnabled="true"
-                            app:headerColor="@color/white"
-                            app:headerLabelColor="@color/text_color"
-                            app:previousButtonSrc="@drawable/ic_left_calendar"
-                            app:forwardButtonSrc="@drawable/ic_right_calendar"
-                            app:abbreviationsLabelsColor="@color/text_color"
-                            app:todayLabelColor="@color/color_park"
-                            app:selectionColor="@color/color_park"
-                            />
+            <com.applandeo.materialcalendarview.CalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                app:abbreviationsBarColor="@color/background"
+                app:abbreviationsLabelsColor="@color/text_color"
+                app:eventsEnabled="true"
+                app:forwardButtonSrc="@drawable/ic_right_calendar"
+                app:headerColor="@color/background"
+                app:headerLabelColor="@color/text_color"
+                app:pagesColor="@color/background"
+                app:previousButtonSrc="@drawable/ic_left_calendar"
+                app:selectionColor="@color/color_park"
+                app:todayLabelColor="@color/color_park"
+                app:type="one_day_picker" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Найближчий захід"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/text_color"
                 android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Найближчий захід"
+                android:textColor="@color/text_color"
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
@@ -106,4 +112,6 @@
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

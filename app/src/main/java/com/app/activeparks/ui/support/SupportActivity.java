@@ -14,40 +14,45 @@ import com.technodreams.activeparks.R;
 
 public class SupportActivity extends AppCompatActivity {
 
-        private ItemNews itemNews;
+    private ItemNews itemNews;
 
-        private SupportViewModel supportViewModel;
+    private SupportViewModel supportViewModel;
 
-        public SupportActivity init(ItemNews itemNews){
-            this.itemNews = itemNews;
-            return this;
-        }
+    public SupportActivity init(ItemNews itemNews) {
+        this.itemNews = itemNews;
+        return this;
+    }
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_support);
-            supportViewModel =
-                    new ViewModelProvider(this, new SupportModelFactory(this)).get(SupportViewModel.class);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_support);
+        supportViewModel =
+                new ViewModelProvider(this, new SupportModelFactory(this)).get(SupportViewModel.class);
 
-            RecyclerView listSupport = findViewById(R.id.list_support);
+        RecyclerView listSupport = findViewById(R.id.list_support);
 
-            findViewById(R.id.closed).setOnClickListener(v-> {
-                finish();
-            });
+        findViewById(R.id.closed).setOnClickListener(v -> {
+            finish();
+        });
 
-            findViewById(R.id.create_support_action).setOnClickListener(v-> {
-                startActivity(new Intent(this, SupportAddActivity.class));
-            });
+        findViewById(R.id.create_support_action).setOnClickListener(v -> {
+            startActivity(new Intent(this, SupportAddActivity.class));
+        });
 
-            supportViewModel.getSupportList().observe(this, support -> {
-                if (support.getItems().size() > 0) {
-                    findViewById(R.id.list_null).setVisibility(View.GONE);
-                }
-                listSupport.setAdapter(new SupportAdaper(this, support.getItems()).setOnCliclListener(id -> {
-                    startActivity(new Intent(this, SupportAddActivity.class).putExtra("id", id));
-                }));
-            });
+        supportViewModel.getSupportList().observe(this, support -> {
+            if (support.getItems().size() > 0) {
+                findViewById(R.id.list_null).setVisibility(View.GONE);
+            }
+            listSupport.setAdapter(new SupportAdaper(this, support.getItems()).setOnCliclListener(id -> {
+                startActivity(new Intent(this, SupportAddActivity.class).putExtra("id", id));
+            }));
+        });
+    }
 
-        }
+    @Override
+    public void onResume() {
+        super.onResume();
+        supportViewModel.getSupport();
+    }
 }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LevelListDrawable;
 import android.location.Location;
@@ -20,16 +21,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.app.activeparks.ui.event.adapter.MeetingListAdaper;
 import com.app.activeparks.ui.participants.ParticipantsFragment;
-import com.app.activeparks.ui.scaner.ScanerBottomFragment;
+import com.app.activeparks.ui.routepoint.RoutePointFragment;
 import com.app.activeparks.ui.web.WebActivity;
 import com.app.activeparks.util.ButtonSelect;
 import com.app.activeparks.util.LoadImage;
@@ -47,32 +49,33 @@ import java.util.Locale;
 
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
-public class EventActivity extends AppCompatActivity implements LocationListener, EventScanerListener, Html.ImageGetter {
+public class EventActivity extends AppCompatActivity implements EventScanerListener, Html.ImageGetter, SwipeRefreshLayout.OnRefreshListener {
 
-    private EventViewModel mViewModel;
+    private EventViewModel viewModel;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ImageView mImageView;
-
     private MaterialRatingBar ratingBar;
-    private ButtonSelect mDescriptionAction, mLocationAction, mRecordsAction, mPeopleAction, mStatusAction, mJoinAction;
+    private ButtonSelect mDescriptionAction, mLocationAction, mRecordsAction, mPeopleAction, сonferenciaAction, startPointAction, mJoinAction;
     private TextView mTitle, mAddress, mPhone, mStartEvent, mEndEvent, mDescription, mClubName, mEventStatus, mDay, mHour, mMinutes, mSeconds;
     public MapView mapView;
-    private LinearLayout mPanelPhone;
-    public MapsViewControler mapsViewControler;
 
-    private LocationManager locationManager;
+    private View statusView;
+    private LinearLayout layoutTimer;
+    public MapsViewControler mapsViewControler;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
-        overridePendingTransition(R.anim.start, R.anim.end);
 
-        mViewModel = new ViewModelProvider(this, new EventModelFactory(this)).get(EventViewModel.class);
+        viewModel = new ViewModelProvider(this, new EventModelFactory(this)).get(EventViewModel.class);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        viewModel.getEvent(getIntent().getStringExtra("id"));
 
-        mViewModel.getEvent(getIntent().getStringExtra("id"));
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         mImageView = findViewById(R.id.image_club);
         mTitle = findViewById(R.id.title);
@@ -83,9 +86,12 @@ public class EventActivity extends AppCompatActivity implements LocationListener
         mDescription = findViewById(R.id.text_description);
         mClubName = findViewById(R.id.text_club_name);
         mEventStatus = findViewById(R.id.status);
-        mStatusAction = findViewById(R.id.status_action);
+        сonferenciaAction = findViewById(R.id.сonferencia_action);
+        startPointAction = findViewById(R.id.start_point_action);
 
-        mPanelPhone = findViewById(R.id.panel_phone);
+        statusView = findViewById(R.id.status_view);
+
+        layoutTimer = findViewById(R.id.layout_timer);
 
         ratingBar = findViewById(R.id.ratingBar);
 
@@ -101,21 +107,23 @@ public class EventActivity extends AppCompatActivity implements LocationListener
         mPeopleAction = findViewById(R.id.people_action);
         mJoinAction = findViewById(R.id.join_action);
 
+
+
         mapView = findViewById(R.id.mapview);
 
         mapsViewControler = new MapsViewControler(mapView, this);
 
-        mViewModel.getEventDetails().observe(this, events -> {
+        viewModel.getEventDetails().observe(this, events -> {
             try {
                 Glide.with(this).load(events.getImageUrl()).error(R.drawable.ic_prew).into(mImageView);
                 mTitle.setText(events.getTitle());
-                if (events.getSportsground() != null) {
+                if (events.getSportsground() != null && events.getSportsground().getTitle() != null) {
                     mAddress.setText(events.getSportsground().getTitle());
                 } else {
                     if (events.getRoutePoints() != null && events.getRoutePoints().size() > 0) {
-                        double lat = events.getRoutePoints().get(0).getLocation().get(0);
-                        double lon = events.getRoutePoints().get(0).getLocation().get(1);
-                        mViewModel.location(lat, lon);
+                        double lat = viewModel.address.getLocation().get(0);
+                        double lon = viewModel.address.getLocation().get(1);
+                        viewModel.location(lat, lon);
                         mAddress.setOnClickListener(v -> {
                             String uri = "https://google.com/maps/search/?api=1&query=" + lat + "," + lon;
                             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
@@ -131,7 +139,7 @@ public class EventActivity extends AppCompatActivity implements LocationListener
 //                    mPhone.setText(events.getCreatedBy().getPhone());
 //                }
 
-                if (events.getEventEstimation() != null){
+                if (events.getEventEstimation() != null) {
                     ratingBar.setRating(events.getEventEstimation());
                 }
 
@@ -143,8 +151,22 @@ public class EventActivity extends AppCompatActivity implements LocationListener
                     e.printStackTrace();
                 }
 
-                mEndEvent.setText(events.getStartsAt() != null ? events.getStartsAt().substring(11, events.getStartsAt().length() - 3) : "Недіомо");
-                mEventStatus.setText(mViewModel.statusMapper(events.getHoldingStatusId()));
+                if (events.getStartsAt() != null && events.getFinishesAt() != null) {
+                    int startIndex = Math.min(events.getStartsAt().length(), events.getStartsAt().length() - 3);
+                    String startsAt = events.getStartsAt().substring(11, startIndex);
+                    int endIndex = Math.min(events.getFinishesAt().length(), events.getFinishesAt().length() - 3);
+                    String finishesAt = events.getFinishesAt().substring(11, endIndex);
+                    mEndEvent.setText("| " + startsAt + " - " + finishesAt);
+                }
+
+                mEventStatus.setText(viewModel.statusMapper(events.getHoldingStatusId()));
+
+                mEventStatus.setVisibility(View.VISIBLE);
+                statusView.setVisibility(View.VISIBLE);
+                if (events.getHoldingStatusId().contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")) {
+                    statusView.setBackground(getResources().getDrawable(R.drawable.button_color));
+                }
+
 
 
                 if (events.getFullDescription() != null) {
@@ -167,38 +189,56 @@ public class EventActivity extends AppCompatActivity implements LocationListener
                 if (events.getTypeId().contains("bd09f36f-835c-49e4-88b8-4f835c1602ac")) {
                     mLocationAction.setVisibility(View.VISIBLE);
                     findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
-                    mapsViewControler.setMarker(events.getRoutePoints().get(0).getLocation().get(0), events.getRoutePoints().get(0).getLocation().get(1));
+                    mapsViewControler.setMarker(viewModel.address.getLocation().get(0), viewModel.address.getLocation().get(1));
+
+                    if (events.getStatusId().contains("032fd5ba-f634-469b-3c30-77a1gh63a918") && events.getHoldingStatusId().contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")){
+                        if (events.getEventUser() != null && events.getEventUser().getIsCoordinator() == true || events.getEventUser().getIsActing() == true ) {
+                            startPointAction.setVisibility(View.VISIBLE);
+                            startPointAction.setEnabled(true);
+                            if (events.getRouteStartAt() == null){
+                                startPointAction.setText("Розпочати захід");
+                            }else{
+                                startPointAction.setText("Зупинити захід");
+                            }
+                        }
+                    }else{
+                        startPointAction.setVisibility(View.GONE);
+                    }
 
                 } else if (events.getTypeId().contains("848e3121-4a2b-413d-8a8f-ebdd4ecf2840")) {
 
                     findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
-                    mapsViewControler.setMarker(events.getRoutePoints().get(0).getLocation().get(0), events.getRoutePoints().get(0).getLocation().get(1));
+                    mapsViewControler.setMarker(viewModel.address.getLocation().get(0), viewModel.address.getLocation().get(1));
+
 
                 } else if (events.getTypeId().contains("e58e5c86-5ca7-412f-94f0-88effd1a45a8")) {
 
-                    if (events.getHoldingStatusId().contains("0q8a6xc0-1nb4-1pr4-h5at-4sw3m0l387yp")) {
-                        if (events.getMeetingRecordsCount() != null && events.getMeetingRecordsCount() > 0) {
-                            mRecordsAction.setVisibility(View.VISIBLE);
-                        }
-                    } else {
+
+                    сonferenciaAction.setOnClickListener(v -> {
                         if (events.getConferenceLink() != null && events.getConferenceLink().length() > 0) {
-                            mStatusAction.setVisibility(View.VISIBLE);
-                            mStatusAction.setOnClickListener(v -> {
-                                startActivity(new Intent(this, WebActivity.class)
-                                        .putExtra("TITLE", "Трансляція")
-                                        .putExtra("WEB_URL", events.getConferenceLink()));
-                            });
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(events.getConferenceLink()));
+                            startActivity(intent);
                         } else {
-                            findViewById(R.id.layout_timer).setVisibility(View.VISIBLE);
-                            startTimer(events.getStartsAt());
+                            Toast.makeText(this, "Онлайн конференцій в процесі створення", Toast.LENGTH_SHORT).show();
                         }
+                    });
+
+                    if (events.getHoldingStatusId().contains("6h8ad9c0-fd34-8kr4-h8ft-43vdm3n7do3p")) {
+                        layoutTimer.setVisibility(View.VISIBLE);
+                        startTimer(events.getStartsAt());
+                    } else if (events.getHoldingStatusId().contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")) {
+                        mRecordsAction.setVisibility(View.GONE);
+                        layoutTimer.setVisibility(View.GONE);
+                        сonferenciaAction.setVisibility(View.VISIBLE);
+                    } else if (events.getHoldingStatusId().contains("0q8a6xc0-1nb4-1pr4-h5at-4sw3m0l387yp")) {
+                        mRecordsAction.setVisibility(View.VISIBLE);
+                        сonferenciaAction.setVisibility(View.GONE);
                     }
                 }
 
                 if (events.getEventUser() != null) {
                     if (events.getEventUser().getIsApproved() == true) {
                         mJoinAction.setText("Покинути захід");
-                        onStartLocationUpdates();
                         if (events.getHoldingStatusId().contains("0q8a6xc0-1nb4-1pr4-h5at-4sw3m0l387yp")) {
                             findViewById(R.id.layout_rating).setVisibility(View.VISIBLE);
                         }
@@ -209,20 +249,26 @@ public class EventActivity extends AppCompatActivity implements LocationListener
                     mJoinAction.setText("Приєднатись до заходу");
                 }
 
+
+                if (viewModel.getUserAuth() && !events.getHoldingStatusId().contains("0q8a6xc0-1nb4-1pr4-h5at-4sw3m0l387yp")) {
+                    if (events.getEventUser() != null && events.getEventUser().getIsCoordinator() == true) {
+                        mJoinAction.setVisibility(View.GONE);
+                    } else {
+                        mJoinAction.setVisibility(View.VISIBLE);
+                    }
+                }
+
             } catch (Exception e) {
             }
 
         });
 
-        if (mViewModel.getUserAuth()) {
-            mJoinAction.setVisibility(View.VISIBLE);
-        }
 
-        mViewModel.getLocation().observe(this, location -> {
+        viewModel.getLocation().observe(this, location -> {
             mAddress.setText(location);
         });
 
-        mViewModel.getMeetingRecords().observe(this, mettings -> {
+        viewModel.getMeetingRecords().observe(this, mettings -> {
             setFragment(new MeetingsFragment(mettings));
         });
 
@@ -242,43 +288,45 @@ public class EventActivity extends AppCompatActivity implements LocationListener
         });
 
         mLocationAction.setOnClickListener(v -> {
-            setFragment(new RoutePointFragment(mViewModel.routePoints, mViewModel.isCoordinator, this));
-            replaceButton();
-            mLocationAction.on();
+            showRoutePoint();
+        });
+
+        startPointAction.setOnClickListener(v -> {
+            viewModel.startEvent();
         });
 
         mRecordsAction.setOnClickListener(v -> {
-            mViewModel.meetingRecords();
+            viewModel.meetingRecords();
             findViewById(R.id.event_fragment).setVisibility(View.GONE);
             replaceButton();
             mRecordsAction.on();
         });
 
         mPeopleAction.setOnClickListener(v -> {
-            setFragment(new ParticipantsFragment(mViewModel.mId, false, true));
+            setFragment(new ParticipantsFragment(viewModel.mId, false, true));
             replaceButton();
             mPeopleAction.on();
         });
 
         mJoinAction.setOnClickListener(v -> {
-            mViewModel.applyUser();
+            viewModel.applyUser();
         });
 
-//        ratingBar.setOnClickListener(v -> {
-//            mViewModel.setEstimation(ratingBar.getRating());
-//        });
+        ratingBar.setOnClickListener(v -> {
+            viewModel.setEstimation(ratingBar.getRating());
+        });
         ratingBar.setOnRatingBarChangeListener(new MaterialRatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                mViewModel.setEstimation(rating);
+                viewModel.setEstimation(rating);
             }
         });
 
         findViewById(R.id.copy_action).setOnClickListener((View v) -> {
             Intent intent = new Intent(android.content.Intent.ACTION_SEND);
             intent.setType("text/plain");
-            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, mTitle.getText().toString());
-            intent.putExtra(android.content.Intent.EXTRA_TEXT, mAddress.getText().toString());
+            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Хочу тебе запросити на " + mTitle.getText().toString());
+            intent.putExtra(android.content.Intent.EXTRA_TEXT, "Хочу тебе запросити на " + mTitle.getText().toString() + " " + "https://ap.sportforall.gov.ua/fc-events/0/" + viewModel.mId);
             startActivity(Intent.createChooser(intent, getString(R.string.app_name)));
         });
     }
@@ -298,6 +346,13 @@ public class EventActivity extends AppCompatActivity implements LocationListener
             Calendar cal = Calendar.getInstance();
 
             long time = date.getTime() - cal.getTime().getTime();
+
+            int result = cal.getTime().compareTo(date);
+            if (result > 0) {
+                сonferenciaAction.setVisibility(View.VISIBLE);
+                layoutTimer.setVisibility(View.GONE);
+                return;
+            }
             new CountDownTimer(time, 1000) {
 
                 public void onTick(long millisUntilFinished) {
@@ -314,13 +369,17 @@ public class EventActivity extends AppCompatActivity implements LocationListener
                 }
 
                 public void onFinish() {
-                    mViewModel.getEvent(getIntent().getStringExtra("id"));
+                    viewModel.getEvent(getIntent().getStringExtra("id"));
                     cancel();
-
                 }
             }.start();
         } catch (ParseException pe) {
         }
+    }
+
+    void showRoutePoint() {
+        RoutePointFragment dialog = new RoutePointFragment(viewModel.mId);
+        dialog.show(getSupportFragmentManager(), "route_point_fragment");
     }
 
     void setFragment(Fragment fragment) {
@@ -332,43 +391,11 @@ public class EventActivity extends AppCompatActivity implements LocationListener
                 .commit();
     }
 
-    public void onStartLocationUpdates() {
-
-        // Request location updates
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, this);
-    }
-
-
-    @Override
-    public void onLocationChanged(Location location) {
-        // Update the location text view with the new location
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-        mViewModel.routePoints(latitude, longitude);
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-    }
 
     @Override
     public void update() {
-        mViewModel.getUpdateEvent();
-        mViewModel.meetingRecords();
-        setFragment(new RoutePointFragment(mViewModel.routePoints, mViewModel.isCoordinator, this));
+        viewModel.getUpdateEvent();
+        viewModel.meetingRecords();
     }
 
     @Override
@@ -393,5 +420,11 @@ public class EventActivity extends AppCompatActivity implements LocationListener
         }).execute(source, d);
 
         return d;
+    }
+
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(false);
+        viewModel.getUpdateEvent();
     }
 }

@@ -29,6 +29,7 @@ public class RestoreViewModel extends ViewModel {
     private Repository repository;
     private MutableLiveData<Default> mMessage;
     private MutableLiveData<Default> mResotoreCode;
+    private MutableLiveData<Boolean> closed = new MutableLiveData<>();
 
     public RestoreViewModel() {
         repository = new Repository();
@@ -42,6 +43,10 @@ public class RestoreViewModel extends ViewModel {
 
     public LiveData<Default> getRestoreCode() {
         return mResotoreCode;
+    }
+
+    public LiveData<Boolean> getClosed() {
+        return closed;
     }
 
     public void sendCode(String email){
@@ -66,6 +71,7 @@ public class RestoreViewModel extends ViewModel {
         repository.restorePassword(email, code, password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             mMessage.setValue(new Default("Пароль змінено"));
+                            closed.setValue(true);
                         },
                         error -> {
                             try {

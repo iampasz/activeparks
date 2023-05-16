@@ -70,7 +70,10 @@ public class NotificationViewModel extends ViewModel {
     }
 
     public boolean getUserAuth() {
-        return repository.sharedPreferences.getToken().length() > 1 ? true : false;
+        if (repository.sharedPreferences.getToken() != null && repository.sharedPreferences.getToken().length() > 1) {
+            return true;
+        }
+        return false;
     }
 
     private void getDataUser() {

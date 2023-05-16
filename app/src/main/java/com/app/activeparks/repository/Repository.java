@@ -7,6 +7,7 @@ import com.app.activeparks.data.ApiService;
 import com.app.activeparks.data.model.Default;
 import com.app.activeparks.data.model.authorisation.Authorisation;
 import com.app.activeparks.data.model.authorisation.Signup;
+import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.city.City;
 import com.app.activeparks.data.model.clubs.Clubs;
 import com.app.activeparks.data.model.clubs.ClubsUserIsMemberModel;
@@ -30,6 +31,7 @@ import com.app.activeparks.data.model.user.UserParticipants;
 import com.app.activeparks.data.model.uservideo.UserVideo;
 import com.app.activeparks.data.model.uservideo.UserVideoItem;
 import com.app.activeparks.data.model.video.Video;
+import com.app.activeparks.data.model.workout.PlanModel;
 import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.data.model.workout.WorkoutModel;
 import com.app.activeparks.data.storage.Preferences;
@@ -37,6 +39,8 @@ import com.app.activeparks.data.storage.Preferences;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +68,10 @@ public class Repository {
     public Repository(Preferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
 
-        token = "Bearer " + sharedPreferences.getToken();
+        if (sharedPreferences.getToken() != null) {
+            token = "Bearer " + sharedPreferences.getToken();
+        }
+
         userId = sharedPreferences.getId();
 
         if (service == null) {
@@ -111,7 +118,7 @@ public class Repository {
     }
 
     public Observable<News> getClubsNews(String id) {
-        return service.getClubsNews(id);
+        return service.getClubsNews(token, id);
     }
 
     public Observable<ItemNews> newsDetails(String id) {
@@ -128,6 +135,38 @@ public class Repository {
         data.put("limit", "30");
 
         return service.getEvents(token, "/my", data);
+    }
+
+    public Observable<CalendarModel> calendarEventRequest(Date date, String clubId) {
+        if (date == null){
+            date = new Date();
+        }
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.MONTH, -1);
+        String startsFrom = dateFormat.format(calendar.getTime());
+
+        //calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        calendar.add(Calendar.MONTH, 4);
+        Date dateLost = calendar.getTime();
+
+        String startsTo = dateFormat.format(dateLost);
+
+        Map<String, String> params = new HashMap<>();
+        if (startsFrom != null) {
+            params.put("filters[startsFrom]", startsFrom);
+        }
+        params.put("filters[startsTo]", startsTo);
+        params.put("sort[startsAt]", "asc");
+        if (clubId != null) {
+            params.put("filters[clubId]", clubId);
+        }
+
+        return service.calendarEventRequest(params);
     }
 
     public Observable<SportEvents> myEventsNotifications() {
@@ -153,28 +192,37 @@ public class Repository {
         return service.getEvents(token, "/my-results", data);
     }
 
-    public Observable<SportEvents> getClubEvents(String clubId) {
-        Map<String, String> data = new HashMap<>();
-        data.put("offset", "0");
-        data.put("limit", "20");
-        data.put("filters[clubId]", clubId);
-
-        return service.getEvents(token, "", data);
-    }
 
     public Observable<SportEvents> eventEstimation(String id, String rating) {
 
-        return service.eventEstimationRequest(token, id, "2", "2");
+        return service.eventEstimationRequest(token, id, id, rating);
     }
 
-    public Observable<SportEvents> events(int limit) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    public Observable<SportEvents> events(int limit, String date, String clubId) {
         Map<String, String> data = new HashMap<>();
         data.put("offset", "0");
         data.put("limit", String.valueOf(limit));
-        data.put("filters[startsFrom]", dateFormat.format(new Date()));
+        data.put("filters[startsFrom]", date);
+        data.put("sort[startsAt]", "asc");
+        if (!clubId.isEmpty()) {
+            data.put("filters[clubId]", clubId);
+        }
 
         return service.getEvents(token, "", data);
+    }
+
+    public Observable<SportEvents> eventsDay(int limit, String date, String clubId) {
+        Map<String, String> data = new HashMap<>();
+        data.put("offset", "0");
+        data.put("limit", "10");
+        data.put("filters[startsFrom]", date);
+        data.put("filters[startsTo]", date);
+        data.put("sort[startsAt]", "asc");
+        if (!clubId.isEmpty()) {
+            data.put("filters[clubId]", clubId);
+        }
+
+        return service.getEvents(token, "/day", data);
     }
 
     public Observable<SportEvents> eventsHome(int limit) {
@@ -185,7 +233,11 @@ public class Repository {
         data.put("offset", "0");
         data.put("limit", String.valueOf(limit));
 
-        return service.getEvents("", data);
+        if (token.length() > 1) {
+            return service.getEvents(token, "", data);
+        }else{
+            return service.getEvents("", data);
+        }
     }
 
     public Observable<ResponseBody> pintRequest(String eventId, String pointId){
@@ -209,6 +261,18 @@ public class Repository {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Map<String, String> data = new HashMap<>();
         data.put("userId", String.valueOf(userId));
+        data.put("direction", "next");
+        data.put("date", dateFormat.format(new Date()));
+        data.put("offset", "0");
+        data.put("limit", "20");
+
+        return service.myevents(token, "journal", data);
+    }
+
+    public Observable<SportEvents> eventsUser(String userId) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Map<String, String> data = new HashMap<>();
+        data.put("userId", userId);
         data.put("direction", "next");
         data.put("date", dateFormat.format(new Date()));
         data.put("offset", "0");
@@ -247,37 +311,25 @@ public class Repository {
 
 
 
-    public Observable<WorkoutModel> workoutAdd(String title, boolean isOnce, String weekDays, String startTime, String finishTime, List<String> exercises){
-        Map<String, String> data = new HashMap<>();
-        data.put("title", title);
-        data.put("isActive", "true");
-        data.put("type", "Тренування");
-        data.put("isOnce", String.valueOf(isOnce));
-        data.put("weekDays", "[" + weekDays + "]");
-        data.put("startTime", startTime);
-        data.put("finishTime", finishTime);
-        data.put("exercises", exercises.toString());
-
+    public Observable<ResponseBody> workoutAdd(String title, boolean isOnce, String weekDays, String startTime, String finishTime, List<String> exercises, String userId){
+        String[] week = {weekDays};
+        PlanModel data = new PlanModel(title, week, startTime, finishTime, userId, isOnce, "Тренування", true);
         return service.workoutAddRequest(token, data);
     }
 
-    public Observable<WorkoutModel> workoutUpdate(String id, String title, boolean isOnce, String weekDays, String startTime, String finishTime, List<String> exercises){
-        Map<String, String> data = new HashMap<>();
-        data.put("title", title);
-        data.put("isActive", "true");
-        data.put("type", "Тренування");
-        data.put("isOnce", String.valueOf(isOnce));
-        data.put("weekDays", "[" + weekDays + "]");
-        data.put("startTime", startTime);
-        data.put("finishTime", finishTime);
-        data.put("exercises", exercises.toString());
-
-        return service.workoutUpdateRequest(token, id, data);
+    public Observable<WorkoutModel> workoutUpdate(String id, String title, boolean isOnce, String weekDays, String startTime, String finishTime, List<String> exercises, String userId){
+        String[] week = {weekDays};
+        PlanModel data = new PlanModel(id, title, week, startTime, finishTime, userId, isOnce, "Тренування", true);
+        return service.workoutUpdateRequest(token, data);
     }
 
     public Observable<WorkoutModel> workoutRemove(String id){
 
         return service.workoutRemoveRequest(token, id);
+    }
+
+    public Observable<ResponseBody> setPermissionsRequest(String id, Boolean type){
+        return service.setPermissionsRequest(token, type == true ? "provide-access" : "remove-access", id);
     }
 
     public Observable<WorkoutModel> plans(String userId){
@@ -301,7 +353,7 @@ public class Repository {
     }
 
     public Observable<ItemEvent> getEventDetails(String id) {
-        if (token.length() > 10) {
+        if (token.length() > 1) {
             return service.getEventDetails(token, id);
         }else{
             return service.getEventDetails(id);
@@ -383,6 +435,10 @@ public class Repository {
 
     public Observable<ResponseBody> eventApplyingRequest(String id, String user, String type) {
         return service.eventApplyingRequest(token, user, id, type);
+    }
+
+    public Observable<ResponseBody> eventPostRequest(String id, String type) {
+        return service.eventPostRequest(token, id, type);
     }
 
     public Observable<ResponseBody> clubsApplyingRequest(String id, String user, String type) {
@@ -482,7 +538,7 @@ public class Repository {
     }
 
     public Observable<ResponseBody> verifyUserPhoneRequest(String phone, String code) {
-        return service.verifyUserPhoneRequest(token, userId, phone, code)
+        return service.verifyUserPhoneRequest(token, userId, userId, phone, code)
                 .onErrorResumeNext(throwable -> {
                     if (throwable instanceof HttpException) {
                         HttpException httpException = (HttpException) throwable;
@@ -494,7 +550,7 @@ public class Repository {
     }
 
     public Observable<ResponseBody> verifyUserEmailRequest(String email, String code) {
-        return service.verifyUserEmailRequest(token, userId, email, code)
+        return service.verifyUserEmailRequest(token, userId, userId, email, code)
                 .onErrorResumeNext(throwable -> {
                     if (throwable instanceof HttpException) {
                         HttpException httpException = (HttpException) throwable;
@@ -504,16 +560,12 @@ public class Repository {
                     return Observable.error(throwable);
                 });
     }
-    public Repository setPush(String token, String pushToken){
-       service.setPush("Bearer " + token, pushToken).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-               .subscribe(result -> {}, error -> {});
+    public Repository setPush(String pushToken){
+       service.setPush(token, pushToken).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+               .subscribe(result -> {
+                   Log.d("token_result", " "+ result.string());
+                   }, error -> {Log.d("token_result", " "+ error.getMessage());});
        return this;
-    }
-
-    public Repository updatePushToken(String pushToken){
-        Log.d("token_push_update", " "+ pushToken);
-        service.setPush(token, pushToken);
-        return this;
     }
 
     public Observable<City> searchCity(String city) {
@@ -590,18 +642,6 @@ public class Repository {
 
     public Observable<Support> getSupportList() {
         return service.getSupportList(token);
-//            List<SupportItem> mSupportItem = new ArrayList<>();
-//            List<BaseDictionaries> eventHoldingStatuses = sharedPreferences.getDictionarie().getSupportTicketStatuses();
-//                        for (SupportItem supportItem : response.body().getItems()) {
-//                for (BaseDictionaries base : eventHoldingStatuses) {
-//                    if (supportItem.getStatusId().equals(base.getId())) {
-//                        supportItem.setStatusId(base.getTitle());
-//                    }
-//                }
-//                mSupportItem.add(supportItem);
-//            }
-//            Support sportEvents = new Support().setItems(mSupportItem);
-//                        mSupport.setValue(sportEvents);
     }
 
     public Observable<SupportItem> createSupport() {

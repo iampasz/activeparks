@@ -1,11 +1,8 @@
 package com.app.activeparks.ui.training;
 
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,24 +15,23 @@ import android.widget.TextView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.app.activeparks.data.model.workout.WorkoutItem;
-import com.app.activeparks.ui.workout.adapter.list.ListAdapter;
+import com.app.activeparks.ui.workout.adapter.list.TrainingAdapter;
 import com.app.activeparks.util.InputFilterMinMax;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.technodreams.activeparks.R;
 
 import org.jetbrains.annotations.Nullable;
-import org.w3c.dom.Text;
 
 public class TrainingDialog extends BottomSheetDialogFragment {
 
 
-    public static TrainingDialog newInstance(String id) {
+    public static TrainingDialog newInstance(String id, String userId) {
         TrainingDialog fragment = new TrainingDialog();
 
         Bundle bundle = new Bundle();
         bundle.putString("ID", id);
+        bundle.putString("userId", userId);
         fragment.setArguments(bundle);
 
         return fragment;
@@ -60,6 +56,7 @@ public class TrainingDialog extends BottomSheetDialogFragment {
                 new ViewModelProvider(this, new TrainingModelFactory(getContext())).get(TrainingViewModel.class);
 
         String id = getArguments().getString("ID");
+        mViewModel.setUserId(getArguments().getString("userId"));
         mViewModel.workout(id);
     }
 
@@ -110,10 +107,11 @@ public class TrainingDialog extends BottomSheetDialogFragment {
             }
         };
 
-        hourceStart.setFilters(new InputFilter[]{ new InputFilterMinMax("1", "23")});
-        minuteStart.setFilters(new InputFilter[]{ new InputFilterMinMax("1", "59")});
-//        hourceFinish.addTextChangedListener(this);
-//        minuteFinish.addTextChangedListener(this);
+        hourceStart.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "23")});
+        minuteStart.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "59")});
+
+        hourceFinish.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "23")});
+        minuteFinish.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "59")});
 
         mViewModel.getWorkout().observe(getViewLifecycleOwner(), v -> {
             header.setText("Редагувати тренування");
@@ -133,7 +131,14 @@ public class TrainingDialog extends BottomSheetDialogFragment {
             tabLayout.setVisibility(View.GONE);
             titleWeek.setVisibility(View.GONE);
 
-            ListAdapter adapter = new ListAdapter(getActivity(), v.getExercises());
+            TrainingAdapter adapter = new TrainingAdapter(getActivity(), v.getExercises(),true);
+            adapter.setOnListener(new TrainingAdapter.TrainingAdapterListener() {
+                @Override
+                public void onRemove(int id) {
+                    mViewModel.remove(id);
+                    adapter.update();
+                }
+            });
             list.setAdapter(adapter);
 
             createAction.setText("Зберегти дані");
@@ -141,13 +146,20 @@ public class TrainingDialog extends BottomSheetDialogFragment {
                 @Override
                 public void onClick(View v) {
                     mViewModel.workoutUpdate(title.getText().toString(), isOnce.isSelected(),
-                            String.valueOf(tabLayout.getSelectedTabPosition()), hourceStart + ":" + minuteStart,
-                            hourceFinish + ":" + minuteFinish);
+                            String.valueOf(tabLayout.getSelectedTabPosition()), hourceStart.getText().toString() + ":" + minuteStart.getText().toString(),
+                            hourceFinish.getText().toString() + ":" + minuteFinish.getText().toString());
                 }
             });
         });
 
-        ListAdapter adapter = new ListAdapter(getActivity(), mViewModel.getExercises());
+        TrainingAdapter adapter = new TrainingAdapter(getActivity(), mViewModel.getExercises(), true);
+        adapter.setOnListener(new TrainingAdapter.TrainingAdapterListener() {
+            @Override
+            public void onRemove(int id) {
+                mViewModel.remove(id);
+                adapter.update();
+            }
+        });
         list.setAdapter(adapter);
 
         sendNotesAction.setOnClickListener(v -> {
@@ -160,8 +172,8 @@ public class TrainingDialog extends BottomSheetDialogFragment {
             mViewModel.workoutAdd(title.getText().toString(),
                     isOnce.isSelected(),
                     String.valueOf(tabLayout.getSelectedTabPosition()),
-                    hourceStart + ":" + minuteStart,
-                    hourceFinish + ":" + minuteFinish);
+                    hourceStart.getText().toString() + ":" + minuteStart.getText().toString(),
+                    hourceFinish.getText().toString() + ":" + minuteFinish.getText().toString());
         });
 
         closed.setOnClickListener(v -> {

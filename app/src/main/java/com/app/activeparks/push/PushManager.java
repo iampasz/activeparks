@@ -22,6 +22,7 @@ public class PushManager {
 
     public void sendNotification(Context ctx, RemoteMessage remoteMessage){
         String message = remoteMessage.getData().get("body");
+        Log.d("push_message", ""+ remoteMessage.getData());
 
         Intent intent = new Intent(ctx, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

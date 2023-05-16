@@ -2,26 +2,17 @@ package com.app.activeparks.ui.workout.adapter.plan;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.app.activeparks.data.model.clubs.ItemClub;
-import com.app.activeparks.data.model.dictionaries.Region;
-import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.workout.WorkoutItem;
-import com.app.activeparks.ui.clubs.ClubActivity;
-import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
-import com.app.activeparks.ui.workout.adapter.list.ListAdapter;
-import com.bumptech.glide.Glide;
+import com.app.activeparks.ui.workout.adapter.list.TrainingAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.technodreams.activeparks.R;
 
@@ -85,7 +76,7 @@ public class PlanListAdaper extends RecyclerView.Adapter {
                 ((PlanViewHolder) holder).data.setText(item.getStartTime().substring(0, 5) + " - " + item.getFinishTime().substring(0, 5));
             }
             if (item.getExercises() != null) {
-                ((PlanViewHolder) holder).list.setAdapter(new ListAdapter(inflater.getContext(), item.getExercises()));
+                ((PlanViewHolder) holder).list.setAdapter(new TrainingAdapter(inflater.getContext(), item.getExercises(), false));
             }
 
             ((PlanViewHolder) holder).edit.setOnClickListener(v ->{
@@ -96,12 +87,15 @@ public class PlanListAdaper extends RecyclerView.Adapter {
 
     public void weakFilter(int weak){
         listFilter.clear();
-        for (WorkoutItem item : list) {
-            if (item.getWeekDay() == weak){
-                listFilter.add(item);
+        if (list != null) {
+            for (WorkoutItem item : list) {
+                if (item.getWeekDay() == weak) {
+                    listFilter.add(item);
+                }
             }
-        }
         this.notifyDataSetChanged();
+
+        }
     }
 
     @Override

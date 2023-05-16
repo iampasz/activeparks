@@ -47,6 +47,10 @@ public class User {
     @Expose
     private String birthday = "";
 
+    @SerializedName("permissionUser")
+    @Expose
+    private Boolean permissionUser;
+
     @SerializedName("age")
     @Expose
     private Integer age = 0;
@@ -242,6 +246,10 @@ public class User {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public Boolean getPermissionUser() {
+        return permissionUser;
     }
 
     public String getEmail() {

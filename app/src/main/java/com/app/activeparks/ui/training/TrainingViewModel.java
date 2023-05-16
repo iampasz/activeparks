@@ -26,6 +26,8 @@ public class TrainingViewModel extends ViewModel {
     private Repository repository;
     private MutableLiveData<WorkoutItem> workoutItem = new MutableLiveData<>();
 
+    private String  planId, userId;
+
     private List<String> exercises = new ArrayList<>();
 
     public TrainingViewModel(Preferences sharedPreferences) {
@@ -45,7 +47,12 @@ public class TrainingViewModel extends ViewModel {
         exercises.add(title);
     }
 
+    public void remove(int index) {
+        exercises.remove(index);
+    }
+
     public void workout(String id) {
+        planId = id;
         repository.workout(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         result -> {
@@ -57,16 +64,16 @@ public class TrainingViewModel extends ViewModel {
     }
 
     public void workoutAdd(String title, boolean isOnce, String weekDays, String startTime, String finishTime) {
-        repository.workoutAdd(title, isOnce, weekDays, startTime, finishTime, exercises).subscribeOn(Schedulers.io())
+        repository.workoutAdd(title, isOnce, weekDays, startTime, finishTime, exercises, userId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
+                .subscribe(result -> { Log.d("workoutAdd", " msg: " + result.string());
                         },
-                        error -> {
+                        error -> { Log.d("workoutAdd", " msg: " + error.getMessage());
                         });
     }
 
     public void workoutUpdate(String title, boolean isOnce, String weekDays, String startTime, String finishTime) {
-        repository.workoutAdd(title, isOnce, weekDays, startTime, finishTime, exercises).subscribeOn(Schedulers.io())
+        repository.workoutUpdate(planId, title, isOnce, weekDays, startTime, finishTime, exercises, userId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                         },
@@ -81,6 +88,10 @@ public class TrainingViewModel extends ViewModel {
                         },
                         error -> {
                         });
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
 }

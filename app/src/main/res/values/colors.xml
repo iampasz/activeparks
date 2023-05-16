@@ -16,6 +16,7 @@
     <color name="button_style">#444F60</color>
     <color name="button_style_gren">#C5E505</color>
     <color name="text_color">#444F60</color>
+    <color name="text_red">#F4575D</color>
     <color name="text_color_light">#FFFFFF</color>
     <color name="link_color">#1EBDC1</color>
 
@@ -30,4 +31,14 @@
     <color name="light_blue_600">#FF039BE5</color>
     <color name="gray_400">#FFBDBDBD</color>
     <color name="gray_600">#FF757575</color>
+
+    <color name="daysLabelColor">#8A000000</color>
+    <color name="currentMonthDayColor">#de000000</color>
+    <color name="nextMonthDayColor">#1F000000</color>
+    <color name="disabledDialogButtonColor">#1F000000</color>
+
+    <color name="itemHighlightColor">#1F000000</color>
+    <color name="itemFocusedColor">#1A000000</color>
+
+    <color name="defaultColor">#2962FF</color>
 </resources>

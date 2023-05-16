@@ -50,7 +50,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
                     android:text="Підтримка"
                     android:textColor="@color/text_color"
@@ -144,10 +143,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Немає даних"
+            android:text="Ще не створено жодних повідомлень"
             android:textColor="@color/text_color"
             android:layout_marginTop="16dp"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"

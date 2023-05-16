@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.app.activeparks.data.model.clubs.ItemClub;
+import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.repository.Repository;
 import com.app.activeparks.data.model.news.ItemNews;
 import com.app.activeparks.data.model.news.News;
@@ -15,7 +16,10 @@ import com.app.activeparks.data.model.sportsgrounds.Sportsgrounds;
 import com.app.activeparks.data.model.user.User;
 import com.app.activeparks.data.storage.Preferences;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -29,7 +33,7 @@ public class HomeViewModel extends ViewModel {
 
     public MutableLiveData<User> user = new MutableLiveData<>();
     private MutableLiveData<Sportsgrounds> parksList = new MutableLiveData<>();
-    private MutableLiveData<SportEvents> eventsList = new MutableLiveData<>();
+    private MutableLiveData<List<ItemEvent>> eventsList = new MutableLiveData<>();
     private MutableLiveData<News> newsList = new MutableLiveData<>();
     private MutableLiveData<ItemNews> newsDetails = new MutableLiveData<>();
     private MutableLiveData<List<ItemClub>> clubList = new MutableLiveData<>();
@@ -45,10 +49,9 @@ public class HomeViewModel extends ViewModel {
         getParks();
         getNews();
         getSportEvents();
-        updatePushToken();
     }
 
-    public LiveData<SportEvents> getSportEventsList() {
+    public LiveData<List<ItemEvent>> getSportEventsList() {
         return eventsList;
     }
 
@@ -98,30 +101,39 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void getSportEvents() {
-        repository.eventsHome(5).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> eventsList.setValue(result),
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        repository.eventsDay(10, dateFormat.format(new Date()), "").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            List<ItemEvent> filteredList = new ArrayList<>();
+                            for (ItemEvent element : result.getItems()) {
+                                if (!element.getHoldingStatusId().contains("0q8a6xc0-1nb4-1pr4-h5at-4sw3m0l387yp")) {
+                                    filteredList.add(element);
+                                }
+                            }
+                            eventsList.setValue(filteredList);
+                            },
                         error -> {
                         });
     }
 
     public void clubs() {
-        repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        new Repository(preferences).getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         result -> {
                             List<ItemClub> itemClubs = new ArrayList<>();
-                            itemClubs.addAll(result.getItems().getUserIsMember());
-                            itemClubs.addAll(result.getItems().getUserIsHead());
+                            for (ItemClub item: result.getItems().getUserIsMember()){
+                                item.isUser("userIsMember");
+                                itemClubs.add(item);
+                            }
+                            for (ItemClub item: result.getItems().getUserIsHead()){
+                                item.isUser("userIsHead");
+                                itemClubs.add(item);
+                            }
 
                             clubList.setValue(itemClubs);},
                         error -> {
                         }
                 );
-    }
-
-    public void updatePushToken() {
-        if (preferences.getPushToken() != null) {
-            repository.updatePushToken(preferences.getPushToken());
-        }
     }
 
     public void location(double lat, double lon) {
@@ -141,6 +153,9 @@ public class HomeViewModel extends ViewModel {
     }
 
     public boolean getUserAuth() {
-        return preferences.getToken().length() > 1 ? true : false;
+        if (preferences.getToken() != null && preferences.getToken().length() > 0) {
+            return true;
+        }
+        return false;
     }
 }

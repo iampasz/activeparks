@@ -1,31 +1,32 @@
 package com.app.activeparks.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.app.activeparks.data.model.event.RoutePoint;
+import com.app.activeparks.data.model.points.RoutePoint;
 import com.app.activeparks.data.model.sportsgrounds.ItemSportsground;
 import com.app.activeparks.data.model.sportsgrounds.Sportsgrounds;
-import com.technodreams.activeparks.BuildConfig;
 import com.technodreams.activeparks.R;
 
-import org.osmdroid.bonuspack.routing.OSRMRoadManager;
-import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.tilesource.XYTileSource;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
@@ -63,7 +64,7 @@ public class MapsViewControler implements MapEventsReceiver {
 
         //mapView.setTileSource(new MapTilerTileSource());
 
-        mapView.setTileSource(MAPNIK);
+        mapView.setTileSource(TileSourceFactory.MAPNIK);
         mapView.setMultiTouchControls(true);
         mapView.setTilesScaledToDpi(true);
         mapController = (MapController) mapView.getController();
@@ -147,9 +148,8 @@ public class MapsViewControler implements MapEventsReceiver {
         for (ItemSportsground sportsground : sportsgrounds.getSportsground()) {
 
             Marker startMarker = new Marker(mapView);
-            startMarker.setIcon(ctx.getResources().getDrawable(R.drawable.map_icon_mini).mutate());
+            startMarker.setIcon(ctx.getResources().getDrawable(R.drawable.ic_material_location).mutate());
             startMarker.setPosition(new GeoPoint(sportsground.getLocation().get(0), sportsground.getLocation().get(1)));
-            startMarker.setDraggable(true);
             startMarker.setRelatedObject(sportsground);
             startMarker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
                 @Override
@@ -164,14 +164,21 @@ public class MapsViewControler implements MapEventsReceiver {
 
     public void setMarker(final double aLatitude, final double aLongitude) {
         mapView.getOverlays().removeAll(mapView.getOverlays());
-
-        mapView.invalidate();
         Marker startMarker = new Marker(mapView);
-        startMarker.setIcon(ctx.getResources().getDrawable(R.drawable.map_icon_mini).mutate());
+        startMarker.setIcon(ctx.getResources().getDrawable(R.drawable.ic_material_location).mutate());
         startMarker.setPosition(new GeoPoint(aLatitude, aLongitude));
-        startMarker.setDraggable(true);
+        startMarker.setInfoWindow(null);
         mapView.getOverlays().add(startMarker);
+        mapController.setZoom(12.0);
         mapController.setCenter(new GeoPoint(aLatitude, aLongitude));
+        mapView.invalidate();
+    }
+
+    public void selectMarker(Double lat, Double lon) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            mapView.getController().animateTo(new GeoPoint(lat, lon));
+        });
+        mapController.setZoom(20.0);
     }
 
     public void setRoutePint(List<RoutePoint> route) {
@@ -180,15 +187,33 @@ public class MapsViewControler implements MapEventsReceiver {
         line.setColor(Color.parseColor("#1BA8B2"));
         mapController.setCenter(new GeoPoint(route.get(0).getLocation().get(0), route.get(0).getLocation().get(1)));
 
+        int index = 2;
         for (RoutePoint item : route) {
 
             Marker startMarker = new Marker(mapView);
             line.addPoint(new GeoPoint(item.getLocation().get(0), item.getLocation().get(1)));
             startMarker.setPosition(new GeoPoint(item.getLocation().get(0), item.getLocation().get(1)));
-            startMarker.setIcon(ctx.getResources().getDrawable(R.drawable.map_icon_mini).mutate());
+            if (item.getPointIndex() == 0) {
+                startMarker.setIcon(ctx.getResources().getDrawable(R.drawable.ic_map_marker).mutate());
+            }else if (item.getType() == 0) {
+                Bitmap markerBitmap = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.ic_material_location); // Завантажуємо зображення маркера
+                Bitmap mutableBitmap = markerBitmap.copy(Bitmap.Config.ARGB_8888, true); // Копіюємо зображення маркера для редагування
+                Canvas canvas = new Canvas(mutableBitmap); // Створюємо канву для редагування зображення маркера
+                Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG); // Створюємо пензель для малювання тексту
+                paint.setColor(Color.WHITE); // Встановлюємо колір тексту
+                paint.setTextSize(26); // Встановлюємо розмір тексту
+                canvas.drawText("" + index, 16, 30, paint); // Малюємо номер на маркері
+                Drawable markerDrawable = new BitmapDrawable(ctx.getResources(), mutableBitmap); // Перетворюємо зображення маркера в Drawable
+                startMarker.setIcon(markerDrawable);
+                startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+
+                index = index + 1;
+            }else{
+                startMarker.setIcon(ctx.getResources().getDrawable(R.drawable.ic_default_dot).mutate());
+            }
             mapView.getOverlays().add(startMarker);
         }
-        mapController.setZoom(13.0);
+        mapController.setZoom(20.0);
         mapView.getOverlays().add(line);
         mapView.invalidate();
     }
@@ -203,7 +228,9 @@ public class MapsViewControler implements MapEventsReceiver {
     }
 
     public void setPositionMap(double lat, double lon) {
-        mapController.setCenter(new GeoPoint(lat, lon));
+        new Handler(Looper.getMainLooper()).post(() -> {
+            mapView.getController().animateTo(new GeoPoint(lat, lon));
+        });
     }
 
     public void setPosition() {
@@ -232,4 +259,5 @@ public class MapsViewControler implements MapEventsReceiver {
         this.mapsViewListener = mapsViewListener;
         return this;
     }
+
 }

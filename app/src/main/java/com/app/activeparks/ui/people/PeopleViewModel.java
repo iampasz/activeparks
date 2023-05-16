@@ -41,7 +41,6 @@ public class PeopleViewModel extends ViewModel {
     public MutableLiveData<List<WorkoutItem>> journalList = new MutableLiveData<>();
     public MutableLiveData<WorkoutItem> notes = new MutableLiveData<>();
     public MutableLiveData<List<WorkoutItem>> planList = new MutableLiveData<>();
-    public MutableLiveData<UserVideo> userVideoList = new MutableLiveData<>();
 
     public MutableLiveData<String> message = new MutableLiveData<>();
 
@@ -49,9 +48,6 @@ public class PeopleViewModel extends ViewModel {
 
 
     private List<String> mRegion = new ArrayList<>();
-    private List<String> mDictionaries = new ArrayList<>();
-    private List<String> mDictionariesId = new ArrayList<>();
-    private String districtId, regionId;
     public User mProfile;
 
     PeopleViewModel(Preferences sharedPreferences) {
@@ -69,10 +65,6 @@ public class PeopleViewModel extends ViewModel {
 
     public LiveData<SportEvents> getResult() {
         return resultList;
-    }
-
-    public LiveData<UserVideo> getUserVideo() {
-        return userVideoList;
     }
 
     public LiveData<WorkoutItem> getNotes() {
@@ -122,6 +114,26 @@ public class PeopleViewModel extends ViewModel {
         });
     }
 
+    public void event() {
+        repository.eventsUser(mProfile.getId()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            try {
+                                List<ItemEvent> events = new ArrayList<>();
+                                for (ItemEvent items : result.getItems()) {
+                                    if (items.getHoldingStatusId() != null) {
+                                        items.setHoldingStatusText(statusMapper(items.getHoldingStatusId()));
+                                        events.add(items);
+                                    }
+                                }
+                                eventsList.setValue(events);
+                            } catch (Exception e) {
+
+                            }
+                        },
+                        error -> {
+                        });
+    }
+
     public void clubs() {
         clubs(mProfile.getId());
     }
@@ -162,26 +174,16 @@ public class PeopleViewModel extends ViewModel {
     }
 
 
-    public List<String> getRegions() {
-        mRegion.clear();
-        for (Region region : sharedPreferences.getDictionarie().getRegions()) {
-            mRegion.add(region.getTitle());
-        }
-        return mRegion;
-    }
+    public String statusMapper(String status) {
+        if (sharedPreferences.getDictionarie() != null) {
+            for (BaseDictionaries eventHoldingStatuses : sharedPreferences.getDictionarie().getEventHoldingStatuses()) {
+                if (status.equals(eventHoldingStatuses.getId())) {
+                    return eventHoldingStatuses.getTitle();
+                }
+            }
 
-    public User userMapper(User user) {
-        for (District district : sharedPreferences.getDictionarie().getDistricts()) {
-            if (district.getId().equals(user.getDistrictId())) {
-                user.setDistrictId(district.getTitle());
-            }
         }
-        for (Region region : sharedPreferences.getDictionarie().getRegions()) {
-            if (region.getId().equals(user.getRegionId())) {
-                user.setRegionId(region.getAlterTitle());
-            }
-        }
-        return user;
+        return "не відомо";
     }
 
     public String isRole() {

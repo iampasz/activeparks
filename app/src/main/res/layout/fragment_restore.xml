@@ -14,7 +14,7 @@
         android:id="@+id/closed"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:src="@drawable/ic_close" />
+        android:src="@drawable/ic_back_action" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,18 +33,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="18dp"
                 android:gravity="left"
                 android:text="Відновлення паролю"
+                android:fontFamily="@font/montserrat_bold"
                 android:textColor="@color/text_color"
-                android:textSize="28sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
+                android:gravity="left"
+                android:text="Пароль повинен містити великі, маленькі літери та цифри"
+                android:fontFamily="@font/montserrat_medium"
+                android:textColor="@color/text_color"
+                android:textSize="14sp" />
+
 
             <EditText
                 android:id="@+id/email"
                 style="@style/EditText"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:fontFamily="@font/montserrat_medium"
                 android:background="@drawable/backround_edit_text"
                 android:ems="10"
                 android:hint="Електронна пошта"
@@ -57,6 +69,7 @@
                 android:visibility="gone"
                 android:layout_marginTop="8dp"
                 android:gravity="left"
+                android:fontFamily="@font/montserrat_medium"
                 android:text="Отримати код знову можна через: 0 сек."
                 android:textColor="@color/text_color"
                 android:textSize="14sp" />
@@ -66,6 +79,7 @@
                 style="@style/ButtonGray"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
                 android:background="@drawable/button_gray"
                 android:layout_marginTop="16dp"
                 android:padding="16dp"
@@ -78,6 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/montserrat_medium"
                 android:background="@drawable/backround_edit_text"
                 android:ems="10"
                 android:hint="Код із ел. пошти"
@@ -92,6 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/montserrat_medium"
                 android:background="@drawable/backround_edit_text"
                 android:ems="10"
                 android:hint="Новий пароль"
@@ -102,11 +118,12 @@
                 android:id="@+id/restore_action"
                 style="@style/Button"
                 android:visibility="gone"
+                android:fontFamily="@font/montserrat_bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:padding="16dp"
-                android:text="Відправити" />
+                android:text="Змінити пароль" />
 
         </LinearLayout>
     </ScrollView>

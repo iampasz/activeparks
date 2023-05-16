@@ -25,7 +25,7 @@ public class ClubsViewModel extends ViewModel {
     private MutableLiveData<List<ItemClub>> clubsParticipantList = new MutableLiveData<>();
     private List<ItemClub> filter = new ArrayList<>();
     private MutableLiveData<ItemClub> mClubsDetails = new MutableLiveData<>();
-    public Boolean admin = false, apply = false, userInClub = false,  owner = false, member  = false;
+    public Boolean admin = false, apply = false,  owner = false, member  = false;
     public String mId;
 
     public ClubsViewModel(Preferences sharedPreferences)   {
@@ -47,15 +47,25 @@ public class ClubsViewModel extends ViewModel {
 
 
     public void getClubsCreatorList(){
-        repository.getClubsCreator();
+        repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        result -> {
+                            clubsCreatorList.setValue(result.getItems().getUserIsHead());
+                        },
+                        error -> {
+                        }
+                );
     }
 
-    private void getClubsParticipantList(){
-        repository.getClubsParticipant().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                            clubsParticipantList.setValue(result.getItems());
-                        },
-                        error -> {});
+    public void getClubsParticipantList(){
+        repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        result -> {
+                            clubsParticipantList.setValue(result.getItems().getUserIsMember());
+                            },
+                        error -> {
+                        }
+                );
     }
 
     public void getAllClubs(){
@@ -89,12 +99,20 @@ public class ClubsViewModel extends ViewModel {
                     .subscribe(result -> getClubsDetail(mId),
                             error -> {});
         }else {
-            if (userInClub == true) {
-                removeUser();
-            } else {
-                rejectUser();
+            if (mClubsDetails.getValue().getClubUser() != null) {
+                if (mClubsDetails.getValue().getClubUser().getIsApproved() == true) {
+                    removeUser();
+                } else {
+                    rejectUser();
+                }
             }
         }
+    }
+
+    public void setPermissionsRequest(Boolean type){
+        repository.setPermissionsRequest(mId, type).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {},
+                        error -> {});
     }
 
     void filterData(String search) {

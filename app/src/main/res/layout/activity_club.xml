@@ -152,7 +152,7 @@
                         android:textSize="14sp"/>
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginTop="16dp"
                         android:orientation="horizontal">
@@ -169,6 +169,7 @@
                             android:id="@+id/action_youtube"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
                             android:layout_weight="1"
                             android:visibility="gone"
                             app:srcCompat="@drawable/ic_youtube" />
@@ -177,6 +178,7 @@
                             android:id="@+id/action_facebook"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
                             android:layout_weight="1"
                             android:visibility="gone"
                             app:srcCompat="@drawable/ic_facebook" />
@@ -185,6 +187,7 @@
                             android:id="@+id/action_instagram"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
                             android:layout_weight="1"
                             android:visibility="gone"
                             app:srcCompat="@drawable/ic_instagram" />
@@ -194,6 +197,20 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+            <Switch
+                android:id="@+id/switch_permission_user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/ThemeSwitch"
+                android:visibility="gone"
+                android:layout_marginTop="16sp"
+                android:layout_marginBottom="16sp"
+                android:fontFamily="@font/montserrat_medium"
+                android:textColor="@color/text_color"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:text="Надати доступ для тренувань" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -242,7 +259,7 @@
                         android:layout_weight="1"
                         app:cornerRadius="8dp"
                         app:backgroundTint="#DEDFE1"
-                        app:icon="@drawable/ic_file"
+                        app:icon="@drawable/ic_news_button"
                         app:iconTint="#444F60"
                         app:iconGravity="textStart"
                         app:iconPadding="8dp"
@@ -264,7 +281,7 @@
                         android:layout_weight="1"
                         app:cornerRadius="8dp"
                         app:backgroundTint="#DEDFE1"
-                        app:icon="@drawable/ic_calendar"
+                        app:icon="@drawable/ic_rocket"
                         app:iconTint="#444F60"
                         app:iconGravity="textStart"
                         app:iconPadding="8dp"
@@ -279,7 +296,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="25dp"
                     android:orientation="horizontal">
 
                     <com.app.activeparks.util.ButtonSelect
@@ -303,53 +319,73 @@
                         android:textColor="@color/text_color" />
 
                     <com.app.activeparks.util.ButtonSelect
-                        android:id="@+id/qr_action"
+                        android:id="@+id/copy_action"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
                         android:layout_marginLeft="4dp"
-                        android:visibility="gone"
                         android:layout_weight="1"
-                        app:cornerRadius="8dp"
+                        android:text="Поділитися"
+                        android:textAllCaps="false"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="@color/text_color"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
                         app:backgroundTint="#DEDFE1"
-                        app:icon="@drawable/ic_scaner"
-                        app:iconTint="#444F60"
-                        app:iconGravity="textStart"
-                        app:iconPadding="8dp"
-                        android:text="QR Код"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:textAllCaps="false"
-                        android:textColor="@color/text_color" />
-
-                    <com.app.activeparks.util.ButtonSelect
-                        android:id="@+id/club_in_action"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="4dp"
-                        android:layout_weight="1"
-                        android:visibility="gone"
                         app:cornerRadius="8dp"
-                        app:backgroundTint="@color/button_style"
-                        app:icon="@drawable/ic_exit"
-                        app:iconTint="#FFFFFF"
+                        app:icon="@drawable/ic_copy"
                         app:iconGravity="textStart"
                         app:iconPadding="8dp"
-                        android:text="Приєднатись"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:textAllCaps="false"
-                        android:textColor="@color/text_color_light" />
+                        app:iconTint="#444F60" />
+
                 </LinearLayout>
+
+                <com.app.activeparks.util.ButtonSelect
+                    android:id="@+id/qr_action"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:layout_weight="1"
+                    app:cornerRadius="8dp"
+                    app:backgroundTint="#DEDFE1"
+                    app:icon="@drawable/ic_scaner"
+                    app:iconTint="#444F60"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    android:text="Запросити до клубу"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_color" />
+
+                <com.app.activeparks.util.ButtonSelect
+                    android:id="@+id/club_in_action"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    app:cornerRadius="8dp"
+                    app:backgroundTint="@color/button_style"
+                    app:icon="@drawable/ic_exit"
+                    app:iconTint="#FFFFFF"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    android:text="Приєднатись"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_color_light" />
             </LinearLayout>
 
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
+                android:layout_marginTop="24dp"
                 android:background="@color/button_style"
                 />
 

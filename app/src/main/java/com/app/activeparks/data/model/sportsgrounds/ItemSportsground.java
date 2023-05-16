@@ -19,7 +19,7 @@ public class ItemSportsground {
     private String code;
     @SerializedName("location")
     @Expose
-    private List<Double> location = null;
+    private List<Double> location;
     @SerializedName("title")
     @Expose
     private String title;
@@ -118,16 +118,16 @@ public class ItemSportsground {
     private Object deletedAt;
     @SerializedName("sportEvents")
     @Expose
-    private List<SportEvents> sportEvents = null;
+    private List<SportEvents> sportEvents;
     @SerializedName("photos")
     @Expose
     private List<String> photos = null;
     @SerializedName("fitnessEquipment")
     @Expose
-    private List<Object> fitnessEquipment = null;
+    private List<Object> fitnessEquipment;
     @SerializedName("coordinators")
     @Expose
-    private List<Coordinator> coordinators = null;
+    private List<Coordinator> coordinators;
     @SerializedName("owner")
     @Expose
     private Owner owner;

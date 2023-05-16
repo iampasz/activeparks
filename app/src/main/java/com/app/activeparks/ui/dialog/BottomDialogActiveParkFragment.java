@@ -60,7 +60,7 @@ public class BottomDialogActiveParkFragment extends BottomSheetDialogFragment{
         infoAction = view.findViewById(R.id.info_action);
         mapAction = view.findViewById(R.id.map_action);
 
-        if (sportsground.getTitle() != null) {
+        if (sportsground != null && sportsground.getTitle() != null) {
             title.setText(sportsground.getTitle());
         }
 
@@ -75,9 +75,11 @@ public class BottomDialogActiveParkFragment extends BottomSheetDialogFragment{
         });
 
         mapAction.setOnClickListener(v-> {
-            String uri = "https://www.google.com/maps/search/?api=1&query=" + lat + "," + lon;
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-            startActivity(intent);
+            if (sportsground.getLocation() != null) {
+                String uri = "https://google.com/maps/search/?api=1&query=" + sportsground.getLocation().get(0) + "," + sportsground.getLocation().get(1);
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                startActivity(intent);
+            }
         });
         return view;
 

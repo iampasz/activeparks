@@ -3,6 +3,7 @@ package com.app.activeparks.data;
 import com.app.activeparks.data.model.Default;
 import com.app.activeparks.data.model.authorisation.Authorisation;
 import com.app.activeparks.data.model.authorisation.Signup;
+import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.city.City;
 import com.app.activeparks.data.model.clubs.Clubs;
 import com.app.activeparks.data.model.clubs.ClubsUserIsMemberModel;
@@ -26,9 +27,11 @@ import com.app.activeparks.data.model.user.UserParticipants;
 import com.app.activeparks.data.model.uservideo.UserVideo;
 import com.app.activeparks.data.model.uservideo.UserVideoItem;
 import com.app.activeparks.data.model.video.Video;
+import com.app.activeparks.data.model.workout.PlanModel;
 import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.data.model.workout.WorkoutModel;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import io.reactivex.Observable;
@@ -40,6 +43,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -70,7 +74,7 @@ public interface ApiService {
 
     //Новини Клуба
     @GET("/api/v1/clubs/{id}/news?offset=0&limit=20")
-    Observable<News> getClubsNews(@Path("id") String id);
+    Observable<News> getClubsNews(@Header("Authorization") String token, @Path("id") String id);
 
     //Новини
     @GET("/api/v1/news/{id}")
@@ -80,9 +84,13 @@ public interface ApiService {
     @GET("/api/v1/clubs/{club}/news/{id}")
     Observable<ItemNews> getNewsDetails(@Path("club") String club, @Path("id") String id);
 
+    //Заходи
+    @GET("/api/v1/sport-events/all?offset=0&limit=270")
+    Observable<CalendarModel> calendarEventRequest(@QueryMap Map<String, String> options);
+
     @PUT("/api/v1/sport-events/{id}/set-estimation")
     @FormUrlEncoded
-    Observable<SportEvents> eventEstimationRequest(@Header("Authorization") String token, @Path(value = "id", encoded = true) String url, @Field("eventEstimation") String eventEstimation, @Field("selfEstimation") String selfEstimation);
+    Observable<SportEvents> eventEstimationRequest(@Header("Authorization") String token, @Path(value = "id", encoded = true) String url, @Field("id") String id, @Field("eventEstimation") String eventEstimation);
 
     //Заходи
     @GET("/api/v1/sport-events{my}")
@@ -109,11 +117,6 @@ public interface ApiService {
     //Заходи список користувачів
     @GET("/api/v1/sport-events/{id}/participants/{user}")
     Observable<UserParticipants> getEventUser(@Header("Authorization") String token, @Path("id") String id, @Path("user") String user);
-
-    //Відправка коду
-    @POST("/api/v1/users/phone")
-    @FormUrlEncoded
-    Call<Default> sendOfCodePhone(@Field("phone") String email);
 
     //Відправка коду
     @POST("/api/v1/users/email")
@@ -173,13 +176,13 @@ public interface ApiService {
     @POST("/api/v1/users/phone")
     Observable<ResponseBody> sendSmsRequest(@Header("Authorization") String token, @Field("phone") String pushToke);
 
-    @FormUrlEncoded
     @POST("/api/v1/users/{user}/phone-verify")
-    Observable<ResponseBody> verifyUserPhoneRequest(@Header("Authorization") String token, @Path("user") String id, @Field("phone") String phone, @Field("code") String code);
+    @FormUrlEncoded
+    Observable<ResponseBody> verifyUserPhoneRequest(@Header("Authorization") String token, @Path("user") String user, @Field("id") String id, @Field("phone") String phone, @Field("code") String code);
 
     @FormUrlEncoded
     @POST("/api/v1/users/{user}/change-email")
-    Observable<ResponseBody> verifyUserEmailRequest(@Header("Authorization") String token, @Path("user") String id, @Field("email") String email, @Field("code") String code);
+    Observable<ResponseBody> verifyUserEmailRequest(@Header("Authorization") String token, @Path("user") String user, @Field("id") String id, @Field("email") String email, @Field("code") String code);
 
 
     @DELETE("/api/v1/users/{id}")
@@ -218,15 +221,15 @@ public interface ApiService {
     Observable<Notifications> getNotifications(@Header("Authorization") String token);
 
     //Get user notifications
-    @GET("/api/v1/clubs/creator?offset=0&limit=10")
+    @GET("/api/v1/clubs/creator?offset=0&limit=20")
     Observable<Clubs> getClubsCreator(@Header("Authorization") String token);
 
     //Get user notifications
-    @GET("/api/v1/clubs/participant?offset=0&limit=10")
+    @GET("/api/v1/clubs/participant?offset=0&limit=20")
     Observable<Clubs> getClubsParticipant(@Header("Authorization") String token);
 
     //Get clubs
-    @GET("/api/v1/clubs?offset=0&limit=10")
+    @GET("/api/v1/clubs?offset=0&limit=20")
     Observable<Clubs> getClubsAll(@Header("Authorization") String token);
 
     //Get clubs
@@ -265,6 +268,9 @@ public interface ApiService {
     @FormUrlEncoded
     Observable<ResponseBody> eventApplyingRequest(@Header("Authorization") String token, @Field("userId") String userId, @Path("id") String id, @Path("type") String type);
 
+    @POST("/api/v1/sport-events/{id}/{type}")
+    Observable<ResponseBody> eventPostRequest(@Header("Authorization") String token, @Path("id") String id, @Path("type") String type);
+
     @POST("/api/v1/clubs/{id}/{type}")
     @FormUrlEncoded
     Observable<ResponseBody> clubsApplyingRequest(@Header("Authorization") String token, @Field("userId") String userId, @Path("id") String id, @Path("type") String type);
@@ -280,7 +286,7 @@ public interface ApiService {
     Observable<ResponseBody> removeUser(@Header("Authorization") String token, @Path("id") String id, @Field("userId") String userId);
 
     //Get Support List
-    @GET("/api/v1/support-tickets?offset=0&limit=40&sort[publishedAt]=desc")
+    @GET("/api/v1/support-tickets?offset=0&limit=30&sort[lastStatusChange]=desc")
     Observable<Support> getSupportList(@Header("Authorization") String token);
 
     //Створиння питання
@@ -319,18 +325,22 @@ public interface ApiService {
     @GET("/api/v1/workouts/{url}")
     Observable<WorkoutItem> workout(@Header("Authorization") String token, @Path(value = "url") String url);
 
+    @POST("/api/v1/workouts/{type}")
+    @FormUrlEncoded
+    Observable<ResponseBody> setPermissionsRequest(@Header("Authorization") String token, @Path(value = "type") String url, @Field("clubId") String clubId);
+
     //Workouts Sport
-    @POST("/api/v1/workouts/{url}")
-    Observable<WorkoutModel> workoutAddRequest(@Header("Authorization") String token, @QueryMap(encoded = true) Map<String, String> options);
+    @POST("/api/v1/workouts")
+    Observable<ResponseBody> workoutAddRequest(@Header("Authorization") String token, @Body PlanModel request);
 
     @PUT("/api/v1/workouts/{id}")
-    Observable<WorkoutModel> workoutUpdateRequest(@Header("Authorization") String token, @Path(value = "id") String url, @QueryMap(encoded = true) Map<String, String> options);
+    Observable<WorkoutModel> workoutUpdateRequest(@Header("Authorization") String token, @Body PlanModel request);
 
     @DELETE("/api/v1/workouts/{id}")
     Observable<WorkoutModel> workoutRemoveRequest(@Header("Authorization") String token, @Path(value = "id") String url);
 
     //Post Sport details
-    @POST("/api/v1/sport-events/{event_id}/points/{point_id}/pass")
+    @POST("/api/v1/sport-events/{event}/points/{point}/pass")
     Observable<ResponseBody> pintRequest(@Header("Authorization") String token, @Path("event") String event, @Path("point") String point);
 
     //Post Sport details
@@ -352,7 +362,6 @@ public interface ApiService {
     Observable<QrCodeModel> createQrCodeClubRequest(@Header("Authorization") String token, @QueryMap(encoded = true) Map<String, String> options);
 
     //Upload file
-
     @POST("/api/v1/uploads")
     @Multipart
     Observable<Default> updateFile(@Header("Authorization") String token,

@@ -1,5 +1,8 @@
 package com.app.activeparks.ui.qr;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -11,8 +14,10 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -34,6 +39,8 @@ public class QrCodeActivity extends AppCompatActivity {
     private ImageView mQrCode;
     private Bitmap bitmap;
     private QRGEncoder qrgEncoder;
+    private TextView textView;
+    private FrameLayout copyAction;
 
 
     @Override
@@ -44,25 +51,41 @@ public class QrCodeActivity extends AppCompatActivity {
         mViewModel =
                 new ViewModelProvider(this, new QrModelFactory(this)).get(QrViewModel.class);
 
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+
         findViewById(R.id.closed).setOnClickListener((View v) -> {
             finish();
         });
 
+        String clubId = getIntent().getStringExtra("clubId");
+
         mQrCode = findViewById(R.id.image_qr);
+        copyAction = findViewById(R.id.copy_action);
+
+        textView = findViewById(R.id.url);
 
         if (getIntent().getBooleanExtra("club", false) == true){
-            mViewModel.createQrCodeClub(getIntent().getStringExtra("clubId"));
+            mViewModel.createQrCodeClub(clubId);
+            findViewById(R.id.shared_action).setVisibility(View.VISIBLE);
+            textView.setText("https://ap.sportforall.gov.ua/fc/" + clubId);
         }else{
-            //mViewModel.createQrCodePoint(getIntent().getStringExtra("eventId"), getIntent().getStringExtra("pointId"));
             createCode(getIntent().getStringExtra("pointId"));
+            copyAction.setVisibility(View.VISIBLE);
         }
 
         mViewModel.getQrCode().observe(this, qr -> createCode(qr));
+
+        copyAction.setOnClickListener(v ->{
+            ClipData clip = ClipData.newPlainText("", textView.getText().toString());
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(this, "Скопійовано", Toast.LENGTH_SHORT).show();
+        });
     }
 
     void createCode(String qr){
         WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
+
 
         Point point = new Point();
         display.getSize(point);

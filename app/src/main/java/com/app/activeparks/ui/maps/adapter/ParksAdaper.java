@@ -43,13 +43,13 @@ public class ParksAdaper extends RecyclerView.Adapter<ParksAdaper.ViewHolder> {
         ItemSportsground sportsground = list.get(position);
         holder.metr.setText(sportsground.getTitle());
         holder.title.setText(sportsground.getTitle());
-        holder.metr.setText(round(sportsground.getDistanceToPoint(), 2)  + " м");
+        holder.metr.setText(round(sportsground.getDistanceToPoint(), 2)  + " км");
 
         holder.mapsAction.setOnClickListener(v -> {
             parksAdaperListener.onClick(sportsground.getLocation().get(0), sportsground.getLocation().get(1));
         });
 
-        holder.infoParks.setOnClickListener(v -> {
+        holder.itemView.setOnClickListener(v -> {
             parksAdaperListener.onInfoPark(sportsground);
         });
     }

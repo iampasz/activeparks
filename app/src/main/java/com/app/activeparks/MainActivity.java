@@ -2,12 +2,14 @@ package com.app.activeparks;
 
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.app.activeparks.data.NetworkModule;
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.data.storage.bd.AppDatabase;
+import com.app.activeparks.repository.Repository;
 import com.app.activeparks.ui.maps.MapsFragment;
 import com.app.activeparks.ui.profile.EditProfileActivity;
 import com.app.activeparks.util.Dictionarie;
@@ -25,28 +27,36 @@ import androidx.room.Room;
 
 import com.technodreams.activeparks.databinding.ActivityMainBinding;
 
+import java.util.Locale;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
 
 public class MainActivity extends AppCompatActivity implements FragmentInteface {
 
     private ActivityMainBinding binding;
-    public BottomNavigationView bottomNavigationView;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         bottomNavigationView = findViewById(R.id.nav_view);
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
-//        binding.actionScaner.setOnClickListener(v -> {
-//            navigation(R.id.navigation_scaner);
-//        });
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        NavigationUI.setupWithNavController(binding.navView, navController);
 
         new Dictionarie().init(this);
+        updatePushToken();
+
+        Locale locale = new Locale("uk-rUA");
+        Locale.setDefault(locale);
+        Configuration configuration = new Configuration();
+        configuration.locale = locale;
+        getBaseContext().getResources().updateConfiguration(configuration, null);
 
         //startActivity(new Intent(this, TestUpdate.class));
     }
@@ -60,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
             EditProfileActivity fragment = (EditProfileActivity) getSupportFragmentManager().findFragmentByTag("MY_FRAGMENT_TAG");
             fragment.onActivityResult(requestCode, resultCode, data);
         }
-
 
         if (data == null) {
             return;
@@ -92,6 +101,16 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
     public void message(String msg) {
         if (msg != null) {
             Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void updatePushToken(){
+        Preferences preferences = new Preferences(this);
+        if (preferences.getServer() == true) {
+            message("Тестовий сервер включений");
+        }
+        if (preferences.getPushToken() != null) {
+            new Repository(preferences).setPush(preferences.getPushToken());
         }
     }
 

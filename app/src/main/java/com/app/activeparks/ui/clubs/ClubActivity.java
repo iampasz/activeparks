@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,12 +28,14 @@ import java.util.Locale;
 public class ClubActivity extends AppCompatActivity {
 
 
-    private ClubsViewModel mViewModel;
+    private ClubsViewModel viewModel;
 
     private ImageView mImageView, mHideDescription;
 
+    private Switch permissionUser;
+
     private TextView mTitle, subtitle, mUser, mDescription, mCreateAt, mPhone;
-    private ButtonSelect news, event, people, qr, mApproved;
+    private ButtonSelect news, event, people, qr, join;
 
 
     @Override
@@ -41,10 +44,10 @@ public class ClubActivity extends AppCompatActivity {
         setContentView(R.layout.activity_club);
         overridePendingTransition(R.anim.start, R.anim.end);
 
-        mViewModel =
+        viewModel =
                 new ViewModelProvider(this, new ClubsModelFactory(this)).get(ClubsViewModel.class);
 
-        mViewModel.getClubsDetail(getIntent().getStringExtra("id"));
+        viewModel.getClubsDetail(getIntent().getStringExtra("id"));
 
         findViewById(R.id.closed).setOnClickListener((View v) -> {
             onBackPressed();
@@ -60,14 +63,16 @@ public class ClubActivity extends AppCompatActivity {
         mCreateAt = findViewById(R.id.text_data_create);
         mPhone = findViewById(R.id.text_phone);
 
+        permissionUser = findViewById(R.id.switch_permission_user);
+
 
         news = findViewById(R.id.news_action);
         event = findViewById(R.id.event_action);
         people = findViewById(R.id.people_action);
         qr = findViewById(R.id.qr_action);
-        mApproved = findViewById(R.id.club_in_action);
+        join = findViewById(R.id.club_in_action);
 
-        mViewModel.getEventDetails().observe(this, clubs -> {
+        viewModel.getEventDetails().observe(this, clubs -> {
             try {
                 Glide.with(this).load(clubs.getLogoUrl()).error(R.drawable.ic_prew).into(mImageView);
                 mTitle.setText(clubs.getName());
@@ -85,16 +90,6 @@ public class ClubActivity extends AppCompatActivity {
                 mUser.setText("" + clubs.getMemberAmount());
                 mPhone.setText(clubs.getPhone());
 
-                if (clubs.getClubUser() != null) {
-                    if (clubs.getClubUser().getIsApproved() == true) {
-                        mApproved.setText("Вийти");
-                    } else {
-                        mApproved.setText("Відмінити");
-                    }
-                } else {
-                    mApproved.setText("Приєднатись");
-                }
-
                 if (clubs.getTelegramUrl() != null) {
                     setView(findViewById(R.id.action_telegram), clubs.getTelegramUrl());
                 }
@@ -111,28 +106,64 @@ public class ClubActivity extends AppCompatActivity {
                     setView(findViewById(R.id.action_instagram), clubs.getInstagramUrl());
                 }
 
-                mApproved.setEnabled(true);
+                if (clubs.permissionUser() != null) {
+                    permissionUser.setChecked(clubs.permissionUser());
+                }
+
+                if (clubs.getClubUser() != null) {
+                    if (clubs.getClubUser().getIsCoordinator() == true || clubs.getClubUser().getIsActing() == true ) {
+                        qr.setVisibility(View.VISIBLE);
+                        qr.setOnClickListener(v -> {
+                            startActivity(new Intent(this, QrCodeActivity.class)
+                                    .putExtra("club", true)
+                                    .putExtra("clubId", viewModel.mId));
+                        });
+                        permissionUser.setVisibility(View.GONE);
+                    }else{
+                        join.setVisibility(View.VISIBLE);
+                        join.setOnClickListener(v -> {
+                            viewModel.applyUser();
+                            join.setEnabled(false);
+                        });
+                        permissionUser.setVisibility(View.VISIBLE);
+                    }
+
+                    if (clubs.getClubUser().getIsApproved() == true) {
+                        join.setText("Вийти");
+                    } else {
+                        join.setText("Відмінити");
+                    }
+                }else{
+                    join.setVisibility(View.VISIBLE);
+                    join.setText("Приєднатись");
+                    join.setOnClickListener(v -> {
+                        viewModel.applyUser();
+                        join.setEnabled(false);
+                    });
+                }
+
+                join.setEnabled(true);
 
             } catch (Exception e) {
             }
         });
 
-        setFragment(new NewsFragment(mViewModel.mId));
+        setFragment(new NewsFragment(viewModel.mId));
 
         news.setOnClickListener(v -> {
-            setFragment(new NewsFragment(mViewModel.mId));
+            setFragment(new NewsFragment(viewModel.mId));
             replaceButton();
             news.on();
         });
 
         event.setOnClickListener(v -> {
-            setFragment(new EventsListFragment(mViewModel.mId));
+            setFragment(new EventsListFragment(viewModel.mId));
             replaceButton();
             event.on();
         });
 
         people.setOnClickListener(v -> {
-            setFragment(new ParticipantsFragment(mViewModel.mId, mViewModel.admin, false));
+            setFragment(new ParticipantsFragment(viewModel.mId, viewModel.admin, false));
             replaceButton();
             people.on();
         });
@@ -147,23 +178,17 @@ public class ClubActivity extends AppCompatActivity {
             }
         });
 
-        if (mViewModel.admin == true) {
-            qr.setVisibility(View.VISIBLE);
-            qr.setVisibility(View.GONE);
-            qr.setOnClickListener(v -> {
-                startActivity(new Intent(this, QrCodeActivity.class)
-                        .putExtra("club", true)
-                        .putExtra("clubId", mViewModel.mId));
-            });
-        } else {
-            qr.setVisibility(View.GONE);
-            mApproved.setVisibility(View.VISIBLE);
-            mApproved.setOnClickListener(v -> {
-                mViewModel.applyUser();
-                mApproved.setEnabled(false);
-            });
-        }
+        permissionUser.setOnClickListener(v -> {
+            viewModel.setPermissionsRequest(permissionUser.isChecked());
+        });
 
+        findViewById(R.id.copy_action).setOnClickListener((View v) -> {
+            Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Хочу тебе запросити в " + mTitle.getText().toString());
+            intent.putExtra(android.content.Intent.EXTRA_TEXT, "Хочу тебе запросити в " + mTitle.getText().toString() + " " + "https://ap.sportforall.gov.ua/fc/" + viewModel.mId);
+            startActivity(Intent.createChooser(intent, getString(R.string.app_name)));
+        });
     }
 
     void setFragment(Fragment fragment) {

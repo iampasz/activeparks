@@ -27,6 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
+        android:padding="2dp"
         android:gravity="left"
         android:orientation="vertical">
 
@@ -35,31 +36,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         android:text="Клуб"
         android:textColor="@color/text_color"
         />
 
         <TextView
-            android:id="@+id/city"
+            android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="1"
             android:text="Клуб"
             android:textColor="@color/text_color"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
 
             <android.widget.Button
                 android:id="@+id/status"
-                android:background="@drawable/button_color"
+                android:background="@drawable/button_yellow"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:textColor="@color/white"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:layout_marginTop="8dp"
-                android:textSize="16sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="2dp"
+                android:textSize="14sp"
                 android:textAllCaps="false"
                 android:text="Ви учасник" />
 

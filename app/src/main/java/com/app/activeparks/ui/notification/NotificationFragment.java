@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.app.activeparks.ui.clubs.ClubActivity;
@@ -26,7 +27,7 @@ import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 import com.technodreams.activeparks.databinding.FragmentNotificationBinding;
 
-public class NotificationFragment extends Fragment {
+public class NotificationFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private FragmentNotificationBinding binding;
     private NotificationViewModel viewModel;
@@ -42,6 +43,8 @@ public class NotificationFragment extends Fragment {
         ViewPager2 listNotificationsHorizontal = binding.listNotificationsHorizontal;
         ViewPager2 listRaiting = binding.listRaiting;
         RecyclerView listNotifications = binding.listNotifications;
+
+        binding.swipeRefreshLayout.setOnRefreshListener(this);
 
         listNotificationsHorizontal.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
 
@@ -60,9 +63,11 @@ public class NotificationFragment extends Fragment {
         });
 
         viewModel.getSportRaitingEventsList().observe(getViewLifecycleOwner(), events -> {
-            if (events.getItems().size() > 0) {
+            if (events.getItems() != null && events.getItems().size() > 0) {
                 binding.titleRaiting.setVisibility(View.VISIBLE);
                 listRaiting.setVisibility(View.VISIBLE);
+            }else {
+                return;
             }
 
             listRaiting.setAdapter(new EventsAdaper(getActivity(), events, true).setOnCliclListener(new EventsAdaper.ParksAdaperListener() {
@@ -96,15 +101,17 @@ public class NotificationFragment extends Fragment {
         });
 
         if (viewModel.getUserAuth()) {
-            binding.panelUser.setVisibility(View.VISIBLE);
+            binding.frameAvatar.setVisibility(View.VISIBLE);
+            binding.autchStatus.setVisibility(View.GONE);
         }
 
         viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             binding.profileFilling.setProgress(user.getProfileFilling());
             Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(binding.imageUser);
-            binding.imageUser.setOnClickListener(v -> {
-                ((FragmentInteface) getActivity()).navigation(R.id.navigation_user);
-            });
+        });
+
+        binding.panelUser.setOnClickListener(v -> {
+            ((FragmentInteface) getActivity()).navigation(R.id.navigation_user);
         });
 
 
@@ -117,5 +124,11 @@ public class NotificationFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onRefresh() {
+        binding.swipeRefreshLayout.setRefreshing(false);
+        viewModel.update();
     }
 }

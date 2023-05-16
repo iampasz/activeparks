@@ -91,6 +91,15 @@ public class RestoreFragment extends Fragment {
             }
         });
 
+        mViewModel.getClosed().observe(getViewLifecycleOwner(), type -> {
+            if (type == true) {
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container_user, new AuthFragment())
+                        .commit();
+            }
+        });
+
         return binding;
     }
 

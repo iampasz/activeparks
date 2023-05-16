@@ -18,7 +18,10 @@ public class UserViewModel extends ViewModel {
 
 
     public boolean getUserAuth() {
-        return sharedPreferences.getToken().length() > 1 ? true : false;
+        if (sharedPreferences.getToken() != null && sharedPreferences.getToken().length() > 1) {
+            return true;
+        }
+        return false;
     }
 
 }

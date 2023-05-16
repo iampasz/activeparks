@@ -11,11 +11,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.app.activeparks.data.model.calendar.CalendarItem;
+import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
-import com.app.activeparks.ui.home.HomeFragment;
-import com.app.activeparks.util.FragmentInteface;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
@@ -33,8 +33,6 @@ public class EventsListFragment extends Fragment {
     private FragmentEventsBinding binding;
     private EventViewModel mViewModel;
     private String id = null;
-    private CalendarView calendarView;
-    private RecyclerView listClubOwner;
 
     public EventsListFragment(){}
 
@@ -51,34 +49,24 @@ public class EventsListFragment extends Fragment {
 
         View root = binding.getRoot();
 
-        listClubOwner = binding.listEvents;
+        binding.panelTop.setVisibility(View.GONE);
+        mViewModel.calendarEvent(id);
+        mViewModel.getEventsList(id);
 
-        calendarView = binding.calendarView;
-
-        if (id !=  null){
-            binding.panelTop.setVisibility(View.GONE);
-            mViewModel.getSportEvents(id);
-        }else {
-            mViewModel.getSportEvents();
-            binding.panelTop.setVisibility(View.VISIBLE);
-            binding.closed.setOnClickListener(v ->{
-                ((FragmentInteface) getActivity()).show(new HomeFragment());
-            });
-        }
-
-        mViewModel.getSportEventsList().observe(getViewLifecycleOwner(), events -> {
-            Calendar cal = Calendar.getInstance();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                        setAdapter(mViewModel.filterData(dateFormat.format(cal.getTime())));
+        mViewModel.getCalendar().observe(getViewLifecycleOwner(), events -> {
             setMaperAdapter(events);
         });
 
-        calendarView.setOnDayClickListener(new OnDayClickListener() {
+        mViewModel.getSportEventsList().observe(getViewLifecycleOwner(), events -> {
+            setAdapter(events);
+        });
+
+        binding.calendarView.setOnDayClickListener(new OnDayClickListener() {
             @Override
             public void onDayClick(EventDay eventDay) {
                 Calendar cal = eventDay.getCalendar();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                setAdapter(mViewModel.filterData(dateFormat.format(cal.getTime())));
+                mViewModel.getEvents(dateFormat.format(cal.getTime()), id);
             }
         });
 
@@ -87,17 +75,17 @@ public class EventsListFragment extends Fragment {
     }
 
 
-    public void setMaperAdapter(SportEvents events) {
+    public void setMaperAdapter(CalendarModel calendarItem) {
         List<EventDay> days = new ArrayList<>();
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        for (ItemEvent itemEvent : events.getItems()){
+        for (CalendarItem item : calendarItem.getItems()) {
             try {
-                if (itemEvent.getStartsAt() != null) {
+                if (item.data() != null) {
                     calendar = Calendar.getInstance();
-                    calendar.setTime(sdf.parse(itemEvent.getStartsAt().substring(0, 10)));
+                    calendar.setTime(sdf.parse(item.data()));
                     days.add(new EventDay(calendar, R.drawable.seekbar_drawable_mark));
                 }
             } catch (ParseException e) {
@@ -105,15 +93,14 @@ public class EventsListFragment extends Fragment {
             }
         }
 
-        calendarView.setEvents(days);
-
+        binding.calendarView.setEvents(days);
     }
 
     public void setAdapter(SportEvents events) {
         if (events.getItems().size() > 0) {
             binding.listNull.setVisibility(View.GONE);
         }
-        listClubOwner.setAdapter(new EventsListAdaper(getActivity(), events.getItems()).setOnEventListener(new EventsListAdaper.EventsListener() {
+        binding.listEvents.setAdapter(new EventsListAdaper(getActivity(), events.getItems()).setOnEventListener(new EventsListAdaper.EventsListener() {
             @Override
             public void onInfo(ItemEvent itemClub) {
                 startActivity(new Intent(getActivity(), EventActivity.class).putExtra("id", itemClub.getId()));

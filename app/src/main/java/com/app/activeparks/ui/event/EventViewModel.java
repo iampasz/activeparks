@@ -4,16 +4,19 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.app.activeparks.data.model.calendar.CalendarModel;
+import com.app.activeparks.data.model.points.RoutePoint;
 import com.app.activeparks.data.model.meetings.MeetingsModel;
 import com.app.activeparks.repository.Repository;
 import com.app.activeparks.data.model.dictionaries.BaseDictionaries;
-import com.app.activeparks.data.model.event.RoutePoint;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.data.storage.Preferences;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -25,12 +28,13 @@ public class EventViewModel extends ViewModel {
     private MutableLiveData<ItemEvent> mItemEvent;
     private MutableLiveData<SportEvents> mSportEvents;
     private MutableLiveData<String> location = new MutableLiveData<>();
+    private MutableLiveData<CalendarModel> calendar = new MutableLiveData<>();
     private MutableLiveData<List<MeetingsModel.MeetingItem>> mMeeting = new MutableLiveData<>();
-    public List<RoutePoint> routePoints = new ArrayList<>();
-    private ArrayList<ItemEvent> mFilterSportEvent = new ArrayList<>();
     private List<BaseDictionaries> eventHoldingStatuses = new ArrayList<>();
     public List<ItemEvent> mSportEvent = new ArrayList<>();
     public String mId;
+
+    public RoutePoint address;
 
     public Boolean isCoordinator = false;
 
@@ -45,7 +49,7 @@ public class EventViewModel extends ViewModel {
             if (preferences.getDictionarie() != null) {
                 eventHoldingStatuses = preferences.getDictionarie().getEventHoldingStatuses();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
         }
     }
 
@@ -55,6 +59,10 @@ public class EventViewModel extends ViewModel {
 
     public LiveData<SportEvents> getSportEventsList() {
         return mSportEvents;
+    }
+
+    public LiveData<CalendarModel> getCalendar() {
+        return calendar;
     }
 
     public LiveData<String> getLocation() {
@@ -69,11 +77,13 @@ public class EventViewModel extends ViewModel {
         mId = id;
         repository.getEventDetails(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                            mItemEvent.setValue(result);
-                            if (result.getRoutePoints() != null) {
-                                routePoints = result.getRoutePoints();
-                                Collections.sort(routePoints);
+                            for (RoutePoint item : result.getRoutePoints()) {
+                                if (item.getPointIndex() == 0) {
+                                    address = item;
+                                    break;
+                                }
                             }
+                            mItemEvent.setValue(result);
                             if (result.getEventUser().getIsCoordinator() != null) {
                                 isCoordinator = result.getEventUser().getIsCoordinator();
                             }
@@ -88,16 +98,53 @@ public class EventViewModel extends ViewModel {
         }
     }
 
-    public void getSportEvents() {
-        repository.events(90).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> statusMapper(result.getItems()),
+    public void calendarEvent() {
+        calendarEvent("");
+    }
+
+    public void calendarEvent(String id) {
+        calendarEvent(new Date(), id);
+    }
+
+    public void calendarEvent(Date date, String id) {
+        repository.calendarEventRequest(date, id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            if (result != null) {
+                                calendar.setValue(result);
+                            }
+                        },
                         error -> {
                         });
     }
 
-    public void getSportEvents(String id) {
-        repository.getClubEvents(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> statusMapper(result.getItems()),
+    public void getEventsList() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        eventsDay(dateFormat.format(new Date()));
+    }
+
+    public void getEventsList(String clubId) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        getEvents(dateFormat.format(new Date()), clubId);
+    }
+
+    public void getEvents(String date) {
+        getEvents(date, "");
+    }
+
+    public void getEvents(String date, String clubId) {
+        repository.events(30, date, clubId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            statusMapper(result.getItems());
+                        },
+                        error -> {
+                        });
+    }
+
+    public void eventsDay(String date) {
+        repository.eventsDay(10, date, "").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            statusMapper(result.getItems());
+                        },
                         error -> {
                         });
     }
@@ -131,11 +178,24 @@ public class EventViewModel extends ViewModel {
                         });
     }
 
+    public void startEvent() {
+        if (mItemEvent.getValue().getRouteStartAt() != null) {
+            repository.eventPostRequest(mId, "stop-route").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result -> getUpdateEvent(),
+                            error -> getUpdateEvent());
+        } else {
+            repository.eventPostRequest(mId, "start-route").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result -> getUpdateEvent(),
+                            error -> getUpdateEvent());
+        }
+    }
+
     public void statusMapper(List<ItemEvent> itemEvent) {
+        mSportEvent.clear();
         for (ItemEvent itemEvent1 : itemEvent) {
             for (BaseDictionaries eventHoldingStatuses : eventHoldingStatuses) {
                 if (itemEvent1.getHoldingStatusId().equals(eventHoldingStatuses.getId())) {
-                    itemEvent1.setHoldingStatusId(eventHoldingStatuses.getTitle());
+                    itemEvent1.setHoldingStatusText(eventHoldingStatuses.getTitle());
                 }
             }
             mSportEvent.add(itemEvent1);
@@ -153,17 +213,6 @@ public class EventViewModel extends ViewModel {
         return "не відомо";
     }
 
-    public SportEvents filterData(String data) {
-        mFilterSportEvent.clear();
-        for (ItemEvent itemEvent : mSportEvent) {
-            if (itemEvent.getStartsAt() != null &&
-                    itemEvent.getStartsAt().length() > 10 &&
-                    data.equals(itemEvent.getStartsAt().substring(0, 10))) {
-                mFilterSportEvent.add(itemEvent);
-            }
-        }
-        return new SportEvents().setItems(mFilterSportEvent);
-    }
 
     public Boolean typeId(String status) {
         return status.equals("e58e5c86-5ca7-412f-94f0-88effd1a45a8");
@@ -172,38 +221,36 @@ public class EventViewModel extends ViewModel {
     public void location(double lat, double lon) {
         repository.location("" + lat, "" + lon).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                            location.setValue(result.getDisplayName());
+                            if (result.getAddress() != null){
+                                String address = "";
+                                if (result.getAddress().getCity() != null){
+                                    address = address + result.getAddress().getCity() + ", ";
+                                }
+                                if (result.getAddress().getState() != null){
+                                    address = address + result.getAddress().getState() + ", ";
+                                }
+                                if (result.getAddress().getDistrict() != null){
+                                    address = address + result.getAddress().getDistrict() + ", ";
+                                }
+                                if (result.getAddress().getTown() != null){
+                                    address = address + result.getAddress().getTown() + ", ";
+                                }
+                                if (result.getAddress().getRoad() != null){
+                                    address = address + result.getAddress().getRoad();
+                                }
+                                location.setValue(address);
+                            }else {
+
+                                location.setValue(result.getDisplayName());
+                            }
                         },
                         error -> {
                             location.setValue("Київ");
                         });
     }
 
-    public void routePoints(double lat, double lon) {
-        if (routePoints.size() > 0) {
-            for (RoutePoint items : mItemEvent.getValue().getRoutePoints()) {
-                double roundedLan = Math.round(items.getLocation().get(0) * 1000 / 1000);
-                double roundedLon = Math.round(items.getLocation().get(1) * 1000 / 1000.0);
-                if (roundedLan == lat && roundedLon == lon) {
-                    if (items.getId() != null){
-                        pointPass(items.getId());
-                    }
-                }
-            }
-        }
-    }
-
-    public void pointPass(String id) {
-        repository.pintRequest(mId, id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                            getEvent(mId);
-                        },
-                        error -> {
-                            getEvent(mId);
-                        });
-    }
 
     public boolean getUserAuth() {
-        return repository.sharedPreferences.getToken().length() > 1 ? true : false;
+        return !repository.sharedPreferences.getToken().isEmpty();
     }
 }

@@ -107,7 +107,9 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
         city = view.findViewById(R.id.city);
 
         view.findViewById(R.id.closed).setOnClickListener((View v) -> {
-            editProfileInterfece.onUpdate();
+            if (editProfileInterfece != null) {
+                editProfileInterfece.onUpdate();
+            }
             dismiss();
         });
 
@@ -192,7 +194,9 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
                 healt.setText(user.getHealthState() == null ? "" : user.getHealthState() + "");
 
                 city.setText(user.getCity() == null ? "" : user.getCity() + "");
-                Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(photo);
+                if (user.getPhoto() != null) {
+                    Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(photo);
+                }
             } catch (Exception e) {
             }
         });
@@ -254,9 +258,12 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
 
             mViewModel.mProfile.setSex(sex.getSelectedItemPosition() == 0 ? "male" : "female");
 
-            mViewModel.mProfile.setCity(city.getText().toString());
+            mViewModel.mProfile.setCity(city.getText().toString()  != null ? city.getText().toString()  :  mViewModel.mProfile.getCity());
+
             mViewModel.updateUser();
-            editProfileInterfece.onUpdate();
+            if (editProfileInterfece != null) {
+                editProfileInterfece.onUpdate();
+            }
         }
     }
 
@@ -389,6 +396,14 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
         }
 
         return file;
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        super.onCancel(dialog);
+        if (editProfileInterfece != null) {
+            editProfileInterfece.onUpdate();
+        }
     }
 
 

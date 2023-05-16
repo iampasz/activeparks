@@ -146,4 +146,12 @@ public class UserVideoViewModel extends ViewModel {
         }
     }
 
+    public void setModelVideo(String url, String title, String description, int category, int level) {
+        mVideoItem.setUrl(url != null ? url : mVideoItem.getUrl());
+        mVideoItem.setTitle(title != null ? title : mVideoItem.getTitle());
+        mVideoItem.setDescription(description != null ? description : mVideoItem.getDescription());
+        setCategoryId(category);
+        setExerciseDifficultyLevelId(level);
+    }
+
 }

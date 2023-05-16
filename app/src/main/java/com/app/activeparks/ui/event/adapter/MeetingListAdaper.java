@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.app.activeparks.data.model.event.RoutePoint;
 import com.app.activeparks.data.model.meetings.MeetingsModel;
 import com.technodreams.activeparks.R;
 

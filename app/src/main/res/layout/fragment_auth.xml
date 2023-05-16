@@ -25,29 +25,31 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:layout_marginTop="32dp"
                 android:gravity="left"
                 android:text="Вітаємо!"
                 android:textColor="@color/text_color"
-                android:textSize="26sp"
+                android:textSize="32sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginBottom="18dp"
+                android:fontFamily="@font/montserrat_bold"
                 android:gravity="left"
                 android:text="З поверненням"
                 android:textColor="@color/text_color"
-                android:textSize="26sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/email"
                 style="@style/EditText"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="48dp"
+                android:fontFamily="@font/montserrat_medium"
                 android:background="@drawable/backround_edit_text"
                 android:ems="10"
                 android:hint="Пошта"
@@ -60,6 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/montserrat_medium"
                 android:background="@drawable/backround_edit_text"
                 android:ems="10"
                 android:hint="Пароль"
@@ -71,8 +74,10 @@
                 style="@style/Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
                 android:background="@drawable/button_style"
                 android:layout_marginTop="16dp"
+                android:textSize="14sp"
                 android:padding="8dp"
                 android:text="Увійти" />
 
@@ -85,23 +90,25 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_medium"
                     android:layout_marginTop="8dp"
                     android:layout_weight="1"
                     android:gravity="left"
                     android:text="Не маєте акаунту?"
                     android:textColor="@color/text_color"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/reg_action"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_medium"
                     android:layout_marginTop="8dp"
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="Зареєструватись"
                     android:textColor="@color/link_color"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -112,34 +119,37 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_medium"
                     android:layout_marginTop="8dp"
                     android:layout_weight="1"
                     android:gravity="left"
                     android:text="Забули пароль?"
                     android:textColor="@color/text_color"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/restore_action"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_medium"
                     android:layout_marginTop="8dp"
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="Відновити"
                     android:textColor="@color/link_color"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/directory_action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_medium"
                 android:layout_marginTop="32dp"
                 android:gravity="center"
                 android:text="База знань"
                 android:textColor="@color/link_color"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
         </LinearLayout>
     </ScrollView>
 

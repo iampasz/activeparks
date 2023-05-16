@@ -29,7 +29,7 @@ public class ParticipantsFragment extends Fragment {
     private FragmentUsersBinding binding;
     private ParticipantsViewModel mViewModel;
     private String id = null;
-    private Boolean isAdmin = null;
+    private Boolean isAdmin = false;
     private Boolean isEvent = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -66,7 +66,7 @@ public class ParticipantsFragment extends Fragment {
     public void initObserve() {
         mViewModel.getUserHeads().observe(getViewLifecycleOwner(), item -> {
             binding.listNull.setVisibility(item.getItems().size() > 0 ? View.GONE  : View.VISIBLE);
-            binding.listHeads.setAdapter(new UsersAdaper(getActivity(), item.getItems(), 0).setOnClubsListener(new UsersAdaper.UsersListener() {
+            binding.listHeads.setAdapter(new UsersAdaper(getActivity(), item.getItems(), true, 0).setOnClubsListener(new UsersAdaper.UsersListener() {
                 @Override
                 public void onInfo(String id) {
                     startActivity(new Intent(getActivity(), UserActivity.class).putExtra("id", id));
@@ -84,7 +84,7 @@ public class ParticipantsFragment extends Fragment {
 
         mViewModel.getUserMembers().observe(getViewLifecycleOwner(), item -> {
             binding.listTitleTwo.setVisibility(item.getItems().size() > 0 ? View.VISIBLE  : View.GONE);
-            binding.listMembers.setAdapter(new UsersAdaper(getActivity(), item.getItems(), isAdmin ? 1 : 0).setOnClubsListener(new UsersAdaper.UsersListener() {
+            binding.listMembers.setAdapter(new UsersAdaper(getActivity(), item.getItems(), true, isAdmin ? 1 : 0).setOnClubsListener(new UsersAdaper.UsersListener() {
                 @Override
                 public void onInfo(String id) {
                     startActivity(new Intent(getActivity(), UserActivity.class).putExtra("id", id));
@@ -105,7 +105,7 @@ public class ParticipantsFragment extends Fragment {
         mViewModel.getUserApplying().observe(getViewLifecycleOwner(), item -> {
             binding.applying.setVisibility(item.getItems().size() > 0 ? View.VISIBLE  : View.GONE);
 
-            binding.listApplying.setAdapter(new UsersAdaper(getActivity(), item.getItems(), isAdmin ? 2  : 0).setOnClubsListener(new UsersAdaper.UsersListener() {
+            binding.listApplying.setAdapter(new UsersAdaper(getActivity(), item.getItems(), true, isAdmin ? 2  : 0).setOnClubsListener(new UsersAdaper.UsersListener() {
                 @Override
                 public void onInfo(String id) {
                     startActivity(new Intent(getActivity(), UserActivity.class).putExtra("id", id));

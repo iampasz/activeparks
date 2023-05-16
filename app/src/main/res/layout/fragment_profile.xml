@@ -47,6 +47,11 @@
             android:textSize="18sp" />
     </LinearLayout>
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -137,7 +142,7 @@
                                 android:src="@drawable/ic_location_profile" />
 
                             <TextView
-                                android:id="@+id/adress"
+                                android:id="@+id/address"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="8dp"
@@ -594,13 +599,12 @@
                             android:layout_gravity="center"
                             android:layout_marginLeft="4dp"
                             android:layout_weight="1"
-                            android:text="Тренування"
+                            android:text="План тренування"
                             android:textAllCaps="false"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                             android:textColor="@color/text_color"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="bold"
-                            android:visibility="gone"
                             app:backgroundTint="#DEDFE1"
                             app:cornerRadius="10dp"
                             app:icon="@drawable/ic_plan"
@@ -638,7 +642,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:gravity="center"
-                    android:text="Немає даних"
+                    android:text="Немає інформації"
                     android:textColor="@color/text_color"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -646,4 +650,5 @@
         </LinearLayout>
 
     </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

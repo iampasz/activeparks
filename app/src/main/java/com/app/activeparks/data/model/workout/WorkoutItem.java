@@ -1,5 +1,6 @@
 package com.app.activeparks.data.model.workout;
 
+import com.app.activeparks.data.model.video.VideoItem;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -63,7 +64,7 @@ public class WorkoutItem {
     private Boolean tookPart;
     @SerializedName("video")
     @Expose
-    private String video;
+    private VideoItem video;
     @SerializedName("exercises")
     @Expose
     private List<String> exercises;
@@ -211,11 +212,11 @@ public class WorkoutItem {
         this.tookPart = tookPart;
     }
 
-    public String getVideo() {
+    public VideoItem getVideo() {
         return video;
     }
 
-    public void setVideo(String video) {
+    public void setVideo(VideoItem video) {
         this.video = video;
     }
     public List<String> getExercises() {

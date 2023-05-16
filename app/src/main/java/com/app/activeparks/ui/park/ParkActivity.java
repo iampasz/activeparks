@@ -92,10 +92,11 @@ public class ParkActivity extends AppCompatActivity {
             mCoordinator.setTextColor(getResources().getColor(R.color.color_park));
 
             mCoordinator.setOnClickListener(v ->{
-                String uri = "https://google.com/maps/search/?api=1&query=" + park.getLocation().get(0) + "," + park.getLocation().get(1);
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                //intent.setPackage("com.google.android.apps.maps");
-                startActivity(intent);
+                if (park.getLocation() != null) {
+                    String uri = "https://google.com/maps/search/?api=1&query=" + park.getLocation().get(0) + "," + park.getLocation().get(1);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    startActivity(intent);
+                }
             });
 
             mAddressCity.setText(park.getCity() + " " +park.getStreet());
@@ -129,16 +130,6 @@ public class ParkActivity extends AppCompatActivity {
                 mEmailCordenator.setText("Email: " + park.getCoordinators().get(0).getEmail());
                 mPhoneCordenator.setText("Телефон: " + park.getCoordinators().get(0).getPhone());
             }
-
-                if (park.getSportEvents().size() > 0) {
-                    findViewById(R.id.text_event).setVisibility(View.GONE);
-//                    mParkEvent.setAdapter(new ClubsAdaper(this, park.getSportpark()).setOnClubsListener(new ClubsAdaper.ClubsListener() {
-//                        @Override
-//                        public void onInfo(ItemClub itemClub) {
-//                            startActivity(new Intent(getApplicationContext(), ClubActivity.class).putExtra("id", itemClub.getId()));
-//                        }
-//                    }));
-                }
 
 
             }catch (Exception e){}
