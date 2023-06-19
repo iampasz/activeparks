@@ -23,7 +23,7 @@ import com.technodreams.activeparks.R;
 
 public class AuthFragment extends Fragment {
 
-    private AuthViewModel mViewModel;
+    private AuthViewModel viewModel;
 
     private View binding;
 
@@ -35,7 +35,7 @@ public class AuthFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mViewModel = new ViewModelProvider(this, new AuthModelFactory(getContext())).get(AuthViewModel.class);
+        viewModel = new ViewModelProvider(this, new AuthModelFactory(getContext())).get(AuthViewModel.class);
         binding = inflater.inflate(R.layout.fragment_auth, container, false);
 
         Button autch = binding.findViewById(R.id.aut_action);
@@ -44,9 +44,10 @@ public class AuthFragment extends Fragment {
         TextView regAction = binding.findViewById(R.id.reg_action);
         TextView restoreAction = binding.findViewById(R.id.restore_action);
         TextView directoryAction = binding.findViewById(R.id.directory_action);
+        TextView selectServer = binding.findViewById(R.id.select_server);
 
         autch.setOnClickListener(v-> {
-            mViewModel.login(email.getText().toString(), password.getText().toString());
+            viewModel.login(email.getText().toString(), password.getText().toString());
         });
 
         regAction.setOnClickListener(v-> {
@@ -62,11 +63,21 @@ public class AuthFragment extends Fragment {
                     Uri.parse("https://ap.sportforall.gov.ua/infolist/start")));
         });
 
-        mViewModel.getMessage().observe(getViewLifecycleOwner(), msg -> {
+        viewModel.getMessage().observe(getViewLifecycleOwner(), msg -> {
             if (msg.getMessage() != null && msg.getStatus() == false) {
                 showMessage(msg.getMessage());
             }else {
                 replaceFragment(new UserFragment());
+            }
+        });
+
+        selectServer.setOnClickListener(v-> {
+            if (viewModel.getServer() == true) {
+                Toast.makeText(getActivity(),"Тестовий сервер виключений", Toast.LENGTH_SHORT).show();
+                viewModel.setServer(false);
+            }else{
+                Toast.makeText(getActivity(),"Тестовий сервер включений", Toast.LENGTH_SHORT).show();
+                viewModel.setServer(true);
             }
         });
 

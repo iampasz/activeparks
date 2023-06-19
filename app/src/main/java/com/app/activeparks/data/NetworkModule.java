@@ -11,10 +11,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class NetworkModule {
-    private  String BASE_URL = "https://ap.sportforall.gov.ua";
-    private  String TEST_URL = "https://ap-dev.sportforall.gov.ua";
-    private  String URL_SEARCH = "https://api.hutsalod.com";
-    private  String URL_LOCATION = "https://map.technodreams.biz";
+    private String BASE_URL = "https://ap.sportforall.gov.ua";
+    private String TEST_URL = "https://ap-dev.sportforall.gov.ua";
+    private String URL_SEARCH = "https://api.hutsalod.com";
+    private String URL_LOCATION = "https://map.technodreams.biz";
 
     public ApiService getInterface() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();

@@ -8,22 +8,34 @@ import com.app.activeparks.repository.Repository;
 import com.app.activeparks.data.model.dictionaries.Dictionaries;
 import com.app.activeparks.data.storage.Preferences;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
 public class SelectVideoViewModel extends ViewModel {
 
-
     public ModelSelectCategory modelSelectCategory;
-    private Dictionaries mDistrict = new Dictionaries();
-    private MutableLiveData<ModelSelectCategory> mIdVideo;
+    private Dictionaries district;
+    private MutableLiveData<ModelSelectCategory> idVideo;
 
     public SelectVideoViewModel(Preferences sharedPreferences)   {
-        mIdVideo = new MutableLiveData<>();
+        idVideo = new MutableLiveData<>();
         modelSelectCategory = new ModelSelectCategory();
-        mDistrict = sharedPreferences.getDictionarie();
+        district = sharedPreferences.getDictionarie();
+        districtUpdate();
     }
 
     public LiveData<ModelSelectCategory> showVideo() {
-        return mIdVideo;
+        return idVideo;
     }
+
+    void districtUpdate(){
+        new Repository().getDictionaries().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            district = result;
+                        },
+                        error -> {});
+    }
+
 
     void selectActivePark(int action){
         switch (action){
@@ -44,9 +56,9 @@ public class SelectVideoViewModel extends ViewModel {
 
 
     void type(int action) {
-        if (mDistrict.getExerciseDifficultyLevels().size() >= action) {
-            modelSelectCategory.TYPE_DIFFICULTY_LEVEL_ID = mDistrict.getExerciseDifficultyLevels().get(action).getId();
-            mIdVideo.setValue(modelSelectCategory);
+        if (district.getExerciseDifficultyLevels().size() >= action) {
+            modelSelectCategory.TYPE_DIFFICULTY_LEVEL_ID = district.getExerciseDifficultyLevels().get(action).getId();
+            idVideo.setValue(modelSelectCategory);
         }
     }
 
@@ -54,12 +66,12 @@ public class SelectVideoViewModel extends ViewModel {
     void rozmenka() {
         modelSelectCategory.TYPE_CATEGORY_ID = "4ae46939-5c80-46f9-8441-96082ba197d3";
         modelSelectCategory.TYPE_DIFFICULTY_LEVEL_ID = "43378ef5-e55d-45ee-b610-31a4d25e4193";
-        mIdVideo.setValue(modelSelectCategory);
+        idVideo.setValue(modelSelectCategory);
     }
 
     void likar() {
         modelSelectCategory.TYPE_CATEGORY_ID = "a0ad6f28-8562-41c9-93dc-b114aa9626c3";
         modelSelectCategory.TYPE_DIFFICULTY_LEVEL_ID = "43378ef5-e55d-45ee-b610-31a4d25e4193";
-        mIdVideo.setValue(modelSelectCategory);
+        idVideo.setValue(modelSelectCategory);
     }
 }

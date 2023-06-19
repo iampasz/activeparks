@@ -60,10 +60,10 @@
 
                 <ImageView
                     android:id="@+id/remove_action"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/ic_closed" />
+                    app:srcCompat="@drawable/ic_setting" />
             </LinearLayout>
 
             <View
@@ -92,29 +92,6 @@
                 android:textSize="14sp" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/sex_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:src="@drawable/ic_sex_status" />
-
-
-            <TextView
-                android:id="@+id/sex"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:text=""
-                android:textColor="@color/text_color"
-                android:textSize="14sp" />
-        </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/phone_layout"
@@ -140,6 +117,30 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
+
+            <LinearLayout
+                android:id="@+id/sex_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_birthday" />
+
+
+                <TextView
+                    android:id="@+id/sex"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text=""
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
 
         </LinearLayout>

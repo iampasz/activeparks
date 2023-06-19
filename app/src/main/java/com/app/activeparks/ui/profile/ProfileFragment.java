@@ -140,7 +140,7 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
                 if (user.getSex() != null) {
                     view.findViewById(R.id.layout_sex).setVisibility(View.VISIBLE);
-                    sex.setText(user.getSex().equals("male") ? "Чоловік" : user.getSex() == "female" ? "Жінка" : "Невідомо");
+                    sex.setText(user.getSex().equals("male") ? "Чоловік" : "Жінка");
                 }
 
                 if (viewModel.isProfile(user.getRoleId()) == true) {
@@ -148,13 +148,15 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     view.findViewById(R.id.web_action).setVisibility(View.VISIBLE);
                 }
 
-                try {
+                if (user.getBirthday() != null && user.getBirthday().length() > 0) {
                     view.findViewById(R.id.layout_birthday).setVisibility(View.VISIBLE);
-                    Date date = new SimpleDateFormat("yyyy-MM-dd").parse(user.getBirthday());
-                    birthday.setText(new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
-                } catch (ParseException e) {
-                    birthday.setVisibility(View.GONE);
-                    e.printStackTrace();
+                    try {
+                        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(user.getBirthday());
+                        birthday.setText(new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
+                    } catch (ParseException e) {
+                        birthday.setVisibility(View.GONE);
+                        e.printStackTrace();
+                    }
                 }
 
                 if (user.getCity().length() > 1) {

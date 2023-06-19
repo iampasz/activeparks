@@ -88,9 +88,20 @@ public class ItemEvent {
     @SerializedName("conferenceLink")
     @Expose
     private String conferenceLink;
+
+    @SerializedName("startAdressPoint")
+    @Expose
+    private String startAdressPoint;
     @SerializedName("eventEstimation")
     @Expose
     private Integer eventEstimation;
+
+    @SerializedName("timeZoneDifference")
+    @Expose
+    private long timeZoneDifference;
+    @SerializedName("distanceToPoint")
+    @Expose
+    private float distanceToPoint;
     @SerializedName("eventHost")
     @Expose
     private String eventHost;
@@ -316,6 +327,9 @@ public class ItemEvent {
     public String getConferenceLink() {
         return conferenceLink;
     }
+    public String getStartAdressPoint() {
+        return startAdressPoint;
+    }
 
     public void setConferenceLink(String conferenceLink) {
         this.conferenceLink = conferenceLink;
@@ -323,6 +337,17 @@ public class ItemEvent {
 
     public Integer getEventEstimation() {
         return eventEstimation;
+    }
+    public long getTimeZoneDifference() {
+        return timeZoneDifference;
+    }
+
+    public float getDistanceToPoint() {
+        return distanceToPoint;
+    }
+
+    public void setDistanceToPoint(float distanceToPoint) {
+        this.distanceToPoint = distanceToPoint;
     }
 
     public void setEventEstimation(Integer eventEstimation) {

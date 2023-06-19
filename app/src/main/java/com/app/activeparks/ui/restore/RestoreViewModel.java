@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.app.activeparks.data.storage.Preferences;
 import com.app.activeparks.repository.Repository;
 import com.app.activeparks.data.model.Default;
 import com.google.gson.Gson;
@@ -31,8 +32,8 @@ public class RestoreViewModel extends ViewModel {
     private MutableLiveData<Default> mResotoreCode;
     private MutableLiveData<Boolean> closed = new MutableLiveData<>();
 
-    public RestoreViewModel() {
-        repository = new Repository();
+    public RestoreViewModel(Preferences preferences) {
+        repository = new Repository(preferences);
         mMessage = new MutableLiveData<>();
         mResotoreCode = new MutableLiveData<>();
     }

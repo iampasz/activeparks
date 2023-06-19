@@ -16,6 +16,6 @@ public class EntitiesArray {
     public String entityType;
     @SerializedName("entityTitle")
     @Expose
-    public String entityTitle = "test";
+    public String entityTitle;
 
 }

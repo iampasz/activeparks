@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,7 @@ public class RoutePointFragment extends DialogFragment implements LocationListen
     private LocationManager locationManager;
     public MapsViewControler mapsViewControler;
     public MapView mapView;
+
     public TextView status;
 
     public String id;
@@ -52,6 +54,7 @@ public class RoutePointFragment extends DialogFragment implements LocationListen
         super.onCreate(savedInstanceState);
         setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.FullScreenDialog);
         viewModel = new ViewModelProvider(this, new RoutePointModelFactory(getContext())).get(RoutePointViewModel.class);
+        viewModel.initAudio(MediaPlayer.create(getActivity(), R.raw.soud));
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -88,14 +91,16 @@ public class RoutePointFragment extends DialogFragment implements LocationListen
         });
 
         viewModel.getRoutePoint().observe(getViewLifecycleOwner(), routePoint -> {
-            mapsViewControler.setRoutePint(viewModel.routePointsMap);
+            if (viewModel.updateMap == false) {
+                mapsViewControler.setRoutePint(viewModel.routePointsMap);
+                viewModel.updateMap = true;
+            }
 
             listPoint.setAdapter(new PointListAdaper(getActivity(), viewModel.routePoints, viewModel.isCoordinator).setOnEventListener(new PointListAdaper.EventsListener() {
                 @Override
                 public void onInfo(RoutePoint item) {
                     mapsViewControler.selectMarker(item.getLocation().get(0), item.getLocation().get(1));
                 }
-
                 @Override
                 public void onShowQrCode(String eventId, String pointId) {
                     startActivity(new Intent(getActivity(), QrCodeActivity.class)
@@ -124,8 +129,6 @@ public class RoutePointFragment extends DialogFragment implements LocationListen
         onStartLocationUpdates();
     }
 
-
-
     public void onStartLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -136,12 +139,27 @@ public class RoutePointFragment extends DialogFragment implements LocationListen
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(@NonNull Location location) {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
 
 //        status.setText(latitude+" | "+longitude);
         viewModel.routePoints(latitude, longitude);
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
     }
 
 }

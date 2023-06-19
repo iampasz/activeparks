@@ -39,8 +39,8 @@ public class QrCodeActivity extends AppCompatActivity {
     private ImageView mQrCode;
     private Bitmap bitmap;
     private QRGEncoder qrgEncoder;
-    private TextView textView;
-    private FrameLayout copyAction;
+
+    private TextView title;
 
 
     @Override
@@ -51,8 +51,6 @@ public class QrCodeActivity extends AppCompatActivity {
         mViewModel =
                 new ViewModelProvider(this, new QrModelFactory(this)).get(QrViewModel.class);
 
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-
         findViewById(R.id.closed).setOnClickListener((View v) -> {
             finish();
         });
@@ -60,26 +58,19 @@ public class QrCodeActivity extends AppCompatActivity {
         String clubId = getIntent().getStringExtra("clubId");
 
         mQrCode = findViewById(R.id.image_qr);
-        copyAction = findViewById(R.id.copy_action);
 
-        textView = findViewById(R.id.url);
+        title = findViewById(R.id.title);
 
         if (getIntent().getBooleanExtra("club", false) == true){
             mViewModel.createQrCodeClub(clubId);
-            findViewById(R.id.shared_action).setVisibility(View.VISIBLE);
-            textView.setText("https://ap.sportforall.gov.ua/fc/" + clubId);
+            title.setText("QR-код для вступу до клубу");
         }else{
             createCode(getIntent().getStringExtra("pointId"));
-            copyAction.setVisibility(View.VISIBLE);
+            findViewById(R.id.shared_action).setVisibility(View.VISIBLE);
         }
 
         mViewModel.getQrCode().observe(this, qr -> createCode(qr));
 
-        copyAction.setOnClickListener(v ->{
-            ClipData clip = ClipData.newPlainText("", textView.getText().toString());
-            clipboard.setPrimaryClip(clip);
-            Toast.makeText(this, "Скопійовано", Toast.LENGTH_SHORT).show();
-        });
     }
 
     void createCode(String qr){

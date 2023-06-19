@@ -1,5 +1,6 @@
 package com.app.activeparks.ui.support;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -10,27 +11,21 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.activeparks.data.model.news.ItemNews;
+import com.app.activeparks.data.model.support.SupportItem;
+import com.app.activeparks.ui.support.adapter.SupportAdaper;
 import com.app.activeparks.ui.support.adapter.SupportMessageAdaper;
 import com.technodreams.activeparks.R;
 
 public class SupportAddActivity extends AppCompatActivity {
 
-        private ItemNews itemNews;
-
-        private SupportViewModel mViewModel;
+        private SupportViewModel viewModel;
         private EditText title, msg;
-        private TextView listNull;
-
-        public SupportAddActivity init(ItemNews itemNews){
-            this.itemNews = itemNews;
-            return this;
-        }
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_support_add);
-            mViewModel =
+            viewModel =
                     new ViewModelProvider(this, new SupportModelFactory(this)).get(SupportViewModel.class);
 
             findViewById(R.id.closed).setOnClickListener(v-> {
@@ -40,32 +35,43 @@ public class SupportAddActivity extends AppCompatActivity {
             RecyclerView listChat = findViewById(R.id.list_chat);
 
             title = findViewById(R.id.title_text);
-            listNull = findViewById(R.id.list_null);
             msg = findViewById(R.id.msg_text);
 
             if (getIntent().getStringExtra("id") != null){
-                mViewModel.getSupportDetails(getIntent().getStringExtra("id"));
+                viewModel.getSupportDetails(getIntent().getStringExtra("id"));
             }else {
-                mViewModel.createSupport();
+                viewModel.createSupport();
                 findViewById(R.id.list_null).setVisibility(View.GONE);
                 findViewById(R.id.send_message).setVisibility(View.VISIBLE);
             }
 
-            mViewModel.getSupportItem().observe(this, item -> {
-                findViewById(R.id.list_null).setVisibility(View.GONE);
+            viewModel.getSupportItem().observe(this, item -> {
                 if (item.getMessages().size() > 0) {
-                    findViewById(R.id.list_message).setVisibility(View.VISIBLE);
-                    listChat.setAdapter(new SupportMessageAdaper(this, item.getMessages()));
-                }else{
+                    findViewById(R.id.list_null).setVisibility(View.GONE);
+                }
+
+                listChat.setAdapter(new SupportMessageAdaper(this, item.getMessages()));
+
+                if (item.getStatusId().equals("28a1b923-1b1d-45b9-8839-6bgfd1afa365")) {
                     findViewById(R.id.send_message).setVisibility(View.VISIBLE);
                     title.setText(item.getTopic());
                     msg.setText(item.getText());
+                }else if (item.getStatusId().equals("bha1bfd3-1b5d-45b9-8239-6bg7d4jfa323")) {
+                    findViewById(R.id.send_message).setVisibility(View.VISIBLE);
+                    findViewById(R.id.title_frame).setVisibility(View.GONE);
+                }else{
+                    findViewById(R.id.send_message).setVisibility(View.GONE);
                 }
             });
 
             findViewById(R.id.create_support_action).setOnClickListener(v-> {
-                mViewModel.updateSupport(title.getText().toString(), msg.getText().toString());
-                finish();
+                if (viewModel.mSupportUpdate.getStatusId() != null && viewModel.mSupportUpdate.getStatusId().equals("28a1b923-1b1d-45b9-8839-6bgfd1afa365")) {
+                    viewModel.updateSupport(title.getText().toString(), msg.getText().toString());
+                    finish();
+                }else {
+                    viewModel.sendSupportMessage(msg.getText().toString());
+                    msg.setText("");
+                }
             });
         }
 

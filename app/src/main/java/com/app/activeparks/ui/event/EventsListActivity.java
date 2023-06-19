@@ -1,13 +1,22 @@
 package com.app.activeparks.ui.event;
 
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +30,7 @@ import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.listeners.OnCalendarPageChangeListener;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
+import com.google.android.material.tabs.TabLayout;
 import com.technodreams.activeparks.R;
 
 import java.text.ParseException;
@@ -30,13 +40,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class EventsListActivity extends AppCompatActivity {
+public class EventsListActivity extends AppCompatActivity implements LocationListener {
 
     private EventViewModel viewModel;
     private String id = null;
     private CalendarView calendarView;
     private TextView listStatus;
     private RecyclerView listClubOwner;
+
+    private LocationManager locationManager;
+    private TabLayout selectFilter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,11 +60,17 @@ public class EventsListActivity extends AppCompatActivity {
         viewModel =
                 new ViewModelProvider(this, new EventModelFactory(this)).get(EventViewModel.class);
 
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
         listClubOwner = findViewById(R.id.list_events);
 
         calendarView = findViewById(R.id.calendarView);
 
         listStatus = findViewById(R.id.list_null);
+
+        selectFilter = findViewById(R.id.select_filter);
+        selectFilter.setVisibility(View.VISIBLE);
+        selectFilter.getTabAt(1).select();
 
         viewModel.getEventsList();
         viewModel.calendarEvent();
@@ -77,6 +96,19 @@ public class EventsListActivity extends AppCompatActivity {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 viewModel.eventsDay(dateFormat.format(cal.getTime()));
             }
+        });
+
+        selectFilter.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewModel.selectFilter(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
 
     }
@@ -127,5 +159,39 @@ public class EventsListActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Request location updates
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 50, this);
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        viewModel.filterCordinate(latitude, longitude);
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
     }
 }

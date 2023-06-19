@@ -42,6 +42,19 @@
             android:gravity="center"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:gravity="center"
+                android:text="Відскануйте Qr код"
+                android:textColor="@color/text_color"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                />
+
+
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,38 +85,7 @@
                 android:textStyle="bold"
                 android:textColor="@color/text_color_light" />
 
-            <FrameLayout
-                android:id="@+id/copy_action"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginTop="16dp">
 
-                <TextView
-                    android:id="@+id/url"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/backround_edit_text"
-                    android:drawableRight="@drawable/ic_copy"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="8dp"
-                    android:text=""
-                    android:textColor="@color/text_color"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:background="@color/background"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="Посилання на клуб"
-                    android:textColor="@color/text_color"
-                    android:textStyle="bold" />
-            </FrameLayout>
         </LinearLayout>
 
 

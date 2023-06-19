@@ -115,6 +115,9 @@ public class PeopleViewModel extends ViewModel {
     }
 
     public void event() {
+        if (mProfile.getId() == null){
+            return;
+        }
         repository.eventsUser(mProfile.getId()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             try {
@@ -135,7 +138,9 @@ public class PeopleViewModel extends ViewModel {
     }
 
     public void clubs() {
-        clubs(mProfile.getId());
+        if (mProfile.getId() != null) {
+            clubs(mProfile.getId());
+        }
     }
 
 

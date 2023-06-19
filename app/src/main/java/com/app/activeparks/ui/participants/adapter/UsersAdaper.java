@@ -54,9 +54,21 @@ public class UsersAdaper extends RecyclerView.Adapter<UsersAdaper.ViewHolder> {
 
         holder.login.setText(user.getEmail());
 
-        if (user.getSex() != null) {
+        if (user.getBirthday() != null) {
             holder.sexLayout.setVisibility(View.VISIBLE);
-            holder.sex.setText(user.getSex().contains("female") ? "Жінка" : "Чоловік");
+            holder.sex.setVisibility(View.VISIBLE);
+            if (user.getAge() != null){
+                if (user.getAge() < 45){
+                    holder.sex.setText("Молод" + (user.getSex() == null ? "(ий/a)" : user.getSex().equals("male") ? "ий" : "а"));
+                }else if (user.getAge()  < 59){
+                    holder.sex.setText("Зріл" + (user.getSex() == null ? "(ий/a)" : user.getSex().equals("male") ? "ий" : "а"));
+                }else if (user.getAge() >= 60){
+                    holder.sex.setText("Літн" + (user.getSex() == null ? "(ій/я)" : user.getSex().equals("male")  ? "ій" : "я"));
+                }
+            }
+        }else {
+            holder.sex.setVisibility(View.GONE);
+            holder.sexLayout.setVisibility(View.GONE);
         }
 
         if (user.getPhone() != null && user.getPhone().length() > 0 && isUserHeads == true) {

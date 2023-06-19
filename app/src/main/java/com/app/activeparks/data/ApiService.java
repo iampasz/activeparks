@@ -24,6 +24,7 @@ import com.app.activeparks.data.model.support.Support;
 import com.app.activeparks.data.model.support.SupportItem;
 import com.app.activeparks.data.model.user.User;
 import com.app.activeparks.data.model.user.UserParticipants;
+import com.app.activeparks.data.model.user.UserUpdate;
 import com.app.activeparks.data.model.uservideo.UserVideo;
 import com.app.activeparks.data.model.uservideo.UserVideoItem;
 import com.app.activeparks.data.model.video.Video;
@@ -82,7 +83,7 @@ public interface ApiService {
 
     //Новини клуба
     @GET("/api/v1/clubs/{club}/news/{id}")
-    Observable<ItemNews> getNewsDetails(@Path("club") String club, @Path("id") String id);
+    Observable<ItemNews> getNewsDetails(@Header("Authorization") String token, @Path("club") String club, @Path("id") String id);
 
     //Заходи
     @GET("/api/v1/sport-events/all?offset=0&limit=270")
@@ -170,7 +171,7 @@ public interface ApiService {
 
     //Получення даних користувача
     @PUT("/api/v1/users/{id}")
-    Observable<ResponseBody> updateUser(@Header("Authorization") String token, @Path("id") String id, @Body User user);
+    Observable<ResponseBody> updateUser(@Header("Authorization") String token, @Path("id") String id, @Body UserUpdate user);
 
     @FormUrlEncoded
     @POST("/api/v1/users/phone")
@@ -305,9 +306,12 @@ public interface ApiService {
     @POST("/api/v1/support-tickets/{id}/send")
     Observable<SupportItem> sendMessage(@Header("Authorization") String token, @Path("id") String id);
 
+    @POST("/api/v1/support-tickets/{id}/messages")
+    @FormUrlEncoded
+    Observable<SupportItem> sendMessage(@Header("Authorization") String token, @Path("id") String url, @Field("id") String id, @Field("text") String text);
+
     @GET("/api/v1/workouts/{url}")
     Observable<SportEvents> myevents(@Header("Authorization") String token, @Path(value = "url", encoded = true) String url, @QueryMap(encoded = true) Map<String, String> options);
-
 
     //Workouts Sport
     @GET("/api/v1/workouts/{url}")
@@ -358,8 +362,9 @@ public interface ApiService {
     @FormUrlEncoded
     Observable<ResponseBody> jointEvent(@Header("Authorization") String token, @Path("url") String url, @Field("userId") String userId, @Field("id") String id);
 
-    @GET("/api/v1/qr-code-club/to-join-club")
-    Observable<QrCodeModel> createQrCodeClubRequest(@Header("Authorization") String token, @QueryMap(encoded = true) Map<String, String> options);
+    @POST("/api/v1/qr-code-club/to-join-club")
+    @FormUrlEncoded
+    Observable<QrCodeModel> createQrCodeClubRequest(@Header("Authorization") String token, @Field("title") String title, @Field("clubId") String clubId, @Field("endDateOfUse") String endDateOfUse);
 
     //Upload file
     @POST("/api/v1/uploads")

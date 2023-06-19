@@ -16,10 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.app.activeparks.data.model.clubs.ItemClub;
+import com.app.activeparks.data.model.parks.ParksItem;
+import com.app.activeparks.data.model.sportsgrounds.ItemSportsground;
 import com.app.activeparks.ui.adapter.PhotosAdaper;
 import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
 import com.app.activeparks.ui.home.adapter.HomeAdaper;
+import com.app.activeparks.ui.park.adapter.ParkListAdaper;
+import com.app.activeparks.ui.participants.ParticipantsModelFactory;
 import com.app.activeparks.util.MapsViewControler;
 import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
@@ -28,16 +32,19 @@ import com.technodreams.activeparks.R;
 
 import org.osmdroid.views.MapView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ParkActivity extends AppCompatActivity {
 
-    private ParkViewModel mViewModel;
+    private ParkViewModel viewModel;
 
-    private RecyclerView mParkEvent;
+    private RecyclerView list, mParkEvent;
 
     private TabLayout tabLayout;
     private ViewPager2 photosView;
     private ImageView mImageView, mPhotoCordenator;
-    private TextView mTitle, mCoordinator, mAddressCity, mLighting, mFacebook, mTechnicalCondition;
+    private TextView mTitle, mCoordinator, mAddressCity;
     private TextView mNameCordenator, mEmailCordenator, mPhoneCordenator;
     private LinearLayout mItemCordenator;
     public MapView mapView;
@@ -46,17 +53,19 @@ public class ParkActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_park);
-        mViewModel = new ViewModelProvider(this).get(ParkViewModel.class);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_park);
+        viewModel = new ViewModelProvider(this, new ParkModelFactory(this)).get(ParkViewModel.class);
 
         mapView = findViewById(R.id.mapview);
+
+        list = findViewById(R.id.list);
 
         mParkEvent = findViewById(R.id.park_event);
 
         mapsViewControler = new MapsViewControler(mapView, this);
 
-        mViewModel.getPark(getIntent().getStringExtra("id"));
+        viewModel.getPark(getIntent().getStringExtra("id"));
 
         findViewById(R.id.closed).setOnClickListener((View v) -> {
             finish();
@@ -72,9 +81,6 @@ public class ParkActivity extends AppCompatActivity {
         mTitle = findViewById(R.id.title);
         mCoordinator = findViewById(R.id.text_description);
         mAddressCity = findViewById(R.id.text_address);
-        mLighting = findViewById(R.id.text_lighting);
-        mFacebook = findViewById(R.id.text_facebook);
-        mTechnicalCondition = findViewById(R.id.text_technical_condition);
 
         mNameCordenator = findViewById(R.id.name_cordenator);
         mEmailCordenator = findViewById(R.id.email_cordenator);
@@ -82,58 +88,90 @@ public class ParkActivity extends AppCompatActivity {
 
         mItemCordenator = findViewById(R.id.item_cordenator);
 
-
-
-        mViewModel.getParkDetails().observe(this, park -> {
+        viewModel.getParkDetails().observe(this, park -> {
             try {
-            mTitle.setText(park.getTitle());
-            Spanned textSpan  =  Html.fromHtml("<u>" + park.getLocation().get(0) + " " + park.getLocation().get(1) + "</u>");
-            mCoordinator.setText(textSpan);
-            mCoordinator.setTextColor(getResources().getColor(R.color.color_park));
+                mTitle.setText(park.getTitle());
+                Spanned textSpan = Html.fromHtml("<u>" + park.getLocation().get(0) + " " + park.getLocation().get(1) + "</u>");
+                mCoordinator.setText(textSpan);
+                mCoordinator.setTextColor(getResources().getColor(R.color.color_park));
 
-            mCoordinator.setOnClickListener(v ->{
-                if (park.getLocation() != null) {
-                    String uri = "https://google.com/maps/search/?api=1&query=" + park.getLocation().get(0) + "," + park.getLocation().get(1);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                    startActivity(intent);
-                }
-            });
-
-            mAddressCity.setText(park.getCity() + " " +park.getStreet());
-            mLighting.setText(park.getHasLighting() > 0 ? "Присутнє" : "Відсутнє");
-            mTechnicalCondition.setText(park.getOnReconstruction() == false ? "Новий" : "Реконсту");
-
-            if (park.getFacebookUrl() != null && park.getFacebookUrl().length() > 1){
-                mFacebook.setText(park.getFacebookUrl());
-                mFacebook.setTextColor(getResources().getColor(R.color.color_park));
-                mFacebook.setOnClickListener(v -> {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(park.getFacebookUrl())));
+                mCoordinator.setOnClickListener(v -> {
+                    if (park.getLocation() != null) {
+                        String uri = "https://google.com/maps/search/?api=1&query=" + park.getLocation().get(0) + "," + park.getLocation().get(1);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                        startActivity(intent);
+                    }
                 });
-            }else {
-                mFacebook.setText("Відсутнє");
+
+                mAddressCity.setText(park.getCity() + " " + park.getStreet());
+
+                listPark(park);
+
+                photosView.setAdapter(new PhotosAdaper(this, park.getPhotos()));
+
+                new TabLayoutMediator(tabLayout, photosView, (tab, position) -> {
+                }).attach();
+
+                mapsViewControler.setMarker(park.getLocation().get(0), park.getLocation().get(1));
+
+                Glide.with(this).load(park.getPhoto()).error(R.drawable.ic_prew).into(mImageView);
+
+                if (park.getCoordinators() != null) {
+                    Glide.with(this).load(park.getCoordinators().get(0).getPhoto()).error(R.drawable.ic_prew).into(mPhotoCordenator);
+                    mItemCordenator.setVisibility(View.VISIBLE);
+
+                    mNameCordenator.setText(park.getCoordinators().get(0).getFirstName() + " " + park.getCoordinators().get(0).getLastName());
+                    mEmailCordenator.setText("Email: " + park.getCoordinators().get(0).getEmail());
+                    mPhoneCordenator.setText("Телефон: " + park.getCoordinators().get(0).getPhone());
+                }
+
+
+            } catch (Exception e) {
             }
-            
-            photosView.setAdapter(new PhotosAdaper(this, park.getPhotos()));
-
-            new TabLayoutMediator(tabLayout, photosView, (tab, position) -> {
-            }).attach();
-
-            mapsViewControler.setMarker(park.getLocation().get(0), park.getLocation().get(1));
-
-            Glide.with(this).load(park.getPhoto()).error(R.drawable.ic_prew).into(mImageView);
-
-            if (park.getCoordinators() != null) {
-                Glide.with(this).load(park.getCoordinators().get(0).getPhoto()).error(R.drawable.ic_prew).into(mPhotoCordenator);
-                mItemCordenator.setVisibility(View.VISIBLE);
-
-                mNameCordenator.setText(park.getCoordinators().get(0).getFirstName() + " " + park.getCoordinators().get(0).getLastName());
-                mEmailCordenator.setText("Email: " + park.getCoordinators().get(0).getEmail());
-                mPhoneCordenator.setText("Телефон: " + park.getCoordinators().get(0).getPhone());
-            }
-
-
-            }catch (Exception e){}
         });
+    }
+
+    void listPark(ItemSportsground park){
+        List<ParksItem> item = new ArrayList<>();
+
+        if (park.getCapacityId() != null && !park.getCapacityId().isEmpty()){
+            item.add(new ParksItem("Місткість", viewModel.capacity(park.getCapacityId())));
+        }
+
+        if (park.getHasLighting() != null){
+            item.add(new ParksItem("Освітлення", park.getHasLighting() > 0 ? "Присутнє" : "Відсутнє"));
+        }
+
+        if (park.getOnReconstruction() != null){
+            item.add(new ParksItem("Технічний стан", park.getOnReconstruction() == false ? "Відміний" : "Реконсту"));
+        }
+
+        if (park.getAccessTypeId() != null && !park.getAccessTypeId().isEmpty()){
+            item.add(new ParksItem("Тип доступу", viewModel.accessTypeId(park.getAccessTypeId())));
+        }
+
+        if (park.getFacebookUrl() != null && park.getFacebookUrl().length() > 0){
+            item.add(new ParksItem("Посилання на facebook", park.getFacebookUrl()));
+        }
+
+        if (park.getTypeId() != null && !park.getTypeId().isEmpty()){
+            item.add(new ParksItem("Вид майданчику", viewModel.sportsgroundType(park.getTypeId())));
+        }
+
+        if (park.getOwnershipTypeId() != null && !park.getOwnershipTypeId().isEmpty()){
+            item.add(new ParksItem("Форма власності", viewModel.ownershipType(park.getOwnershipTypeId())));
+        }
+
+        if (park.getWorkHours() != null && !park.getWorkHours().isEmpty()){
+            item.add(new ParksItem("Режим роботи", park.getWorkHours()));
+        }
+
+        list.setAdapter(new ParkListAdaper(this, item).setListener(new ParkListAdaper.ParkListListener() {
+            @Override
+            public void onUrl(String url) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            }
+        }));
     }
 
 }

@@ -31,7 +31,7 @@ public class UserVideoViewModel extends ViewModel {
 
     public Map<String, String> categoryId = new HashMap<>();
     public Map<String, String> exerciseDifficultyLevelId = new HashMap<>();
-    public UserVideoItem mVideoItem;
+    public UserVideoItem mVideoItem = new UserVideoItem();
 
     UserVideoViewModel(Preferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;

@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:padding="16dp"
     android:gravity="left"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
 
     <ImageView
@@ -19,18 +19,18 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="16dp"
-                android:gravity="center"
-                android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
                 android:layout_marginTop="8dp"
+                android:fontFamily="@font/montserrat_bold"
                 android:gravity="left"
                 android:text="Реєстрація"
                 android:textColor="@color/text_color"
@@ -40,23 +40,35 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
                 android:layout_marginBottom="18dp"
+                android:fontFamily="@font/montserrat_bold"
                 android:gravity="left"
                 android:text="Приєднуйтесь"
                 android:textColor="@color/text_color"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
-                <EditText
-                    android:id="@+id/name"
-                    style="@style/EditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:background="@drawable/backround_edit_text"
-                    android:ems="10"
-                    android:hint="Логін"
-                    android:inputType="text" />
+            <EditText
+                android:id="@+id/name"
+                style="@style/EditText"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/backround_edit_text"
+                android:ems="10"
+                android:fontFamily="@font/montserrat_medium"
+                android:hint="Логін"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/login_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/montserrat_medium"
+                android:gravity="left"
+                android:text=""
+                android:textColor="@color/text_red"
+                android:textSize="12sp"
+                android:visibility="gone" />
 
             <EditText
                 android:id="@+id/password"
@@ -64,93 +76,118 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
-                android:fontFamily="@font/montserrat_medium"
                 android:background="@drawable/backround_edit_text"
                 android:ems="10"
+                android:fontFamily="@font/montserrat_medium"
                 android:hint="Пароль"
                 android:inputType="textPassword" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:layout_marginTop="4dp"
-                    android:gravity="left"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:text="Пароль повинен містити великі, маленькі літери та цифри"
-                    android:textColor="@color/text_red"
-                    android:textSize="14sp" />
+            <TextView
+                android:id="@+id/password_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/montserrat_medium"
+                android:gravity="left"
+                android:text=""
+                android:textColor="@color/text_red"
+                android:textSize="12sp"
+                android:visibility="gone" />
 
+
+            <EditText
+                android:id="@+id/email"
+                style="@style/EditText"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/backround_edit_text"
+                android:ems="10"
+                android:fontFamily="@font/montserrat_medium"
+                android:hint="Пошта"
+                android:inputType="textEmailAddress" />
+
+            <TextView
+                android:id="@+id/email_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/montserrat_medium"
+                android:gravity="left"
+                android:text=""
+                android:textColor="@color/text_red"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/timer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="left"
+                android:text="Отримати код повторно через"
+                android:textColor="@color/text_color"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/email"
+                    android:id="@+id/code"
                     style="@style/EditText"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginTop="16dp"
-                    android:fontFamily="@font/montserrat_medium"
+                    android:layout_weight="1"
                     android:background="@drawable/backround_edit_text"
                     android:ems="10"
-                    android:hint="Пошта"
-                    android:inputType="textEmailAddress" />
+                    android:fontFamily="@font/montserrat_medium"
+                    android:hint="Код з пошти"
+                    android:inputType="number" />
 
-                <TextView
-                    android:id="@+id/timer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:layout_marginTop="8dp"
-                    android:gravity="left"
-                    android:text="Отримати код повторно через"
-                    android:textColor="@color/text_color"
-                    android:textSize="16sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <EditText
-                        android:id="@+id/code"
-                        style="@style/EditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/montserrat_medium"
-                        android:background="@drawable/backround_edit_text"
-                        android:ems="10"
-                        android:hint="Код з пошти"
-                        android:inputType="number" />
-
-                    <android.widget.Button
-                        android:id="@+id/sendCode"
-                        android:layout_width="wrap_content"
-                        android:layout_height="44dp"
-                        style="@style/ButtonGray"
-                        android:background="@drawable/button_gray"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:padding="8dp"
-                        android:textSize="14sp"
-                        android:text="Отримати код"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/reg_action"
-                    style="@style/Button"
+                <android.widget.Button
+                    android:id="@+id/sendCode"
+                    style="@style/ButtonGray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/button_gray"
                     android:fontFamily="@font/montserrat_bold"
-                    android:background="@drawable/button_style"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:textSize="14sp"
                     android:padding="8dp"
-                    android:text="Зареєструватись" />
-
+                    android:text="Отримати код"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/code_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/montserrat_medium"
+                android:gravity="left"
+                android:text=""
+                android:textColor="@color/text_red"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/reg_action"
+                style="@style/Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/button_style"
+                android:fontFamily="@font/montserrat_bold"
+                android:padding="8dp"
+                android:text="Зареєструватись"
+                android:textSize="14sp" />
+
+        </LinearLayout>
     </ScrollView>
 
 </LinearLayout>

@@ -79,13 +79,11 @@ public class NotificationAdaper extends RecyclerView.Adapter<NotificationAdaper.
         }
         Date secondDate = new Date();
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         try {
             Date firstDate = format.parse(notification.getCreatedAt());
 
             long diffInMilliseconds = Math.abs(secondDate.getTime() - firstDate.getTime());
-
-
 
             long days = TimeUnit.DAYS.convert(diffInMilliseconds, TimeUnit.MILLISECONDS);
             long hours = TimeUnit.HOURS.convert(diffInMilliseconds, TimeUnit.MILLISECONDS);

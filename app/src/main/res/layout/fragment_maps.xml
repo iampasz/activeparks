@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.app.activeparks.ui.maps.MapsFragment">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/select_map"
-        style="@style/Base.Widget.Design.TabLayout"
+        android:alpha="0.8"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:elevation="16dp"
-        android:background="@color/background">
+        app:tabIndicatorHeight="0dp"
+        app:color="@color/gray_400"
+        app:tabSelectedTextColor="@color/text_color"
+        android:background="@drawable/background_tablayout">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -33,7 +38,6 @@
         android:layout_height="match_parent"
         android:visibility="visible">
 
-
         <org.osmdroid.views.MapView
             android:id="@+id/mapview"
             android:layout_width="fill_parent"
@@ -46,7 +50,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="right"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="64dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/ic_map_location"
             android:text="" />
@@ -97,7 +101,7 @@
             android:layout_height="40dp"
             android:visibility="invisible"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/button_style_gren"
             android:textStyle="bold"
             android:elevation="16dp"
@@ -111,8 +115,8 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_gravity="bottom|right"
-            android:layout_marginBottom="32dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="8dp"
             android:background="@drawable/button_style_gren"
             android:textStyle="bold"
             android:elevation="16dp"
@@ -122,17 +126,19 @@
 
     </FrameLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/select_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="16dp"
         android:background="@color/background"
+        android:orientation="vertical"
         android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:layout_marginTop="50dp"
             android:orientation="horizontal">
 
             <EditText
@@ -152,10 +158,9 @@
             android:id="@+id/maps_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="70dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             />
 
-    </FrameLayout>
+    </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>

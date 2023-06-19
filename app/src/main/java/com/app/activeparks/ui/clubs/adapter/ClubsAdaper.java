@@ -45,7 +45,7 @@ public class ClubsAdaper extends RecyclerView.Adapter<ClubsAdaper.ViewHolder> {
         ItemClub item = list.get(position);
 
         holder.title.setText(item.getName());
-        holder.description.setText(item.getDescription());
+        holder.description.setText(item.getTagline());
 
         Glide.with(holder.itemView.getContext()).load(item.getLogoUrl()).error(R.drawable.ic_prew).into(holder.logo);
 

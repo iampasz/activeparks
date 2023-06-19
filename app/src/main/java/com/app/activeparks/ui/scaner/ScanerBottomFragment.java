@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.app.activeparks.ui.profile.EditProfileActivity;
 import com.app.activeparks.ui.selectvideo.SelectVideoActivity;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
+import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.technodreams.activeparks.R;
 import com.technodreams.activeparks.databinding.FragmentScanerBinding;
@@ -36,6 +38,8 @@ public class ScanerBottomFragment extends BottomSheetDialogFragment {
 
     private ScanerViewModel mViewModel;
 
+    private MediaPlayer mediaPlayer;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +47,8 @@ public class ScanerBottomFragment extends BottomSheetDialogFragment {
 
         mViewModel =
                 new ViewModelProvider(this, new ScanerModelFactory(getContext())).get(ScanerViewModel.class);
+
+        mediaPlayer = MediaPlayer.create(getActivity(), R.raw.soud);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -56,20 +62,33 @@ public class ScanerBottomFragment extends BottomSheetDialogFragment {
 
         mCodeScanner = new CodeScanner(getActivity(), scannerView);
 
-        mCodeScanner.setDecodeCallback((Result result) -> {
-            String code = result.getText();
-             if (code.contains("/route-point/")) {
-                 if (code.length() > 36) {
-                     if (mViewModel.getUser() == true) {
-                         String id = code.substring(result.getText().length() - 36, result.getText().length());
-                         mViewModel.activatePointQrCode(id);
-                     } else {
-                         Toast.makeText(getContext(), "Потрібно авторизуватися!", Toast.LENGTH_LONG).show();
-                     }
-                 }
-             }
+        mCodeScanner.setDecodeCallback(new DecodeCallback() {
+            @Override
+            public void onDecoded(@NonNull final Result result) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String code = result.getText();
+                        if (code.contains("/route-point/")) {
+                            if (code.length() > 36) {
+                                if (mViewModel.getUser() == true) {
+                                    String id = code.substring(result.getText().length() - 36, result.getText().length());
+                                    mViewModel.activatePointQrCode(id);
+                                } else {
+                                    Toast.makeText(getActivity(), "Потрібно авторизуватися!", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        } else {
+                            Toast.makeText(getActivity(), "QR код для точки не дійсний", Toast.LENGTH_LONG).show();
+                            mCodeScanner.startPreview();
+                            mediaPlayer.start();
+                        }
 
+                    }
+                });
+            }
         });
+
         scannerView.setOnClickListener((View view) -> {
             mCodeScanner.startPreview();
         });
@@ -77,6 +96,7 @@ public class ScanerBottomFragment extends BottomSheetDialogFragment {
         mViewModel.getPointQrCode().observe(getViewLifecycleOwner(), result -> {
             if (result != null) {
                 mListener.update();
+                mediaPlayer.start();
                 dismiss();
             } else {
                 Toast.makeText(getContext(), "QR код для точки не дійсний", Toast.LENGTH_LONG).show();
@@ -89,14 +109,24 @@ public class ScanerBottomFragment extends BottomSheetDialogFragment {
 
     @Override
     public void onPause() {
-        mCodeScanner.stopPreview();
+        mCodeScanner.releaseResources();
         super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mCodeScanner.startPreview();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mListener.update();
+    }
+
+    public void update() {
+        mCodeScanner.startPreview();
     }
 
 

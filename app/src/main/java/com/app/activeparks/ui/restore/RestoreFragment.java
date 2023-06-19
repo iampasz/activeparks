@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.app.activeparks.ui.auth.AuthFragment;
+import com.app.activeparks.ui.register.RegisterModelFactory;
 import com.app.activeparks.util.FragmentInteface;
 import com.technodreams.activeparks.R;
 
@@ -35,7 +36,7 @@ public class RestoreFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mViewModel = new ViewModelProvider(this).get(RestoreViewModel.class);
+        mViewModel = new ViewModelProvider(this, new RestoreModelFactory(getContext())).get(RestoreViewModel.class);
         binding = inflater.inflate(R.layout.fragment_restore, container, false);
 
         EditText email = binding.findViewById(R.id.email);

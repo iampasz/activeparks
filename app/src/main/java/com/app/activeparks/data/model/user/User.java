@@ -12,84 +12,83 @@ public class User {
     private String id;
     @SerializedName("roleId")
     @Expose
-    private String roleId = "";
+    private String roleId;
     @SerializedName("nickname")
     @Expose
-    private String nickname = "";
+    private String nickname;
     @SerializedName("firstName")
     @Expose
-    private String firstName = "";
+    private String firstName;
     @SerializedName("secondName")
     @Expose
-    private String secondName = "";
+    private String secondName;
     @SerializedName("lastName")
     @Expose
-    private String lastName = "";
+    private String lastName;
     @SerializedName("sex")
     @Expose
-    private String sex = "";
+    private String sex;
     @SerializedName("height")
     @Expose
-    private String height = "";
+    private String height;
     @SerializedName("weight")
     @Expose
-    private String weight = "";
+    private String weight;
     @SerializedName("healthState")
     @Expose
-    private String healthState = "";
+    private String healthState;
     @SerializedName("aboutMe")
     @Expose
-    private String aboutMe = "";
+    private String aboutMe;
     @SerializedName("hideBodyInfo")
     @Expose
     private Integer hideBodyInfo;
     @SerializedName("birthday")
     @Expose
-    private String birthday = "";
-
+    private String birthday;
     @SerializedName("permissionUser")
     @Expose
     private Boolean permissionUser;
 
     @SerializedName("age")
     @Expose
-    private Integer age = 0;
+    private Integer age;
     @SerializedName("phone")
     @Expose
-    private String phone = "";
+    private String phone;
     @SerializedName("regionId")
     @Expose
-    private String regionId = "";
+    private String regionId;
     @SerializedName("districtId")
     @Expose
-    private String districtId = "";
+    private String districtId;
     @SerializedName("city")
     @Expose
-    private String city = "";
+    private String city;
     @SerializedName("photo")
     @Expose
-    private String photo = "";
+    private String photo;
     @SerializedName("email")
     @Expose
-    private String email = "";
+    private String email;
     @SerializedName("position")
     @Expose
-    private String position = "";
+    private String position;
     @SerializedName("isActive")
     @Expose
-    private Boolean isActive = false;
+    private Boolean isActive;
     @SerializedName("isPhoneVerified")
     @Expose
-    private Boolean isPhoneVerified = false;
+    private Boolean isPhoneVerified;
     @SerializedName("isDeleted")
     @Expose
-    private Boolean isDeleted = false;
+    private Boolean isDeleted;
     @SerializedName("createdAt")
     @Expose
-    private String createdAt = "";
+    private String createdAt;
     @SerializedName("updatedAt")
     @Expose
-    private String updatedAt = "";
+    private String updatedAt;
     @SerializedName("regions")
     @Expose
     private List<Object> regions = null;
@@ -101,13 +100,7 @@ public class User {
     private Object averageEventEstimation;
     @SerializedName("profileFilling")
     @Expose
-    private Integer profileFilling = 0;
-    @SerializedName("userClub")
-    @Expose
-    private Object userClub;
-    @SerializedName("userSportEvents")
-    @Expose
-    private Object userSportEvents;
+    private Integer profileFilling;
 
     public String getId() {
         return id;
@@ -196,6 +189,7 @@ public class User {
     public void setAboutMe(String aboutMe) {
         this.aboutMe = aboutMe;
     }
+
     public String getBirthday() {
         return birthday;
     }
@@ -340,19 +334,6 @@ public class User {
         this.profileFilling = profileFilling;
     }
 
-    public Object getUserClub() {
-        return userClub;
-    }
-
-    public void setUserClub(Object userClub) {
-        this.userClub = userClub;
-    }
-
-    public Object getUserSportEvents() {
-        return userSportEvents;
-    }
-
-    public void setUserSportEvents(Object userSportEvents) {
-        this.userSportEvents = userSportEvents;
-    }
 }
+
+

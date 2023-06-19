@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
@@ -45,7 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class UserActivity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private PeopleViewModel viewModel;
     private ImageView photo, closed;
@@ -55,6 +56,7 @@ public class UserActivity extends AppCompatActivity {
     private ProgressBar profileFilling;
     private ButtonSelect clubs, event, plan;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,11 @@ public class UserActivity extends AppCompatActivity {
 
 
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+
+
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         photo = findViewById(R.id.photo);
 
@@ -88,11 +95,14 @@ public class UserActivity extends AppCompatActivity {
         closed = findViewById(R.id.closed);
 
         clubs = findViewById(R.id.clubs_action);
+        clubs.on();
         event = findViewById(R.id.event_action);
         plan = findViewById(R.id.plan_action);
 
         viewModel.getUser().observe(this, user -> {
             try {
+                swipeRefreshLayout.setRefreshing(false);
+
                 if (user.getFirstName().length() + user.getLastName().length() > 1) {
                     name.setVisibility(View.VISIBLE);
                     name.setText(user.getFirstName() + " " + user.getLastName());
@@ -110,11 +120,13 @@ public class UserActivity extends AppCompatActivity {
                     sex.setText(user.getSex().equals("male") ? "Чоловік" : user.getSex().equals("female") ? "Жінка" : "Невідомо");
                 }
 
-                if (user.getAge() != 0) {
-                    if (user.getAge() > 50) {
-                        birthday.setText(user.getSex() == "male" ? "Зрілий" : user.getSex() == "female" ? "Зріла" : "Невідомо");
-                    } else {
-                        birthday.setText(user.getSex() == "male" ? "Молодий" : user.getSex() == "female" ? "Молода" : "Невідомо");
+                if (user.getAge() != null){
+                    if (user.getAge() < 45){
+                        birthday.setText("Молод" + (user.getSex() == null ? "(ий/a)" : user.getSex().equals("male") ? "ий" : "а"));
+                    }else if (user.getAge()  < 59){
+                        birthday.setText("Зріл" + (user.getSex() == null ? "(ий/a)" : user.getSex().equals("male") ? "ий" : "а"));
+                    }else if (user.getAge() >= 60){
+                        birthday.setText("Літн" + (user.getSex() == null ? "(ій/я)" : user.getSex().equals("male")  ? "ій" : "я"));
                     }
                 }
 
@@ -205,6 +217,8 @@ public class UserActivity extends AppCompatActivity {
 
         viewModel.user(getIntent().getStringExtra("id"));
         viewModel.clubs(getIntent().getStringExtra("id"));
+
+        swipeRefreshLayout.setRefreshing(true);
     }
 
 
@@ -310,4 +324,8 @@ public class UserActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onRefresh() {
+        viewModel.user(getIntent().getStringExtra("id"));
+    }
 }

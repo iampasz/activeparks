@@ -52,6 +52,10 @@ public class ParksAdaper extends RecyclerView.Adapter<ParksAdaper.ViewHolder> {
         holder.itemView.setOnClickListener(v -> {
             parksAdaperListener.onInfoPark(sportsground);
         });
+
+        holder.infoParks.setOnClickListener(v -> {
+            parksAdaperListener.onInfoPark(sportsground);
+        });
     }
 
     public double round(double value, int places) {

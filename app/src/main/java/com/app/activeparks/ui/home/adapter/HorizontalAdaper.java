@@ -57,17 +57,16 @@ public class HorizontalAdaper extends RecyclerView.Adapter<HorizontalAdaper.View
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
-            if (news.getCreatedAt() != null) {
-                Date data = format.parse(news.getCreatedAt());
+            if (news.getPublishedAt() != null) {
+                Date data = format.parse(news.getPublishedAt());
                 holder.data.setText("Опубліковано: " + new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(data));
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-
-
         if (news.getBody() != null) {
+            holder.description.setVisibility(View.VISIBLE);
             String web = "<html><head><LINK href=\"https://web.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body>" + news.getBody() + "</body></html>";
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -75,8 +74,9 @@ public class HorizontalAdaper extends RecyclerView.Adapter<HorizontalAdaper.View
             } else {
                 holder.description.setText(Html.fromHtml(web));
             }
+        }else{
+            holder.description.setVisibility(View.GONE);
         }
-
 
         if (news.getPhotos().size() > 0) {
             holder.galary.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
@@ -93,7 +93,6 @@ public class HorizontalAdaper extends RecyclerView.Adapter<HorizontalAdaper.View
             holder.image.setVisibility(View.VISIBLE);
             holder.tabLayout.setVisibility(View.GONE);
         }
-
 
         holder.itemView.setOnClickListener(v -> {
             parksAdaperListener.onInfo(news);

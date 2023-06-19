@@ -53,4 +53,13 @@ public class AuthViewModel extends ViewModel {
                         }
                 );
     }
+
+    public void setServer(Boolean type) {
+        preferences.setServer(type);
+        repository = new Repository(preferences);
+    }
+
+    public Boolean getServer() {
+        return preferences.getServer();
+    }
 }

@@ -10,6 +10,7 @@ import com.app.activeparks.data.model.Default;
 import com.app.activeparks.data.model.clubs.Clubs;
 import com.app.activeparks.data.model.dictionaries.BaseDictionaries;
 import com.app.activeparks.data.model.sportevents.SportEvents;
+import com.app.activeparks.data.model.user.UserUpdate;
 import com.app.activeparks.data.model.workout.WorkoutModel;
 import com.app.activeparks.repository.Repository;
 import com.app.activeparks.data.model.clubs.ItemClub;
@@ -58,6 +59,8 @@ public class ProfileViewModel extends ViewModel {
     public int select = 0;
     private String districtId, regionId;
     public User mProfile;
+
+    public UserUpdate userUpdate = new UserUpdate();
 
     ProfileViewModel(Preferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
@@ -216,19 +219,22 @@ public class ProfileViewModel extends ViewModel {
     }
 
     public void updateUser() {
-        repository.updateUser(mProfile).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        userUpdate.setId(mProfile.getId());
+        userUpdate.setId(mProfile.getNickname());
+        repository.updateUser(userUpdate).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             message.setValue("Дані оновлені!");
                             defaults.setValue(true);
                         },
                         error -> {
                             try {
-                                Log.d("error", error.getMessage());
+                                Log.d("test_log", error.getMessage());
                                 Default def = new Gson().fromJson(error.getMessage(), Default.class);
                                 if (def.getErrors() != null) {
                                     message.setValue(def.getErrors().get(0).getMsg());
                                 }
                             } catch (Exception e) {
+                                Log.d("test_log", "msg" + e.getMessage());
                                 message.setValue("Перевірте підключення до інтернету");
                             }
                         }

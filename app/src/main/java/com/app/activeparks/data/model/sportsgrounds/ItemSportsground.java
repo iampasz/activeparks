@@ -31,7 +31,7 @@ public class ItemSportsground {
     private String typeId;
     @SerializedName("ownershipTypeId")
     @Expose
-    private Object ownershipTypeId;
+    private String ownershipTypeId;
     @SerializedName("accessTypeId")
     @Expose
     private String accessTypeId;
@@ -188,11 +188,11 @@ public class ItemSportsground {
         this.typeId = typeId;
     }
 
-    public Object getOwnershipTypeId() {
+    public String getOwnershipTypeId() {
         return ownershipTypeId;
     }
 
-    public void setOwnershipTypeId(Object ownershipTypeId) {
+    public void setOwnershipTypeId(String ownershipTypeId) {
         this.ownershipTypeId = ownershipTypeId;
     }
 

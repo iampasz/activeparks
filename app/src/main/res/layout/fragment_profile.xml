@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:drawableRight="@drawable/ic_exit"
+            android:drawableRight="@drawable/ic_goout"
             android:text=""
             android:textColor="@color/color_park"
             android:textSize="18sp" />

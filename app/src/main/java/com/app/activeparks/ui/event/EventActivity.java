@@ -58,11 +58,9 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
     private ButtonSelect mDescriptionAction, mLocationAction, mRecordsAction, mPeopleAction, сonferenciaAction, startPointAction, mJoinAction;
     private TextView mTitle, mAddress, mPhone, mStartEvent, mEndEvent, mDescription, mClubName, mEventStatus, mDay, mHour, mMinutes, mSeconds;
     public MapView mapView;
-
     private View statusView;
     private LinearLayout layoutTimer;
     public MapsViewControler mapsViewControler;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +104,6 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
         mRecordsAction = findViewById(R.id.records_action);
         mPeopleAction = findViewById(R.id.people_action);
         mJoinAction = findViewById(R.id.join_action);
-
 
 
         mapView = findViewById(R.id.mapview);
@@ -163,11 +160,10 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
 
                 mEventStatus.setVisibility(View.VISIBLE);
                 statusView.setVisibility(View.VISIBLE);
+
                 if (events.getHoldingStatusId().contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")) {
                     statusView.setBackground(getResources().getDrawable(R.drawable.button_color));
                 }
-
-
 
                 if (events.getFullDescription() != null) {
                     mDescriptionAction.setVisibility(View.VISIBLE);
@@ -191,17 +187,17 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
                     findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
                     mapsViewControler.setMarker(viewModel.address.getLocation().get(0), viewModel.address.getLocation().get(1));
 
-                    if (events.getStatusId().contains("032fd5ba-f634-469b-3c30-77a1gh63a918") && events.getHoldingStatusId().contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")){
-                        if (events.getEventUser() != null && events.getEventUser().getIsCoordinator() == true || events.getEventUser().getIsActing() == true ) {
+                    if (events.getStatusId().contains("032fd5ba-f634-469b-3c30-77a1gh63a918") && events.getHoldingStatusId().contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")) {
+                        if (events.getEventUser() != null && events.getEventUser().getIsCoordinator() == true) {
                             startPointAction.setVisibility(View.VISIBLE);
                             startPointAction.setEnabled(true);
-                            if (events.getRouteStartAt() == null){
+                            if (events.getRouteStartAt() == null) {
                                 startPointAction.setText("Розпочати захід");
-                            }else{
+                            } else {
                                 startPointAction.setText("Зупинити захід");
                             }
                         }
-                    }else{
+                    } else {
                         startPointAction.setVisibility(View.GONE);
                     }
 
@@ -225,7 +221,7 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
 
                     if (events.getHoldingStatusId().contains("6h8ad9c0-fd34-8kr4-h8ft-43vdm3n7do3p")) {
                         layoutTimer.setVisibility(View.VISIBLE);
-                        startTimer(events.getStartsAt());
+                        startTimer(events.getTimeZoneDifference());
                     } else if (events.getHoldingStatusId().contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")) {
                         mRecordsAction.setVisibility(View.GONE);
                         layoutTimer.setVisibility(View.GONE);
@@ -251,6 +247,7 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
 
 
                 if (viewModel.getUserAuth() && !events.getHoldingStatusId().contains("0q8a6xc0-1nb4-1pr4-h5at-4sw3m0l387yp")) {
+                    mJoinAction.setEnabled(true);
                     if (events.getEventUser() != null && events.getEventUser().getIsCoordinator() == true) {
                         mJoinAction.setVisibility(View.GONE);
                     } else {
@@ -262,7 +259,6 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
             }
 
         });
-
 
         viewModel.getLocation().observe(this, location -> {
             mAddress.setText(location);
@@ -310,6 +306,7 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
 
         mJoinAction.setOnClickListener(v -> {
             viewModel.applyUser();
+            mJoinAction.setEnabled(false);
         });
 
         ratingBar.setOnClickListener(v -> {
@@ -325,8 +322,8 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
         findViewById(R.id.copy_action).setOnClickListener((View v) -> {
             Intent intent = new Intent(android.content.Intent.ACTION_SEND);
             intent.setType("text/plain");
-            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Хочу тебе запросити на " + mTitle.getText().toString());
-            intent.putExtra(android.content.Intent.EXTRA_TEXT, "Хочу тебе запросити на " + mTitle.getText().toString() + " " + "https://ap.sportforall.gov.ua/fc-events/0/" + viewModel.mId);
+            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Хочу тебе запросити до заходу \"" + mTitle.getText().toString() + "\"");
+            intent.putExtra(android.content.Intent.EXTRA_TEXT, "Хочу тебе запросити до заходу \"" + mTitle.getText().toString() + "\", який проводиться завдяки програмі програми президента “Активні парки”." + " \n\nhttps://ap.sportforall.gov.ua/fc-events/0/" + viewModel.mId + "\n\nПриєднуйся до нас! Та оздоровлюйся разом зі мною! \n\nРозроблено на завдання президента України для проекту “Активні парки”");
             startActivity(Intent.createChooser(intent, getString(R.string.app_name)));
         });
     }
@@ -338,43 +335,33 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
         mPeopleAction.off();
     }
 
-    void startTimer(String data) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            Date date = dateFormat.parse(data);
+    void startTimer(long time) {
 
-            Calendar cal = Calendar.getInstance();
-
-            long time = date.getTime() - cal.getTime().getTime();
-
-            int result = cal.getTime().compareTo(date);
-            if (result > 0) {
-                сonferenciaAction.setVisibility(View.VISIBLE);
-                layoutTimer.setVisibility(View.GONE);
-                return;
-            }
-            new CountDownTimer(time, 1000) {
-
-                public void onTick(long millisUntilFinished) {
-
-                    long Days = millisUntilFinished / (24 * 60 * 60 * 1000);
-                    long Hours = millisUntilFinished / (60 * 60 * 1000) % 24;
-                    long Minutes = millisUntilFinished / (60 * 1000) % 60;
-                    long Seconds = millisUntilFinished / 1000 % 60;
-                    //
-                    mDay.setText(String.format("%02d", Days));
-                    mHour.setText(String.format("%02d", Hours));
-                    mMinutes.setText(String.format("%02d", Minutes));
-                    mSeconds.setText(String.format("%02d", Seconds));
-                }
-
-                public void onFinish() {
-                    viewModel.getEvent(getIntent().getStringExtra("id"));
-                    cancel();
-                }
-            }.start();
-        } catch (ParseException pe) {
+        if (time > 0) {
+            сonferenciaAction.setVisibility(View.VISIBLE);
+            layoutTimer.setVisibility(View.GONE);
+            return;
         }
+        new CountDownTimer(Math.abs(time), 1000) {
+
+            public void onTick(long millisUntilFinished) {
+
+                long Days = millisUntilFinished / (24 * 60 * 60 * 1000);
+                long Hours = millisUntilFinished / (60 * 60 * 1000) % 24;
+                long Minutes = millisUntilFinished / (60 * 1000) % 60;
+                long Seconds = millisUntilFinished / 1000 % 60;
+                //
+                mDay.setText(String.format("%02d", Days));
+                mHour.setText(String.format("%02d", Hours));
+                mMinutes.setText(String.format("%02d", Minutes));
+                mSeconds.setText(String.format("%02d", Seconds));
+            }
+
+            public void onFinish() {
+                viewModel.getEvent(getIntent().getStringExtra("id"));
+                cancel();
+            }
+        }.start();
     }
 
     void showRoutePoint() {

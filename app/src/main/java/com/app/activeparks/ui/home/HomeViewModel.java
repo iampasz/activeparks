@@ -20,7 +20,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -48,7 +50,7 @@ public class HomeViewModel extends ViewModel {
         getDataUser();
         getParks();
         getNews();
-        getSportEvents();
+        getEvents();
     }
 
     public LiveData<List<ItemEvent>> getSportEventsList() {
@@ -87,7 +89,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void getParks(double lat, double lon) {
-        repository.sportsgrounds(5, "30", "" + lon, "" + lat).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        repository.sportsgrounds(5, "", "" + lon, "" + lat).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> parksList.setValue(result),
                         error -> {
                         });
@@ -100,13 +102,20 @@ public class HomeViewModel extends ViewModel {
                         error -> Log.e("HomeViewModel", "getPokemons: " + error.getMessage()));
     }
 
-    public void getSportEvents() {
+    public void getEvents() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        repository.eventsDay(10, dateFormat.format(new Date()), "").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        String date = dateFormat.format(new Date());
+        Map<String, String> data = new HashMap<>();
+        data.put("offset", "0");
+        data.put("limit", "10");
+        data.put("filters[startsFrom]", date);
+        data.put("filters[startsTo]", date);
+        data.put("sort[startsAt]", "asc");
+        repository.eventsDay(data).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             List<ItemEvent> filteredList = new ArrayList<>();
                             for (ItemEvent element : result.getItems()) {
-                                if (!element.getHoldingStatusId().contains("0q8a6xc0-1nb4-1pr4-h5at-4sw3m0l387yp")) {
+                                if (!element.getHoldingStatusId().equals("0q8a6xc0-1nb4-1pr4-h5at-4sw3m0l387yp")) {
                                     filteredList.add(element);
                                 }
                             }

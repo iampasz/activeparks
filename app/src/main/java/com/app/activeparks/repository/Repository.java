@@ -28,6 +28,7 @@ import com.app.activeparks.data.model.support.Support;
 import com.app.activeparks.data.model.support.SupportItem;
 import com.app.activeparks.data.model.user.User;
 import com.app.activeparks.data.model.user.UserParticipants;
+import com.app.activeparks.data.model.user.UserUpdate;
 import com.app.activeparks.data.model.uservideo.UserVideo;
 import com.app.activeparks.data.model.uservideo.UserVideoItem;
 import com.app.activeparks.data.model.video.Video;
@@ -74,12 +75,10 @@ public class Repository {
 
         userId = sharedPreferences.getId();
 
-        if (service == null) {
-            if (sharedPreferences.getServer() == false) {
-                service = new NetworkModule().getInterface();
-            }else{
-                service = new NetworkModule().getTest();
-            }
+        if (sharedPreferences.getServer() == true) {
+            service = new NetworkModule().getTest();
+        } else {
+            service = new NetworkModule().getInterface();
         }
     }
 
@@ -126,7 +125,7 @@ public class Repository {
     }
 
     public Observable<ItemNews> getNewsClubDetails(String club, String id) {
-        return service.getNewsDetails(club, id);
+        return service.getNewsDetails(token, club, id);
     }
 
     public Observable<SportEvents> myEvents() {
@@ -138,7 +137,7 @@ public class Repository {
     }
 
     public Observable<CalendarModel> calendarEventRequest(Date date, String clubId) {
-        if (date == null){
+        if (date == null) {
             date = new Date();
         }
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -204,24 +203,14 @@ public class Repository {
         data.put("limit", String.valueOf(limit));
         data.put("filters[startsFrom]", date);
         data.put("sort[startsAt]", "asc");
-        if (!clubId.isEmpty()) {
+        if (clubId != null && !clubId.isEmpty()) {
             data.put("filters[clubId]", clubId);
         }
 
         return service.getEvents(token, "", data);
     }
 
-    public Observable<SportEvents> eventsDay(int limit, String date, String clubId) {
-        Map<String, String> data = new HashMap<>();
-        data.put("offset", "0");
-        data.put("limit", "10");
-        data.put("filters[startsFrom]", date);
-        data.put("filters[startsTo]", date);
-        data.put("sort[startsAt]", "asc");
-        if (!clubId.isEmpty()) {
-            data.put("filters[clubId]", clubId);
-        }
-
+    public Observable<SportEvents> eventsDay(Map<String, String> data) {
         return service.getEvents(token, "/day", data);
     }
 
@@ -235,12 +224,12 @@ public class Repository {
 
         if (token.length() > 1) {
             return service.getEvents(token, "", data);
-        }else{
+        } else {
             return service.getEvents("", data);
         }
     }
 
-    public Observable<ResponseBody> pintRequest(String eventId, String pointId){
+    public Observable<ResponseBody> pintRequest(String eventId, String pointId) {
 
         return service.pintRequest(token, eventId, pointId);
     }
@@ -305,34 +294,33 @@ public class Repository {
         return service.putWrkout(token, "/" + id + "/notes/" + idNotes, data);
     }
 
-    public Observable<WorkoutItem> workout(String id){
+    public Observable<WorkoutItem> workout(String id) {
         return service.workout(token, id);
     }
 
 
-
-    public Observable<ResponseBody> workoutAdd(String title, boolean isOnce, String weekDays, String startTime, String finishTime, List<String> exercises, String userId){
+    public Observable<ResponseBody> workoutAdd(String title, boolean isOnce, String weekDays, String startTime, String finishTime, List<String> exercises, String userId) {
         String[] week = {weekDays};
         PlanModel data = new PlanModel(title, week, startTime, finishTime, userId, isOnce, "Тренування", true);
         return service.workoutAddRequest(token, data);
     }
 
-    public Observable<WorkoutModel> workoutUpdate(String id, String title, boolean isOnce, String weekDays, String startTime, String finishTime, List<String> exercises, String userId){
+    public Observable<WorkoutModel> workoutUpdate(String id, String title, boolean isOnce, String weekDays, String startTime, String finishTime, List<String> exercises, String userId) {
         String[] week = {weekDays};
         PlanModel data = new PlanModel(id, title, week, startTime, finishTime, userId, isOnce, "Тренування", true);
         return service.workoutUpdateRequest(token, data);
     }
 
-    public Observable<WorkoutModel> workoutRemove(String id){
+    public Observable<WorkoutModel> workoutRemove(String id) {
 
         return service.workoutRemoveRequest(token, id);
     }
 
-    public Observable<ResponseBody> setPermissionsRequest(String id, Boolean type){
+    public Observable<ResponseBody> setPermissionsRequest(String id, Boolean type) {
         return service.setPermissionsRequest(token, type == true ? "provide-access" : "remove-access", id);
     }
 
-    public Observable<WorkoutModel> plans(String userId){
+    public Observable<WorkoutModel> plans(String userId) {
         Map<String, String> data = new HashMap<>();
         data.put("userId", String.valueOf(userId));
         data.put("week", "0");
@@ -342,7 +330,7 @@ public class Repository {
         return service.workout(token, "plan", data);
     }
 
-    public Observable<WorkoutModel> plans(){
+    public Observable<WorkoutModel> plans() {
         Map<String, String> data = new HashMap<>();
         data.put("userId", String.valueOf(userId));
         data.put("week", "0");
@@ -355,7 +343,7 @@ public class Repository {
     public Observable<ItemEvent> getEventDetails(String id) {
         if (token.length() > 1) {
             return service.getEventDetails(token, id);
-        }else{
+        } else {
             return service.getEventDetails(id);
         }
     }
@@ -413,7 +401,7 @@ public class Repository {
         return service.getEventUser(token, id, user ? "heads" : "participants");
     }
 
-    public Observable<UserParticipants>  getClubsUser(String id, Boolean user) {
+    public Observable<UserParticipants> getClubsUser(String id, Boolean user) {
         return service.getClubsUser(token, id, user ? "heads" : "members");
     }
 
@@ -560,12 +548,16 @@ public class Repository {
                     return Observable.error(throwable);
                 });
     }
-    public Repository setPush(String pushToken){
-       service.setPush(token, pushToken).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-               .subscribe(result -> {
-                   Log.d("token_result", " "+ result.string());
-                   }, error -> {Log.d("token_result", " "+ error.getMessage());});
-       return this;
+
+    public Repository setPush(String pushToken) {
+        service.setPush(token, pushToken).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    Log.d("token_result", " " + result.string());
+                    Log.d("token_result", "pushToken: " + pushToken);
+                }, error -> {
+                    Log.d("token_result", " " + error.getMessage());
+                });
+        return this;
     }
 
     public Observable<City> searchCity(String city) {
@@ -623,11 +615,11 @@ public class Repository {
 //        mUser.setValue(user);
     }
 
-    public Observable<ResponseBody> updateUser(User user) {
+    public Observable<ResponseBody> updateUser(UserUpdate user) {
         return service.updateUser(token, userId, user).onErrorResumeNext(throwable -> {
             if (throwable instanceof HttpException) {
                 HttpException httpException = (HttpException) throwable;
-                if (httpException.code() == 400) {
+                if (httpException.code() == 400 || httpException.code() == 404) {
                     ResponseBody errorBody = httpException.response().errorBody();
                     return Observable.error(new Exception(errorBody.string()));
                 }
@@ -652,8 +644,12 @@ public class Repository {
         return service.updateSupport(token, id, supportItem);
     }
 
-    public  Observable<SupportItem> sendSupportMessage(String id) {
+    public Observable<SupportItem> sendSupportMessage(String id) {
         return service.sendMessage(token, id);
+    }
+
+    public Observable<SupportItem> sendSupportMessage(String id, String msg) {
+        return service.sendMessage(token, id, id, msg);
     }
 
     public Observable<SupportItem> getSupportDetails(String id) {
@@ -668,26 +664,26 @@ public class Repository {
         return service.activatePointQrCodeRequest(token, id);
     }
 
-    public Observable<QrCodeModel> createQrCodePoint(String eventId, String pointId){
+    public Observable<QrCodeModel> createQrCodePoint(String eventId, String pointId) {
         return service.createQrCodePointRequest(token, eventId + "/points/" + pointId);
     }
 
-    public Observable<ResponseBody> jointLeave(String eventId){
+    public Observable<ResponseBody> jointLeave(String eventId) {
         return service.jointEvent(token, eventId + "/leave", userId, eventId);
     }
 
-    public Observable<ResponseBody> jointEvent(String eventId){
+    public Observable<ResponseBody> jointEvent(String eventId) {
         return service.jointEvent(token, eventId + "/join", userId, eventId);
     }
 
-    public Observable<QrCodeModel> createQrCodeClub(String clubId){
+    public Observable<QrCodeModel> createQrCodeClub(String clubId) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Map<String, String> data = new HashMap<>();
-        data.put("title", "qrcode");
-        data.put("clubId", clubId);
-        data.put("endDateOfUse", dateFormat.format(new Date()));
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
 
-        return service.createQrCodeClubRequest(token, data);
+        String date = dateFormat.format(calendar.getTime());
+
+        return service.createQrCodeClubRequest(token, "qrcode", clubId, date);
     }
 
     public Repository logout() {
@@ -698,17 +694,17 @@ public class Repository {
     }
 
     public Observable<Default> updateFile(File file, String type) {
-            int random = (int) (Math.random() * 200);
-            String name = "file" + random;
+        int random = (int) (Math.random() * 200);
+        String name = "file" + random;
 
-            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
 
-            MultipartBody.Part body =
-                    MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("file", file.getName(), requestBody);
 
-            RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), type);
+        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), type);
 
-            return  service.updateFile(token, name, (int) file.length(), 1,1, name, filename, body);
+        return service.updateFile(token, name, (int) file.length(), 1, 1, name, filename, body);
     }
 
 

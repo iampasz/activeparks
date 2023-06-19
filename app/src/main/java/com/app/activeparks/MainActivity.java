@@ -2,12 +2,11 @@ package com.app.activeparks;
 
 
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.app.activeparks.data.NetworkModule;
 import com.app.activeparks.data.storage.Preferences;
 import com.app.activeparks.repository.Repository;
 import com.app.activeparks.ui.maps.MapsFragment;
@@ -15,36 +14,44 @@ import com.app.activeparks.ui.profile.EditProfileActivity;
 import com.app.activeparks.util.Dictionarie;
 import com.app.activeparks.util.FragmentInteface;
 import com.app.activeparks.util.cropper.CropImage;
+import com.google.android.gms.tasks.Task;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.review.ReviewException;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.android.play.core.review.model.ReviewErrorCode;
 import com.technodreams.activeparks.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
-import androidx.room.Room;
 
 import com.technodreams.activeparks.databinding.ActivityMainBinding;
 
 import java.util.Locale;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-
 
 public class MainActivity extends AppCompatActivity implements FragmentInteface {
 
     private ActivityMainBinding binding;
-    private BottomNavigationView bottomNavigationView;
+
+    private AppUpdateManager appUpdateManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        bottomNavigationView = findViewById(R.id.nav_view);
+        appUpdateManager =  AppUpdateManagerFactory.create(this);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupWithNavController(binding.navView, navController);
@@ -57,6 +64,21 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         Configuration configuration = new Configuration();
         configuration.locale = locale;
         getBaseContext().getResources().updateConfiguration(configuration, null);
+
+
+
+        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                try {
+                    appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, this, 1);
+                } catch (IntentSender.SendIntentException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         //startActivity(new Intent(this, TestUpdate.class));
     }
@@ -94,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
     @Override
     public void navigation(int id) {
-        bottomNavigationView.setSelectedItemId(id);
+        binding.navView.setSelectedItemId(id);
     }
 
     @Override
@@ -112,6 +134,26 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         if (preferences.getPushToken() != null) {
             new Repository(preferences).setPush(preferences.getPushToken());
         }
+        if (preferences.getToken() != null && preferences.getToken().length() > 0) {
+            reviewManager();
+        }
     }
+
+    public void reviewManager() {
+        ReviewManager manager = ReviewManagerFactory.create(this);
+        Task<ReviewInfo> request = manager.requestReviewFlow();
+        request.addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // We can get the ReviewInfo object
+                ReviewInfo reviewInfo = task.getResult();
+                Task<Void> flow = manager.launchReviewFlow(this, reviewInfo);
+                flow.addOnCompleteListener(tasks -> {
+                });
+            } else {
+                @ReviewErrorCode int reviewErrorCode = ((ReviewException) task.getException()).getErrorCode();
+            }
+        });
+    }
+
 
 }

@@ -20,6 +20,7 @@ import com.app.activeparks.ui.event.EventActivity;
 import com.app.activeparks.ui.selectvideo.SelectVideoActivity;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
+import com.budiyev.android.codescanner.DecodeCallback;
 import com.technodreams.activeparks.databinding.FragmentScanerBinding;
 import com.google.zxing.Result;
 
@@ -42,35 +43,44 @@ public class ScanerFragment extends Fragment {
 
         mCodeScanner = new CodeScanner(getActivity(), scannerView);
 
-        mCodeScanner.setDecodeCallback((Result result) -> {
-            String code = result.getText();
-            if (code.contains("/club/")) {
-                if (code.length() > 36) {
-                    if (mViewModel.getUser() == true) {
-                        String id = code.substring(result.getText().length() - 36, result.getText().length());
-                        mViewModel.activateClubQrCode(id);
-                    } else {
-                        Toast.makeText(getContext(), "Потрібно авторизуватися!", Toast.LENGTH_LONG).show();
+        mCodeScanner.setDecodeCallback(new DecodeCallback() {
+            @Override
+            public void onDecoded(@NonNull final Result result) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String code = result.getText();
+                        if (code.contains("/club/")) {
+                            if (code.length() > 36) {
+                                if (mViewModel.getUser() == true) {
+                                    String id = code.substring(result.getText().length() - 36, result.getText().length());
+                                    mViewModel.activateClubQrCode(id);
+                                } else {
+                                    Toast.makeText(getContext(), "Потрібно авторизуватися!", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        } else if (code.contains("/route-point/")) {
+                            if (code.length() > 36) {
+                                if (mViewModel.getUser() == true) {
+                                    String id = code.substring(result.getText().length() - 36, result.getText().length());
+                                    mViewModel.activatePointQrCode(id);
+                                } else {
+                                    Toast.makeText(getContext(), "Потрібно авторизуватися!", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        } else if (code.contains("/qr/")) {
+                            if (code.length() > 10) {
+                                String id = code.substring(result.getText().length() - 2, result.getText().length() - 1);
+                                startActivity(new Intent(getActivity(), SelectVideoActivity.class).putExtra("code", id));
+                            }
+                        } else {
+                            startActivity(new Intent(getActivity(), SelectVideoActivity.class));
+                        }
                     }
-                }
-            } else if (code.contains("/route-point/")) {
-                if (code.length() > 36) {
-                    if (mViewModel.getUser() == true) {
-                        String id = code.substring(result.getText().length() - 36, result.getText().length());
-                        mViewModel.activatePointQrCode(id);
-                    } else {
-                        Toast.makeText(getContext(), "Потрібно авторизуватися!", Toast.LENGTH_LONG).show();
-                    }
-                }
-            } else if (code.contains("/qr/")) {
-                if (code.length() > 10) {
-                    String id = code.substring(result.getText().length() - 2, result.getText().length() - 1);
-                    startActivity(new Intent(getActivity(), SelectVideoActivity.class).putExtra("code", id));
-                }
-            } else {
-                startActivity(new Intent(getActivity(), SelectVideoActivity.class));
+                });
             }
         });
+
         scannerView.setOnClickListener((View view) -> {
             mCodeScanner.startPreview();
         });
@@ -101,8 +111,14 @@ public class ScanerFragment extends Fragment {
 
     @Override
     public void onPause() {
-        mCodeScanner.stopPreview();
+        mCodeScanner.releaseResources();
         super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mCodeScanner.startPreview();
     }
 
 

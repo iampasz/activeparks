@@ -4,11 +4,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.app.activeparks.data.model.Errors;
 import com.app.activeparks.repository.Repository;
 import com.app.activeparks.data.model.Default;
 import com.app.activeparks.data.model.authorisation.Signup;
 import com.app.activeparks.data.storage.Preferences;
 import com.google.gson.Gson;
+
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -18,14 +21,20 @@ public class RegisterViewModel extends ViewModel {
 
     private Repository repository;
     private MutableLiveData<String> mMessage;
+    private MutableLiveData<List<Errors>> mMessageError;
 
     public RegisterViewModel(Preferences preferences) {
-        this.repository = new Repository(preferences);
+        repository = new Repository(preferences);
         mMessage = new MutableLiveData<>();
+        mMessageError = new MutableLiveData<>();
     }
 
     public LiveData<String> getMessage() {
         return mMessage;
+    }
+
+    public LiveData<List<Errors>> getMessageError() {
+        return mMessageError;
     }
 
     public void signup(String nickname, String password, String email, String code){
@@ -41,7 +50,7 @@ public class RegisterViewModel extends ViewModel {
                         error -> {
                             try {
                                 Default def = new Gson().fromJson(error.getMessage(), Default.class);
-                                mMessage.setValue(def.getErrors().get(0).getMsg());
+                                mMessageError.setValue(def.getErrors());
                             } catch (Exception e) {
                                 mMessage.setValue("Перевірте підключення до інтернету");
                             }

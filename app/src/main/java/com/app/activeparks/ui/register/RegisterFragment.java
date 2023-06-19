@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.app.activeparks.data.model.Errors;
 import com.app.activeparks.ui.auth.AuthFragment;
 import com.app.activeparks.util.FragmentInteface;
 import com.technodreams.activeparks.R;
@@ -28,7 +29,7 @@ import java.util.Date;
 public class RegisterFragment extends Fragment {
 
     private RegisterViewModel mViewModel;
-    private TextView timer;
+    private TextView timer, errorNickname, errorPassword, errorEmail, errorCode;
     private Button sendCode, regAction;
     private View binding;
 
@@ -53,6 +54,10 @@ public class RegisterFragment extends Fragment {
         regAction = binding.findViewById(R.id.reg_action);
 
         timer = binding.findViewById(R.id.timer);
+        errorNickname = binding.findViewById(R.id.login_error);
+        errorPassword = binding.findViewById(R.id.password_error);
+        errorEmail = binding.findViewById(R.id.email_error);
+        errorCode = binding.findViewById(R.id.code_error);
 
 
         closed.setOnClickListener(v-> {
@@ -72,6 +77,10 @@ public class RegisterFragment extends Fragment {
                     email.getText().toString(),
                     code.getText().toString());
 
+            errorNickname.setVisibility(View.GONE);
+            errorPassword.setVisibility(View.GONE);
+            errorEmail.setVisibility(View.GONE);
+            errorCode.setVisibility(View.GONE);
         });
 
         mViewModel.getMessage().observe(getViewLifecycleOwner(), msg -> {
@@ -91,7 +100,26 @@ public class RegisterFragment extends Fragment {
             }
         });
 
-
+        mViewModel.getMessageError().observe(getViewLifecycleOwner(), errors -> {
+            for (Errors item : errors) {
+                if (item.getParam().contains("nickname")) {
+                    errorNickname.setText(item.getMsg());
+                    errorNickname.setVisibility(View.VISIBLE);
+                }
+                if (item.getParam().contains("password")) {
+                    errorPassword.setText(item.getMsg());
+                    errorPassword.setVisibility(View.VISIBLE);
+                }
+                if (item.getParam().contains("email")) {
+                    errorEmail.setText(item.getMsg());
+                    errorEmail.setVisibility(View.VISIBLE);
+                }
+                if (item.getParam().contains("code")) {
+                    errorCode.setText(item.getMsg());
+                    errorCode.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         return binding;
     }

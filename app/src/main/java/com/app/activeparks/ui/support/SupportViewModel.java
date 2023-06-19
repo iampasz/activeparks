@@ -26,7 +26,7 @@ public class SupportViewModel extends ViewModel {
     private MutableLiveData<Support> mSupport = new MutableLiveData<>();
     private MutableLiveData<SupportItem> mSupportDetails = new MutableLiveData<>();
     public List<SupportItem> mSupportItem = new ArrayList<>();
-    public SupportItem mSupportUpdate;
+    public SupportItem mSupportUpdate = new SupportItem();
 
     public SupportViewModel(Preferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
@@ -41,8 +41,6 @@ public class SupportViewModel extends ViewModel {
         mSupportUpdate = mSupportDetails.getValue();
         return mSupportDetails;
     }
-
-
     public void getSupport() {
         repository.getSupportList().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -57,6 +55,7 @@ public class SupportViewModel extends ViewModel {
                 .subscribe(result -> {
                             if (result != null) {
                                 mSupportDetails.setValue(result);
+                                mSupportUpdate = result;
                             }
                         },
                         error -> {
@@ -77,22 +76,31 @@ public class SupportViewModel extends ViewModel {
     }
 
     public void updateSupport(String topic, String text) {
-        mSupportUpdate.setTopic(topic != null ? topic : mSupportUpdate.getTopic());
-        mSupportUpdate.setText(text != null ? text : mSupportUpdate.getText());
-        repository.updateSupport(mSupportUpdate.getId(), mSupportUpdate).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> sendSupportMessage(),
-                        error -> {
-                        });
+        if (mSupportUpdate != null) {
+            mSupportUpdate.setTopic(topic != null ? topic : mSupportUpdate.getTopic());
+            mSupportUpdate.setText(text != null ? text : mSupportUpdate.getText());
+            repository.updateSupport(mSupportUpdate.getId(), mSupportUpdate).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result -> sendSupport(),
+                            error -> {
+                            });
+        }
     }
 
-    public void sendSupportMessage() {
+    public void sendSupport() {
         repository.sendSupportMessage(mSupportUpdate.getId()).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                         },
                         error -> {
                         });
+    }
+
+    public void sendSupportMessage(String msg) {
+        repository.sendSupportMessage(mSupportUpdate.getId(), msg).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> getSupportDetails(mSupportUpdate.getId()),
+                        error -> getSupportDetails(mSupportUpdate.getId()));
     }
 
     public void supportMapper(List<SupportItem> supportItems) {

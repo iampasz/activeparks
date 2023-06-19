@@ -1,5 +1,7 @@
 package com.app.activeparks.ui.event;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -17,7 +19,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -31,10 +35,15 @@ public class EventViewModel extends ViewModel {
     private MutableLiveData<CalendarModel> calendar = new MutableLiveData<>();
     private MutableLiveData<List<MeetingsModel.MeetingItem>> mMeeting = new MutableLiveData<>();
     private List<BaseDictionaries> eventHoldingStatuses = new ArrayList<>();
-    public List<ItemEvent> mSportEvent = new ArrayList<>();
+    private List<ItemEvent> mSportEvent = new ArrayList<>();
     public String mId;
 
     public RoutePoint address;
+
+    public Map<String, String> filterLongitude = new HashMap<>();
+
+    public String  eventSelectDay = "";
+    public int  eventFilter = 1;
 
     public Boolean isCoordinator = false;
 
@@ -127,10 +136,6 @@ public class EventViewModel extends ViewModel {
         getEvents(dateFormat.format(new Date()), clubId);
     }
 
-    public void getEvents(String date) {
-        getEvents(date, "");
-    }
-
     public void getEvents(String date, String clubId) {
         repository.events(30, date, clubId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -141,7 +146,24 @@ public class EventViewModel extends ViewModel {
     }
 
     public void eventsDay(String date) {
-        repository.eventsDay(10, date, "").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        eventSelectDay = date;
+
+        Map<String, String> data = new HashMap<>();
+        data.put("offset", "0");
+        data.put("limit", "10");
+        data.put("filters[startsFrom]", date);
+        data.put("filters[startsTo]", date);
+
+        if (eventFilter == 0) {
+            Log.d("test_log", "0" +filterLongitude.toString());
+            data.putAll(filterLongitude);
+        } else if (eventFilter == 1) {
+            data.put("sort[startsAt]", "asc");
+        } else if (eventFilter == 2) {
+            data.put("sort[startsAt]", "asc");
+            data.put("filters[holdingstatus]", "active");
+        }
+        repository.eventsDay(data).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             statusMapper(result.getItems());
                         },
@@ -249,6 +271,16 @@ public class EventViewModel extends ViewModel {
                         });
     }
 
+    public void filterCordinate(double latitude, double longitude){
+        filterLongitude.put("filters[longitude]", String.valueOf(longitude));
+        filterLongitude.put("filters[latitude]", String.valueOf(latitude));
+        filterLongitude.put("sort[distancetopointsort]", "asc");
+    }
+
+    public void selectFilter(int index){
+        eventFilter = index;
+        eventsDay(eventSelectDay);
+    }
 
     public boolean getUserAuth() {
         return !repository.sharedPreferences.getToken().isEmpty();

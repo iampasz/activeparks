@@ -64,10 +64,14 @@ public class BottomDialogActiveParkFragment extends BottomSheetDialogFragment{
             title.setText(sportsground.getTitle());
         }
 
-        if (sportsground.getPhoto() != null) {
-            Glide.with(this).load(sportsground.getPhoto()).error(R.drawable.ic_prew).into(image);
-        }else{
-            Glide.with(this).load(sportsground.getPhotos().get(0)).error(R.drawable.ic_prew).into(image);
+        if (sportsground != null) {
+            if (sportsground.getPhoto() != null) {
+                Glide.with(this).load(sportsground.getPhoto()).error(R.drawable.ic_prew).into(image);
+            } else {
+                Glide.with(this).load(sportsground.getPhotos().get(0)).error(R.drawable.ic_prew).into(image);
+            }
+        }else {
+            image.setBackground(getResources().getDrawable(R.drawable.ic_prew));
         }
 
         infoAction.setOnClickListener(v-> {

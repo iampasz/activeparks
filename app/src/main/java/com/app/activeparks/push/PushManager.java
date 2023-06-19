@@ -8,6 +8,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -30,27 +31,28 @@ public class PushManager {
 
         mNotificationManager = (NotificationManager) ctx.getSystemService(NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("activeparks", "Активні парки", NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel channel = new NotificationChannel("active_parks", "Активні парки", NotificationManager.IMPORTANCE_HIGH);
             mNotificationManager.createNotificationChannel(channel);
         }
 
-        Notification.Builder builder;
+        Notification.Builder notification;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder = new Notification.Builder(ctx, "activeparks");
+            notification = new Notification.Builder(ctx, "active_parks");
         }else{
-            builder = new Notification.Builder(ctx);
+            notification = new Notification.Builder(ctx);
         }
 
-        builder.setSmallIcon(R.drawable.logo_active_parks)
+        notification.setSmallIcon(R.drawable.logo_active_parks)
                 .setContentTitle("Активні парки")
                 .setContentText(message)
-                .setPriority(Notification.PRIORITY_DEFAULT)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setSound(RingtoneManager.getDefaultUri(
+                        RingtoneManager.TYPE_NOTIFICATION))
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
 
         NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(NOTIFICATION_SERVICE);
-        Notification notification = builder.build();
 
-        notificationManager.notify(0, notification);
+        notificationManager.notify(0, notification.build());
     }
 }

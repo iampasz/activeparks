@@ -89,7 +89,9 @@ public class SelectVideoActivity extends AppCompatActivity implements ContentVid
             fragment.callback = this;
             seletcFrament(fragment);
         }else{
-            LevelVideoFragment fragment = new LevelVideoFragment(result == 3);
+            boolean type;
+            type = result == 3;
+            LevelVideoFragment fragment = new LevelVideoFragment(type);
             fragment.callback = this;
             seletcFrament(fragment);
             mViewModel.selectActivePark(result);

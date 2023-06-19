@@ -1,5 +1,7 @@
 package com.app.activeparks.ui.participants;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -92,71 +94,6 @@ public class ParticipantsViewModel extends ViewModel {
                         });
     }
 
-    public void approveUser(String id, String user){
-        repository.approveUser(id, user).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {},
-                        error -> {
-                        });
-    }
-
-
-    public void leaveUser(String id, String user){
-        repository.rejectUser(id).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {},
-                        error -> {
-                        });
-    }
-
-    public void acceptEventUser(String id, String user){
-        repository.eventApplyingRequest(id, user, "accept").subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {},
-                        error -> {
-                        });
-    }
-
-    public void rejectEventUser(String id, String user){
-        repository.eventApplyingRequest(id, user, "reject").subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {},
-                        error -> {
-                        });
-    }
-
-    public void leavetEventUser(String id, String user){
-        repository.eventApplyingRequest(id, user, "leave").subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {},
-                        error -> {
-                        });
-    }
-
-    public void acceptClubUser(String id, String user){
-        repository.clubsApplyingRequest(id, user, "approve-user").subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {},
-                        error -> {
-                        });
-    }
-
-    public void rejectClubUser(String id, String user){
-        repository.clubsApplyingRequest(id, user, "reject-user").subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {},
-                        error -> {
-                        });
-    }
-
-    public void leavetClubUser(String id, String user){
-        repository.clubsApplyingRequest(id, user, "remove-user").subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {},
-                        error -> {
-                        });
-    }
-
     public void acceptUser(String id, String user){
         if (isEvent){
             acceptEventUser(id, user);
@@ -177,9 +114,86 @@ public class ParticipantsViewModel extends ViewModel {
         if (isEvent){
             leavetEventUser(id, user);
         }else {
-            leavetClubUser(id, user);
+            removeClubUser(id, user);
         }
     }
+
+    public void setActing(String id, String user){
+        if (isEvent){
+            eventSetActing(id, user);
+        }else {
+            clubSetActing(id, user);
+        }
+    }
+
+    public void removeActing(String id, String user){
+        if (isEvent){
+            eventRemoveActing(id, user);
+        }else {
+            clubRemoveActing(id, user);
+        }
+    }
+
+    ///EVENT
+    public void acceptEventUser(String id, String user){
+        eventApplyingRequest(id, user, "accept");
+    }
+
+    public void rejectEventUser(String id, String user){
+        eventApplyingRequest(id, user, "reject");
+    }
+
+    public void leavetEventUser(String id, String user){
+        eventApplyingRequest(id, user, "leave");
+    }
+
+    public void eventSetActing(String id, String user){
+        eventApplyingRequest(id, user, "set-acting");
+    }
+
+    public void eventRemoveActing(String id, String user){
+        eventApplyingRequest(id, user, "remove-acting");
+    }
+
+    ///CLUB
+    public void acceptClubUser(String id, String user){
+        clubsApplyingRequest(id, user, "approve-user");
+    }
+
+    public void rejectClubUser(String id, String user){
+        clubsApplyingRequest(id, user, "reject-user");
+    }
+
+    public void removeClubUser(String id, String user){
+        clubsApplyingRequest(id, user, "remove-user");
+    }
+
+    public void clubSetActing(String id, String user){
+        clubsApplyingRequest(id, user, "set-acting");
+    }
+
+    public void clubRemoveActing(String id, String user){
+        clubsApplyingRequest(id, user, "remove-acting");
+    }
+
+    public void clubsApplyingRequest(String id, String user, String type){
+        repository.clubsApplyingRequest(id, user, type).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            Log.d("log_request", "" + result.string());},
+                        error -> {Log.d("log_request", "" + error.getMessage());
+                        });
+    }
+
+    public void eventApplyingRequest(String id, String user, String type){
+        repository.eventApplyingRequest(id, user, type).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {},
+                        error -> {
+                        });
+    }
+
+
 
 
     public UserParticipants userMapper(UserParticipants user){

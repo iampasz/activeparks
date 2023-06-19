@@ -44,6 +44,16 @@ public class VideoAdaper extends RecyclerView.Adapter<VideoAdaper.ViewHolder> {
 
         Glide.with(holder.itemView.getContext()).load(item.getMainPhoto()).error(R.drawable.ic_prew).into(holder.imageView);
 
+        String seconds = item.getDuration();
+        double aDouble = Double.parseDouble(seconds);
+        int sec = (int) aDouble;
+        int minutes = sec / 60;
+        int remainingSeconds = sec % 60;
+        seconds = remainingSeconds > 9 ? "" + remainingSeconds : "0" + remainingSeconds;
+
+        holder.time.setText(minutes + ":" + seconds);
+
+
         holder.itemView.setOnClickListener(v -> {
             videoAdaperListener.onClick(item.getId(), item.getCategoryId(), item.getExerciseDifficultyLevelId());
         });
@@ -57,12 +67,13 @@ public class VideoAdaper extends RecyclerView.Adapter<VideoAdaper.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        final TextView nameVideo;
+        final TextView nameVideo, time;
         final ImageView imageView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nameVideo = itemView.findViewById(R.id.name_video);
+            time = itemView.findViewById(R.id.time_video);
             imageView = itemView.findViewById(R.id.image_video);
         }
     }

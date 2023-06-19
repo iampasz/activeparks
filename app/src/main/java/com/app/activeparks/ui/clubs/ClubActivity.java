@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.app.activeparks.ui.event.EventsListFragment;
 import com.app.activeparks.ui.qr.QrCodeActivity;
@@ -25,7 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class ClubActivity extends AppCompatActivity {
+public class ClubActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
 
     private ClubsViewModel viewModel;
@@ -36,6 +37,8 @@ public class ClubActivity extends AppCompatActivity {
 
     private TextView mTitle, subtitle, mUser, mDescription, mCreateAt, mPhone;
     private ButtonSelect news, event, people, qr, join;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
     @Override
@@ -48,6 +51,10 @@ public class ClubActivity extends AppCompatActivity {
                 new ViewModelProvider(this, new ClubsModelFactory(this)).get(ClubsViewModel.class);
 
         viewModel.getClubsDetail(getIntent().getStringExtra("id"));
+
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         findViewById(R.id.closed).setOnClickListener((View v) -> {
             onBackPressed();
@@ -111,7 +118,7 @@ public class ClubActivity extends AppCompatActivity {
                 }
 
                 if (clubs.getClubUser() != null) {
-                    if (clubs.getClubUser().getIsCoordinator() == true || clubs.getClubUser().getIsActing() == true ) {
+                    if (clubs.getClubUser().getIsCoordinator() == true) {
                         qr.setVisibility(View.VISIBLE);
                         qr.setOnClickListener(v -> {
                             startActivity(new Intent(this, QrCodeActivity.class)
@@ -185,8 +192,8 @@ public class ClubActivity extends AppCompatActivity {
         findViewById(R.id.copy_action).setOnClickListener((View v) -> {
             Intent intent = new Intent(android.content.Intent.ACTION_SEND);
             intent.setType("text/plain");
-            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Хочу тебе запросити в " + mTitle.getText().toString());
-            intent.putExtra(android.content.Intent.EXTRA_TEXT, "Хочу тебе запросити в " + mTitle.getText().toString() + " " + "https://ap.sportforall.gov.ua/fc/" + viewModel.mId);
+            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Хочу тебе запросити до клубу \"" + mTitle.getText().toString() + "\"");
+            intent.putExtra(android.content.Intent.EXTRA_TEXT, "Хочу тебе запросити до клубу \"" + mTitle.getText().toString() + "\"  \n\n" + "https://ap.sportforall.gov.ua/fc/" + viewModel.mId + " \n\nПриєднуйся до нас! Та оздоровлюйся разом з нами! \n\nРозроблено на завдання президента України для проекту “Активні парки” ");
             startActivity(Intent.createChooser(intent, getString(R.string.app_name)));
         });
     }
@@ -218,4 +225,9 @@ public class ClubActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
 
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(false);
+        viewModel.getClubsDetail(getIntent().getStringExtra("id"));
+    }
 }

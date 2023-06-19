@@ -18,6 +18,7 @@ import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,7 +52,6 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
 
         if (item.getRoutePoints() != null && item.getRoutePoints().size() > 0) {
             holder.panelLocation.setVisibility(View.VISIBLE);
-            holder.city.setText("Показати на мапі");
             holder.panelLocation.setOnClickListener(v -> {
                 double lat = item.getRoutePoints().get(0).getLocation().get(0);
                 double lon =item.getRoutePoints().get(0).getLocation().get(1);
@@ -76,6 +76,21 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if (item.getDistanceToPoint() > 0){
+            DecimalFormat df = new DecimalFormat("#.##");
+            String roundedNumber = df.format(item.getDistanceToPoint());
+            holder.location.setText("Місце проведення заходу (" + roundedNumber + "км.)");
+        }else{
+            holder.location.setText("Місце проведення заходу");
+        }
+
+        if (item.getStartAdressPoint() != null){
+            holder.city.setText(item.getStartAdressPoint());
+        }else {
+            holder.city.setText("Показати на мапі");
+        }
+
 
         holder.status.setText(item.getHoldingStatusText() != null ? item.getHoldingStatusText() : "Недіомо");
 
@@ -107,7 +122,7 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
 
         final ImageView logo;
         final LinearLayout fon, panelLocation;
-        final TextView title, time, city, data, status, description;
+        final TextView title, time, city, location, data, status, description;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -118,6 +133,7 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
             title = itemView.findViewById(R.id.title);
             time = itemView.findViewById(R.id.text_time);
             city = itemView.findViewById(R.id.text_location);
+            location = itemView.findViewById(R.id.text_location_description);
             data = itemView.findViewById(R.id.data);
             status = itemView.findViewById(R.id.status);
             description = itemView.findViewById(R.id.description);

@@ -1,5 +1,7 @@
 package com.app.activeparks.ui.qr;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -30,7 +32,8 @@ public class QrViewModel extends ViewModel {
         repository.createQrCodeClub(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         result -> qr.setValue(result.getQrCode()),
-                        error -> {}
+                        error -> {
+                            Log.d("test_qr", "msg " + error.getMessage());}
                 );
     }
 

@@ -42,7 +42,7 @@ public class NewsViewModel extends ViewModel {
     }
 
     public void getNews(){
-        repository.news(20).subscribeOn(Schedulers.io())
+        repository.news(100).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> newsList.setValue(result),
                         error -> {});

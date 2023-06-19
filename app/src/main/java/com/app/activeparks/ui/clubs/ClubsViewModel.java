@@ -84,7 +84,7 @@ public class ClubsViewModel extends ViewModel {
                 .subscribe(result -> {
                             mClubsDetails.setValue(result);
                             if (result.getClubUser() != null){
-                                admin = (result.getClubUser().getIsCoordinator() || result.getClubUser().getIsActing());
+                                admin = (result.getClubUser().getIsCoordinator());
                                 apply = true;
                             }else {
                                 apply = false;

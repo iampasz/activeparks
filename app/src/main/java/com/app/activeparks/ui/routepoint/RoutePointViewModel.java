@@ -1,5 +1,7 @@
 package com.app.activeparks.ui.routepoint;
 
+import android.media.MediaPlayer;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -27,12 +29,13 @@ public class RoutePointViewModel extends ViewModel {
     private MutableLiveData<ItemEvent> routePoint;
     private MutableLiveData<String> location = new MutableLiveData<>();
     private MutableLiveData<String> notification = new MutableLiveData<>();
-
     public List<RoutePoint> routePointsMap = new ArrayList<>();
     public List<RoutePoint> routePoints = new ArrayList<>();
     public String mId;
 
-    public Boolean isCoordinator = false;
+    private MediaPlayer mediaPlayer;
+
+    public Boolean isCoordinator = false, updateMap = false;
 
     private Repository repository;
 
@@ -80,7 +83,7 @@ public class RoutePointViewModel extends ViewModel {
                             }
                             routePoint.setValue(result);
                             if (result.getEventUser() != null) {
-                                if (result.getEventUser().getIsCoordinator() == true || result.getEventUser().getIsActing() == true) {
+                                if (result.getEventUser().getIsCoordinator() == true) {
                                     isCoordinator = true;
                                 }
                             }
@@ -115,40 +118,28 @@ public class RoutePointViewModel extends ViewModel {
 
                 if ((roundedLan <= 0.0002 && roundedLon <= 0.0002) && (index == 0 ? true : routePoints.get(index <= 0 ? index : index - 1).getPassedPoints() == true)) {
                     if (items.getPassedPoints() == false && startsAt() == true) {
-                        pointPass(items.getId(), items.getPointIndex());
+                        pointPass(items.getId());
                     }
                 }
             }
         }
     }
 
-    public void pointPass(String id, int point) {
+    public void pointPass(String id) {
         repository.pintRequest(mId, id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             getUpdate();
-                            localNotification(point);
+                            mediaPlayer.start();
                         },
                         error -> {
                             getUpdate();
                         });
     }
 
-    public void localNotification(int point) {
-        String msg;
-        if (point == 0){
-            msg = "Ви пройшли точку \"Старт\"";
-        }else if (point == routePoints.size()){
-            msg = "Ви пройшли весь маршрут";
-        }else{
-            msg = "Ви пройшли точку " + point;
-        }
-        notification.setValue(msg);
-    }
-
     public boolean startsAt() {
         if (routePoint.getValue().getStartsAt() != null) {
             Date currentDate = new Date();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             Date startsAtDate;
             try {
                 startsAtDate = dateFormat.parse(routePoint.getValue().getStartsAt());
@@ -159,6 +150,10 @@ public class RoutePointViewModel extends ViewModel {
         } else {
             return false;
         }
+    }
+
+    public void initAudio(MediaPlayer mediaPlayer) {
+        this.mediaPlayer = mediaPlayer;
     }
 
 }

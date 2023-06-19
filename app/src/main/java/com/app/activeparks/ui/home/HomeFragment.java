@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationRequest;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager2.widget.CompositePageTransformer;
-import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.app.activeparks.data.model.clubs.ItemClub;
@@ -40,14 +38,14 @@ import com.app.activeparks.ui.news.NewsActivity;
 import com.app.activeparks.ui.news.NewsFragment;
 import com.app.activeparks.ui.park.ParkActivity;
 import com.app.activeparks.util.FragmentInteface;
-import com.app.activeparks.util.ZoomOutPageTransformer;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.CancellationToken;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.OnTokenCanceledListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.android.play.core.review.ReviewException;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.android.play.core.review.model.ReviewErrorCode;
 import com.technodreams.activeparks.R;
 import com.technodreams.activeparks.databinding.FragmentHomeBinding;
 
@@ -71,6 +69,7 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
         View root = binding.getRoot();
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
 
         binding.swipeRefreshLayout.setOnRefreshListener(this);
 
@@ -231,7 +230,6 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
             startActivity(new Intent(getActivity(), ClubsListActivity.class));
         });
 
-
         return root;
     }
 
@@ -255,7 +253,7 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
 
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(@NonNull Location location) {
         // Update the location text view with the new location
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
@@ -264,15 +262,18 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
     }
 
     @Override
+    public void onProviderEnabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+
+    }
+
+    @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-    }
 
-    @Override
-    public void onProviderEnabled(String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
     }
 
     @Override
@@ -280,4 +281,6 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
         binding.swipeRefreshLayout.setRefreshing(false);
         viewModel.setInitialData();
     }
+
+
 }

@@ -58,7 +58,7 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
 
     private EditProfileInterfece editProfileInterfece;
 
-    private ProfileViewModel mViewModel;
+    private ProfileViewModel viewModel;
     final Calendar mCalendar = Calendar.getInstance();
     private ImageView photo;
     private EditText phone, email, firstName, lastName, secondName, birthday, weight, height, about, healt, city;
@@ -73,7 +73,7 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.CustomBottomSheetDialogTheme);
-        mViewModel =
+        viewModel =
                 new ViewModelProvider(this, new ProfileModelFactory(getContext())).get(ProfileViewModel.class);
     }
 
@@ -141,7 +141,7 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
             dialog.onListener(new BottomPhoneDialog.OnBottomSheetCancelListener() {
                 @Override
                 public void onBottomSheetCancel() {
-                    mViewModel.user();
+                    viewModel.user();
                 }
             });
             dialog.show(getActivity().getSupportFragmentManager(),
@@ -150,8 +150,6 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
 
         email.setOnClickListener((View v) -> {
             BottomEmailDialog dialog = BottomEmailDialog.newInstance();
-
-
             dialog.show(getActivity().getSupportFragmentManager(),
                     "fragment_email");
 
@@ -165,9 +163,9 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
             updateUser();
         });
 
-        mViewModel.user();
+        viewModel.user();
 
-        mViewModel.getUser().observe(this, user -> {
+        viewModel.getUser().observe(this, user -> {
             try {
                 phone.setText(user.getPhone());
                 email.setText(user.getEmail());
@@ -176,10 +174,10 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
                 lastName.setText(user.getLastName());
                 secondName.setText(user.getSecondName());
 
-                region.setSelection(mViewModel.getRegionsIndex());
-                district.setSelection(mViewModel.getDictionarieIndex());
+                region.setSelection(viewModel.getRegionsIndex());
+                district.setSelection(viewModel.getDictionarieIndex());
 
-                sex.setSelection(user.getSex() == "male" ? 1 : 0);
+                sex.setSelection(user.getSex().contains("male") ? 0 : 1);
 
                 try {
                     Date dateBirthday = new SimpleDateFormat("yyyy-MM-dd").parse(user.getBirthday());
@@ -201,12 +199,12 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
             }
         });
 
-        mViewModel.getDefault().observe(this, def -> {
+        viewModel.getDefault().observe(this, def -> {
             editProfileInterfece.onUpdate();
             dismiss();
         });
 
-        mViewModel.getMessage().observe(this, msg -> {
+        viewModel.getMessage().observe(this, msg -> {
             Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
         });
 
@@ -230,37 +228,45 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
     }
 
     private void updateUser() {
-        if (mViewModel.mProfile != null) {
-            mViewModel.mProfile.setPhone(phone.getText().toString());
-            mViewModel.mProfile.setEmail(email.getText().toString());
+        if (viewModel.userUpdate != null) {
+            viewModel.mProfile.setPhone(phone.getText().toString());
+            viewModel.mProfile.setEmail(email.getText().toString());
 
-            mViewModel.mProfile.setFirstName(firstName.getText().toString());
-            mViewModel.mProfile.setLastName(lastName.getText().toString());
-            mViewModel.mProfile.setSecondName(secondName.getText().toString());
-
-            try {
-                Date dateBirthday = new SimpleDateFormat("dd.MM.yyyy").parse(birthday.getText().toString());
-                mViewModel.mProfile.setBirthday(new SimpleDateFormat("yyyy-MM-dd", new Locale("uk", "UA")).format(dateBirthday));
-            } catch (ParseException e) {
-                e.printStackTrace();
-                mViewModel.mProfile.setBirthday(null);
+            if (!firstName.getText().toString().isEmpty()) {
+                viewModel.userUpdate.setFirstName(firstName.getText().toString());
+            }
+            if (!lastName.getText().toString().isEmpty()) {
+                viewModel.userUpdate.setLastName(lastName.getText().toString());
+            }
+            if (!secondName.getText().toString().isEmpty()) {
+                viewModel.userUpdate.setSecondName(secondName.getText().toString());
             }
 
-            mViewModel.mProfile.setHeight(height.getText().toString());
-            mViewModel.mProfile.setWeight(weight.getText().toString());
+            if (!birthday.getText().toString().isEmpty()) {
+                try {
+                    Date dateBirthday = new SimpleDateFormat("dd.MM.yyyy").parse(birthday.getText().toString());
+                    viewModel.userUpdate.setBirthday(new SimpleDateFormat("yyyy-MM-dd", new Locale("uk", "UA")).format(dateBirthday));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    viewModel.userUpdate.setBirthday(null);
+                }
+            }
+
+            viewModel.userUpdate.setHeight(height.getText().toString());
+            viewModel.userUpdate.setWeight(weight.getText().toString());
 
             if (about.getText().toString().length() > 0) {
-                mViewModel.mProfile.setAboutMe(about.getText().toString());
+                viewModel.userUpdate.setAboutMe(about.getText().toString());
             }
             if (healt.getText().toString().length() > 0) {
-                mViewModel.mProfile.setHealthState(healt.getText().toString());
+                viewModel.userUpdate.setHealthState(healt.getText().toString());
             }
 
-            mViewModel.mProfile.setSex(sex.getSelectedItemPosition() == 0 ? "male" : "female");
+            viewModel.userUpdate.setSex(sex.getSelectedItemPosition() == 0 ? "male" : "female");
 
-            mViewModel.mProfile.setCity(city.getText().toString()  != null ? city.getText().toString()  :  mViewModel.mProfile.getCity());
+            viewModel.userUpdate.setCity(city.getText().toString()  != null ? city.getText().toString()  :  viewModel.mProfile.getCity());
 
-            mViewModel.updateUser();
+            viewModel.updateUser();
             if (editProfileInterfece != null) {
                 editProfileInterfece.onUpdate();
             }
@@ -333,12 +339,13 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
                 try {
                     File file = saveImageToFile(croppedImageUri);
 
-                    mViewModel.updateFile(file);
+                    viewModel.updateFile(file);
 
                     bm = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), croppedImageUri);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+
                 photo.setImageBitmap(bm);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
@@ -365,7 +372,7 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
                 // Flush and close the file output stream
                 fileOutputStream.flush();
                 fileOutputStream.close();
-                mViewModel.updateFile(camera);
+                viewModel.updateFile(camera);
             } catch (IOException e) {
                 e.printStackTrace();
             }

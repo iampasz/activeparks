@@ -213,7 +213,7 @@ public class MapsViewControler implements MapEventsReceiver {
             }
             mapView.getOverlays().add(startMarker);
         }
-        mapController.setZoom(20.0);
+        mapController.setZoom(18.0);
         mapView.getOverlays().add(line);
         mapView.invalidate();
     }

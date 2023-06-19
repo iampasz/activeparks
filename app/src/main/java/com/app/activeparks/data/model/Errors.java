@@ -13,12 +13,20 @@ public class Errors {
     @Expose
     private String msg = "";
 
+    @SerializedName("param")
+    @Expose
+    private String param = "";
+
     public String getValue(){
         return value;
     }
 
     public String getMsg(){
         return msg;
+    }
+
+    public String getParam(){
+        return param;
     }
 
 }

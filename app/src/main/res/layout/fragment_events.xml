@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="bottom"
     android:background="@color/background">
 
     <LinearLayout
@@ -39,7 +38,7 @@
     </LinearLayout>
 
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -110,8 +109,47 @@
             </RelativeLayout>
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/select_filter"
+        style="@style/Base.Widget.Design.TabLayout"
+        android:alpha="0.9"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:visibility="gone"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="16dp"
+        android:elevation="16dp"
+        app:tabGravity="start"
+        app:tabMode="fixed"
+        app:tabPaddingStart="4dp"
+        app:tabPaddingEnd="4dp"
+        app:tabTextAppearance="@style/Base.Widget.Design.TabText"
+        app:tabIndicatorHeight="0dp"
+        app:tabTextColor="@color/gray_500"
+        app:tabSelectedTextColor="@color/text_color"
+        android:background="@drawable/background_tablayout">
 
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="За відстанню" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="За часом" />
+
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Актуальне" />
+
+
+    </com.google.android.material.tabs.TabLayout>
 </FrameLayout>
