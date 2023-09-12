@@ -70,8 +70,8 @@ public class ScanerFragment extends Fragment {
                             }
                         } else if (code.contains("/qr/")) {
                             if (code.length() > 10) {
-                                String id = code.substring(result.getText().length() - 2, result.getText().length() - 1);
-                                startActivity(new Intent(getActivity(), SelectVideoActivity.class).putExtra("code", id));
+                                String id = code.substring(code.indexOf("/qr/"), code.length());
+                                mViewModel.activateScanerCodeRequest(id);
                             }
                         } else {
                             startActivity(new Intent(getActivity(), SelectVideoActivity.class));
@@ -100,6 +100,14 @@ public class ScanerFragment extends Fragment {
         mViewModel.getClubQrCode().observe(getViewLifecycleOwner(), result -> {
             if (result != null) {
                 startActivity(new Intent(getContext(), ClubActivity.class).putExtra("id", result));
+            } else {
+                Toast.makeText(getContext(), "QR код для клубу не дійсний", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        mViewModel.getSelectVideoQrCode().observe(getViewLifecycleOwner(), id -> {
+            if (id != null) {
+                startActivity(new Intent(getActivity(), SelectVideoActivity.class).putExtra("code", id));
             } else {
                 Toast.makeText(getContext(), "QR код для клубу не дійсний", Toast.LENGTH_LONG).show();
             }

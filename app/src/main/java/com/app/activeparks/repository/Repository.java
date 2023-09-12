@@ -20,6 +20,7 @@ import com.app.activeparks.data.model.news.News;
 import com.app.activeparks.data.model.news.NewsClubs;
 import com.app.activeparks.data.model.notification.Notifications;
 import com.app.activeparks.data.model.qr.QrCodeModel;
+import com.app.activeparks.data.model.qr.ScanerResultModel;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.data.model.sportsgrounds.ItemSportsground;
@@ -372,8 +373,12 @@ public class Repository {
         return service.getClubsParticipant(token);
     }
 
-    public Observable<Clubs> getClubsAll() {
-        return service.getClubsAll(token);
+    public Observable<Clubs> getClubsAll(String limit) {
+        return service.getClubsAll(token, limit);
+    }
+
+    public Observable<Clubs> getSearchClubsAll(String name) {
+        return service.getSearchClubsAll(token, name);
     }
 
     public Observable<ClubsUserIsMemberModel> getMyClubs() {
@@ -658,6 +663,10 @@ public class Repository {
 
     public Observable<QrCodeModel> activateClubQrCode(String id) {
         return service.activateClubQrCodeRequest(token, id);
+    }
+
+    public Observable<ScanerResultModel> activateScanerCodeRequest(String id) {
+        return service.activateScanerCodeRequest(id);
     }
 
     public Observable<QrCodeModel> activatePointQrCode(String id) {

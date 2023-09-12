@@ -5,7 +5,7 @@ import org.osmdroid.util.MapTileIndex;
 
 public class MapTilerTileSource extends OnlineTileSourceBase {
 
-    private static final String BASE_URL = "https://api.maptiler.com/maps/70344ef8-97c5-4025-a3a1-3e2f5ac3643a/{z}/{x}/{y}.png?key=13tuuIyDJi8oyTjwcONc";
+    private static final String BASE_URL = "https://tiles.openstreetmap.org.ua/tile/{z}/{x}/{y}.png";
 
     public MapTilerTileSource() {
         super("MapTiler", 1, 15, 512, ".png", new String[] {});

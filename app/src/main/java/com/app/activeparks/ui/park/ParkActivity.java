@@ -17,10 +17,13 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.parks.ParksItem;
+import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportsgrounds.ItemSportsground;
 import com.app.activeparks.ui.adapter.PhotosAdaper;
 import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
+import com.app.activeparks.ui.event.EventActivity;
+import com.app.activeparks.ui.event.adapter.EventsListAdaper;
 import com.app.activeparks.ui.home.adapter.HomeAdaper;
 import com.app.activeparks.ui.park.adapter.ParkListAdaper;
 import com.app.activeparks.ui.participants.ParticipantsModelFactory;
@@ -39,12 +42,12 @@ public class ParkActivity extends AppCompatActivity {
 
     private ParkViewModel viewModel;
 
-    private RecyclerView list, mParkEvent;
+    private RecyclerView list, parkEvent;
 
     private TabLayout tabLayout;
     private ViewPager2 photosView;
     private ImageView mImageView, mPhotoCordenator;
-    private TextView mTitle, mCoordinator, mAddressCity;
+    private TextView mTitle, mCoordinator, mAddressCity, eventStatus;
     private TextView mNameCordenator, mEmailCordenator, mPhoneCordenator;
     private LinearLayout mItemCordenator;
     public MapView mapView;
@@ -61,7 +64,7 @@ public class ParkActivity extends AppCompatActivity {
 
         list = findViewById(R.id.list);
 
-        mParkEvent = findViewById(R.id.park_event);
+        parkEvent = findViewById(R.id.park_event);
 
         mapsViewControler = new MapsViewControler(mapView, this);
 
@@ -81,6 +84,7 @@ public class ParkActivity extends AppCompatActivity {
         mTitle = findViewById(R.id.title);
         mCoordinator = findViewById(R.id.text_description);
         mAddressCity = findViewById(R.id.text_address);
+        eventStatus = findViewById(R.id.text_event);
 
         mNameCordenator = findViewById(R.id.name_cordenator);
         mEmailCordenator = findViewById(R.id.email_cordenator);
@@ -125,6 +129,23 @@ public class ParkActivity extends AppCompatActivity {
                     mPhoneCordenator.setText("Телефон: " + park.getCoordinators().get(0).getPhone());
                 }
 
+                if (park.getSportEvents().size() > 0) {
+                    eventStatus.setVisibility(View.GONE);
+                    parkEvent.setVisibility(View.VISIBLE);
+                    parkEvent.setAdapter(new EventsListAdaper(this, park.getSportEvents()).setOnEventListener(new EventsListAdaper.EventsListener() {
+                        @Override
+                        public void onInfo(ItemEvent itemClub) {
+                            startActivity(new Intent(getBaseContext(), EventActivity.class).putExtra("id", itemClub.getId()));
+                        }
+
+                        @Override
+                        public void onOpenMaps(double lat, double lon) {
+                            String uri = "https://www.google.com/maps/search/?api=1&query=" + lat + "," + lon;
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                            startActivity(intent);
+                        }
+                    }));
+                }
 
             } catch (Exception e) {
             }

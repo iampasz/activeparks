@@ -75,7 +75,9 @@ public class BottomDialogActiveParkFragment extends BottomSheetDialogFragment{
         }
 
         infoAction.setOnClickListener(v-> {
-            startActivity(new Intent(getActivity(), ParkActivity.class).putExtra("id", sportsground.getId()));
+            if (sportsground.getId() != null) {
+                startActivity(new Intent(getActivity(), ParkActivity.class).putExtra("id", sportsground.getId()));
+            }
         });
 
         mapAction.setOnClickListener(v-> {

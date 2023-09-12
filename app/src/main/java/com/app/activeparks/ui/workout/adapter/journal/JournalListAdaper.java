@@ -69,14 +69,22 @@ public class JournalListAdaper extends RecyclerView.Adapter<JournalListAdaper.Vi
             }
         }
 
-        if (item.getStartsAt() != null && item.getStartsAt().length() > 14) {
-            int startIndex = Math.min(item.getStartsAt().length(), item.getStartsAt().length() - 3);
-            holder.start.setText(item.getStartsAt().substring(11, startIndex));
+        if (item.getStartTime() != null && item.getStartTime().length() > 5) {
+            holder.start.setText(item.getStartTime().substring(0, 5));
+        }else {
+            if (item.getStartsAt() != null && item.getStartsAt().length() > 14) {
+                int startIndex = Math.min(item.getStartsAt().length(), item.getStartsAt().length() - 3);
+                holder.start.setText(item.getStartsAt().substring(11, startIndex));
+            }
         }
 
-        if (item.getFinishesAt() != null && item.getFinishesAt().length() > 14) {
-            int endIndex = Math.min(item.getFinishesAt().length(), item.getFinishesAt().length() - 3);
-            holder.start.setText(item.getStartsAt().substring(11, endIndex));
+        if (item.getFinishTime() != null && item.getFinishTime().length() > 5) {
+            holder.finish.setText(item.getFinishTime().substring(0, 5));
+        }else {
+            if (item.getFinishesAt() != null && item.getFinishesAt().length() > 14) {
+                int endIndex = Math.min(item.getFinishesAt().length(), item.getFinishesAt().length() - 3);
+                holder.finish.setText(item.getFinishesAt().substring(11, endIndex));
+            }
         }
 
         if (item.getExercises() != null) {

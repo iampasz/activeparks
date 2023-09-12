@@ -65,7 +65,7 @@ public class SupportAddActivity extends AppCompatActivity {
             });
 
             findViewById(R.id.create_support_action).setOnClickListener(v-> {
-                if (viewModel.mSupportUpdate.getStatusId() != null && viewModel.mSupportUpdate.getStatusId().equals("28a1b923-1b1d-45b9-8839-6bgfd1afa365")) {
+                if (viewModel.mSupportUpdate != null && viewModel.mSupportUpdate.getStatusId().equals("28a1b923-1b1d-45b9-8839-6bgfd1afa365")) {
                     viewModel.updateSupport(title.getText().toString(), msg.getText().toString());
                     finish();
                 }else {

@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: me.zhanghai.android.materialratingbar:library:1.4.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/8c8199b3e4be83349bc20f6b0b059127/transformed/library-1.4.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/8c8199b3e4be83349bc20f6b0b059127/transformed/library-1.4.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/8c8199b3e4be83349bc20f6b0b059127/transformed/library-1.4.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/e28459a676d30fdb021475a9074ed9da/transformed/library-1.4.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/e28459a676d30fdb021475a9074ed9da/transformed/library-1.4.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/e28459a676d30fdb021475a9074ed9da/transformed/library-1.4.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/me.zhanghai.android.materialratingbar/library/1.4.0/34d3d5bd6997af81ef60e4d686939695efa217cd/library-1.4.0-javadoc.jar!/" />

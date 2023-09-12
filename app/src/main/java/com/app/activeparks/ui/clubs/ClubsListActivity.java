@@ -2,6 +2,8 @@ package com.app.activeparks.ui.clubs;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -115,7 +117,26 @@ public class ClubsListActivity extends AppCompatActivity {
             }));
         });
 
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String city = searchText.getText().toString();
+                if (city.length() > 2) {
+                    mViewModel.getSearchClubs(city);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
         openSearch();
+        mViewModel.getAllClubs(55);
     }
 
     void openSearch() {
@@ -124,7 +145,8 @@ public class ClubsListActivity extends AppCompatActivity {
             findViewById(R.id.search_panel).setVisibility(View.VISIBLE);
             titleClubMember.setVisibility(View.VISIBLE);
             listClubMember.setVisibility(View.VISIBLE);
-            mViewModel.getAllClubs();
+            mViewModel.getAllClubs(20);
+            mViewModel.getAllClubs(70);
         } else {
             findViewById(R.id.search_panel).setVisibility(View.GONE);
         }

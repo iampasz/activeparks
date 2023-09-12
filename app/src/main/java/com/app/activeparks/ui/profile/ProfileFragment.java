@@ -284,7 +284,7 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
             @Override
             public void onClick(@NonNull View view) {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://web.sportforall.gov.ua")));
+                        Uri.parse("https://ap.sportforall.gov.ua")));
             }
         };
 
@@ -495,7 +495,7 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
         LinearLayout infolistAction = bottomSheetDialog.findViewById(R.id.infolist_action);
         infolistAction.setOnClickListener(view -> {
             startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://web.sportforall.gov.ua/infolist/start")));
+                    Uri.parse("https://ap.sportforall.gov.ua/infolist/start")));
             bottomSheetDialog.dismiss();
         });
 

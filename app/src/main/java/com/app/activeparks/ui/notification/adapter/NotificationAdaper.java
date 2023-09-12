@@ -68,8 +68,10 @@ public class NotificationAdaper extends RecyclerView.Adapter<NotificationAdaper.
             int count = 0;
 
             while (Pattern.compile("[{](.*?)[}]").matcher(msg).find()) {
-                msg = msg.replace("{{" + count + "}}", count == 0 ? "<u>" + "<a href='\\" + notification.getEntities().noll.entityType + notification.getEntities().noll.entityId + "'>" + notification.getEntities().noll.entityTitle + "</a>" + "</u>" : "<u>" + "<a href='\\" + notification.getEntities().one.entityType + notification.getEntities().one.entityId + "'>" + notification.getEntities().one.entityTitle + "</a>" + "</u>");
-                count++;
+                if  (notification.getEntities().noll.entityType != null) {
+                    msg = msg.replace("{{" + count + "}}", count == 0 ? "<u>" + "<a href='\\" + notification.getEntities().noll.entityType + notification.getEntities().noll.entityId + "'>" + notification.getEntities().noll.entityTitle + "</a>" + "</u>" : "<u>" + "<a href='\\" + notification.getEntities().one.entityType + notification.getEntities().one.entityId + "'>" + notification.getEntities().one.entityTitle + "</a>" + "</u>");
+                    count++;
+                }
                 if (notification.getEntities().one == null) {
                     break;
                 }

@@ -42,12 +42,11 @@ public class MapsViewControler implements MapEventsReceiver {
 
     public OnlineTileSourceBase MAPNIK = new XYTileSource("Map",
             5, 20, 256, ".png", new String[]{
-            "https://a.tile.openstreetmap.fr/hot/",
-            "https://b.tile.openstreetmap.fr/hot/",
-            "https://c.tile.openstreetmap.fr/hot/"}, "© OpenStreetMap contributors");
+            "https://tiles.openstreetmap.org.ua/tile/",
+            "https://tiles.openstreetmap.org.ua/tile/",
+            "https://tiles.openstreetmap.org.ua/tile/"}, "© OpenStreetMap contributors");
 
     private MapView mapView;
-
     private MyLocationNewOverlay myLocationOverlay;
     private MapController mapController;
     private int latitude, longitude;
@@ -64,7 +63,7 @@ public class MapsViewControler implements MapEventsReceiver {
 
         //mapView.setTileSource(new MapTilerTileSource());
 
-        mapView.setTileSource(TileSourceFactory.MAPNIK);
+        mapView.setTileSource(new MapTilerTileSource());
         mapView.setMultiTouchControls(true);
         mapView.setTilesScaledToDpi(true);
         mapController = (MapController) mapView.getController();

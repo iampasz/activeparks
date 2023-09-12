@@ -167,7 +167,7 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
 
                 if (events.getFullDescription() != null) {
                     mDescriptionAction.setVisibility(View.VISIBLE);
-                    String web = "<html><head><LINK href=\"https://web.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body>" + events.getFullDescription() + "</body></html>";
+                    String web = "<html><head><LINK href=\"https://ap.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body>" + events.getFullDescription() + "</body></html>";
                     web = web.replace("<img ", "<br><img ");
                     mDescription.setMovementMethod(LinkMovementMethod.getInstance());
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -323,7 +323,7 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
             Intent intent = new Intent(android.content.Intent.ACTION_SEND);
             intent.setType("text/plain");
             intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Хочу тебе запросити до заходу \"" + mTitle.getText().toString() + "\"");
-            intent.putExtra(android.content.Intent.EXTRA_TEXT, "Хочу тебе запросити до заходу \"" + mTitle.getText().toString() + "\", який проводиться завдяки програмі програми президента “Активні парки”." + " \n\nhttps://ap.sportforall.gov.ua/fc-events/0/" + viewModel.mId + "\n\nПриєднуйся до нас! Та оздоровлюйся разом зі мною! \n\nРозроблено на завдання президента України для проекту “Активні парки”");
+            intent.putExtra(android.content.Intent.EXTRA_TEXT, "Хочу тебе запросити до заходу \"" + mTitle.getText().toString() + "\" \n\n https://ap.sportforall.gov.ua/fc-events/0/" + viewModel.mId + "\n\nПриєднуйся до нас! Та оздоровлюйся разом зі мною! \n\nРозроблено на завдання президента України для проекту “Активні парки”");
             startActivity(Intent.createChooser(intent, getString(R.string.app_name)));
         });
     }

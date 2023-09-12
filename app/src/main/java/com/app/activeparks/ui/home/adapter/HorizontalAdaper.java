@@ -67,7 +67,7 @@ public class HorizontalAdaper extends RecyclerView.Adapter<HorizontalAdaper.View
 
         if (news.getBody() != null) {
             holder.description.setVisibility(View.VISIBLE);
-            String web = "<html><head><LINK href=\"https://web.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body>" + news.getBody() + "</body></html>";
+            String web = "<html><head><LINK href=\"https://ap.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body>" + news.getBody() + "</body></html>";
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 holder.description.setText(Html.fromHtml(web, null, null));

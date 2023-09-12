@@ -1,5 +1,6 @@
 package com.app.activeparks.data.model.sportsgrounds;
 
+import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -118,7 +119,7 @@ public class ItemSportsground {
     private Object deletedAt;
     @SerializedName("sportEvents")
     @Expose
-    private List<SportEvents> sportEvents;
+    private List<ItemEvent> sportEvents;
     @SerializedName("photos")
     @Expose
     private List<String> photos = null;
@@ -420,11 +421,11 @@ public class ItemSportsground {
         this.deletedAt = deletedAt;
     }
 
-    public List<SportEvents> getSportEvents() {
+    public List<ItemEvent> getSportEvents() {
         return sportEvents;
     }
 
-    public void setSportEvents(List<SportEvents> sportEvents) {
+    public void setSportEvents(List<ItemEvent> sportEvents) {
         this.sportEvents = sportEvents;
     }
 

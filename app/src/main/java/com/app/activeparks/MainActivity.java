@@ -150,7 +150,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
                 flow.addOnCompleteListener(tasks -> {
                 });
             } else {
-                @ReviewErrorCode int reviewErrorCode = ((ReviewException) task.getException()).getErrorCode();
             }
         });
     }

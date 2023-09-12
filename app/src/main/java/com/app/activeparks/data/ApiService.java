@@ -16,6 +16,7 @@ import com.app.activeparks.data.model.news.News;
 import com.app.activeparks.data.model.news.NewsClubs;
 import com.app.activeparks.data.model.notification.Notifications;
 import com.app.activeparks.data.model.qr.QrCodeModel;
+import com.app.activeparks.data.model.qr.ScanerResultModel;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.data.model.sportsgrounds.ItemSportsground;
@@ -222,19 +223,22 @@ public interface ApiService {
     Observable<Notifications> getNotifications(@Header("Authorization") String token);
 
     //Get user notifications
-    @GET("/api/v1/clubs/creator?offset=0&limit=20")
+    @GET("/api/v1/clubs/creator?offset=0&limit=50")
     Observable<Clubs> getClubsCreator(@Header("Authorization") String token);
 
     //Get user notifications
-    @GET("/api/v1/clubs/participant?offset=0&limit=20")
+    @GET("/api/v1/clubs/participant?offset=0&limit=50")
     Observable<Clubs> getClubsParticipant(@Header("Authorization") String token);
 
     //Get clubs
-    @GET("/api/v1/clubs?offset=0&limit=20")
-    Observable<Clubs> getClubsAll(@Header("Authorization") String token);
+    @GET("/api/v1/clubs?offset=0")
+    Observable<Clubs> getClubsAll(@Header("Authorization") String token, @Query("limit") String limit);
+
+    @GET("/api/v1/clubs?offset=0&limit=30")
+    Observable<Clubs> getSearchClubsAll(@Header("Authorization") String token, @Query("filters[all]") String filter);
 
     //Get clubs
-    @GET("/api/v1/clubs/my?offset=0&limit=20")
+    @GET("/api/v1/clubs/my?offset=0&limit=40")
     Observable<ClubsUserIsMemberModel> getClubs(@Header("Authorization") String token, @Query("userId") String id);
 
     //Get club details
@@ -350,6 +354,10 @@ public interface ApiService {
     //Post Sport details
     @GET("/api/v1/qr-code-club/{url}")
     Observable<QrCodeModel> activateClubQrCodeRequest(@Header("Authorization") String token, @Path("url") String url);
+
+    @POST("/api/v1/statistics/mobile")
+    @FormUrlEncoded
+    Observable<ScanerResultModel> activateScanerCodeRequest(@Field("url") String url);
 
     //Post Sport details
     @GET("/api/v1/qr-code-point/{url}")

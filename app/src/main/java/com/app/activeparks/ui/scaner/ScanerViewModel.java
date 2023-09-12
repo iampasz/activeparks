@@ -16,6 +16,7 @@ public class ScanerViewModel extends ViewModel {
     private Repository repository;
     private MutableLiveData<String> clubQrCode = new MutableLiveData<>();
     private MutableLiveData<String> pointQrCode = new MutableLiveData<>();
+    private MutableLiveData<String> selectVideoQrCode = new MutableLiveData<>();
     private MutableLiveData<String> message = new MutableLiveData<>();
 
     public ScanerViewModel(Preferences sharedPreferences) {
@@ -29,6 +30,9 @@ public class ScanerViewModel extends ViewModel {
     public LiveData<String> getPointQrCode() {
         return pointQrCode;
     }
+    public LiveData<String> getSelectVideoQrCode() {
+        return selectVideoQrCode;
+    }
 
     public LiveData<String> getMessage() {
         return message;
@@ -39,6 +43,14 @@ public class ScanerViewModel extends ViewModel {
                 .subscribe(
                         result -> clubQrCode.setValue(result.getClubId()),
                         error -> clubQrCode.setValue(null)
+                );
+    }
+
+    public void activateScanerCodeRequest(String id) {
+        repository.activateScanerCodeRequest(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        result -> selectVideoQrCode.setValue(result.getId()),
+                        error -> selectVideoQrCode.setValue(null)
                 );
     }
 

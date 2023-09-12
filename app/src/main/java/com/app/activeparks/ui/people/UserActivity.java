@@ -210,7 +210,7 @@ public class UserActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             public void onClick(@NonNull View view) {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://web.sportforall.gov.ua")));
+                        Uri.parse("https://ap.sportforall.gov.ua")));
             }
         };
         observeData();

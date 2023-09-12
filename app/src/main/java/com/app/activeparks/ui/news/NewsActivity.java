@@ -99,7 +99,7 @@ public class NewsActivity extends AppCompatActivity implements Html.ImageGetter 
             }
 
             if (news.getBody() != null) {
-                String web = "<html><head><LINK href=\"https://web.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body>" + news.getBody() + "</body></html>";
+                String web = "<html><head><LINK href=\"https://ap.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body>" + news.getBody() + "</body></html>";
                 web = web.replace("<img ", "<br><img ").replace("<img>", "");
                 html.setMovementMethod(LinkMovementMethod.getInstance());
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

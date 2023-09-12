@@ -97,10 +97,12 @@ public class SupportViewModel extends ViewModel {
     }
 
     public void sendSupportMessage(String msg) {
-        repository.sendSupportMessage(mSupportUpdate.getId(), msg).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> getSupportDetails(mSupportUpdate.getId()),
-                        error -> getSupportDetails(mSupportUpdate.getId()));
+        if (mSupportUpdate.getId() != null) {
+            repository.sendSupportMessage(mSupportUpdate.getId(), msg).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result -> getSupportDetails(mSupportUpdate.getId()),
+                            error -> getSupportDetails(mSupportUpdate.getId()));
+        }
     }
 
     public void supportMapper(List<SupportItem> supportItems) {

@@ -269,8 +269,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="16dp"
-                android:padding="16dp"
-                android:background="@drawable/button_gray"
                 android:orientation="vertical">
 
                 <TextView
@@ -278,14 +276,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Жодного запланованого заходу"
+                    android:padding="16dp"
+                    android:background="@drawable/button_gray"
                     android:gravity="center_horizontal"
                     android:textColor="@color/text_color"
                     android:textSize="16sp" />
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/park_event"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+                </RelativeLayout>
             </LinearLayout>
 
         </LinearLayout>

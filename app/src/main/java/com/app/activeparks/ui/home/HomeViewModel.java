@@ -148,7 +148,7 @@ public class HomeViewModel extends ViewModel {
     public void location(double lat, double lon) {
         repository.location(String.valueOf(lat), String.valueOf(lon)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                            location.setValue("місцеположення визначено по геолокації - " + result.getAddress().getCity());
+                            location.setValue("місцеположення визначено по геолокації - " + result.getAddress().getCity() == null ? "Київ" : result.getAddress().getCity());
                         },
                         error -> {
                             location.setValue("Київ");

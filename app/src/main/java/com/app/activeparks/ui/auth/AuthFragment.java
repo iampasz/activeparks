@@ -99,4 +99,5 @@ public class AuthFragment extends Fragment {
     public void showMessage(String msg) {
         Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
     }
+
 }

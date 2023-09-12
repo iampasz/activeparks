@@ -1,5 +1,7 @@
 package com.app.activeparks.ui.clubs;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -68,14 +70,26 @@ public class ClubsViewModel extends ViewModel {
                 );
     }
 
-    public void getAllClubs(){
-        repository.getClubsAll().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+    public void getAllClubs(int limit){
+        repository.getClubsAll(String.valueOf(limit)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             filter.clear();
                             clubsParticipantList.setValue(result.getItems());
                             filter.addAll(result.getItems());
                         },
                         error -> {});
+    }
+
+    public void getSearchClubs(String name){
+        repository.getSearchClubsAll(name).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            filter.clear();
+                            clubsParticipantList.setValue(result.getItems());
+                            filter.addAll(result.getItems());
+                        },
+                        error -> {
+                            Log.d("LOG","test" + error.getMessage());
+                        });
     }
 
     public void getClubsDetail(String id){

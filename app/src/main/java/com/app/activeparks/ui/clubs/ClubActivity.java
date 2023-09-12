@@ -208,8 +208,8 @@ public class ClubActivity extends AppCompatActivity implements SwipeRefreshLayou
     void setView(View view, String url) {
         view.setVisibility(View.VISIBLE);
         view.setOnClickListener(v -> {
-            startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(url)));
+            Uri src = Uri.parse(url);
+            startActivity(new Intent(Intent.ACTION_VIEW, src));
         });
     }
 
