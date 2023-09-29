@@ -1,10 +1,15 @@
 package com.app.activeparks.repository;
 
+import android.content.Context;
 import android.util.Log;
+
+import androidx.room.Room;
 
 import com.app.activeparks.data.NetworkModule;
 import com.app.activeparks.data.ApiService;
 import com.app.activeparks.data.model.Default;
+import com.app.activeparks.data.model.activity.GeoPointEntity;
+import com.app.activeparks.data.model.activity.GeoPointList;
 import com.app.activeparks.data.model.authorisation.Authorisation;
 import com.app.activeparks.data.model.authorisation.Signup;
 import com.app.activeparks.data.model.calendar.CalendarModel;
@@ -37,17 +42,21 @@ import com.app.activeparks.data.model.workout.PlanModel;
 import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.data.model.workout.WorkoutModel;
 import com.app.activeparks.data.storage.Preferences;
+import com.app.activeparks.data.storage.bd.AppDatabase;
+
+import org.osmdroid.util.GeoPoint;
 
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -66,6 +75,7 @@ public class Repository {
     private ApiService service;
     private ApiService serviceSearch = new NetworkModule().getInterfaceSearch();
     private ApiService serviceLocation = new NetworkModule().getInterfacLocation();
+    private AppDatabase db;
 
     public Repository(Preferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
@@ -87,6 +97,10 @@ public class Repository {
         if (service == null) {
             service = new NetworkModule().getInterface();
         }
+    }
+
+    public Repository(Context context) {
+        db = Room.databaseBuilder(context, AppDatabase.class, "AppDatabase").build();
     }
 
     public Observable<Video> getVideo(String statusId, String categoryId, String exerciseDifficultyLevelId) {
@@ -714,6 +728,19 @@ public class Repository {
         RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), type);
 
         return service.updateFile(token, name, (int) file.length(), 1, 1, name, filename, body);
+    }
+
+    public Completable insertListGeoPoint(List<GeoPoint> list) {
+        List<GeoPointEntity> geoPointEntities = list.stream().map(geoPoint -> new GeoPointEntity(geoPoint.getLatitude(), geoPoint.getLongitude())).collect(Collectors.toList());
+        return db.activityDao().insert(new GeoPointList(geoPointEntities))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+
+    }
+
+    public Single<List<GeoPointList>> getActivitiesList() {
+        return db.activityDao().getAll().subscribeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread());
     }
 
 

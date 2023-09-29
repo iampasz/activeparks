@@ -28,8 +28,8 @@
         android:label="@string/title_user"
         tools:layout="@layout/fragment_user"/>
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.app.activeparks.ui.notification.NotificationFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notification" />
+        android:id="@+id/navigation_active"
+        android:name="com.app.activeparks.ui.active.ActiveFragment"
+        android:label="ActiveFragment"
+        tools:layout="@layout/fragment_active"/>
 </navigation>

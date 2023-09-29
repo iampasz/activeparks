@@ -17,7 +17,7 @@
         android:title="Сканер" />
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_active"
         android:icon="@drawable/ic_notification"
         android:title="@string/title_notifications" />
 
