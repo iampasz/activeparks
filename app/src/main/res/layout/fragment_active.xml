@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.app.activeparks.ui.maps.MapsFragment">
 
-    <FrameLayout
-        android:id="@+id/select_maps"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
+    <LinearLayout
+        android:id="@+id/llIndicators"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
+            android:orientation="vertical"
             android:paddingLeft="8dp"
-            android:paddingBottom="8dp"
-            android:orientation="vertical">
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <View
                 android:id="@+id/view"
@@ -45,9 +43,9 @@
                         android:id="@+id/time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
+                        android:text="00:00:00"
                         android:textSize="32sp"
-                        android:text="00:00:00" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -67,18 +65,18 @@
                         android:layout_height="60dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        app:cornerRadius="8dp"
+                        android:text="Скандинавська хотьба"
+                        android:textAllCaps="false"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="@color/text_color"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
                         app:backgroundTint="#C5E505"
+                        app:cornerRadius="8dp"
                         app:icon="@drawable/ic_person"
-                        app:iconTint="#444F60"
                         app:iconGravity="textStart"
                         app:iconPadding="16dp"
-                        android:text="Скандинавська хотьба"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:textAllCaps="false"
-                        android:textColor="@color/text_color" />
+                        app:iconTint="#444F60" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -158,49 +156,56 @@
 
             </LinearLayout>
         </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@drawable/button_gray"
-                />
-        </LinearLayout>
 
-        <org.osmdroid.views.MapView
-            android:id="@+id/mapview"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent">
-
-        </org.osmdroid.views.MapView>
-
-        <android.widget.Button
-            android:id="@+id/action_search"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="16dp"
-            android:layout_gravity="bottom|center"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/button_grean"
-            android:drawablePadding="8dp"
-            android:elevation="16dp"
-            android:padding="8dp"
-            android:text="Почати рух"
-            android:textColor="@color/white" />
+            android:layout_height="1dp"
+            android:background="@drawable/button_gray" />
+    </LinearLayout>
 
-        <android.widget.Button
-            android:id="@+id/action_close"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="16dp"
-            android:layout_gravity="bottom|center"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/button_grean"
-            android:drawablePadding="8dp"
-            android:elevation="16dp"
-            android:padding="8dp"
-            android:visibility="gone"
-            android:text="Закрити"
-            android:textColor="@color/white" />
+    <org.osmdroid.views.MapView
+        android:id="@+id/mapview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llIndicators" />
 
-    </FrameLayout>
 
-</FrameLayout>
+    <android.widget.Button
+        android:id="@+id/action_search"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/button_grean"
+        android:drawablePadding="8dp"
+        android:elevation="16dp"
+        android:padding="8dp"
+        android:text="Почати рух"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <android.widget.Button
+        android:id="@+id/action_close"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/button_grean"
+        android:drawablePadding="8dp"
+        android:elevation="16dp"
+        android:padding="8dp"
+        android:text="Закрити"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
