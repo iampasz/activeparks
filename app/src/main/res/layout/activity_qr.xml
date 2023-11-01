@@ -76,7 +76,7 @@
                 android:visibility="gone"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/button_grean"
+                android:background="@drawable/button_green"
                 android:drawableLeft="@drawable/ic_group_on"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"

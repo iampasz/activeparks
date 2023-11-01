@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/tabMap"
+        android:icon="@drawable/ic_map_trifold"
+        tools:ignore="MenuTitle" />
+    <item
+        android:id="@+id/tabLevel"
+        android:icon="@drawable/ic_step"
+        tools:ignore="MenuTitle" />
+    <item
+        android:id="@+id/tabSetting"
+        android:icon="@drawable/ic_settings"
+        tools:ignore="MenuTitle" />
+</menu>

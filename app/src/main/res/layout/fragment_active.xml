@@ -6,172 +6,28 @@
     android:layout_height="match_parent"
     tools:context="com.app.activeparks.ui.maps.MapsFragment">
 
-    <LinearLayout
-        android:id="@+id/llIndicators"
+    <include
+        android:id="@+id/topPanel"
+        layout="@layout/include_top_panel_activity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="8dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
-
-            <View
-                android:id="@+id/view"
-                android:layout_width="match_parent"
-                android:layout_height="1dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="00:00:00"
-                        android:textSize="32sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Тривалість" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <com.app.activeparks.util.ButtonSelect
-                        android:id="@+id/news_action"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:text="Скандинавська хотьба"
-                        android:textAllCaps="false"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        android:textColor="@color/text_color"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:backgroundTint="#C5E505"
-                        app:cornerRadius="8dp"
-                        app:icon="@drawable/ic_person"
-                        app:iconGravity="textStart"
-                        app:iconPadding="16dp"
-                        app:iconTint="#444F60" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Тип тривалості" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/item_one"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/description_one"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Дистанція (км)" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/item_two"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/description_two"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Калорії (ккал)" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/item_thre"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/description_thre"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Середній темп (мин/км)" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/button_gray" />
-    </LinearLayout>
-
-    <org.osmdroid.views.MapView
-        android:id="@+id/mapview"
+    <FrameLayout
+        android:id="@+id/navActivity"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:defaultNavHost="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llIndicators" />
-
+        app:layout_constraintTop_toBottomOf="@+id/topPanel"
+        app:navGraph="@navigation/graph_actitivity" />
 
     <android.widget.Button
         android:id="@+id/action_search"
@@ -180,11 +36,12 @@
         android:layout_gravity="bottom|center"
         android:layout_margin="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/button_grean"
+        android:background="@drawable/button_green"
         android:drawablePadding="8dp"
         android:elevation="16dp"
         android:padding="8dp"
-        android:text="Почати рух"
+        android:textAllCaps="false"
+        android:text="@string/tv_start_moving"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -197,11 +54,11 @@
         android:layout_gravity="bottom|center"
         android:layout_margin="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/button_grean"
+        android:background="@drawable/button_green"
         android:drawablePadding="8dp"
         android:elevation="16dp"
         android:padding="8dp"
-        android:text="Закрити"
+        android:text="@string/tv_close"
         android:textColor="@color/white"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

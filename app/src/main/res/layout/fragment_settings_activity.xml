@@ -1,0 +1,91 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:background="@color/background"
+    android:orientation="vertical"
+    tools:context="com.app.activeparks.ui.active.tab.settings.SettingsActivityFragment">
+
+    <TextView
+        android:id="@+id/tvTypeActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/backround_field_item"
+        android:gravity="center|start"
+        android:padding="4dp"
+        android:text="@string/tv_activity_type"
+        app:drawableEndCompat="@drawable/ic_arrow_right"
+        app:drawableStartCompat="@drawable/ic_person_simple"
+        app:drawableTint="@color/purple_500" />
+
+    <TextView
+        android:id="@+id/tvPulseZone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/backround_field_item"
+        android:gravity="center|start"
+        android:padding="4dp"
+        android:text="@string/tv_pulse_zone"
+        app:drawableEndCompat="@drawable/ic_arrow_right"
+        app:drawableStartCompat="@drawable/ic_heart"
+        app:drawableTint="@color/purple_500" />
+
+    <TextView
+        android:id="@+id/tvPulseDevise"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/backround_field_item"
+        android:gravity="center|start"
+        android:padding="4dp"
+        android:text="@string/tvPulseDevise"
+        app:drawableEndCompat="@drawable/ic_arrow_right"
+        app:drawableStartCompat="@drawable/ic_pulse_device"
+        app:drawableTint="@color/purple_500" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/scAutoPause"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/backround_field_item"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:thumb="@drawable/thumb"
+        app:track="@drawable/track"
+        android:text="@string/tv_auto_pause"
+        android:textColor="@color/purple_500"
+        tools:ignore="RtlSymmetry" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/scAudio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/backround_field_item"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:thumb="@drawable/thumb"
+        app:track="@drawable/track"
+        android:text="@string/tv_audio"
+        android:textColor="@color/purple_500"
+        tools:ignore="RtlSymmetry" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/scLateStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/backround_field_item"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:thumb="@drawable/thumb"
+        app:track="@drawable/track"
+        android:text="@string/tv_late_start"
+        android:textColor="@color/purple_500"
+        tools:ignore="RtlSymmetry" />
+
+</LinearLayout>

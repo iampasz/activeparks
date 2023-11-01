@@ -35,8 +35,6 @@
 
     <string name="crop_image_activity_no_permissions">Скасовується, необхідні дозволи не надаються</string>
 
-
-
     <string name="material_calendar_monday">Пн</string>
     <string name="material_calendar_tuesday">Вт</string>
     <string name="material_calendar_wednesday">Ср</string>
@@ -73,4 +71,36 @@
     <string name="material_calendar_today_button">Сьогодні</string>
     <string name="material_calendar_positive_button">ОК</string>
     <string name="material_calendar_negative_button">Відмінити</string>
+    <string name="tv_start_moving">Почати рух</string>
+    <string name="tv_duration">Тривалість</string>
+    <string name="tv_reset_time">00:00:00</string>
+    <string name="tv_0">0</string>
+    <string name="tv_distance_km">Дистанція (км)</string>
+    <string name="tv_kkal">Калорії (ккал)</string>
+    <string name="tv_average_temp">Ср. темп (мин/км)</string>
+    <string name="tv_close">Закрити</string>
+    <string name="tv_select_activity">Оберіть активність</string>
+    <string name="tv_activity_on_the_street">Активності на вулиці:</string>
+    <string name="tv_activity_on_the_home">Активності в приміщенні:</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main_test">MainActivityTEST</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="tv_choose_the_level_of_activity">Оберіть ступінь активності:</string>
+    <string name="tv_activity_type">Тип активності</string>
+    <string name="tv_pulse_zone">Зони пульсу</string>
+    <string name="tv_pulse">Пульс</string>
+    <string name="tvPulseDevise">Пульсометр</string>
+    <string name="tv_auto_pause">Автопауза</string>
+    <string name="tv_audio">Аудіо підказка</string>
+    <string name="tv_late_start">3 сек. відлік старту</string>
 </resources>

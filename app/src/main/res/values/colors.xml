@@ -42,4 +42,8 @@
     <color name="itemFocusedColor">#1A000000</color>
 
     <color name="defaultColor">#2962FF</color>
+
+    <color name="separator">#c1c1c1</color>
+    <color name="top_panel">#f1f2f4</color>
+    <color name="tv_description">#959595</color>
 </resources>

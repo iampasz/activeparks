@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/button_grean"
+            android:background="@drawable/button_green"
             android:drawableLeft="@drawable/ic_scaner"
             android:drawablePadding="8dp"
             android:drawableTint="@color/text_color_light"
