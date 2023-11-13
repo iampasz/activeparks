@@ -2,7 +2,7 @@ package com.app.activeparks.ui.user;
 
 import androidx.lifecycle.ViewModel;
 
-import com.app.activeparks.repository.Repository;
+import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.storage.Preferences;
 
 

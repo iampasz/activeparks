@@ -1,7 +1,9 @@
 package com.app.activeparks.ui.view
 
 import android.content.Context
+import android.text.Html
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import com.app.activeparks.ui.active.model.ActivityInfoItem
@@ -34,8 +36,11 @@ class ActivityInfoView constructor(
         binding.tvNumber.text = number
     }
 
-    private fun setTitle(title: String) {
-        binding.tvTitle.text = title
+    fun setTitle(title: String) {
+        binding.tvTitle.apply {
+            text = Html.fromHtml(title);
+            gravity = Gravity.CENTER;
+        }
     }
 
 

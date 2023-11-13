@@ -1,15 +1,8 @@
 package com.app.activeparks.ui.event;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LevelListDrawable;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,18 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.app.activeparks.ui.participants.ParticipantsFragment;
 import com.app.activeparks.ui.routepoint.RoutePointFragment;
-import com.app.activeparks.ui.web.WebActivity;
 import com.app.activeparks.util.ButtonSelect;
 import com.app.activeparks.util.LoadImage;
-import com.app.activeparks.util.MapsViewControler;
+import com.app.activeparks.util.MapsViewController;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 
@@ -43,7 +33,6 @@ import org.osmdroid.views.MapView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -60,7 +49,7 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
     public MapView mapView;
     private View statusView;
     private LinearLayout layoutTimer;
-    public MapsViewControler mapsViewControler;
+    public MapsViewController mapsViewController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +97,7 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
 
         mapView = findViewById(R.id.mapview);
 
-        mapsViewControler = new MapsViewControler(mapView, this);
+        mapsViewController = new MapsViewController(mapView, this);
 
         viewModel.getEventDetails().observe(this, events -> {
             try {
@@ -185,7 +174,7 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
                 if (events.getTypeId().contains("bd09f36f-835c-49e4-88b8-4f835c1602ac")) {
                     mLocationAction.setVisibility(View.VISIBLE);
                     findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
-                    mapsViewControler.setMarker(viewModel.address.getLocation().get(0), viewModel.address.getLocation().get(1));
+                    mapsViewController.setMarker(viewModel.address.getLocation().get(0), viewModel.address.getLocation().get(1));
 
                     if (events.getStatusId().contains("032fd5ba-f634-469b-3c30-77a1gh63a918") && events.getHoldingStatusId().contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")) {
                         if (events.getEventUser() != null && events.getEventUser().getIsCoordinator() == true) {
@@ -204,7 +193,7 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
                 } else if (events.getTypeId().contains("848e3121-4a2b-413d-8a8f-ebdd4ecf2840")) {
 
                     findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
-                    mapsViewControler.setMarker(viewModel.address.getLocation().get(0), viewModel.address.getLocation().get(1));
+                    mapsViewController.setMarker(viewModel.address.getLocation().get(0), viewModel.address.getLocation().get(1));
 
 
                 } else if (events.getTypeId().contains("e58e5c86-5ca7-412f-94f0-88effd1a45a8")) {

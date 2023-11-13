@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.app.activeparks.repository.Repository;
+import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.model.video.Video;
 
 import java.util.ArrayList;

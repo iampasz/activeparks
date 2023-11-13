@@ -15,19 +15,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.parks.ParksItem;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportsgrounds.ItemSportsground;
 import com.app.activeparks.ui.adapter.PhotosAdaper;
-import com.app.activeparks.ui.clubs.ClubActivity;
-import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
 import com.app.activeparks.ui.event.EventActivity;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
-import com.app.activeparks.ui.home.adapter.HomeAdaper;
 import com.app.activeparks.ui.park.adapter.ParkListAdaper;
-import com.app.activeparks.ui.participants.ParticipantsModelFactory;
-import com.app.activeparks.util.MapsViewControler;
+import com.app.activeparks.util.MapsViewController;
 import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -51,7 +46,7 @@ public class ParkActivity extends AppCompatActivity {
     private TextView mNameCordenator, mEmailCordenator, mPhoneCordenator;
     private LinearLayout mItemCordenator;
     public MapView mapView;
-    public MapsViewControler mapsViewControler;
+    public MapsViewController mapsViewController;
 
 
     @Override
@@ -66,7 +61,7 @@ public class ParkActivity extends AppCompatActivity {
 
         parkEvent = findViewById(R.id.park_event);
 
-        mapsViewControler = new MapsViewControler(mapView, this);
+        mapsViewController = new MapsViewController(mapView, this);
 
         viewModel.getPark(getIntent().getStringExtra("id"));
 
@@ -116,7 +111,7 @@ public class ParkActivity extends AppCompatActivity {
                 new TabLayoutMediator(tabLayout, photosView, (tab, position) -> {
                 }).attach();
 
-                mapsViewControler.setMarker(park.getLocation().get(0), park.getLocation().get(1));
+                mapsViewController.setMarker(park.getLocation().get(0), park.getLocation().get(1));
 
                 Glide.with(this).load(park.getPhoto()).error(R.drawable.ic_prew).into(mImageView);
 

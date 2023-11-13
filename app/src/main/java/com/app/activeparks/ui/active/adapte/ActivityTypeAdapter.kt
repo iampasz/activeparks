@@ -63,30 +63,11 @@ class ActivityTypeAdapter(
             tvTitle.setOnClickListener {
                 itemSelected(item)
 
-
                 list.currentList.forEach { it.isSelected = false }
                 list.currentList[position].isSelected = true
                 list.submitList(list.currentList)
                 notifyDataSetChanged()
-
-//                    if (!item.isInclude) {
-//                        itemSelected(item)
-//                    } else {
-//                        list.currentList.forEach { it.isSelected = false }
-//                        list.currentList[position].isSelected = true
-//                        list.submitList(list.currentList)
-//                    }
             }
-
-//                if (item.isInclude && item.isSelected) {
-//                    incActivityHome.root.visibility = ViewGroup.VISIBLE
-//
-//                    val adapter = ActivityHomeTypeAdapter {
-//                        itemSelected(it)
-//                    }
-//                    incActivityHome.rvActivityHome.adapter = adapter
-//                    adapter.list.submitList(list.currentList.filter { !it.isOutside && !it.isInclude })
-//                }
 
             if (item.isSelected) {
                 setSelected(item)
@@ -101,13 +82,6 @@ class ActivityTypeAdapter(
                 tvTitle.setTint(R.color.background_dialog)
                 tvTitle.setBackgroundResource(R.drawable.backround_edit_text)
             }
-
-//            item.description?.let {
-//                tvDescription.apply {
-//                    text = it
-//                    visible()
-//                }
-//            } ?: { tvDescription.gone() }
         }
     }
 

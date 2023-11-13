@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.app.activeparks.data.model.points.RoutePoint;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.repository.Repository;
+import com.app.activeparks.data.repository.Repository;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

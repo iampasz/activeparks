@@ -1,7 +1,5 @@
 package com.app.activeparks.ui.active.adapte
 
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -37,7 +35,7 @@ class ActivityInfoItemAdapter(
             oldItem: ActivityInfoItem,
             newItem: ActivityInfoItem
         ): Boolean {
-            return oldItem.id == newItem.id
+            return false
         }
 
     }
@@ -59,32 +57,53 @@ class ActivityInfoItemAdapter(
     override fun onBindViewHolder(holder: ActivityInfoItemVH, position: Int) {
         val item = list.currentList[position]
         ItemActivityInfoBinding.bind(holder.itemView).apply {
-            tvTitle.text = item.title
+            tvTitle.text = item.title.replace("<br>", " ")
             tvTitle.setOnClickListener {
+                list.currentList.forEach { it.isSelected = false }
+                list.currentList[position].isSelected = true
+                list.submitList(list.currentList)
+                notifyDataSetChanged()
+
                 itemSelected(item)
             }
 
-            if (item.id == id) {
-                tvTitle.setCompoundDrawablesWithIntrinsicBounds(
+            if (item.isSelected) {
+                setSelected(
                     item.img,
-                    0,
                     R.drawable.ic_selected,
-                    0
+                    R.color.white,
+                    R.drawable.button_green,
+                    R.color.white
                 )
-
-                tvTitle.setTint(R.color.white)
-                tvTitle.setBackgroundResource(R.drawable.button_green)
-                tvTitle.setTextColor(ContextCompat.getColor(tvTitle.context, R.color.white))
             } else {
-                tvTitle.setCompoundDrawablesWithIntrinsicBounds(
+                setSelected(
                     item.img,
                     0,
-                    0,
-                    0
+                    R.color.background_dialog,
+                    R.color.top_panel,
+                    R.color.text_color
                 )
-                tvTitle.setTint(R.color.background_dialog)
-                tvTitle.setBackgroundResource(R.color.top_panel)
             }
+        }
+    }
+
+    private fun ItemActivityInfoBinding.setSelected(
+        imgFirst: Int,
+        imgSecond: Int,
+        colorTint: Int,
+        background: Int,
+        textColor: Int
+    ) {
+        tvTitle.apply {
+            setCompoundDrawablesWithIntrinsicBounds(
+                imgFirst,
+                0,
+                imgSecond,
+                0
+            )
+            setTint(colorTint)
+            setBackgroundResource(background)
+            setTextColor(ContextCompat.getColor(context, textColor))
         }
     }
 }

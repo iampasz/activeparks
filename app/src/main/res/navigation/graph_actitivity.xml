@@ -7,19 +7,23 @@
 
     <fragment
         android:id="@+id/mapActivityFragment"
-        android:name="com.app.activeparks.ui.active.tab.map.MapActivityFragment"
+        android:name="com.app.activeparks.ui.active.fragments.map.MapActivityFragment"
         android:label="fragment_map_activity"
         tools:layout="@layout/fragment_map_activity" />
 
     <fragment
         android:id="@+id/levelActivityFragment"
-        android:name="com.app.activeparks.ui.active.tab.level.LevelActivityFragment"
+        android:name="com.app.activeparks.ui.active.fragments.level.LevelActivityFragment"
         android:label="fragment_level_activity"
         tools:layout="@layout/fragment_level_activity" />
 
     <fragment
         android:id="@+id/settingsActivityFragment"
-        android:name="com.app.activeparks.ui.active.tab.settings.SettingsActivityFragment"
+        android:name="com.app.activeparks.ui.active.fragments.settings.SettingsActivityFragment"
         android:label="fragment_settings_activity"
         tools:layout="@layout/fragment_settings_activity" />
+    <fragment
+        android:id="@+id/pulseZoneFragment"
+        android:name="com.app.activeparks.ui.active.fragments.pulseZone.PulseZoneFragment"
+        android:label="PulseZoneFragment" />
 </navigation>

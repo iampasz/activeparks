@@ -7,8 +7,14 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
+
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.repository.Repository;
+import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.ui.maps.MapsFragment;
 import com.app.activeparks.ui.profile.EditProfileActivity;
 import com.app.activeparks.util.Dictionarie;
@@ -20,19 +26,10 @@ import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.UpdateAvailability;
-import com.google.android.play.core.review.ReviewException;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
-import com.google.android.play.core.review.model.ReviewErrorCode;
 import com.technodreams.activeparks.R;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
-
 import com.technodreams.activeparks.databinding.ActivityMainBinding;
 
 import java.util.Locale;
@@ -83,6 +80,12 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         //startActivity(new Intent(this, TestUpdate.class));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        navigation(getIntent().getIntExtra("ID", R.id.navigation_home));
+        getIntent().removeExtra("ID");
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

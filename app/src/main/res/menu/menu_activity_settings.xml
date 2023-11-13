@@ -3,15 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:id="@+id/tabMap"
+        android:id="@+id/mapActivityFragment"
         android:icon="@drawable/ic_map_trifold"
         tools:ignore="MenuTitle" />
     <item
-        android:id="@+id/tabLevel"
+        android:id="@+id/levelActivityFragment"
         android:icon="@drawable/ic_step"
         tools:ignore="MenuTitle" />
     <item
-        android:id="@+id/tabSetting"
+        android:id="@+id/settingsActivityFragment"
         android:icon="@drawable/ic_settings"
         tools:ignore="MenuTitle" />
 </menu>

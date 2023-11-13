@@ -9,7 +9,7 @@
     <View
         android:id="@+id/vToolBar"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="52dp"
         android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,17 +47,17 @@
         android:layout_marginEnd="8dp"
         android:src="@drawable/ic_at_scandinavian_walk"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/color_park" />
 
     <View
         android:id="@+id/vFirstSeparator"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="8dp"
         android:background="@color/separator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivBookmark" />
+        app:layout_constraintTop_toBottomOf="@+id/vToolBar" />
 
     <TextView
         android:id="@+id/time"
@@ -125,6 +125,7 @@
         android:layout_height="56dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:menu="@menu/menu_activity_settings"
+        app:itemIconTint="@color/selector_nav_tem"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/vFirstSecond" />
 
@@ -136,5 +137,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/navActivitySettings" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

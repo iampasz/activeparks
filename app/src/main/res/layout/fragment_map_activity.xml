@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.app.activeparks.ui.active.tab.map.MapActivityFragment">
+    tools:context="com.app.activeparks.ui.active.fragments.map.MapActivityFragment">
 
         <org.osmdroid.views.MapView
             android:id="@+id/mapview"

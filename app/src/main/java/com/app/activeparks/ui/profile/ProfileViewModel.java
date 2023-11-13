@@ -7,12 +7,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.app.activeparks.data.model.Default;
-import com.app.activeparks.data.model.clubs.Clubs;
 import com.app.activeparks.data.model.dictionaries.BaseDictionaries;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.data.model.user.UserUpdate;
-import com.app.activeparks.data.model.workout.WorkoutModel;
-import com.app.activeparks.repository.Repository;
+import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.dictionaries.District;
 import com.app.activeparks.data.model.dictionaries.Region;
@@ -27,7 +25,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 

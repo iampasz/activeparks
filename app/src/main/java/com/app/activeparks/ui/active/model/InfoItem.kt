@@ -9,7 +9,7 @@ data class InfoItem(
     val id: Int,
     val title: String,
     val description: String,
-    val img: Int
+    val img: Int = R.drawable.ic_pulse
 ) {
     companion object {
         fun getPulseInfo(): List<InfoItem> {

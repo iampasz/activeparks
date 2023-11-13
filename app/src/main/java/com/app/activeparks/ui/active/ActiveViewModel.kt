@@ -1,21 +1,20 @@
 package com.app.activeparks.ui.active
 
 import android.annotation.SuppressLint
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import android.graphics.Bitmap
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.app.activeparks.data.model.activity.GeoPointEntity
-import com.app.activeparks.data.model.activity.GeoPointList
-import com.app.activeparks.repository.Repository
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.app.activeparks.data.useCase.saveActivity.SaveActivityUseCase
 import com.app.activeparks.ui.active.model.ActivityState
-import com.app.activeparks.ui.active.model.TypeOfActivity
-import com.technodreams.activeparks.R
+import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
-import java.util.stream.Collectors
 
-class ActiveViewModel(application: Application) : AndroidViewModel(application) {
-    private val apiRepository = Repository(getApplication<Application>().applicationContext)
+class ActiveViewModel(
+    val activityUseCase: SaveActivityUseCase
+) : ViewModel() {
     private val _onSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
     var onSuccess: LiveData<Boolean> = _onSuccess
     private val _listsGeoPoint: MutableLiveData<List<List<GeoPoint>>> = MutableLiveData(emptyList())
@@ -24,31 +23,55 @@ class ActiveViewModel(application: Application) : AndroidViewModel(application) 
     private val _activityStateLD = MutableLiveData<ActivityState>()
     val activityStateLD: LiveData<ActivityState> get() = _activityStateLD
 
+    val navigate = MutableLiveData<Fragment?>()
+
+    var bitmap:Bitmap? = null
+
 
     var activityState = ActivityState()
+    val updateUI: MutableLiveData<Boolean> = MutableLiveData(false)
+    val checkLocation: MutableLiveData<Boolean> = MutableLiveData(false)
+    val save: MutableLiveData<Boolean> = MutableLiveData(false)
+    val saved: MutableLiveData<Boolean> = MutableLiveData(false)
+
 
     @SuppressLint("CheckResult")
     fun insertGeoPointList(list: List<GeoPoint?>?) {
-        apiRepository.insertListGeoPoint(list).subscribe(
-            { _onSuccess.setValue(true) }
-        ) { _onSuccess.setValue(false) }
+//        apiRepository.insertListGeoPoint(list).subscribe(
+//            { _onSuccess.setValue(true) }
+//        ) { _onSuccess.setValue(false) }
     }
 
-    val listGeoPoint: Unit
-        @SuppressLint("CheckResult")
-        get() {
-            apiRepository.activitiesList.subscribe { geoPointLists: List<GeoPointList>, throwable: Throwable? ->
-                val list = geoPointLists.stream().map { geoPoints: GeoPointList ->
-                    geoPoints.list.stream().map { geoPointEntity: GeoPointEntity ->
-                        GeoPoint(
-                            geoPointEntity.getaLatitude(),
-                            geoPointEntity.getaLongitude()
-                        )
-                    }
-                        .collect(Collectors.toList())
-                }
-                    .collect(Collectors.toList())
-                _listsGeoPoint.postValue(list)
+//    val listGeoPoint: Unit
+//        @SuppressLint("CheckResult")
+//        get() {
+//            apiRepository.activitiesList.subscribe { geoPointLists: List<GeoPointList>, throwable: Throwable? ->
+//                val list = geoPointLists.stream().map { geoPoints: GeoPointList ->
+//                    geoPoints.list.stream().map { geoPointEntity: GeoPointEntity ->
+//                        GeoPoint(
+//                            geoPointEntity.getaLatitude(),
+//                            geoPointEntity.getaLongitude()
+//                        )
+//                    }
+//                        .collect(Collectors.toList())
+//                }
+//                    .collect(Collectors.toList())
+//                _listsGeoPoint.postValue(list)
+//            }
+//        }
+
+    fun navigateTo(fragment: Fragment) {
+        navigate.value = fragment
+    }
+
+    fun test() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+
+            }.onSuccess {
+
+            }.onFailure {
             }
         }
+    }
 }

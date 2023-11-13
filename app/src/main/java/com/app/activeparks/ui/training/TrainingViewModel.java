@@ -6,12 +6,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.app.activeparks.data.model.dictionaries.BaseDictionaries;
-import com.app.activeparks.data.model.support.Support;
-import com.app.activeparks.data.model.support.SupportItem;
 import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.repository.Repository;
+import com.app.activeparks.data.repository.Repository;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,20 +1,17 @@
 package com.app.activeparks.ui.profile.uservideo;
 
-import android.util.Pair;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.app.activeparks.data.model.dictionaries.BaseDictionaries;
 import com.app.activeparks.data.model.dictionaries.ExerciseCategory;
-import com.app.activeparks.repository.Repository;
 import com.app.activeparks.data.model.uservideo.UserVideo;
 import com.app.activeparks.data.model.uservideo.UserVideoItem;
+import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.storage.Preferences;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

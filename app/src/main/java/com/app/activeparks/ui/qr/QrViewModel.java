@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.repository.Repository;
+import com.app.activeparks.data.repository.Repository;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;

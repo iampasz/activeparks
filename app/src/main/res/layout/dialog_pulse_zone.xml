@@ -11,7 +11,7 @@
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="52dp"
         android:background="@color/white"
         android:gravity="center"
         android:paddingStart="16dp"
@@ -22,18 +22,26 @@
         android:textAllCaps="true"
         android:textColor="@color/text_color"
         android:textSize="16sp"
-        app:drawableStartCompat="@drawable/ic_back_action"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_back_action"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
     <View
         android:id="@+id/vFSeparator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/separator"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-        tools:layout_editor_absoluteX="-16dp" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
     <com.app.activeparks.ui.view.InfoView
         android:id="@+id/vInfoOne"

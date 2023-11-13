@@ -4,9 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import com.app.activeparks.ui.active.model.ActivityInfoItem
 import com.app.activeparks.ui.active.model.InfoItem
-import com.technodreams.activeparks.databinding.ViewActivityInfoBinding
 import com.technodreams.activeparks.databinding.ViewInfoBinding
 
 /**
@@ -17,7 +15,7 @@ class InfoView constructor(
 ) : FrameLayout(context, attrs){
 
     private var binding: ViewInfoBinding
-    private var item: InfoItem? = null
+    private lateinit var item: InfoItem
 
 
     init {
@@ -31,15 +29,17 @@ class InfoView constructor(
         setDescription(item.description)
         setImg(item.img)
     }
-    private fun setTitle(title: String) {
+
+    fun getItem() = item
+    fun setTitle(title: String) {
         binding.tvTitle.text = title
     }
 
-    private fun setDescription(number: String) {
+    fun setDescription(number: String) {
         binding.tvDescription.text = number
     }
 
-    private fun setImg(id: Int) {
+    fun setImg(id: Int) {
         binding.ivIcon.setImageResource(id)
     }
 

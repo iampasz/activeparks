@@ -6,21 +6,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.app.activeparks.data.model.Default;
 import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.dictionaries.BaseDictionaries;
-import com.app.activeparks.data.model.dictionaries.District;
-import com.app.activeparks.data.model.dictionaries.Region;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.data.model.user.User;
-import com.app.activeparks.data.model.uservideo.UserVideo;
 import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.repository.Repository;
-import com.google.gson.Gson;
+import com.app.activeparks.data.repository.Repository;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -4,9 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.app.activeparks.repository.Repository;
+import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.model.Default;
-import com.app.activeparks.data.model.authorisation.Authorisation;
 import com.app.activeparks.data.storage.Preferences;
 import com.google.gson.Gson;
 
