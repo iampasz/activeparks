@@ -38,7 +38,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity implements FragmentInteface {
 
     private ActivityMainBinding binding;
-
+//test
     private AppUpdateManager appUpdateManager;
 
     @Override
