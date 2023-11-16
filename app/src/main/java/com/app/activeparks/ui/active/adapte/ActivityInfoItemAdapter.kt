@@ -1,12 +1,14 @@
 package com.app.activeparks.ui.active.adapte
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.app.activeparks.ui.active.model.ActivityInfoItem
+import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
+import com.app.activeparks.ui.active.model.getInf
 import com.app.activeparks.util.extention.setTint
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.ItemActivityInfoBinding
@@ -16,24 +18,23 @@ import com.technodreams.activeparks.databinding.ItemActivityInfoBinding
  * Created by O.Dziuba on 30.10.2023.
  */
 class ActivityInfoItemAdapter(
-    private val id: Int,
-    private val itemSelected: (ActivityInfoItem) -> Unit
-) : RecyclerView.Adapter<ActivityInfoItemAdapter.ActivityInfoItemVH>() {
+    private val itemSelected: (ActivityInfoTrainingItem) -> Unit
+) : RecyclerView.Adapter<ActivityInfoItemAdapter.ActivityInfoTrainingItemVH>() {
 
-    class ActivityInfoItemVH(binding: ItemActivityInfoBinding) :
+    class ActivityInfoTrainingItemVH(binding: ItemActivityInfoBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    private val callback = object : DiffUtil.ItemCallback<ActivityInfoItem>() {
+    private val callback = object : DiffUtil.ItemCallback<ActivityInfoTrainingItem>() {
         override fun areItemsTheSame(
-            oldItem: ActivityInfoItem,
-            newItem: ActivityInfoItem
+            oldItem: ActivityInfoTrainingItem,
+            newItem: ActivityInfoTrainingItem
         ): Boolean {
             return oldItem == newItem
         }
 
         override fun areContentsTheSame(
-            oldItem: ActivityInfoItem,
-            newItem: ActivityInfoItem
+            oldItem: ActivityInfoTrainingItem,
+            newItem: ActivityInfoTrainingItem
         ): Boolean {
             return false
         }
@@ -42,8 +43,8 @@ class ActivityInfoItemAdapter(
 
     val list = AsyncListDiffer(this, callback)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActivityInfoItemVH {
-        return ActivityInfoItemVH(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActivityInfoTrainingItemVH {
+        return ActivityInfoTrainingItemVH(
             ItemActivityInfoBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -54,10 +55,11 @@ class ActivityInfoItemAdapter(
 
     override fun getItemCount() = list.currentList.size
 
-    override fun onBindViewHolder(holder: ActivityInfoItemVH, position: Int) {
+    @SuppressLint("SetTextI18n")
+    override fun onBindViewHolder(holder: ActivityInfoTrainingItemVH, position: Int) {
         val item = list.currentList[position]
         ItemActivityInfoBinding.bind(holder.itemView).apply {
-            tvTitle.text = item.title.replace("<br>", " ")
+            tvTitle.text = item.getInf()
             tvTitle.setOnClickListener {
                 list.currentList.forEach { it.isSelected = false }
                 list.currentList[position].isSelected = true

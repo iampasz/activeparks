@@ -1,45 +1,48 @@
 package com.app.activeparks.ui.active
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
+import android.speech.tts.TextToSpeech
 import android.view.MenuItem
-import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.app.activeparks.MainActivity
 import com.app.activeparks.ui.active.fragments.infoItem.ActivityInfoItemFragment
-import com.app.activeparks.ui.active.fragments.map.MapActivityFragment
 import com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityFragment
-import com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityViewModel
 import com.app.activeparks.ui.active.fragments.type.ActivityTypeFragment
-import com.app.activeparks.ui.active.model.ActivityInfoItem
-import com.app.activeparks.ui.active.model.TypeOfActivity
+import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
+import com.app.activeparks.util.extention.disable
+import com.app.activeparks.util.extention.enable
 import com.app.activeparks.util.extention.enableIf
+import com.app.activeparks.util.extention.getStingForSpeak
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.visible
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentActiveBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.osmdroid.views.MapView
+import java.util.Locale
 
 class ActivityForActivity : AppCompatActivity() {
 
     private lateinit var binding: FragmentActiveBinding
-    private var isRunning = false
     private val activeViewModel: ActiveViewModel by viewModel()
-    private val saveViewModel: SaveActivityViewModel by viewModel()
-    private var startTime: Long = 0
     private lateinit var navController: NavController
+
+    private var isTimerRunning = false
+    private var seconds = 0
+
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var runnable: Runnable
+    private lateinit var textToSpeech: TextToSpeech
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +54,15 @@ class ActivityForActivity : AppCompatActivity() {
 
         navController = findNavController(R.id.navActivity)
         navView.setupWithNavController(navController)
+
+
+        textToSpeech = TextToSpeech(this) { status ->
+            textToSpeech.language = Locale("ukr", "UKR")
+            if (status != TextToSpeech.SUCCESS) {
+                Toast.makeText(this, "TextToSpeech initialization failed", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
     }
 
     override fun onResume() {
@@ -59,20 +71,21 @@ class ActivityForActivity : AppCompatActivity() {
         initStartValue()
         initListeners()
         observes()
-        resetStopwatch()
+        updateTimerText()
         updateUI()
-
-        activeViewModel.test()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        activeViewModel.checkLocation.value = false
     }
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (supportFragmentManager.fragments.size > 1) {
+            (supportFragmentManager.fragments.last() as? SaveActivityFragment)?.let {
+                activeViewModel.apply {
+                    updateMap.value = true
+                    updateUI.value = true
+                    loadActiveState()
+                    activityInfoItems = ActivityInfoTrainingItem.getActivityInfoItem()
+                }
+            }
             supportFragmentManager.beginTransaction()
                 .remove(supportFragmentManager.fragments.last()).commit()
             activeViewModel.updateUI.value = true
@@ -84,69 +97,56 @@ class ActivityForActivity : AppCompatActivity() {
     private fun initStartValue() {
         with(binding) {
             topPanel.aivFirst.apply {
-                setNumber(context.getString(R.string.tv_0))
-                setActivityInfoItem(ActivityInfoItem.getActivityInfoItem()[0])
+                setActivityInfoItem(activeViewModel.activityState.aiFirst)
             }
             topPanel.aivSecond.apply {
-                setNumber(context.getString(R.string.tv_0))
-                setActivityInfoItem(ActivityInfoItem.getActivityInfoItem()[1])
+                setActivityInfoItem(activeViewModel.activityState.aiSecond)
             }
             topPanel.aivThird.apply {
-                setNumber(context.getString(R.string.tv_0))
-                setActivityInfoItem(ActivityInfoItem.getActivityInfoItem()[2])
+                setActivityInfoItem(activeViewModel.activityState.aiThird)
             }
 
             navMain.selectedItemId = R.id.navigation_active
         }
     }
 
-    fun takeScreenshot(view: View): Bitmap {
-        view.isDrawingCacheEnabled = true
-        view.buildDrawingCache(true)
-
-        val bitmap = Bitmap.createBitmap(view.drawingCache)
-        view.isDrawingCacheEnabled = false
-
-        return bitmap
-    }
-
     private fun initListeners() {
         with(binding) {
             btnStart.setOnClickListener {
-                startStopwatch()
-                visible(btnPause, vBottomView)
-                gone(btnStart, navMain)
-                activeViewModel.activityState.isTrainingStart = true
-                activeViewModel.updateUI.value = true
-            }
-            btnPause.setOnClickListener {
-                visible(btnEnd, btnContinue, gPause)
-                stopStopwatch()
-                btnPause.gone()
-            }
-            btnEnd.setOnClickListener {
-
-                if (activeViewModel.activityState.activityType.id != 4) {
-                    val navHostFragment =
-                        supportFragmentManager.findFragmentById(R.id.navActivity) as NavHostFragment
-                    val fragment =
-                        navHostFragment.childFragmentManager.fragments[0] as? MapActivityFragment
-                    fragment?.view?.findViewById<MapView>(R.id.mapview)?.apply {
-                        activeViewModel.bitmap = takeScreenshot(this)
+                btnStart.disable()
+                if (activeViewModel.activityState.isAudioHelper) {
+                    if (activeViewModel.activityState.isLazyStart) {
+                        startDelayedStartTimer()
+                    } else {
+                        showToastAndSpeak(getString(R.string.tv_start_activity_speak))
+                        startActivity()
                     }
+                } else if (activeViewModel.activityState.isLazyStart) {
+                    startDelayedStartTimer()
+                } else {
+                    startActivity()
                 }
 
-                activeViewModel.save.value = true
+                activeViewModel.saveActiveState()
+            }
+            btnPause.setOnClickListener {
+                onPause()
+            }
+            btnEnd.setOnClickListener {
+                btnStart.enable()
                 gone(btnEnd, btnContinue, gPause, vBottomView)
                 visible(navMain, btnStart)
-                resetStopwatch()
+                restartTimer()
                 activeViewModel.activityState.isTrainingStart = false
+                activeViewModel.activityState.isPause = false
+                activeViewModel.checkLocation.value = false
                 openFragment(SaveActivityFragment())
             }
             btnContinue.setOnClickListener {
                 gone(btnEnd, btnContinue, gPause)
                 visible(btnPause)
-                startStopwatch()
+                resumeTimer()
+                activeViewModel.activityState.isPause = false
             }
 
             topPanel.aivFirst.setOnClickListener {
@@ -156,8 +156,6 @@ class ActivityForActivity : AppCompatActivity() {
                     topPanel.aivThird.getActivityInfoItem()?.id ?: 0
                 ) { item ->
                     topPanel.aivFirst.apply {
-                        setNumber("0")
-                        setTitle(item.title)
                         setActivityInfoItem(item)
                     }
                     activeViewModel.activityState.aiFirst = item
@@ -170,8 +168,6 @@ class ActivityForActivity : AppCompatActivity() {
                     topPanel.aivThird.getActivityInfoItem()?.id ?: 0
                 ) { item ->
                     topPanel.aivSecond.apply {
-                        setNumber("0")
-                        setTitle(item.title)
                         setActivityInfoItem(item)
                     }
                     activeViewModel.activityState.aiSecond = item
@@ -184,8 +180,6 @@ class ActivityForActivity : AppCompatActivity() {
                     topPanel.aivSecond.getActivityInfoItem()?.id ?: 0
                 ) { item ->
                     topPanel.aivThird.apply {
-                        setNumber("0")
-                        setTitle(item.title)
                         setActivityInfoItem(item)
                     }
                     activeViewModel.activityState.aiThird = item
@@ -199,6 +193,24 @@ class ActivityForActivity : AppCompatActivity() {
             navMain.setOnItemSelectedListener { item ->
                 navigateToMain(item)
             }
+        }
+    }
+
+    private fun FragmentActiveBinding.onPause() {
+        visible(btnEnd, btnContinue, gPause)
+        pauseTimer()
+        btnPause.gone()
+        activeViewModel.activityState.isPause = true
+    }
+
+    private fun startActivity() {
+        with(binding) {
+            startTimer()
+            visible(btnPause, vBottomView)
+            gone(btnStart, navMain)
+            activeViewModel.activityState.isTrainingStart = true
+            activeViewModel.updateUI.value = true
+            activeViewModel.checkLocation.value = true
         }
     }
 
@@ -221,9 +233,6 @@ class ActivityForActivity : AppCompatActivity() {
             }
 
             else -> {
-//                activeViewModel.activityState = activeViewModel.activityState.copy(
-//                    activityType = TypeOfActivity.getTypeOfActivity().last()
-//                )
                 0
             }
         }
@@ -242,39 +251,41 @@ class ActivityForActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun startStopwatch() {
-        if (!isRunning) {
-            isRunning = true
-            startTime = SystemClock.elapsedRealtime()
-            handler.postDelayed(updateTime, 0)
+    private fun startTimer() {
+        isTimerRunning = true
+        runnable = object : Runnable {
+            override fun run() {
+                seconds++
+                updateTimerText()
+                handler.postDelayed(this, 1000)
+            }
         }
+        handler.post(runnable)
     }
 
-    private fun stopStopwatch() {
-        if (isRunning) {
-            isRunning = false
-            handler.removeCallbacks(updateTime)
-        }
+    private fun pauseTimer() {
+        isTimerRunning = false
+        handler.removeCallbacks(runnable)
     }
 
-    private fun resetStopwatch() {
-        isRunning = false
-        handler.removeCallbacks(updateTime)
-        binding.topPanel.time.text = getString(R.string.tv_reset_time)
+    private fun resumeTimer() {
+        isTimerRunning = true
+        handler.post(runnable)
     }
 
-    private val handler = Handler(Looper.getMainLooper())
-    private val updateTime: Runnable = object : Runnable {
-        override fun run() {
-            val timeInMilliseconds = SystemClock.elapsedRealtime() - startTime
-            var seconds = (timeInMilliseconds / 1000).toInt()
-            var minutes = seconds / 60
-            val hours = minutes / 60
-            seconds %= 60
-            minutes %= 60
-            binding.topPanel.time.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
-            handler.postDelayed(this, 1000)
-        }
+    private fun restartTimer() {
+        isTimerRunning = false
+        seconds = 0
+        updateTimerText()
+    }
+
+    private fun updateTimerText() {
+        val hours = seconds / 3600
+        val minutes = (seconds % 3600) / 60
+        val secs = seconds % 60
+
+        binding.topPanel.time.text =
+            String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, secs)
     }
 
     private fun observes() {
@@ -285,8 +296,24 @@ class ActivityForActivity : AppCompatActivity() {
             saved.observe(this@ActivityForActivity) {
                 if (it) openFragment(SaveActivityFragment())
             }
-            save.observe(this@ActivityForActivity) {
-                val s = it
+            updateActivityInfoTrainingItem.observe(this@ActivityForActivity) {
+                if (it) {
+                    with(binding) {
+                        topPanel.aivFirst.getActivityInfoItem()?.id?.let { id ->
+                            topPanel.aivFirst.setNumber(activityInfoItems[id].number)
+                        }
+                        topPanel.aivSecond.getActivityInfoItem()?.id?.let { id ->
+                            topPanel.aivSecond.setNumber(activityInfoItems[id].number)
+                        }
+                        topPanel.aivThird.getActivityInfoItem()?.id?.let { id ->
+                            topPanel.aivThird.setNumber(activityInfoItems[id].number)
+                        }
+                    }
+
+                    if (activityState.pulseOnPause >= activityState.currentPulse && activityState.isAutoPause) {
+                        binding.onPause()
+                    }
+                }
             }
         }
     }
@@ -298,7 +325,7 @@ class ActivityForActivity : AppCompatActivity() {
                     tvTitleActivityType.text = activityState.activityType.title
                     icActivityType.setImageResource(activityState.activityType.img)
 
-                    if (activityState.activityType.id == 4) {
+                    if (activityState.activityType.isInclude) {
                         navActivitySettings.apply {
                             menu.removeItem(R.id.mapActivityFragment)
                             if (!activityState.onSelectedTypeFromSetting) {
@@ -326,9 +353,36 @@ class ActivityForActivity : AppCompatActivity() {
                         aivSecond,
                         aivThird
                     )
+
+                    aivFirst.apply {
+                        setActivityInfoItem(activeViewModel.activityState.aiFirst)
+                    }
+                    aivSecond.apply {
+                        setActivityInfoItem(activeViewModel.activityState.aiSecond)
+                    }
+                    aivThird.apply {
+                        setActivityInfoItem(activeViewModel.activityState.aiThird)
+                    }
                 }
             }
         }
+    }
+
+    private fun startDelayedStartTimer() {
+        object : CountDownTimer(3000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                showToastAndSpeak(millisUntilFinished.getStingForSpeak())
+            }
+
+            override fun onFinish() {
+                showToastAndSpeak(getString(R.string.tv_start_activity_speak))
+                startActivity()
+            }
+        }.start()
+    }
+
+    private fun showToastAndSpeak(message: String) {
+        textToSpeech.speak(message, TextToSpeech.QUEUE_FLUSH, null, null)
     }
 
     private fun openFragment(fragment: Fragment) {

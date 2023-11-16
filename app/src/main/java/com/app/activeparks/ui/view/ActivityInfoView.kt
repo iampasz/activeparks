@@ -2,11 +2,12 @@ package com.app.activeparks.ui.view
 
 import android.content.Context
 import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import com.app.activeparks.ui.active.model.ActivityInfoItem
+import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
 import com.technodreams.activeparks.databinding.ViewActivityInfoBinding
 
 /**
@@ -14,20 +15,21 @@ import com.technodreams.activeparks.databinding.ViewActivityInfoBinding
  */
 class ActivityInfoView constructor(
     context: Context, attrs: AttributeSet? = null
-) : FrameLayout(context, attrs){
+) : FrameLayout(context, attrs) {
 
     private var binding: ViewActivityInfoBinding
-    private var item: ActivityInfoItem? = null
+    private var item: ActivityInfoTrainingItem? = null
 
 
     init {
         binding = ViewActivityInfoBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    fun setActivityInfoItem(item: ActivityInfoItem) {
+    fun setActivityInfoItem(item: ActivityInfoTrainingItem) {
         this.item = item
 
-        setTitle(item.title)
+        setDescription("${item.description}<br>${item.unit}")
+        setNumber(item.number)
     }
 
     fun getActivityInfoItem() = item
@@ -36,13 +38,10 @@ class ActivityInfoView constructor(
         binding.tvNumber.text = number
     }
 
-    fun setTitle(title: String) {
+    private fun setDescription(title: String) {
         binding.tvTitle.apply {
-            text = Html.fromHtml(title);
-            gravity = Gravity.CENTER;
+            text = Html.fromHtml(title, FROM_HTML_MODE_LEGACY)
+            gravity = Gravity.CENTER
         }
     }
-
-
-
 }
