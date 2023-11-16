@@ -1,25 +1,26 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:paddingBottom="90dp"
     android:orientation="vertical"
+    android:paddingBottom="90dp"
     tools:context="com.app.activeparks.ui.active.fragments.level.LevelActivityFragment">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:background="@color/background"
+            android:orientation="vertical"
             tools:context="com.app.activeparks.ui.active.fragments.level.LevelActivityFragment">
 
             <androidx.constraintlayout.widget.Group
@@ -32,13 +33,7 @@
                 android:id="@+id/gPulse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="tvPulseNumber,tvPulseDescription, vInfoOne, vInfoTwo, vInfoThree" />
-
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/gTrainingInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="rvTrainingInfo, llPulseZone" />
+                app:constraint_referenced_ids="tvPulseNumber,tvPulseDescription, vInfoOne, vInfoTwo, vInfoThree, llPulseZone" />
 
             <TextView
                 android:id="@+id/tvPulseNumber"
@@ -68,7 +63,7 @@
 
             <LinearLayout
                 android:id="@+id/llPulseZone"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -145,68 +140,69 @@
                 android:id="@+id/vInfoOne"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                app:layout_constraintEnd_toStartOf="@+id/vInfoTwo"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toStartOf="@+id/rvTrainingInfo"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/llPulseZone" />
-
-            <com.app.activeparks.ui.view.InfoView
-                android:id="@+id/vInfoThree"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@+id/vInfoTwo"
-                app:layout_constraintEnd_toEndOf="@+id/rvTrainingInfo"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/vInfoTwo"
-                app:layout_constraintTop_toTopOf="@+id/vInfoTwo" />
 
             <com.app.activeparks.ui.view.InfoView
                 android:id="@+id/vInfoTwo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="@+id/vInfoOne"
-                app:layout_constraintEnd_toStartOf="@+id/vInfoThree"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/vInfoOne"
-                app:layout_constraintTop_toTopOf="@+id/vInfoOne" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvTrainingInfo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/vInfoOne" />
+                app:layout_constraintTop_toTopOf="@+id/vInfoOne"
+                app:layout_constraintVertical_bias="0.0" />
 
-            <TextView
-                android:id="@+id/tvTitleRecyclerView"
+            <com.app.activeparks.ui.view.InfoView
+                android:id="@+id/vInfoThree"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/tv_choose_the_level_of_activity"
-                android:textAllCaps="true"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvTrainingInfo" />
+                app:layout_constraintBottom_toBottomOf="@+id/vInfoTwo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/vInfoTwo"
+                app:layout_constraintTop_toTopOf="@+id/vInfoTwo" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvActivityStreet"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvTitleRecyclerView"
-                tools:itemCount="3"
-                tools:listitem="@layout/item_activity_type" />
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/vInfoOne">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvTrainingInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="8dp"
+                    android:nestedScrollingEnabled="false" />
+
+                <TextView
+                    android:id="@+id/tvTitleRecyclerView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/tv_choose_the_level_of_activity"
+                    android:textAllCaps="true"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvActivityStreet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="gone"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_activity_type" />
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

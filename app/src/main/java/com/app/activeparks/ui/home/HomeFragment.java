@@ -257,8 +257,8 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
         // Update the location text view with the new location
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        viewModel.location(latitude, longitude);
-        viewModel.getParks(latitude, longitude);
+//        viewModel.location(latitude, longitude);
+//        viewModel.getParks(latitude, longitude);
     }
 
     @Override

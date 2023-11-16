@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
@@ -38,6 +39,7 @@ public class MapsViewController implements MapEventsReceiver {
     private MapsViewListener mapsViewListener;
 
     private Context ctx;
+    private GeoPoint geoPoint;
 
     public OnlineTileSourceBase MAPNIK = new XYTileSource("Map",
             5, 20, 256, ".png", new String[]{
@@ -57,6 +59,18 @@ public class MapsViewController implements MapEventsReceiver {
         this.ctx = context;
         mapView = mapview;
 
+        setStartUI(context);
+    }
+    public MapsViewController(MapView mapview, Context context, GeoPoint geoPoint) {
+
+        this.ctx = context;
+        mapView = mapview;
+        this.geoPoint = geoPoint;
+
+        setStartUI(context);
+    }
+
+    private void setStartUI(Context context) {
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
 
 
@@ -66,8 +80,13 @@ public class MapsViewController implements MapEventsReceiver {
         mapView.setMultiTouchControls(true);
         mapView.setTilesScaledToDpi(true);
         mapController = (MapController) mapView.getController();
-        mapController.setCenter(new GeoPoint(50.44812, 30.51814));
-        mapController.setZoom(11.0);
+        if (geoPoint == null) {
+            mapController.setCenter(new GeoPoint(50.44812, 30.51814));
+        } else {
+
+            mapController.setCenter(geoPoint);
+        }
+        mapController.setZoom(15.0);
         mapView.setMinZoomLevel(7.0);
         mapView.setOnTouchListener(new View.OnTouchListener() {
             @Override

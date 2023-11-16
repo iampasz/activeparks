@@ -1,11 +1,13 @@
 package com.app.activeparks.ui.active.fragments.level
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
+import com.app.activeparks.ui.active.model.getUnitInf
 import com.technodreams.activeparks.databinding.ItemActivityTrainingBinding
 
 
@@ -31,7 +33,7 @@ class ActivityInfoTrainingAdapter(
             oldItem: ActivityInfoTrainingItem,
             newItem: ActivityInfoTrainingItem
         ): Boolean {
-            return false
+            return oldItem.number == newItem.number
         }
     }
 
@@ -49,10 +51,11 @@ class ActivityInfoTrainingAdapter(
 
     override fun getItemCount() = list.currentList.size
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ActivityInfoTrainingItemVH, position: Int) {
         val item = list.currentList[position]
         ItemActivityTrainingBinding.bind(holder.itemView).apply {
-            tvTitle.text = item.title
+            tvTitle.text = item.getUnitInf()
             tvDescription.text = item.description
             ivIcon.setImageResource(item.img)
         }

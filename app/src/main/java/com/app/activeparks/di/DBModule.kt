@@ -2,9 +2,7 @@ package com.app.activeparks.di
 
 import androidx.room.Room
 import com.app.activeparks.data.db.AppDataBase
-import com.app.activeparks.data.db.dao.activity.ActiveDao
 import org.koin.android.ext.koin.androidApplication
-import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 /**
@@ -20,4 +18,5 @@ val dbModule = module {
         ).fallbackToDestructiveMigration().build()
     }
     single { get<AppDataBase>().activeDao() }
+    single { get<AppDataBase>().activeStateDao() }
 }

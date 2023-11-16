@@ -29,37 +29,31 @@ class PulseZoneFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val pulseInfoList = InfoItem.getPulseInfo()
         val pulseZoneList = PulseZone.getPulseZone()
 
         with(binding) {
-            vInfoOne.setActivityInfoItem(pulseInfoList[0])
-            vInfoTwo.setActivityInfoItem(InfoItem.getPulseInfo()[1])
+            vInfoOne.setPulseInfoItem(InfoItem.pausePulse())
+            vInfoTwo.setPulseInfoItem(InfoItem.maxPulse())
 
             tvZone6.setOnClickListener {
                 changeZoneInfo(tvZone6, vPulseZoneInfo, tvPulseInfoTitle)
                 setPulseZone(pulseZoneList[0])
-                viewModel.activityState.pulseZone = pulseZoneList[0]
             }
             tvZone5.setOnClickListener {
                 changeZoneInfo(tvZone5, vPulseZoneInfo, tvPulseInfoTitle)
                 setPulseZone(pulseZoneList[1])
-                viewModel.activityState.pulseZone = pulseZoneList[1]
             }
             tvZone4.setOnClickListener {
                 changeZoneInfo(tvZone4, vPulseZoneInfo, tvPulseInfoTitle)
                 setPulseZone(pulseZoneList[2])
-                viewModel.activityState.pulseZone = pulseZoneList[2]
             }
             tvZone3.setOnClickListener {
                 changeZoneInfo(tvZone3, vPulseZoneInfo, tvPulseInfoTitle)
                 setPulseZone(pulseZoneList[3])
-                viewModel.activityState.pulseZone = pulseZoneList[3]
             }
             tvZone2.setOnClickListener {
                 changeZoneInfo(tvZone2, vPulseZoneInfo, tvPulseInfoTitle)
                 setPulseZone(pulseZoneList[4])
-                viewModel.activityState.pulseZone = pulseZoneList[4]
             }
 
             ivBack.setOnClickListener {

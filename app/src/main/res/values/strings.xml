@@ -106,4 +106,6 @@
     <string name="tv_end">Завершити</string>
     <string name="tv_auto_block_screen">Вимкнути автоблокування екрану</string>
     <string name="tv_training_title">Назва тренування</string>
+    <string name="tv_address_not_found">Адресу не знайдено</string>
+    <string name="tv_start_activity_speak">Початок тренування</string>
 </resources>
