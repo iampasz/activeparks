@@ -1,20 +1,12 @@
 package com.app.activeparks.ui.profile;
 
-import static android.content.Context.NOTIFICATION_SERVICE;
-
-import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -32,7 +24,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,7 +37,6 @@ import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
 import com.app.activeparks.ui.event.EventActivity;
 import com.app.activeparks.ui.event.FragmentEventCreate;
-import com.app.activeparks.ui.event.FragmentEventCreate2;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
 import com.app.activeparks.ui.profile.uservideo.UserAddVideoActivity;
 import com.app.activeparks.ui.profile.uservideo.adapter.UserVideoAdapter;
@@ -239,7 +229,7 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
             getParentFragmentManager()
                     .beginTransaction()
-                    .add(R.id.fragment_container_user, new FragmentEventCreate2())
+                    .add(R.id.fragment_container_user, new FragmentEventCreate())
                     .commit();
 
             viewModel.event();
