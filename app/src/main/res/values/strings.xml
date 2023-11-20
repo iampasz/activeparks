@@ -111,6 +111,7 @@
 
 
 
+    <string name="calendar_event">Календар заходів</string>
     <string name="create_event">Створення заходу</string>
     <string name="event_name">Назва</string>
     <string name="short_description">КОРОТКИЙ ОПИС*</string>

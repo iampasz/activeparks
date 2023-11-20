@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:elevation="20dp">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -23,8 +25,8 @@
 
         <ImageView
             android:id="@+id/back_button"
-            android:layout_width="@dimen/size_32px"
-            android:layout_height="@dimen/size_32px"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:srcCompat="@drawable/ic_back_circle" />
 
         <TextView
@@ -45,6 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/light_gray"
+        android:elevation="2dp"
         android:paddingStart="@dimen/padding_14px"
         android:paddingEnd="@dimen/padding_14px"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -56,6 +59,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:elevation="17dp"
             android:orientation="vertical"
             android:padding="14dp">
 
@@ -84,6 +88,20 @@
                 android:textColorHint="@color/dark_gray_1"
                 android:textSize="@dimen/text_16px" />
 
+            <EditText
+                android:id="@+id/edit_description_event"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_14px"
+                android:background="@drawable/shape_rectangle_white"
+                android:ems="10"
+                android:hint="Короткий опис"
+                android:inputType="text"
+                android:padding="@dimen/padding_8px"
+                android:textAllCaps="false"
+                android:textColorHint="@color/dark_gray_1"
+                android:textSize="@dimen/text_16px" />
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -101,9 +119,9 @@
                     android:hint="@string/full_description"
                     android:inputType="textMultiLine"
                     android:lines="4"
+                    android:maxLength="255"
                     android:padding="8dp"
                     android:textAllCaps="false"
-                    android:maxLength="255"
                     android:textColorHint="@color/dark_gray_1"
                     android:textSize="@dimen/text_16px" />
 
@@ -135,7 +153,7 @@
 
                 <EditText
                     android:id="@+id/editAdress"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/size_32px"
                     android:backgroundTint="@android:color/transparent"
@@ -307,12 +325,14 @@
                 android:text="@string/extra_cover"
                 android:textAllCaps="true"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:visibility="gone" />
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="230dp"
-                android:background="@drawable/shape_rectangle_dark_gray">
+                android:background="@drawable/shape_rectangle_dark_gray"
+                tools:visibility="gone">
 
                 <ImageView
                     android:layout_width="@dimen/size_32px"
@@ -326,7 +346,8 @@
                 android:id="@+id/rv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="60dp" />
+                android:layout_marginBottom="60dp"
+                tools:visibility="gone" />
 
 
         </LinearLayout>
@@ -338,6 +359,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_14px"
         android:backgroundTint="@color/light_green"
+        android:elevation="20dp"
         android:padding="@dimen/padding_14px"
         android:text="@string/save_changes"
         android:textAllCaps="true"

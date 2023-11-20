@@ -15,6 +15,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.app.activeparks.data.storage.Preferences;
 import com.app.activeparks.data.repository.Repository;
+import com.app.activeparks.ui.event.FragmentCalendarEvent;
 import com.app.activeparks.ui.event.FragmentEventCreate;
 import com.app.activeparks.ui.maps.MapsFragment;
 import com.app.activeparks.ui.profile.EditProfileActivity;
@@ -81,10 +82,10 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         //startActivity(new Intent(this, TestUpdate.class));
 
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.nav_host_fragment_activity_main, new FragmentEventCreate())
-                .commit();
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .add(R.id.nav_host_fragment_activity_main, new FragmentCalendarEvent())
+//                .commit();
     }
 
     @Override

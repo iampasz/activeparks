@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+MyJson.json
+fragment_calendar_event.xml
+Event.kt
+

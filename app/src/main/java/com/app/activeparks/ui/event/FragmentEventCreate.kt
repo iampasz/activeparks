@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.ClipData.Item
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,10 +17,12 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.events.EventData
-import com.app.activeparks.data.model.events.UserEvent
+import com.app.activeparks.data.model.points.RoutePoint
+import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.network.ApiService
 import com.app.activeparks.data.network.NetworkModule
 import com.app.activeparks.data.repository.Repository
@@ -40,22 +44,23 @@ import org.osmdroid.views.overlay.Polyline
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Collections
 import java.util.Locale
 
 class FragmentEventCreate : Fragment() {
 
-    var imageLink = 0;
+    var currentImage = "";
     var eventName = 0;
     var typeOfEvent = 0;
+    var trainingType = "848e3121-4a2b-413d-8a8f-ebdd4ecf2840"
     var startDate = "";
     var endDate = "";
 
     lateinit var startPoint: GeoPoint;
     lateinit var routePoints: ArrayList<GeoPoint>;
-
-    // private var binding: FragmentEventCreateBinding? = null;
     lateinit var binding: FragmentEventCreateBinding
 
     lateinit var repository: Repository;
@@ -83,6 +88,7 @@ class FragmentEventCreate : Fragment() {
         return binding.root;
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -98,14 +104,24 @@ class FragmentEventCreate : Fragment() {
         preferences.setServer(true);
         repository = Repository(preferences);
 
-        binding.removePoint.setOnClickListener { clickForRoute() }
+        val currentDateTime = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val formattedDateTime = currentDateTime.format(formatter)
+
+        binding.startData.setText(formattedDateTime)
+        binding.endData.setText(formattedDateTime)
+
+      //  binding.removePoint.setOnClickListener { clickForRoute() }
 
         binding.addPoint.setOnClickListener {
+            if (typeOfEvent == 0)  addPoint()
             if (typeOfEvent == 1) clickForRoute()
-            if (typeOfEvent == 2) addPoint()
+
         }
 
         binding.mainCover.setOnClickListener { galleryDialog() }
+
+        binding.backButton.setOnClickListener { closeFragment() }
 
         binding.startData.setOnClickListener {
 
@@ -147,7 +163,7 @@ class FragmentEventCreate : Fragment() {
         binding.eventMap.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
                 p?.let { routePoints.add(it) }
-                drawRoute(routePoints)
+               // drawRoute(routePoints)
                 return true
             }
 
@@ -156,7 +172,7 @@ class FragmentEventCreate : Fragment() {
             }
         }))
 
-        binding.buttonPublish.setOnClickListener{loadDataToAPI()}
+        binding.buttonPublish.setOnClickListener { loadDataToAPI() }
 
     }
 
@@ -180,10 +196,7 @@ class FragmentEventCreate : Fragment() {
     fun addPoint() {
         val centerCoordinates = binding.eventMap.getMapCenter() as GeoPoint;
 
-
         val geocodingTask = GeocodingAsyncTask(requireContext(), centerCoordinates) { result ->
-            // Оновлення UI тут (наприклад, встановлення тексту в TextView)
-
             binding.editAdress.setText(result)
         }
 
@@ -269,7 +282,9 @@ class FragmentEventCreate : Fragment() {
                 // Отримайте URI обрізаного зображення
                 Log.i("CROPIMM", "WE ARE зображення")
                 val croppedImageUri = result.uri
-                //loadFileToAPI()
+                val file = saveImageToFile(croppedImageUri)
+                loadFileToAPI(file, "other_photo")
+
                 binding.imageCover.setImageURI(croppedImageUri)
                 // Використовуйте croppedImageUri за потребою
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -283,9 +298,8 @@ class FragmentEventCreate : Fragment() {
 
     private fun setSpiner() {
         val data = arrayOf(
-            getString(R.string.choose_type),
-            getString(R.string.with_route),
             getString(R.string.simple),
+            getString(R.string.with_route),
             getString(R.string.online_training)
         )
 
@@ -302,17 +316,27 @@ class FragmentEventCreate : Fragment() {
                 id: Long
             ) {
 
-
                 binding.mapContainer.visibility = View.VISIBLE
                 binding.removePoint.visibility = View.GONE
+                binding.addPoint.visibility = View.GONE
+
                 typeOfEvent = position
 
-                if (typeOfEvent == 1) {
-                    binding.removePoint.visibility = View.VISIBLE
-                }
+                when (typeOfEvent) {
+                    0 -> {
+                        trainingType = "848e3121-4a2b-413d-8a8f-ebdd4ecf2840"
+                        binding.addPoint.visibility = View.VISIBLE
+                    }
+                    1 -> {
+                        trainingType = "bd09f36f-835c-49e4-88b8-4f835c1602ac"
+                        binding.addPoint.visibility = View.VISIBLE
+                        binding.removePoint.visibility = View.VISIBLE
+                    }
 
-                if (typeOfEvent == 3) {
-                    binding.mapContainer.visibility = View.GONE
+                    2 -> {
+                        trainingType = "e58e5c86-5ca7-412f-94f0-88effd1a45a8"
+                        binding.mapContainer.visibility = View.GONE
+                    }
                 }
 
             }
@@ -333,6 +357,7 @@ class FragmentEventCreate : Fragment() {
                 { result: Default ->
                     if (result.url != null) {
                         Log.i("DOSOMEDOING", result.url + " ggg" + result.error)
+                        currentImage = result.url;
                     }
                 }
             ) { error: Throwable ->
@@ -358,30 +383,50 @@ class FragmentEventCreate : Fragment() {
     }
 
     @SuppressLint("CheckResult")
-    private fun setDataEvent(eventId: String, userEvent: UserEvent) {
-        repository.setDataEvent(eventId, userEvent).subscribeOn(Schedulers.io())
+    private fun setDataEvent(eventId: String, itemEvent: ItemEvent) {
+        repository.setDataEvent(eventId, itemEvent).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({publishDataEvent(eventId)}) { throwable ->}
+            .subscribe({ publishDataEvent(eventId) }) { throwable -> }
     }
 
     @SuppressLint("CheckResult")
     private fun publishDataEvent(eventToken: String) {
         repository.publishDataEvent(eventToken)
             .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ Log.i("APISERVICE", "YES") }
+            .subscribe({ closeFragment() }
             ) { throwable -> Log.i("APISERVICE", throwable.message + " NOU") }
     }
 
-    fun getUserEventData(): UserEvent {
-        val userEvent = UserEvent()
-        userEvent.title = binding.editNameEvent.text.toString()
-        userEvent.fullDescription = binding.editFullDescription.text.toString()
-        userEvent.createdAt = binding.startData.text.toString();
-        userEvent.finishesAt = binding.endData.text.toString();
-        userEvent.imageUrl =
-            "https://ap-dev.sportforall.gov.ua/api/v1/uploads/6dfa9ea6-123d-4588-8f75-290d91f8aea8"
+    fun getUserEventData(): ItemEvent {
+        val itemEvent = ItemEvent()
+        itemEvent.title = binding.editNameEvent.text.toString()
+        itemEvent.fullDescription = binding.editFullDescription.text.toString()
+        itemEvent.createdAt = binding.startData.text.toString();
+        itemEvent.startsAt = binding.startData.text.toString();
+        itemEvent.finishesAt = binding.endData.text.toString();
+        itemEvent.shortDescription = binding.editDescriptionEvent.text.toString()
 
-        return userEvent
+        itemEvent.typeId = trainingType
+
+        var myPoints = ArrayList<RoutePoint>();
+
+        val routePoint1 = RoutePoint()
+        routePoint1.type = 0
+        val coordinates = listOf(50.123, 30.456)
+        routePoint1.location = coordinates
+        routePoint1.pointIndex = 0
+
+        myPoints.add(routePoint1)
+
+        itemEvent.routePoints = myPoints
+
+        itemEvent.imageUrl = currentImage
+        return itemEvent
+    }
+
+
+    fun closeFragment() {
+        parentFragmentManager.beginTransaction().remove(this).commit();
     }
 
 }
