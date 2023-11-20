@@ -108,4 +108,32 @@
     <string name="tv_training_title">Назва тренування</string>
     <string name="tv_address_not_found">Адресу не знайдено</string>
     <string name="tv_start_activity_speak">Початок тренування</string>
+
+
+
+    <string name="create_event">Створення заходу</string>
+    <string name="event_name">Назва</string>
+    <string name="short_description">КОРОТКИЙ ОПИС*</string>
+    <string name="full_description">Повний опис заходу</string>
+    <string name="start_data">Початок заходу</string>
+    <string name="end_data">Закінчення заходу</string>
+    <string name="choose_event">Вибір типу заходу*</string>
+
+    <string name="load_cover">Завантажити обкладинку</string>
+    <string name="event_cover">Обкладинка Заходу</string>
+    <string name="main_cover">Головне фото заходу</string>
+    <string name="extra_cover">Додаткові фото</string>
+    <string name="name_and_description">Назва та опис</string>
+
+    <string name="necessary_field">обовязково для заповнення*</string>
+
+    <string name="save_changes">Зберегти зміни</string>
+    <string name="event_adress">Адреса заходу</string>
+
+    <string name="date_and_time">Дата та час</string>
+
+    <string name="choose_type">Виберіть тип заходу</string>
+    <string name="with_route">З маршрутом</string>
+    <string name="simple">Звичайний</string>
+    <string name="online_training">Онлайн тренування</string>
 </resources>

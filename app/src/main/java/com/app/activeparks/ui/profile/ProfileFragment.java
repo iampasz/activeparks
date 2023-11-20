@@ -45,6 +45,8 @@ import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
 import com.app.activeparks.ui.event.EventActivity;
+import com.app.activeparks.ui.event.FragmentEventCreate;
+import com.app.activeparks.ui.event.FragmentEventCreate2;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
 import com.app.activeparks.ui.profile.uservideo.UserAddVideoActivity;
 import com.app.activeparks.ui.profile.uservideo.adapter.UserVideoAdapter;
@@ -234,6 +236,12 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
         });
 
         event.setOnClickListener(v -> {
+
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_container_user, new FragmentEventCreate2())
+                    .commit();
+
             viewModel.event();
             replaceButton();
             event.on();

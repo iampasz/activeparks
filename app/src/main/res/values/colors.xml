@@ -49,4 +49,44 @@
     <color name="tv_description">#959595</color>
 
     <color name="toolbar_background">#fcfcfd</color>
+
+
+    <!--BRAND-->
+    <!--    Logo-->
+    <color name="logo_1">#1EBDC1</color>
+    <color name="logo_2">#C5E505</color>
+    <color name="logo_3">#FF5100</color>
+    <color name="logo_4">#D120B3</color>
+    <!--    Background-->
+    <color name="bg_1">#1BA8B2</color>
+    <color name="bg_2">#39D0D3</color>
+    <color name="bg_3">#B0C105</color>
+    <color name="bg_4">#BB74D6</color>
+
+    <!--    Additional-->
+    <color name="bg_5">#F3BB13</color>
+    <color name="bg_6">#8181A5</color>
+
+
+    <!--Design-->
+    <color name="dark">#444F60</color>
+    <color name="light">#FFFFFF</color>
+    <color name="accent">#1BA8B2</color>
+    <color name="attention">#F2994A</color>
+    <color name="error">#FF3941</color>
+    <color name="dark_gray_1">#959595</color>
+    <color name="dark_gray_2">#C1C1C1</color>
+    <color name="gray">#DEDFE1</color>
+    <color name="medium_gray">#EDEDF0</color>
+    <color name="light_gray">#F1F2F4</color>
+    <color name="overlay_dark">#CC444F60</color>
+    <color name="overlay_medium">#80444F60</color>
+    <color name="overlay_light">#1A444F60</color>
+
+    <!--Extra colors-->
+    <color name="light_red">#F4575D</color>
+    <color name="light_green">#C2D220</color>
+    <color name="dark_text">#262626</color>
+
+
 </resources>

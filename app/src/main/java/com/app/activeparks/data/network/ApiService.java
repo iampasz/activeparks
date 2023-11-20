@@ -9,6 +9,7 @@ import com.app.activeparks.data.model.clubs.Clubs;
 import com.app.activeparks.data.model.clubs.ClubsUserIsMemberModel;
 import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.dictionaries.Dictionaries;
+import com.app.activeparks.data.model.events.UserEvent;
 import com.app.activeparks.data.model.location.Location;
 import com.app.activeparks.data.model.meetings.MeetingsModel;
 import com.app.activeparks.data.model.news.ItemNews;
@@ -385,4 +386,18 @@ public interface ApiService {
                              @Part("uploadId") String uploadId,
                              @Part("uploadType") RequestBody uploadType,
                              @Part MultipartBody.Part file);
+
+    @POST("/api/v1/sport-events/")
+    Observable<ResponseBody> createEmptyEvent(@Header("Authorization") String token);
+
+    @PUT("/api/v1/sport-events/{id}")
+    Observable<ResponseBody> setDataEvent(@Header("Authorization") String token, @Path("id") String id,  @Body UserEvent userEvent);
+
+    @POST("/api/v1/sport-events/{id}/publish")
+    Observable<ResponseBody> publishDataEvent(@Header("Authorization") String token, @Path("id") String id);
+
+    @POST("/api/v1/sport-events?offset=0&limit=10&sort[sort_name]=value&filters[filter_name]=value")
+    Observable<ResponseBody> getAllEventsPublished();
+
+
 }
