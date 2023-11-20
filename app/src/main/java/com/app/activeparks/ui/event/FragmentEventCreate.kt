@@ -16,11 +16,11 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.app.activeparks.data.model.Default
-import com.app.activeparks.data.model.events.EventData
 import com.app.activeparks.data.model.points.RoutePoint
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.network.ApiService
@@ -58,6 +58,9 @@ class FragmentEventCreate : Fragment() {
     var trainingType = "848e3121-4a2b-413d-8a8f-ebdd4ecf2840"
     var startDate = "";
     var endDate = "";
+    val firstCoordinate = listOf(50.123, 30.456)
+
+
 
     lateinit var startPoint: GeoPoint;
     lateinit var routePoints: ArrayList<GeoPoint>;
@@ -370,16 +373,21 @@ class FragmentEventCreate : Fragment() {
 
     @SuppressLint("CheckResult")
     fun loadDataToAPI() {
-        repository.createEmptyEvent()
-            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-            .subscribe { responseBody ->
-                val jsonString = responseBody.string()
-                val gson = Gson()
-                val eventData = gson.fromJson(jsonString, EventData::class.java)
-                val eventId = eventData.id
+        if(chekFields()){
+            repository.createEmptyEvent()
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe { responseBody ->
+                    val jsonString = responseBody.string()
+                    val gson = Gson()
+                    val eventData = gson.fromJson(jsonString, ItemEvent::class.java)
+                    val eventId = eventData.id
 
-                setDataEvent(eventId, getUserEventData())
-            }
+                    setDataEvent(eventId, getUserEventData())
+                }
+        }else{
+            Toast.makeText(context, "Не всі поля заповенні", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     @SuppressLint("CheckResult")
@@ -410,6 +418,8 @@ class FragmentEventCreate : Fragment() {
 
         var myPoints = ArrayList<RoutePoint>();
 
+        routePoints.get(0)
+
         val routePoint1 = RoutePoint()
         routePoint1.type = 0
         val coordinates = listOf(50.123, 30.456)
@@ -427,6 +437,26 @@ class FragmentEventCreate : Fragment() {
 
     fun closeFragment() {
         parentFragmentManager.beginTransaction().remove(this).commit();
+    }
+
+    fun chekFields():Boolean{
+
+        if(binding.editNameEvent.text.toString().trim().isEmpty()){
+            binding.scroll.smoothScrollTo(binding.editNameEvent.top, binding.editNameEvent.top)
+            return false
+        }
+
+        if(binding.editFullDescription.text.toString().trim().isEmpty()){
+            binding.scroll.smoothScrollTo(binding.editFullDescription.top, binding.editFullDescription.top)
+            return false
+        }
+
+        if(binding.editDescriptionEvent.text.toString().trim().isEmpty()){
+            binding.scroll.smoothScrollTo(binding.editDescriptionEvent.top, binding.editFullDescription.top)
+            return false
+        }
+
+        return true
     }
 
 }
