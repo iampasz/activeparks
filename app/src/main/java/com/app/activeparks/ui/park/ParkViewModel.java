@@ -6,9 +6,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.app.activeparks.data.model.dictionaries.BaseDictionaries;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
-import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.repository.Repository;
+import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.model.sportsgrounds.ItemSportsground;
 
 import java.util.ArrayList;

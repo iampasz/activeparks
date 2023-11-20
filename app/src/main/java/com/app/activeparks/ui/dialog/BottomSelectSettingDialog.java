@@ -8,7 +8,7 @@ import android.widget.EditText;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.app.activeparks.repository.Repository;
+import com.app.activeparks.data.repository.Repository;
 import com.technodreams.activeparks.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 

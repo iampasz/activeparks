@@ -2,30 +2,25 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.VIBRATE" />
-
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false"/>
+        android:required="false" />
 
     <application
         android:name="com.app.activeparks.App"
@@ -38,6 +33,10 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/Theme.ActiveParks">
+        <activity
+            android:name="com.app.activeparks.ui.active.ActivityForActivity"
+            android:exported="false"
+            android:label="@string/title_activity_for" />
         <activity
             android:name="com.app.activeparks.TestUpdate"
             android:exported="false"
@@ -70,12 +69,10 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
 
-
                 <data
                     android:host="ap.sportforall.gov.ua"
                     android:path="/start"
                     android:scheme="https" />
-
                 <data
                     android:host="ap.sportforall.gov.ua"
                     android:scheme="https" />
@@ -93,7 +90,9 @@
         <activity android:name="com.app.activeparks.ui.news.NewsCreateActivity" />
         <activity android:name="com.app.activeparks.ui.event.EventsListActivity" />
         <activity android:name="com.app.activeparks.ui.people.UserActivity" />
-        <activity android:name="com.app.activeparks.util.cropper.CropImageActivity" android:theme="@style/Base.Theme.AppCompat"/>
+        <activity
+            android:name="com.app.activeparks.util.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name="com.app.activeparks.ui.video.VideoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -106,13 +105,10 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name=".LocationService"
             android:enabled="true"
             android:exported="false" />
-
-
     </application>
 
 </manifest>

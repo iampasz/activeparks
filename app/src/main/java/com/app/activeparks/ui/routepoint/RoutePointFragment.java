@@ -25,7 +25,7 @@ import com.app.activeparks.ui.qr.QrCodeActivity;
 import com.app.activeparks.ui.routepoint.adapter.PointListAdaper;
 import com.app.activeparks.ui.scaner.ScanerBottomFragment;
 import com.app.activeparks.util.LocalNotificationHelper;
-import com.app.activeparks.util.MapsViewControler;
+import com.app.activeparks.util.MapsViewController;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.technodreams.activeparks.R;
 import com.technodreams.activeparks.databinding.FragmentRoutePointBinding;
@@ -38,7 +38,7 @@ public class RoutePointFragment extends DialogFragment implements LocationListen
     private FragmentRoutePointBinding binding;
     private RoutePointViewModel viewModel;
     private LocationManager locationManager;
-    public MapsViewControler mapsViewControler;
+    public MapsViewController mapsViewController;
     public MapView mapView;
 
     public TextView status;
@@ -67,7 +67,7 @@ public class RoutePointFragment extends DialogFragment implements LocationListen
         mapView = binding.mapview;
         status = binding.status;
 
-        mapsViewControler = new MapsViewControler(mapView, getActivity());
+        mapsViewController = new MapsViewController(mapView, getActivity());
 
         RecyclerView listPoint = binding.listPoint;
 
@@ -92,14 +92,14 @@ public class RoutePointFragment extends DialogFragment implements LocationListen
 
         viewModel.getRoutePoint().observe(getViewLifecycleOwner(), routePoint -> {
             if (viewModel.updateMap == false) {
-                mapsViewControler.setRoutePint(viewModel.routePointsMap);
+                mapsViewController.setRoutePint(viewModel.routePointsMap);
                 viewModel.updateMap = true;
             }
 
             listPoint.setAdapter(new PointListAdaper(getActivity(), viewModel.routePoints, viewModel.isCoordinator).setOnEventListener(new PointListAdaper.EventsListener() {
                 @Override
                 public void onInfo(RoutePoint item) {
-                    mapsViewControler.selectMarker(item.getLocation().get(0), item.getLocation().get(1));
+                    mapsViewController.selectMarker(item.getLocation().get(0), item.getLocation().get(1));
                 }
                 @Override
                 public void onShowQrCode(String eventId, String pointId) {

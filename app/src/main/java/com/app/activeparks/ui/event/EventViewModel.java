@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.points.RoutePoint;
 import com.app.activeparks.data.model.meetings.MeetingsModel;
-import com.app.activeparks.repository.Repository;
+import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.model.dictionaries.BaseDictionaries;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;

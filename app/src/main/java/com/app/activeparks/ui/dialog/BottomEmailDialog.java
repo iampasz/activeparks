@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.app.activeparks.data.model.Default;
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.repository.Repository;
+import com.app.activeparks.data.repository.Repository;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.Gson;
 import com.technodreams.activeparks.R;

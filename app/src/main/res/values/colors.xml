@@ -5,6 +5,7 @@
     <color name="purple_700">#444F60</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="color_park">#1BA8B2</color>
+    <color name="color_park_a60">#991BA8B2</color>
     <color name="color_park_two">#39D0D3</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
@@ -42,4 +43,10 @@
     <color name="itemFocusedColor">#1A000000</color>
 
     <color name="defaultColor">#2962FF</color>
+
+    <color name="separator">#c1c1c1</color>
+    <color name="top_panel">#f1f2f4</color>
+    <color name="tv_description">#959595</color>
+
+    <color name="toolbar_background">#fcfcfd</color>
 </resources>

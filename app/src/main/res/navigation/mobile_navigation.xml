@@ -10,26 +10,25 @@
         android:name="com.app.activeparks.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
-
     <fragment
         android:id="@+id/navigation_maps"
         android:name="com.app.activeparks.ui.maps.MapsFragment"
         android:label="@string/title_maps"
         tools:layout="@layout/fragment_maps" />
-
     <fragment
         android:id="@+id/navigation_scaner"
         android:name="com.app.activeparks.ui.scaner.ScanerFragment"
         android:label="@string/title_scaner"
         tools:layout="@layout/fragment_scaner" />
+    <activity
+        android:id="@+id/navigation_active"
+        android:name="com.app.activeparks.ui.active.ActivityForActivity"
+        android:label="ActiveFragment"
+        tools:layout="@layout/fragment_active"/>
     <fragment
         android:id="@+id/navigation_user"
         android:name="com.app.activeparks.ui.user.UserFragment"
         android:label="@string/title_user"
         tools:layout="@layout/fragment_user"/>
-    <fragment
-        android:id="@+id/navigation_active"
-        android:name="com.app.activeparks.ui.active.ActiveFragment"
-        android:label="ActiveFragment"
-        tools:layout="@layout/fragment_active"/>
+
 </navigation>

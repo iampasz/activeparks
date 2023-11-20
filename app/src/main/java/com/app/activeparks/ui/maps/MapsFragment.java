@@ -13,9 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.SeekBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -29,7 +26,7 @@ import com.app.activeparks.ui.maps.adapter.ParksAdaper;
 import com.app.activeparks.ui.maps.adapter.ParksAdaper.*;
 import com.app.activeparks.ui.dialog.BottomDialogActiveParkFragment;
 import com.app.activeparks.ui.park.ParkActivity;
-import com.app.activeparks.util.MapsViewControler;
+import com.app.activeparks.util.MapsViewController;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.CancellationToken;
@@ -39,8 +36,6 @@ import com.technodreams.activeparks.R;
 import com.technodreams.activeparks.databinding.FragmentMapsBinding;
 import com.google.android.material.tabs.TabLayout;
 
-import org.osmdroid.util.GeoPoint;
-
 
 public class MapsFragment extends Fragment implements View.OnClickListener {
 
@@ -48,7 +43,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
     private MapsViewModel viewModel;
 
     private FusedLocationProviderClient mFusedLocationClient;
-    public MapsViewControler mapsViewControler;
+    public MapsViewController mapsViewController;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -63,8 +58,8 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
         binding.maxZoom.setOnClickListener(this);
         binding.minZoom.setOnClickListener(this);
 
-        mapsViewControler = new MapsViewControler(binding.mapview, getContext());
-        mapsViewControler.homeView = true;
+        mapsViewController = new MapsViewController(binding.mapview, getContext());
+        mapsViewController.homeView = true;
         viewModel.getSportsgroundList(50);
 
         setUpMapIfNeeded(getContext());
@@ -88,7 +83,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
                 }
             });
 
-            mapsViewControler.setSportsgroundList(sportsgrounds);
+            mapsViewController.setSportsgroundList(sportsgrounds);
             recyclerView.setAdapter(adapter);
         });
 
@@ -114,7 +109,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
             public void onTabReselected(TabLayout.Tab tab) {}
         });
 
-        mapsViewControler.setOnCliclListener(new MapsViewControler.MapsViewListener() {
+        mapsViewController.setOnCliclListener(new MapsViewController.MapsViewListener() {
             @Override
             public void onClick(ItemSportsground sportsground) {
                 BottomDialogActiveParkFragment addPhotoBottomDialogFragment =
@@ -149,7 +144,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
                     BottomSearchDialog.newInstance().setOnCliclListener(new BottomSearchDialog.SearchDialogListener() {
                         @Override
                         public void onLong(double lat, double lon) {
-                            mapsViewControler.setPositionMap(lat, lon);
+                            mapsViewController.setPositionMap(lat, lon);
                             viewModel.setUpdateSportsgroundList(50, lat, lon);
                         }
                     });
@@ -182,10 +177,10 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.max_zoom:
-                mapsViewControler.setZoomMax();
+                mapsViewController.setZoomMax();
                 break;
             case R.id.min_zoom:
-                mapsViewControler.setZoomMin();
+                mapsViewController.setZoomMin();
                 break;
 
         }
@@ -219,7 +214,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onSuccess(Location location) {
                 if (location != null) {
-                    mapsViewControler.mylocation();
+                    mapsViewController.mylocation();
                     //binding.mapview.getController().animateTo(new GeoPoint(location.getLatitude(), location.getLongitude()));
                     viewModel.setMylocation(location.getLatitude(), location.getLongitude());
                 }
@@ -239,18 +234,18 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void  onResume() {
         super.onResume();
-        mapsViewControler.onResume();
+        mapsViewController.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mapsViewControler.onPause();
+        mapsViewController.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mapsViewControler.onDestroy();
+        mapsViewController.onDestroy();
     }
 }

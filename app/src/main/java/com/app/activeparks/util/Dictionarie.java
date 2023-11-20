@@ -2,12 +2,8 @@ package com.app.activeparks.util;
 
 import android.content.Context;
 
-import com.app.activeparks.repository.Repository;
-import com.app.activeparks.data.model.dictionaries.Dictionaries;
+import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.storage.Preferences;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;

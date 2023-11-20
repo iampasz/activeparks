@@ -9,9 +9,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.app.activeparks.repository.Repository;
+import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.model.city.Body;
-import com.app.activeparks.data.model.city.City;
 import com.app.activeparks.ui.adapter.SearchAdaper;
 import com.technodreams.activeparks.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;

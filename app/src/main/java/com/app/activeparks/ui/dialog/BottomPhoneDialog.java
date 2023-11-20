@@ -3,8 +3,6 @@ package com.app.activeparks.ui.dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +11,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.app.activeparks.data.model.Default;
-import com.app.activeparks.data.model.city.Body;
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.repository.Repository;
-import com.app.activeparks.ui.adapter.SearchAdaper;
+import com.app.activeparks.data.repository.Repository;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.Gson;
 import com.technodreams.activeparks.R;

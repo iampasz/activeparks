@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
 }
 
 android {
@@ -28,13 +30,19 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     buildFeatures {
         viewBinding true
     }
+    kapt {
+        generateStubs = true
+    }
     namespace 'com.technodreams.activeparks'
+    kotlinOptions {
+        jvmTarget = '17'
+    }
 }
 
 dependencies {
@@ -53,11 +61,6 @@ dependencies {
 
     // ViewModel
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.6.1'
-
-    //Navigation
-    implementation 'androidx.navigation:navigation-fragment:2.7.1'
-    implementation 'androidx.navigation:navigation-ui:2.7.1'
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.7.1"
 
     //Firebase
     implementation 'com.google.firebase:firebase-crashlytics:18.4.1'
@@ -94,10 +97,9 @@ dependencies {
     implementation 'com.github.androidmads:QRGenerator:1.0.1'
 
     //noinspection GradleDependency
-    implementation "androidx.room:room-runtime:2.4.3"
-    implementation "androidx.room:room-rxjava2:2.4.3"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    annotationProcessor "androidx.room:room-compiler:2.5.2"
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
 
     //Location
     implementation 'com.google.android.gms:play-services-location:21.0.1'
@@ -113,12 +115,6 @@ dependencies {
 
     implementation 'me.zhanghai.android.materialratingbar:library:1.4.0'
 
-    // Hilt
-//    implementation "com.google.dagger:hilt-android:2.28-alpha"
-//    annotationProcessor 'com.google.dagger:hilt-android-compiler:2.28-alpha'
-//    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha01'
-//    annotationProcessor 'androidx.hilt:hilt-compiler:1.0.0-alpha01'
-
     //Review
     implementation 'com.google.android.play:review:2.0.1'
 
@@ -133,4 +129,27 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
+    ext.nav_version = "2.7.4"
+    implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+
+    // Room dependencies
+    implementation "androidx.room:room-runtime:2.6.0"
+    implementation "androidx.room:room-ktx:2.6.0"
+    kapt("androidx.room:room-compiler:2.6.0")
+
+
+    //Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1'
+
+    //Koin
+    ext.koin_version = '3.4.0'
+    implementation "io.insert-koin:koin-core:$koin_version"
+    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-android-compat:$koin_version"
+    implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
+    implementation "io.insert-koin:koin-androidx-navigation:$koin_version"
+
+    implementation 'com.polidea.rxandroidble2:rxandroidble:1.11.0'
 }

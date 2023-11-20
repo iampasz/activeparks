@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical"
+    android:paddingBottom="16dp">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="0dp"
+        android:layout_height="52dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:text="@string/tv_pulse_zone"
+        android:textAllCaps="true"
+        android:textColor="@color/text_color"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_back_action"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvTitle" />
+
+    <View
+        android:id="@+id/vFSeparator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/separator"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+    <com.app.activeparks.ui.view.InfoView
+        android:id="@+id/vInfoOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/vInfoTwo"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+    <com.app.activeparks.ui.view.InfoView
+        android:id="@+id/vInfoTwo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/vInfoOne"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/vInfoOne" />
+
+    <TextView
+        android:id="@+id/tvZone6"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_margin="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="160dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/view_puls_level_6"
+        android:gravity="center|start"
+        android:paddingStart="8dp"
+        android:text="Максимальний тренінг"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vInfoOne"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:id="@+id/tvZone5"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/view_puls_level_5"
+        android:gravity="center|start"
+        android:paddingStart="8dp"
+        android:text="Анаеробна"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvZone6"
+        app:layout_constraintTop_toBottomOf="@+id/tvZone6"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:id="@+id/tvSelectZone6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_green"
+        android:padding="8dp"
+        android:text="175 уд/хв"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/tvZone6"
+        app:layout_constraintTop_toTopOf="@+id/tvZone6" />
+
+    <TextView
+        android:id="@+id/tvZone4"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/view_puls_level_4"
+        android:gravity="center|start"
+        android:paddingStart="8dp"
+        android:text="Аеробна"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvZone5"
+        app:layout_constraintStart_toStartOf="@+id/tvZone5"
+        app:layout_constraintTop_toBottomOf="@+id/tvZone5"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:id="@+id/tvSelectZone5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_green"
+        android:padding="8dp"
+        android:text="175 уд/хв"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/tvZone5"
+        app:layout_constraintTop_toTopOf="@+id/tvZone5" />
+
+    <TextView
+        android:id="@+id/tvZone3"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/view_puls_level_3"
+        android:gravity="center|start"
+        android:paddingStart="8dp"
+        android:text="Спалювання жиру"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvZone4"
+        app:layout_constraintStart_toStartOf="@+id/tvZone4"
+        app:layout_constraintTop_toBottomOf="@+id/tvZone4"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:id="@+id/tvSelectZone4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_green"
+        android:padding="8dp"
+        android:text="175 уд/хв"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/tvZone4"
+        app:layout_constraintTop_toTopOf="@+id/tvZone4" />
+
+    <TextView
+        android:id="@+id/tvZone2"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/view_puls_level_2"
+        android:gravity="center|start"
+        android:paddingStart="8dp"
+        android:text="Легкий тренінг"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvZone3"
+        app:layout_constraintStart_toStartOf="@+id/tvZone3"
+        app:layout_constraintTop_toBottomOf="@+id/tvZone3"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:id="@+id/tvSelectZone3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_green"
+        android:padding="8dp"
+        android:text="175 уд/хв"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/tvZone3"
+        app:layout_constraintTop_toTopOf="@+id/tvZone3" />
+
+    <TextView
+        android:id="@+id/tvSelectZone2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_green"
+        android:padding="8dp"
+        android:text="175 уд/хв"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/tvZone2"
+        app:layout_constraintTop_toTopOf="@+id/tvZone2" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/swAuto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:text="Вручну"
+        android:textColor="@color/text_color"
+        android:thumb="@drawable/thumb"
+        app:layout_constraintEnd_toStartOf="@+id/textView7"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvZone2"
+        app:switchPadding="16dp"
+        app:track="@drawable/track" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Автоматично"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/swAuto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/swAuto"
+        app:layout_constraintTop_toTopOf="@+id/swAuto" />
+
+    <TextView
+        android:id="@+id/tvTitleInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Інформація про зону пульсу:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/swAuto" />
+
+    <ImageView
+        android:id="@+id/vPulseZoneInfo"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/view_puls_level_6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitleInfo" />
+
+    <TextView
+        android:id="@+id/tvPulseInfoTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Максимальний тренінг"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/vPulseZoneInfo"
+        app:layout_constraintStart_toEndOf="@+id/vPulseZoneInfo"
+        app:layout_constraintTop_toTopOf="@+id/vPulseZoneInfo" />
+
+    <TextView
+        android:id="@+id/tvPulseInfoDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Ця зона відповідає за максимальне фізичне навантаження і використовується для роботи над максимальною потужністю та швидкістю. Тренування в цій зоні має бути дуже інтенсивним і короткочасним."
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/vPulseZoneInfo"
+        app:layout_constraintTop_toBottomOf="@+id/vPulseZoneInfo" />
+
+<!--    <NumberPicker-->
+<!--        android:id="@+id/npPulse"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/tvPulseInfoDescription"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.app.activeparks.data.model.user.User;
-import com.app.activeparks.repository.Repository;
+import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.model.notification.Notifications;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.data.storage.Preferences;
