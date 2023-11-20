@@ -137,4 +137,7 @@
     <string name="with_route">З маршрутом</string>
     <string name="simple">Звичайний</string>
     <string name="online_training">Онлайн тренування</string>
+
+    <string name="tv_swipe_to_refresh">Змахніть для оновлення данних</string>
+    <string name="tv_search_in_progress">Триває пошук</string>
 </resources>

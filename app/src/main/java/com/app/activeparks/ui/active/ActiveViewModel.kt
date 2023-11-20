@@ -16,6 +16,8 @@ class ActiveViewModel(
 
     val navigate = MutableLiveData<Fragment?>()
 
+    var activityDuration = 0
+
     var activityState = ActivityState()
     var activityInfoItems: List<ActivityInfoTrainingItem> = ActivityInfoTrainingItem.getActivityInfoItem()
     var activityPulseItems: List<InfoItem> = InfoItem.getPulseInfo()
@@ -29,6 +31,7 @@ class ActiveViewModel(
     init {
         loadActiveState()
     }
+    fun getWeight() = 70.0
 
     fun loadActiveState() {
         viewModelScope.launch {

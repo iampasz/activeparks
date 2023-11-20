@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.app.activeparks.ui.active.ActiveViewModel
+import com.app.activeparks.ui.active.util.CalorieCalculator
 import com.app.activeparks.util.MapsViewController
 import com.app.activeparks.util.extention.getAddress
 import com.app.activeparks.util.extention.toInfo
@@ -25,14 +26,19 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Polyline
 import java.io.IOException
 import java.util.Locale
+import kotlin.math.abs
 
 class MapActivityFragment : Fragment(), LocationListener {
 
     private var pathDistance = 0.0
     private var pathDuration = 0L
     private var maxHeight = 0.0
-    private var maxSpeed = 0f
     private var minHeight = 0.0
+    private var maxSpeed = 0.0
+    private var kKal = 0.0
+    private var previousAltitude = 0.0
+    private var totalAscent = 0.0
+    private var totalDescent = 0.0
     private var line = Polyline()
     private var startLocation: Location? = null
     private var previousLocation: Location? = null
@@ -88,8 +94,12 @@ class MapActivityFragment : Fragment(), LocationListener {
         pathDistance = 0.0
         pathDuration = 0L
         maxHeight = 0.0
-        maxSpeed = 0f
         minHeight = 0.0
+        maxSpeed = 0.0
+        kKal = 0.0
+        previousAltitude = 0.0
+        totalAscent = 0.0
+        totalDescent = 0.0
         startLocation = null
         previousLocation = null
     }
@@ -146,7 +156,7 @@ class MapActivityFragment : Fragment(), LocationListener {
                 if (currentAltitude < minHeight) minHeight = currentAltitude
 
                 val averageSpeed = pathDistance / (pathDuration / 3600000.0)
-                val currentSpeed = location.speed * 3.6f
+                val currentSpeed = location.speed * 3.6
                 if (currentSpeed > maxSpeed) maxSpeed = currentSpeed
 
                 val averagePace = (pathDuration / 60000.0) / pathDistance
@@ -157,12 +167,29 @@ class MapActivityFragment : Fragment(), LocationListener {
 
                 previousLocation = location
 
+
+                if (previousAltitude == 0.0) {
+                    previousAltitude = currentAltitude
+                } else {
+                    val altitudeChange: Double = currentAltitude - previousAltitude
+
+                    previousAltitude = currentAltitude
+
+                    if (altitudeChange > 0) {
+                        totalAscent += altitudeChange
+                    } else if (altitudeChange < 0) {
+                        totalDescent += abs(altitudeChange)
+                    }
+                }
+
                 saveResult(
                     averageSpeed,
                     pathDistance,
                     formattedPace,
                     maxHeight,
                     minHeight,
+                    totalAscent,
+                    totalDescent,
                     currentSpeed,
                     maxSpeed
                 )
@@ -217,16 +244,45 @@ class MapActivityFragment : Fragment(), LocationListener {
 
     private fun saveResult(
         averageSpeed: Double, pathDistance: Double, averagePace: String,
-        maxHeight: Double, minHeight: Double, currentSpeed: Float, maxSpeed: Float
+        maxHeight: Double, minHeight: Double, totalAscent: Double,
+        totalDescent: Double, currentSpeed: Double, maxSpeed: Double
     ) {
-
         viewModel.activityInfoItems.let {
             it[0].number = currentSpeed.toInfo()
             it[1].number = averageSpeed.toInfo()
             it[2].number = maxSpeed.toInfo()
             it[3].number = pathDistance.toInfo()
+            kKal = when (viewModel.activityState.activityType.id) {
+                0 -> CalorieCalculator.calculateCaloriesForWalk(
+                    viewModel.activityDuration,
+                    viewModel.getWeight(),
+                    averageSpeed
+                )
+
+                1 -> CalorieCalculator.calculateCaloriesForScandinavianWalk(
+                    viewModel.activityDuration,
+                    viewModel.getWeight(),
+                    averageSpeed
+                )
+
+                2 -> CalorieCalculator.calculateCaloriesForBicycle(
+                    viewModel.activityDuration,
+                    viewModel.getWeight(),
+                    averageSpeed
+                )
+
+                else -> CalorieCalculator.calculateCaloriesForRun(
+                    viewModel.activityDuration,
+                    viewModel.getWeight(),
+                    averageSpeed
+                )
+            }
+            it[4].number = kKal.toInfo()
             it[8].number = averagePace
             it[9].number = maxHeight.toInfo()
+            it[11].number = minHeight.toInfo()
+            it[12].number = totalAscent.toInfo()
+            it[13].number = totalDescent.toInfo()
         }
 
         viewModel.updateActivityInfoTrainingItem.value = true

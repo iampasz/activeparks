@@ -1,4 +1,4 @@
-package com.app.activeparks.ui.active.adapte
+package com.app.activeparks.ui.active.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.app.activeparks.ui.active.adapte
+package com.app.activeparks.ui.active.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,9 +7,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.app.activeparks.ui.active.model.TypeOfActivity
-import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.setTint
-import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.ItemActivityTypeBinding
 
