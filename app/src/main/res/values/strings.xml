@@ -108,4 +108,6 @@
     <string name="tv_training_title">Назва тренування</string>
     <string name="tv_address_not_found">Адресу не знайдено</string>
     <string name="tv_start_activity_speak">Початок тренування</string>
+    <string name="tv_swipe_to_refresh">Змахніть для оновлення данних</string>
+    <string name="tv_search_in_progress">Триває пошук</string>
 </resources>

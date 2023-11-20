@@ -92,32 +92,62 @@ class PulseZoneFragment : Fragment() {
                     "Unknown type"
                 }
             }
-            vPulseZoneInfo.setImageResource(when(pulseZone.id) {
-                0 -> {
-                    pulseZone.background
-                }
+            vPulseZoneInfo.setImageResource(
+                when (pulseZone.id) {
+                    0 -> {
+                        pulseZone.background
+                    }
 
-                1 -> {
-                    pulseZone.background
-                }
+                    1 -> {
+                        pulseZone.background
+                    }
 
-                2 -> {
-                    pulseZone.background
-                }
+                    2 -> {
+                        pulseZone.background
+                    }
 
-                3 -> {
-                    pulseZone.background
-                }
+                    3 -> {
+                        pulseZone.background
+                    }
 
-                4 -> {
-                    pulseZone.background
-                }
+                    4 -> {
+                        pulseZone.background
+                    }
 
-                else -> {
-                    R.drawable.view_puls_level_1
+                    else -> {
+                        R.drawable.view_puls_level_1
+                    }
                 }
-            })
+            )
+
+            tvSelectZone6.setOnClickListener {
+                scrollPicker(tvSelectZone6)
+            }
         }
+    }
+
+    private fun scrollPicker(tvChange: TextView) {
+//        val data = getPulseValueForPulse()
+//        with(binding.npPulse) {
+//            minValue = 0
+//            maxValue = data.size - 1
+//            wrapSelectorWheel = false
+//            displayedValues = data
+//
+//            setOnValueChangedListener { _, _, newValue ->
+//                tvChange.text = newValue.toString()
+//
+//            }
+//        }
+    }
+
+    private fun getPulseValueForPulse(): Array<String> {
+        val list = mutableListOf<String>()
+        for (i in 75..200) {
+            list.add("$i уд/хв")
+        }
+
+        return list.toTypedArray()
     }
 
     private fun setPulseZone(pulseZone: PulseZone) {

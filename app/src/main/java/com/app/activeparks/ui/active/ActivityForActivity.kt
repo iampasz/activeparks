@@ -38,7 +38,6 @@ class ActivityForActivity : AppCompatActivity() {
     private lateinit var navController: NavController
 
     private var isTimerRunning = false
-    private var seconds = 0
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var runnable: Runnable
@@ -255,7 +254,7 @@ class ActivityForActivity : AppCompatActivity() {
         isTimerRunning = true
         runnable = object : Runnable {
             override fun run() {
-                seconds++
+                activeViewModel.activityDuration++
                 updateTimerText()
                 handler.postDelayed(this, 1000)
             }
@@ -275,14 +274,14 @@ class ActivityForActivity : AppCompatActivity() {
 
     private fun restartTimer() {
         isTimerRunning = false
-        seconds = 0
+        activeViewModel.activityDuration = 0
         updateTimerText()
     }
 
     private fun updateTimerText() {
-        val hours = seconds / 3600
-        val minutes = (seconds % 3600) / 60
-        val secs = seconds % 60
+        val hours = activeViewModel.activityDuration / 3600
+        val minutes = (activeViewModel.activityDuration % 3600) / 60
+        val secs = activeViewModel.activityDuration % 60
 
         binding.topPanel.time.text =
             String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, secs)

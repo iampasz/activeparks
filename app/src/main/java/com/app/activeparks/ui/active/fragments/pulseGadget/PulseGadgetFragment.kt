@@ -1,6 +1,7 @@
 package com.app.activeparks.ui.active.fragments.pulseGadget
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -27,6 +28,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.app.activeparks.ui.active.ActiveViewModel
+import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.databinding.FragmentPulseGadgetBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
@@ -38,31 +41,55 @@ class PulseGadgetFragment : Fragment() {
     lateinit var binding: FragmentPulseGadgetBinding
     private val viewModel: ActiveViewModel by activityViewModel()
 
-
-    private val REQUEST_ENABLE_BT = 1
-    private val PERMISSION_REQUEST_CODE = 2
     private val bluetoothDevices = mutableListOf<BluetoothDevice>()
     private var bluetoothLeScanner: BluetoothLeScanner? = null
 
     private lateinit var bluetoothAdapter: BluetoothAdapter
     val adapter = BleDeviceAdapter {}
 
+    private val gattCallback = object : BluetoothGattCallback() {
+        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+            if (newState == BluetoothProfile.STATE_CONNECTED) {
+                if (ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.BLUETOOTH_CONNECT
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    return
+                }
+                gatt?.discoverServices()
+            }
+        }
 
-    val bleCallBack = object : ScanCallback() {
+        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
+
+        }
+
+        @Deprecated("Deprecated in Java")
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt?,
+            characteristic: BluetoothGattCharacteristic?
+        ) {
+
+        }
+    }
+
+    private val bleCallBack = object : ScanCallback() {
+        @SuppressLint("NotifyDataSetChanged")
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             super.onScanResult(callbackType, result)
             val device = result.device
-//                if (device.name == "Mi Smart Band 5") {
-//
-//                    if (ActivityCompat.checkSelfPermission(
-//                            requireActivity(),
-//                            Manifest.permission.BLUETOOTH_CONNECT
-//                        ) != PackageManager.PERMISSION_GRANTED
-//                    ) {
-//                        return
-//                    }
-//                    device.connectGatt(requireContext(), false, gattCallback)
-//                }
+            //TODO for test
+            if (device.name == "Mi Smart Band 5") {
+                if (ActivityCompat.checkSelfPermission(
+                        requireActivity(),
+                        Manifest.permission.BLUETOOTH_CONNECT
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    return
+                }
+                device.connectGatt(requireContext(), false, gattCallback)
+            }
 
             if (!bluetoothDevices.contains(device) && !device.name.isNullOrEmpty()) {
                 bluetoothDevices.add(device)
@@ -82,7 +109,6 @@ class PulseGadgetFragment : Fragment() {
                     "onScanResult: ${device.name}    ${device.uuids}"
                 )
 
-
                 val scanRecord = result.scanRecord
                 val serviceUuids = scanRecord?.serviceUuids
                 if (serviceUuids != null) {
@@ -97,6 +123,7 @@ class PulseGadgetFragment : Fragment() {
 
         }
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
@@ -109,9 +136,7 @@ class PulseGadgetFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initListener()
-
         findBLEGadget()
-
         binding.rvPulseGadget.adapter = adapter
     }
 
@@ -167,6 +192,7 @@ class PulseGadgetFragment : Fragment() {
             }
         }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initListener() {
         with(binding) {
             ivBack.setOnClickListener { requireActivity().onBackPressed() }
@@ -175,6 +201,16 @@ class PulseGadgetFragment : Fragment() {
                 setOnCheckedChangeListener { _, isChecked ->
                     viewModel.activityState.isPulseGadgetConnected = isChecked
                 }
+            }
+
+            srUpdate.setOnRefreshListener {
+                tvUpdate.gone()
+                gProgress.visible()
+                adapter.list.submitList(listOf())
+                adapter.notifyDataSetChanged()
+                srUpdate.isRefreshing = false
+                bluetoothDevices.clear()
+                startScanning()
             }
         }
     }
@@ -190,9 +226,15 @@ class PulseGadgetFragment : Fragment() {
         bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
 
         bluetoothLeScanner?.startScan(bleCallBack)
+        binding.gProgress.visible()
         Handler(Looper.getMainLooper()).postDelayed({
             bluetoothLeScanner?.stopScan(bleCallBack)
-        }, 10000)
+
+            with(binding) {
+                tvUpdate.visible()
+                gProgress.gone()
+            }
+        }, TIME_FOR_SEARCH)
     }
 
     override fun onDestroy() {
@@ -207,31 +249,8 @@ class PulseGadgetFragment : Fragment() {
         bluetoothLeScanner?.stopScan(bleCallBack)
     }
 
-    private val gattCallback = object : BluetoothGattCallback() {
-        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                if (ActivityCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.BLUETOOTH_CONNECT
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    return
-                }
-                gatt?.discoverServices()
-            }
-        }
-
-        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-            val services = gatt?.services
-            val s = ""
-        }
-
-        override fun onCharacteristicChanged(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic?
-        ) {
-            val data = characteristic?.value
-            val s = ""
-        }
+    companion object {
+        private const val PERMISSION_REQUEST_CODE = 2
+        private const val TIME_FOR_SEARCH = 10000L
     }
 }

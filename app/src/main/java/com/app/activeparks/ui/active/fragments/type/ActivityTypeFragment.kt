@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.ui.active.ActiveViewModel
-import com.app.activeparks.ui.active.adapte.ActivityTypeAdapter
+import com.app.activeparks.ui.active.adapter.ActivityTypeAdapter
 import com.app.activeparks.ui.active.model.TypeOfActivity
 import com.technodreams.activeparks.databinding.DialogActivityInfoBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel

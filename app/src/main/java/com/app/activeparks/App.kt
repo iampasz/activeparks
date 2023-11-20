@@ -1,6 +1,7 @@
 package com.app.activeparks
 
 import android.app.Application
+import com.app.activeparks.di.appModule
 import com.app.activeparks.di.dbModule
 import com.app.activeparks.di.repositoryModule
 import com.app.activeparks.di.useCaseModule
@@ -26,7 +27,8 @@ class App : Application() {
                         dbModule,
                         viewModelModule,
                         repositoryModule,
-                        useCaseModule
+                        useCaseModule,
+                        appModule
                     )
                 )
             }

@@ -74,6 +74,21 @@ data class ActivityInfoTrainingItem(
                     isPulseGadget = false,
                     isOutside = true
                 ),
+                ActivityInfoTrainingItem(11,"0","Мінімальна висота", "(м)", R.drawable.ic_hight_up,
+                    isSelected = false,
+                    isPulseGadget = false,
+                    isOutside = true
+                ),
+                ActivityInfoTrainingItem(12,"0","Набір висоти", "(м)", R.drawable.ic_hight_up,
+                    isSelected = false,
+                    isPulseGadget = false,
+                    isOutside = true
+                ),
+                ActivityInfoTrainingItem(13,"0","Спуск", "(м)", R.drawable.ic_hight_up,
+                    isSelected = false,
+                    isPulseGadget = false,
+                    isOutside = true
+                )
             )
         }
     }
