@@ -119,7 +119,7 @@ class FragmentEventCreate : Fragment() {
         preferences = Preferences(requireContext())
         preferences.server = true
         repository = Repository(preferences)
-
+//
 
 
         val currentDateTime = LocalDateTime.now()
