@@ -5,7 +5,11 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -31,6 +35,8 @@ import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.util.MapsViewController
 import com.app.activeparks.util.cropper.CropImage
+import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.visible
 import com.google.gson.Gson
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentEventCreateBinding
@@ -42,6 +48,7 @@ import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Marker.OnMarkerDragListener
 import org.osmdroid.views.overlay.Polyline
 import java.io.File
 import java.io.FileOutputStream
@@ -61,8 +68,27 @@ class FragmentEventCreate : Fragment() {
     var typeOfEvent = 0
     var trainingType = "848e3121-4a2b-413d-8a8f-ebdd4ecf2840"
 
+    val simpleTraining = "848e3121-4a2b-413d-8a8f-ebdd4ecf2840"
+    val routeTraining = "bd09f36f-835c-49e4-88b8-4f835c1602ac"
+    val onlineTraining = "e58e5c86-5ca7-412f-94f0-88effd1a45a8"
+
+    private var currentYear = 0
+    private var currentMonth = 0
+    private var currentDay = 0
+    private var currentHour = 0
+    private var currentMinutes = 0
+    private val widthRoutLine = 10f
+    private val colorRoouteLine = Color.RED
+    private val radius = 40f
+    private val colorCircle = Color.RED
+    private val textSizeCircle = 40f
+
     private lateinit var startPoint: GeoPoint
     lateinit var routePoints: ArrayList<GeoPoint>
+
+    var counterPointList = ArrayList<Marker>()
+    val counterList = ArrayList<GeoPoint>()
+
     lateinit var repository: Repository
     lateinit var preferences: Preferences
     private lateinit var apiService: ApiService
@@ -75,14 +101,14 @@ class FragmentEventCreate : Fragment() {
                 .getIntent(requireContext())
 
             cropActivityResultLauncher.launch(cropIntent)
-
         }
 
     private val cropActivityResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
-                if (data != null) {
+
+                data?.let {
                     val resultUri = CropImage.getActivityResult(data).uri
                     //val croppedImageUri = result.uri
                     val file = saveImageToFile(resultUri)
@@ -90,6 +116,7 @@ class FragmentEventCreate : Fragment() {
 
                     binding.imageCover.setImageURI(resultUri)
                 }
+
             }
         }
 
@@ -110,9 +137,14 @@ class FragmentEventCreate : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val networkModule = NetworkModule()
 
-        MapsViewController(binding.eventMap, requireContext())
+        initSpinner()
+
+        val networkModule = NetworkModule()
+        val currentDateTime = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val formattedDateTime = currentDateTime.format(formatter)
+
 
         routePoints = ArrayList()
         apiService = networkModule.test
@@ -120,71 +152,63 @@ class FragmentEventCreate : Fragment() {
         preferences.server = true
         repository = Repository(preferences)
 
+        with(binding) {
 
+            MapsViewController(eventMap, requireContext())
 
-        val currentDateTime = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        val formattedDateTime = currentDateTime.format(formatter)
+            imageCover.setOnClickListener { galleryDialog() }
+            backButton.setOnClickListener { closeFragment() }
+            startData.setOnClickListener { setDate(startData) }
+            endData.setOnClickListener { setDate(endData) }
+            startData.text = (formattedDateTime)
+            endData.text = (formattedDateTime)
 
-        binding.startData.text = (formattedDateTime)
-        binding.endData.text = (formattedDateTime)
-
-        //  binding.removePoint.setOnClickListener { clickForRoute() }
-
-        binding.addPoint.setOnClickListener {
-            if (typeOfEvent == 0) addPoint()
-            if (typeOfEvent == 1) clickForRoute()
-
-        }
-
-        binding.imageCover.setOnClickListener { galleryDialog() }
-        binding.backButton.setOnClickListener { closeFragment() }
-        binding.startData.setOnClickListener { setDate(binding.startData) }
-        binding.endData.setOnClickListener { setDate(binding.endData) }
-
-        binding.eventMap.setOnTouchListener { _, _ ->
-            binding.scroll.requestDisallowInterceptTouchEvent(true)
-            false
-        }
-
-        initSpinner()
-
-        binding.eventMap.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
-            override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-                p?.let { routePoints.add(it) }
-                // drawRoute(routePoints)
-                return true
+            addPoint.setOnClickListener {
+                when (typeOfEvent) {
+                    0 -> addPoint()
+                    1 -> clickForRoute()
+                }
             }
 
-            override fun longPressHelper(p: GeoPoint?): Boolean {
-                return false
+            eventMap.setOnTouchListener { _, _ ->
+                scroll.requestDisallowInterceptTouchEvent(true)
+                false
             }
-        }))
 
-        binding.buttonPublish.setOnClickListener { loadDataToAPI() }
+            eventMap.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
+                override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+                    p?.let {
 
+                        routePoints.add(it)
+                        addMarkerCurrent(it)
+
+
+
+                        Log.i("GHGHHH", "geepp")
+                    }
+
+                    return true
+                }
+
+                override fun longPressHelper(p: GeoPoint?): Boolean {
+                    Log.i("GHGHHH", "long")
+                    return false
+                }
+            }))
+
+
+            buttonPublish.setOnClickListener { loadDataToAPI() }
+
+        }
     }
 
     private fun clickForRoute() {
         startPoint = binding.eventMap.mapCenter as GeoPoint
         routePoints.add(startPoint)
-        drawRoute(routePoints)
+
+        //drawRoute(counterPointList)
     }
 
-    private fun drawRoute(points: ArrayList<GeoPoint>) {
-
-        binding.eventMap.overlayManager.removeAll(Collections.singleton(Polyline()))
-
-        val road = Road(points)
-
-        val roadOverlay = RoadManager.buildRoadOverlay(
-            road,
-            Color.BLUE,
-            2f
-        )
-        binding.eventMap.overlays.add(roadOverlay)
-
-    }
 
     private fun addPoint() {
         val centerCoordinates = binding.eventMap.mapCenter as GeoPoint
@@ -196,7 +220,8 @@ class FragmentEventCreate : Fragment() {
     }
 
     private fun setMarker(geoPoint: GeoPoint) {
-        if (centerMarker != null) {
+
+        centerMarker?.let {
             binding.eventMap.overlayManager.remove(centerMarker)
         }
 
@@ -206,7 +231,6 @@ class FragmentEventCreate : Fragment() {
         centerMarker?.icon = icon
         centerMarker?.position = geoPoint
         centerMarker?.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-
 
         binding.eventMap.overlayManager.add(centerMarker)
         binding.eventMap.invalidate()
@@ -233,8 +257,6 @@ class FragmentEventCreate : Fragment() {
         }
 
         inputStream?.close()
-
-
         return file
     }
 
@@ -244,8 +266,8 @@ class FragmentEventCreate : Fragment() {
             { _, hourOfDay, minute ->
                 textView.text = formatDateTime(year, month, day, hourOfDay, minute)
             },
-            5,
-            20,
+            currentHour,
+            currentMinutes,
             false
         )
 
@@ -280,27 +302,27 @@ class FragmentEventCreate : Fragment() {
                 id: Long
             ) {
 
-                binding.eventMap.visibility = View.VISIBLE
-                binding.removePoint.visibility = View.GONE
-                binding.addPoint.visibility = View.GONE
+                binding.eventMap.visible()
+                binding.removePoint.gone()
+                binding.addPoint.gone()
 
                 typeOfEvent = position
 
                 when (typeOfEvent) {
                     0 -> {
-                        trainingType = "848e3121-4a2b-413d-8a8f-ebdd4ecf2840"
-                        binding.addPoint.visibility = View.VISIBLE
+                        trainingType = simpleTraining
+                        binding.addPoint.visible()
                     }
 
                     1 -> {
-                        trainingType = "bd09f36f-835c-49e4-88b8-4f835c1602ac"
-                        binding.addPoint.visibility = View.VISIBLE
-                        binding.removePoint.visibility = View.VISIBLE
+                        trainingType = routeTraining
+                        binding.addPoint.visible()
+                        binding.removePoint.visible()
                     }
 
                     2 -> {
-                        trainingType = "e58e5c86-5ca7-412f-94f0-88effd1a45a8"
-                        binding.eventMap.visibility = View.GONE
+                        trainingType = onlineTraining
+                        binding.eventMap.gone()
                     }
                 }
 
@@ -319,7 +341,7 @@ class FragmentEventCreate : Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { result: Default ->
-                    if (result.url != null) {
+                    result.url?.let {
                         currentImage = result.url
                     }
                 }
@@ -341,7 +363,7 @@ class FragmentEventCreate : Fragment() {
                     setDataEvent(eventId, getUserEventData())
                 }
         } else {
-            Toast.makeText(context, "Fell up all fields", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Не всі поля заповнені", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -396,27 +418,30 @@ class FragmentEventCreate : Fragment() {
 
     private fun checkFields(): Boolean {
 
-        if (binding.editNameEvent.text.toString().trim().isEmpty()) {
-            binding.scroll.smoothScrollTo(binding.editNameEvent.top, binding.editNameEvent.top)
-            return false
-        }
+        with(binding) {
 
-        if (binding.editFullDescription.text.toString().trim().isEmpty()) {
-            binding.scroll.smoothScrollTo(
-                binding.editFullDescription.top,
-                binding.editFullDescription.top
-            )
-            return false
-        }
+            if (editNameEvent.text.toString().trim().isEmpty()) {
+                scroll.smoothScrollTo(editNameEvent.top, editNameEvent.top)
+                return false
+            }
 
-        if (binding.editDescriptionEvent.text.toString().trim().isEmpty()) {
-            binding.scroll.smoothScrollTo(
-                binding.editDescriptionEvent.top,
-                binding.editFullDescription.top
-            )
-            return false
-        }
 
+            if (editFullDescription.text.toString().trim().isEmpty()) {
+                scroll.smoothScrollTo(
+                    editFullDescription.top,
+                    editFullDescription.top
+                )
+                return false
+            }
+
+            if (editDescriptionEvent.text.toString().trim().isEmpty()) {
+                scroll.smoothScrollTo(
+                    editDescriptionEvent.top,
+                    editDescriptionEvent.top
+                )
+                return false
+            }
+        }
         return true
     }
 
@@ -426,11 +451,153 @@ class FragmentEventCreate : Fragment() {
             { _, year, month, day ->
                 choseTime(year, month, day, editText)
             },
-            2023,
-            11,
-            16
+            currentYear,
+            currentMonth,
+            currentDay
+
         )
         datePickerDialog.show()
+
+
     }
 
+    private var markerCounter = 0
+
+
+    private fun removeMarker(marker: Marker) {
+        binding.eventMap.overlays.remove(marker)
+        binding.eventMap.invalidate()
+    }
+
+    private fun drawTextToBitmap(bitmap: Bitmap, text: String): Bitmap {
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+        paint.textSize = textSizeCircle
+        paint.color = resources.getColor(R.color.white) // колір тексту
+
+        val canvas = Canvas(bitmap)
+        val x = (bitmap.width - paint.measureText(text)) / 2
+        val y = (bitmap.height + paint.textSize) / 2
+
+        canvas.drawText(text, x, y, paint)
+
+        return bitmap
+    }
+
+    private fun combineBitmaps(background: Bitmap, overlay: Bitmap): Bitmap {
+        val combined = Bitmap.createBitmap(background.width, background.height, background.config)
+        val canvas = Canvas(combined)
+
+        canvas.drawBitmap(background, 0f, 0f, null)
+        canvas.drawBitmap(overlay, 0f, 0f, null)
+
+        return combined
+    }
+
+
+    var myCounterPointer = ArrayList<CounterPoint>()
+
+    private fun addMarkerCurrent(geoPoint: GeoPoint) {
+
+
+        val text = markerCounter.toString()
+
+
+        val bitmap =
+            Bitmap.createBitmap((radius * 2).toInt(), (radius * 2).toInt(), Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+
+        val paint = Paint()
+        paint.color = colorCircle
+        paint.isAntiAlias = true
+
+        val centerX = radius
+        val centerY = radius
+
+        canvas.drawCircle(centerX, centerY, radius, paint)
+
+        val textBitmap = drawTextToBitmap(bitmap, text)
+
+        // Комбіноване зображення фону та тексту
+        val combinedBitmap = combineBitmaps(bitmap, textBitmap)
+        val combinedDrawable = BitmapDrawable(resources, combinedBitmap)
+
+        // Створити маркер
+        val marker = Marker(binding.eventMap)
+        marker.position = geoPoint
+        marker.icon = combinedDrawable
+        marker.isDraggable = true
+        marker.id = "key$markerCounter"
+        marker.position
+
+
+        var mypoint = CounterPoint(markerCounter, marker)
+        myCounterPointer.add(mypoint)
+
+        markerCounter++
+
+
+        val newArray = ArrayList<GeoPoint>()
+
+        for (point in myCounterPointer) {
+
+            newArray.add(point.marker.position)
+        }
+
+
+        drawRoute(newArray)
+
+        var currentMyPosition = 0;
+
+
+        marker.setOnMarkerDragListener(object : OnMarkerDragListener {
+            override fun onMarkerDrag(marker: Marker) {
+            }
+
+            override fun onMarkerDragEnd(marker: Marker) {
+                for (point in myCounterPointer) {
+                    if (point.marker.equals(marker)) {
+                        Log.i("WTFKMK", "${point.position}")
+                        Log.i("WTFKMK", "${myCounterPointer.size}")
+                        point.marker = marker
+                    }
+
+                    newArray.add(point.marker.position)
+                }
+
+                drawRoute(newArray)
+
+            }
+
+            override fun onMarkerDragStart(marker: Marker) {
+                newArray.clear()
+            }
+        })
+
+
+
+
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+        binding.eventMap.overlays.add(marker)
+        binding.eventMap.invalidate()
+    }
+
+
+    private fun drawRoute(points: ArrayList<GeoPoint>) {
+
+
+        binding.eventMap.overlays.removeAll { it is Polyline }
+
+        val road = Road(points)
+
+        val roadOverlay = RoadManager.buildRoadOverlay(
+            road,
+            colorRoouteLine,
+            widthRoutLine
+        )
+        binding.eventMap.overlays.add(roadOverlay)
+
+    }
+
+
 }
+
