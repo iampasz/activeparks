@@ -9,14 +9,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.activeparks.data.model.calendar.CalendarItem;
 import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
-import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.technodreams.activeparks.R;

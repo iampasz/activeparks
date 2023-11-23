@@ -5,8 +5,8 @@ import android.location.Geocoder
 import org.osmdroid.util.GeoPoint
 import java.util.Locale
 
-@Suppress("DEPRECATION")
-class GeocodingAsyncTask {
+
+ class GeocodingAsyncTask {
 
     fun fetchData(
         context: Context,

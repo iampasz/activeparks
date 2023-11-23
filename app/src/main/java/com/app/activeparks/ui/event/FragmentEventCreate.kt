@@ -10,6 +10,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -26,6 +27,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.points.RoutePoint
 import com.app.activeparks.data.model.sportevents.ItemEvent
@@ -56,13 +58,13 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
-import java.util.Collections
 import java.util.Locale
 
 
 class FragmentEventCreate : Fragment() {
 
     lateinit var binding: FragmentEventCreateBinding
+    private val sharedViewModel: EventRouteViewModel by activityViewModels()
 
     private var currentImage = ""
     var typeOfEvent = 0
@@ -157,41 +159,42 @@ class FragmentEventCreate : Fragment() {
             MapsViewController(eventMap, requireContext())
 
             imageCover.setOnClickListener { galleryDialog() }
-            backButton.setOnClickListener { closeFragment() }
+            backButton.setOnClickListener {
+
+
+                closeFragment()
+            }
             startData.setOnClickListener { setDate(startData) }
             endData.setOnClickListener { setDate(endData) }
             startData.text = (formattedDateTime)
             endData.text = (formattedDateTime)
 
             addPoint.setOnClickListener {
-                when (typeOfEvent) {
-                    0 -> addPoint()
-                    1 -> clickForRoute()
-                }
+
+                openFragment()
+//                when (typeOfEvent) {
+//                    0 -> addPoint()
+//                    1 -> clickForRoute()
+//                }
             }
 
             eventMap.setOnTouchListener { _, _ ->
                 scroll.requestDisallowInterceptTouchEvent(true)
+
                 false
             }
 
             eventMap.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
                 override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
                     p?.let {
-
                         routePoints.add(it)
                         addMarkerCurrent(it)
-
-
-
-                        Log.i("GHGHHH", "geepp")
                     }
 
                     return true
                 }
 
                 override fun longPressHelper(p: GeoPoint?): Boolean {
-                    Log.i("GHGHHH", "long")
                     return false
                 }
             }))
@@ -498,56 +501,29 @@ class FragmentEventCreate : Fragment() {
 
     private fun addMarkerCurrent(geoPoint: GeoPoint) {
 
+        markerCounter++
 
-        val text = markerCounter.toString()
-
-
-        val bitmap =
-            Bitmap.createBitmap((radius * 2).toInt(), (radius * 2).toInt(), Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-
-        val paint = Paint()
-        paint.color = colorCircle
-        paint.isAntiAlias = true
-
-        val centerX = radius
-        val centerY = radius
-
-        canvas.drawCircle(centerX, centerY, radius, paint)
-
-        val textBitmap = drawTextToBitmap(bitmap, text)
-
-        // Комбіноване зображення фону та тексту
-        val combinedBitmap = combineBitmaps(bitmap, textBitmap)
-        val combinedDrawable = BitmapDrawable(resources, combinedBitmap)
-
-        // Створити маркер
         val marker = Marker(binding.eventMap)
         marker.position = geoPoint
-        marker.icon = combinedDrawable
         marker.isDraggable = true
         marker.id = "key$markerCounter"
         marker.position
-
+        marker.icon = getMarkerByPosition(markerCounter)
 
         var mypoint = CounterPoint(markerCounter, marker)
         myCounterPointer.add(mypoint)
 
-        markerCounter++
-
 
         val newArray = ArrayList<GeoPoint>()
+        val newMarkerArray = ArrayList<Marker>()
 
         for (point in myCounterPointer) {
-
             newArray.add(point.marker.position)
+            newMarkerArray.add(point.marker)
         }
 
-
         drawRoute(newArray)
-
-        var currentMyPosition = 0;
-
+        addMarkerCurrentPoint(newMarkerArray)
 
         marker.setOnMarkerDragListener(object : OnMarkerDragListener {
             override fun onMarkerDrag(marker: Marker) {
@@ -555,24 +531,21 @@ class FragmentEventCreate : Fragment() {
 
             override fun onMarkerDragEnd(marker: Marker) {
                 for (point in myCounterPointer) {
+
                     if (point.marker.equals(marker)) {
-                        Log.i("WTFKMK", "${point.position}")
-                        Log.i("WTFKMK", "${myCounterPointer.size}")
                         point.marker = marker
                     }
-
                     newArray.add(point.marker.position)
+                    newMarkerArray.add(point.marker)
                 }
-
                 drawRoute(newArray)
-
+                addMarkerCurrentPoint(newMarkerArray)
             }
 
             override fun onMarkerDragStart(marker: Marker) {
                 newArray.clear()
             }
         })
-
 
 
 
@@ -584,6 +557,7 @@ class FragmentEventCreate : Fragment() {
 
     private fun drawRoute(points: ArrayList<GeoPoint>) {
 
+        sendDataToViewModel(points)
 
         binding.eventMap.overlays.removeAll { it is Polyline }
 
@@ -598,6 +572,51 @@ class FragmentEventCreate : Fragment() {
 
     }
 
+
+    private fun sendDataToViewModel(geoPoints: ArrayList<GeoPoint>) {
+        sharedViewModel.setGeoPoints(geoPoints)
+    }
+
+    private fun openFragment() {
+
+        parentFragmentManager
+            .beginTransaction()
+            .add(R.id.frame_events_container, FragmentChangeRoute())
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun addMarkerCurrentPoint(geoPoints: ArrayList<Marker>) {
+
+        for(m in geoPoints){
+            binding.eventMap.overlays.remove(m)
+            binding.eventMap.overlays.add(m)
+            binding.eventMap.invalidate()
+        }
+
+    }
+
+    private fun getMarkerByPosition(pointNumber: Int): Drawable {
+        val text = pointNumber.toString()
+        val radius = 50f
+        val colorCircle = Color.BLUE
+
+        val bitmap =
+            Bitmap.createBitmap((radius * 2).toInt(), (radius * 2).toInt(), Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = Paint()
+        paint.color = colorCircle
+        paint.isAntiAlias = true
+
+        val centerX = radius
+        val centerY = radius
+        canvas.drawCircle(centerX, centerY, radius, paint)
+        val textBitmap = drawTextToBitmap(bitmap, text)
+        val combinedBitmap = combineBitmaps(bitmap, textBitmap)
+        val combinedDrawable = BitmapDrawable(resources, combinedBitmap)
+
+        return combinedDrawable
+    }
 
 }
 
