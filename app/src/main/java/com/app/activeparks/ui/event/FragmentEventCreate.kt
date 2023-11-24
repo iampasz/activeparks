@@ -29,7 +29,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.app.activeparks.data.model.Default
-import com.app.activeparks.data.model.events.CounterPointModel
 import com.app.activeparks.data.model.points.RoutePoint
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.network.ApiService
@@ -53,7 +52,6 @@ import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.Marker.OnMarkerDragListener
 import org.osmdroid.views.overlay.Polyline
 import java.io.File
 import java.io.FileOutputStream
@@ -88,9 +86,6 @@ class FragmentEventCreate : Fragment() {
     private val widthRoutLine = 10f
     private val colorRouteLine = Color.RED
     private val textSizeCircle = 40f
-
-    private lateinit var startPoint: GeoPoint
-   // lateinit var routePoints: ArrayList<GeoPoint>
 
     lateinit var repository: Repository
     lateinit var preferences: Preferences
@@ -467,38 +462,6 @@ class FragmentEventCreate : Fragment() {
 
 
     }
-
-    private var markerCounter = 0
-
-
-//    private fun drawTextToBitmap(bitmap: Bitmap, text: String): Bitmap {
-//        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-//        paint.textSize = textSizeCircle
-//        paint.color = resources.getColor(R.color.white, null)
-//
-//        val canvas = Canvas(bitmap)
-//        val x = (bitmap.width - paint.measureText(text)) / 2
-//        val y = (bitmap.height + paint.textSize) / 2
-//
-//        canvas.drawText(text, x, y, paint)
-//
-//        return bitmap
-//    }
-//
-//    private fun combineBitmaps(background: Bitmap, overlay: Bitmap): Bitmap {
-//        val combined = Bitmap.createBitmap(background.width, background.height, background.config)
-//        val canvas = Canvas(combined)
-//
-//        canvas.drawBitmap(background, 0f, 0f, null)
-//        canvas.drawBitmap(overlay, 0f, 0f, null)
-//
-//        return combined
-//    }
-
-
-    var myCounterPointer = ArrayList<CounterPointModel>()
-
-//    private fun addMarkerCurrent(geoPoint: GeoPoint) {
 
 
     private fun sendDataToViewModel(geoPoints: ArrayList<GeoPoint>) {

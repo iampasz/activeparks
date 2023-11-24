@@ -7,7 +7,6 @@ import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -137,9 +136,6 @@ class FragmentChangeRoute : Fragment() {
             }
 
 
-            Log.i("MYNAMEIS","geoPointsList $adapter")
-            Log.i("MYNAMEIS","geoPointsList ${geoPointsList.size}")
-
             val onItemClickListener = object : RemoveItemPosition {
                 override fun removePosition(position: Int) {
 
@@ -234,7 +230,7 @@ class FragmentChangeRoute : Fragment() {
 
     private fun closeFragment() {
 
-        sendDataToViewModel(geoPointsList)
+        sendDataToViewModel()
 
         parentFragmentManager
             .beginTransaction()
@@ -289,7 +285,7 @@ class FragmentChangeRoute : Fragment() {
         return combined
     }
 
-    private fun sendDataToViewModel(geoPoints: ArrayList<GeoPoint>) {
+    private fun sendDataToViewModel() {
         viewModel.setGeoPoints(geoPointsList)
     }
 
