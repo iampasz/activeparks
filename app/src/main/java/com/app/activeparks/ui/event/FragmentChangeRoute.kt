@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,8 @@ import org.osmdroid.views.overlay.Polyline
 
 class FragmentChangeRoute : Fragment() {
 
+    lateinit var binding: FragmentChangeRouteBinding
+
     private val widthRoutLine = 10f
     private val colorRouteLine = Color.RED
     private val textSizeCircle = 40f
@@ -37,7 +40,7 @@ class FragmentChangeRoute : Fragment() {
     var geoPointsList = ArrayList<GeoPoint>()
     var markerList = ArrayList<Marker>()
 
-    lateinit var binding: FragmentChangeRouteBinding
+
     private val viewModel: EventRouteViewModel by activityViewModels()
 
 
@@ -63,6 +66,38 @@ class FragmentChangeRoute : Fragment() {
         observeGeoPoints()
 
 
+        val layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.layoutManager = layoutManager
+
+        val onItemClickListener = object : RemoveItemPosition {
+            override fun removePosition(position: Int) {
+
+                geoPointsList.removeAt(position)
+                markerList.removeAt(position)
+
+                if (geoPointsList.size > 0) {
+                    drawRoute(geoPointsList)
+                    drawMarkers(geoPointsList)
+                } else {
+                    binding.editRouteMap.overlays.removeAll { it is Polyline }
+                    binding.editRouteMap.overlays.removeAll { it is Marker }
+                }
+
+                adapter.notifyItemRemoved(position)
+
+                if (position < geoPointsList.size) {
+                    adapter.notifyItemRangeChanged(
+                        position,
+                        geoPointsList.size - position
+                    )
+                }
+
+            }
+        }
+        adapter = GeoPointAdapter(geoPointsList, onItemClickListener)
+        binding.recyclerView.adapter = adapter
+
+
         binding.editRouteMap.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
                 p?.let {
@@ -71,8 +106,16 @@ class FragmentChangeRoute : Fragment() {
                     markerList.clear()
                     drawRoute(geoPointsList)
                     drawMarkers(geoPointsList)
-                    adapter.notifyItemInserted(geoPointsList.size)
 
+                    adapter.notifyItemInserted(0)
+                    binding.recyclerView.scrollToPosition(0)
+
+                    for (i in geoPointsList.indices) {
+                        adapter.notifyItemRangeChanged(
+                            i,
+                            geoPointsList.size - i
+                        )
+                    }
                 }
                 return true
             }
@@ -82,17 +125,20 @@ class FragmentChangeRoute : Fragment() {
             }
         }))
 
-
     }
-
 
     private fun observeGeoPoints() {
         viewModel.geoPointsLiveData.observe(viewLifecycleOwner) { geoPoints ->
 
             geoPointsList = geoPoints
-            drawRoute(geoPointsList)
+            if(geoPoints.size>0){
+                drawRoute(geoPointsList)
+                drawMarkers(geoPointsList)
+            }
 
-            drawMarkers(geoPointsList)
+
+            Log.i("MYNAMEIS","geoPointsList $adapter")
+            Log.i("MYNAMEIS","geoPointsList ${geoPointsList.size}")
 
             val onItemClickListener = object : RemoveItemPosition {
                 override fun removePosition(position: Int) {
@@ -110,7 +156,6 @@ class FragmentChangeRoute : Fragment() {
 
                     adapter.notifyItemRemoved(position)
 
-
                     if (position < geoPointsList.size) {
                         adapter.notifyItemRangeChanged(
                             position,
@@ -118,21 +163,15 @@ class FragmentChangeRoute : Fragment() {
                         )
                     }
 
-
                 }
             }
-
-            val layoutManager = LinearLayoutManager(requireContext())
-
-            binding.recyclerView.layoutManager = layoutManager
-
-            adapter = GeoPointAdapter(geoPoints, onItemClickListener)
+            adapter = GeoPointAdapter(geoPointsList, onItemClickListener)
             binding.recyclerView.adapter = adapter
+
 
 
         }
     }
-
 
     private fun drawRoute(points: ArrayList<GeoPoint>) {
 
@@ -149,6 +188,7 @@ class FragmentChangeRoute : Fragment() {
     }
 
     private fun drawMarkers(points: ArrayList<GeoPoint>) {
+
 
         binding.editRouteMap.overlays.removeAll { it is Marker }
         markerList.clear()
@@ -168,7 +208,6 @@ class FragmentChangeRoute : Fragment() {
                 override fun onMarkerDragEnd(marker: Marker) {
 
                     for ((i, point) in markerList.withIndex()) {
-
                         if (point == marker) {
                             geoPointsList[i] = marker.position
                             point.position = marker.position
@@ -194,6 +233,9 @@ class FragmentChangeRoute : Fragment() {
     }
 
     private fun closeFragment() {
+
+        sendDataToViewModel(geoPointsList)
+
         parentFragmentManager
             .beginTransaction()
             .hide(this)
@@ -247,5 +289,8 @@ class FragmentChangeRoute : Fragment() {
         return combined
     }
 
+    private fun sendDataToViewModel(geoPoints: ArrayList<GeoPoint>) {
+        viewModel.setGeoPoints(geoPointsList)
+    }
 
 }

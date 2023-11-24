@@ -77,6 +77,9 @@ class FragmentEventCreate : Fragment() {
     val routeTraining = "bd09f36f-835c-49e4-88b8-4f835c1602ac"
     val onlineTraining = "e58e5c86-5ca7-412f-94f0-88effd1a45a8"
 
+    var geoPointsList = ArrayList<GeoPoint>()
+    var markerList = ArrayList<Marker>()
+
     private var currentYear = 0
     private var currentMonth = 0
     private var currentDay = 0
@@ -87,7 +90,7 @@ class FragmentEventCreate : Fragment() {
     private val textSizeCircle = 40f
 
     private lateinit var startPoint: GeoPoint
-    lateinit var routePoints: ArrayList<GeoPoint>
+   // lateinit var routePoints: ArrayList<GeoPoint>
 
     lateinit var repository: Repository
     lateinit var preferences: Preferences
@@ -127,6 +130,8 @@ class FragmentEventCreate : Fragment() {
         binding = FragmentEventCreateBinding
             .inflate(inflater, container, false)
 
+        observeGeoPoints()
+
         return binding.root
     }
 
@@ -143,7 +148,7 @@ class FragmentEventCreate : Fragment() {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val formattedDateTime = currentDateTime.format(formatter)
 
-        routePoints = ArrayList()
+        //routePoints = ArrayList()
         apiService = networkModule.test
         preferences = Preferences(requireContext())
         preferences.server = true
@@ -169,21 +174,27 @@ class FragmentEventCreate : Fragment() {
                 openFragment()
                 when (typeOfEvent) {
                     0 -> addPoint()
-                    1 -> clickForRoute()
+                  //  1 -> clickForRoute()
                 }
             }
 
-            eventMap.setOnTouchListener { _, _ ->
-                scroll.requestDisallowInterceptTouchEvent(true)
 
-                false
-            }
 
             eventMap.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
                 override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+//                    p?.let {
+//                        routePoints.add(it)
+//                        addMarkerCurrent(it)
+//                    }
+
                     p?.let {
-                        routePoints.add(it)
-                        addMarkerCurrent(it)
+
+                        geoPointsList.add(it)
+                        markerList.clear()
+                        drawRoute(geoPointsList)
+                        drawMarkers(geoPointsList)
+
+
                     }
 
                     return true
@@ -200,12 +211,11 @@ class FragmentEventCreate : Fragment() {
         }
     }
 
-    private fun clickForRoute() {
-        startPoint = binding.eventMap.mapCenter as GeoPoint
-        routePoints.add(startPoint)
-        //drawRoute(counterPointList)
-    }
-
+//    private fun clickForRoute() {
+//        startPoint = binding.eventMap.mapCenter as GeoPoint
+//        routePoints.add(startPoint)
+//        //drawRoute(counterPointList)
+//    }
 
     private fun addPoint() {
         val centerCoordinates = binding.eventMap.mapCenter as GeoPoint
@@ -393,7 +403,7 @@ class FragmentEventCreate : Fragment() {
 
         val myPoints = ArrayList<RoutePoint>()
 
-        routePoints[0]
+       // routePoints[0]
 
         val routePoint1 = RoutePoint()
         routePoint1.type = 0
@@ -461,6 +471,150 @@ class FragmentEventCreate : Fragment() {
     private var markerCounter = 0
 
 
+//    private fun drawTextToBitmap(bitmap: Bitmap, text: String): Bitmap {
+//        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+//        paint.textSize = textSizeCircle
+//        paint.color = resources.getColor(R.color.white, null)
+//
+//        val canvas = Canvas(bitmap)
+//        val x = (bitmap.width - paint.measureText(text)) / 2
+//        val y = (bitmap.height + paint.textSize) / 2
+//
+//        canvas.drawText(text, x, y, paint)
+//
+//        return bitmap
+//    }
+//
+//    private fun combineBitmaps(background: Bitmap, overlay: Bitmap): Bitmap {
+//        val combined = Bitmap.createBitmap(background.width, background.height, background.config)
+//        val canvas = Canvas(combined)
+//
+//        canvas.drawBitmap(background, 0f, 0f, null)
+//        canvas.drawBitmap(overlay, 0f, 0f, null)
+//
+//        return combined
+//    }
+
+
+    var myCounterPointer = ArrayList<CounterPointModel>()
+
+//    private fun addMarkerCurrent(geoPoint: GeoPoint) {
+
+
+    private fun sendDataToViewModel(geoPoints: ArrayList<GeoPoint>) {
+        sharedViewModel.setGeoPoints(geoPoints)
+    }
+
+    private fun openFragment() {
+
+        parentFragmentManager
+            .beginTransaction()
+            .add(R.id.frame_events_container, FragmentChangeRoute())
+            .addToBackStack(null)
+            .commit()
+
+        sendDataToViewModel(geoPointsList)
+    }
+
+
+    private fun observeGeoPoints() {
+        sharedViewModel.geoPointsLiveData.observe(viewLifecycleOwner) { geoPoints ->
+
+            binding.eventMap.overlays.removeAll { it is Polyline }
+            binding.eventMap.overlays.removeAll { it is Marker }
+
+            geoPointsList = geoPoints
+            if(geoPoints.size>0){
+                drawRoute(geoPointsList)
+                drawMarkers(geoPointsList)
+            }
+
+        }
+    }
+
+
+    private fun drawRoute(points: ArrayList<GeoPoint>) {
+
+        binding.eventMap.overlays.removeAll { it is Polyline }
+
+        val road = Road(points)
+        val roadOverlay = RoadManager.buildRoadOverlay(
+            road,
+            colorRouteLine,
+            widthRoutLine
+        )
+        binding.eventMap.overlays.add(roadOverlay)
+
+    }
+
+    private fun drawMarkers(points: ArrayList<GeoPoint>) {
+
+
+        binding.eventMap.overlays.removeAll { it is Marker }
+        markerList.clear()
+
+        for ((index, p) in points.withIndex()) {
+            val marker = Marker(binding.eventMap)
+            marker.position = p
+            marker.icon = getMarkerByPosition(index)
+           // marker.isDraggable = true
+            marker.position
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+
+//            marker.setOnMarkerDragListener(object : Marker.OnMarkerDragListener {
+//                override fun onMarkerDrag(marker: Marker) {
+//                }
+//
+//                override fun onMarkerDragEnd(marker: Marker) {
+//
+//                    for ((i, point) in markerList.withIndex()) {
+//                        if (point == marker) {
+//                            geoPointsList[i] = marker.position
+//                            point.position = marker.position
+//                        }
+//                    }
+//
+//                    drawRoute(geoPointsList)
+//                    drawMarkers(geoPointsList)
+//
+//                }
+//
+//                override fun onMarkerDragStart(marker: Marker) {
+//
+//                }
+//            })
+
+            markerList.add(marker)
+            binding.eventMap.overlays.add(marker)
+
+        }
+
+        binding.eventMap.invalidate()
+    }
+
+    private fun getMarkerByPosition(pointNumber: Int): Drawable {
+        val text = pointNumber.toString()
+        val radius = 50f
+        val centerX = 50f
+        val centerY = 50f
+
+        val colorCircle = Color.BLUE
+
+        val bitmap =
+            Bitmap.createBitmap((radius * 2).toInt(), (radius * 2).toInt(), Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = Paint()
+        paint.color = colorCircle
+        paint.isAntiAlias = true
+
+
+        canvas.drawCircle(centerX, centerY, radius, paint)
+        val textBitmap = drawTextToBitmap(bitmap, text)
+        val combinedBitmap = combineBitmaps(bitmap, textBitmap)
+
+        return BitmapDrawable(resources, combinedBitmap)
+    }
+
     private fun drawTextToBitmap(bitmap: Bitmap, text: String): Bitmap {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         paint.textSize = textSizeCircle
@@ -483,127 +637,6 @@ class FragmentEventCreate : Fragment() {
         canvas.drawBitmap(overlay, 0f, 0f, null)
 
         return combined
-    }
-
-
-    var myCounterPointer = ArrayList<CounterPointModel>()
-
-    private fun addMarkerCurrent(geoPoint: GeoPoint) {
-
-        markerCounter++
-
-        val marker = Marker(binding.eventMap)
-        marker.position = geoPoint
-        marker.isDraggable = true
-        marker.id = "key$markerCounter"
-        marker.position
-        marker.icon = getMarkerByPosition(markerCounter)
-
-        val myPoint = CounterPointModel(markerCounter, marker)
-        myCounterPointer.add(myPoint)
-
-
-        val newArray = ArrayList<GeoPoint>()
-        val newMarkerArray = ArrayList<Marker>()
-
-        for (point in myCounterPointer) {
-            newArray.add(point.marker.position)
-            newMarkerArray.add(point.marker)
-        }
-
-        drawRoute(newArray)
-        addMarkerCurrentPoint(newMarkerArray)
-
-        marker.setOnMarkerDragListener(object : OnMarkerDragListener {
-            override fun onMarkerDrag(marker: Marker) {
-            }
-
-            override fun onMarkerDragEnd(marker: Marker) {
-                for (point in myCounterPointer) {
-
-                    if (point.marker == marker) {
-                        point.marker = marker
-                    }
-                    newArray.add(point.marker.position)
-                    newMarkerArray.add(point.marker)
-                }
-                drawRoute(newArray)
-                addMarkerCurrentPoint(newMarkerArray)
-            }
-
-            override fun onMarkerDragStart(marker: Marker) {
-                newArray.clear()
-            }
-        })
-
-
-
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-        binding.eventMap.overlays.add(marker)
-        binding.eventMap.invalidate()
-    }
-
-
-    private fun drawRoute(points: ArrayList<GeoPoint>) {
-
-        sendDataToViewModel(points)
-
-        binding.eventMap.overlays.removeAll { it is Polyline }
-
-        val road = Road(points)
-
-        val roadOverlay = RoadManager.buildRoadOverlay(
-            road,
-            colorRouteLine,
-            widthRoutLine
-        )
-        binding.eventMap.overlays.add(roadOverlay)
-
-    }
-
-
-    private fun sendDataToViewModel(geoPoints: ArrayList<GeoPoint>) {
-        sharedViewModel.setGeoPoints(geoPoints)
-    }
-
-    private fun openFragment() {
-
-        parentFragmentManager
-            .beginTransaction()
-            .add(R.id.frame_events_container, FragmentChangeRoute())
-            .addToBackStack(null)
-            .commit()
-    }
-
-    private fun addMarkerCurrentPoint(geoPoints: ArrayList<Marker>) {
-
-        for (m in geoPoints) {
-            binding.eventMap.overlays.remove(m)
-            binding.eventMap.overlays.add(m)
-            binding.eventMap.invalidate()
-        }
-
-    }
-
-    private fun getMarkerByPosition(pointNumber: Int): Drawable {
-        val text = pointNumber.toString()
-        val radius = 50f
-        val centerX = 50f
-        val centerY = 50f
-        val colorCircle = Color.BLUE
-
-        val bitmap =
-            Bitmap.createBitmap((radius * 2).toInt(), (radius * 2).toInt(), Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        val paint = Paint()
-        paint.color = colorCircle
-        paint.isAntiAlias = true
-
-        canvas.drawCircle(centerX, centerY, radius, paint)
-        val textBitmap = drawTextToBitmap(bitmap, text)
-        val combinedBitmap = combineBitmaps(bitmap, textBitmap)
-
-        return BitmapDrawable(resources, combinedBitmap)
     }
 
 }
