@@ -2,12 +2,9 @@ package com.app.activeparks.ui.notification;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,11 +14,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.app.activeparks.ui.clubs.ClubActivity;
-import com.app.activeparks.ui.event.EventActivity;
+import com.app.activeparks.ui.event.activity.EventActivity;
 import com.app.activeparks.ui.notification.adapter.EventsAdaper;
 import com.app.activeparks.ui.notification.adapter.NotificationAdaper;
 import com.app.activeparks.ui.profile.uservideo.UserAddVideoActivity;
-import com.app.activeparks.ui.selectvideo.SelectVideoActivity;
 import com.app.activeparks.util.FragmentInteface;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;

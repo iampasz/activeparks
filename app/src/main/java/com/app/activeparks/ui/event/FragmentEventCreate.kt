@@ -29,12 +29,15 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.app.activeparks.data.model.Default
+import com.app.activeparks.data.model.events.CounterPointModel
 import com.app.activeparks.data.model.points.RoutePoint
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.network.ApiService
+import com.app.activeparks.util.GeocodingAsyncTask
 import com.app.activeparks.data.network.NetworkModule
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
+import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
 import com.app.activeparks.util.MapsViewController
 import com.app.activeparks.util.cropper.CropImage
 import com.app.activeparks.util.extention.gone
@@ -80,16 +83,11 @@ class FragmentEventCreate : Fragment() {
     private var currentHour = 0
     private var currentMinutes = 0
     private val widthRoutLine = 10f
-    private val colorRoouteLine = Color.RED
-    private val radius = 40f
-    private val colorCircle = Color.RED
+    private val colorRouteLine = Color.RED
     private val textSizeCircle = 40f
 
     private lateinit var startPoint: GeoPoint
     lateinit var routePoints: ArrayList<GeoPoint>
-
-    var counterPointList = ArrayList<Marker>()
-    val counterList = ArrayList<GeoPoint>()
 
     lateinit var repository: Repository
     lateinit var preferences: Preferences
@@ -112,13 +110,11 @@ class FragmentEventCreate : Fragment() {
 
                 data?.let {
                     val resultUri = CropImage.getActivityResult(data).uri
-                    //val croppedImageUri = result.uri
                     val file = saveImageToFile(resultUri)
                     loadFileToAPI(file)
 
                     binding.imageCover.setImageURI(resultUri)
                 }
-
             }
         }
 
@@ -147,7 +143,6 @@ class FragmentEventCreate : Fragment() {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val formattedDateTime = currentDateTime.format(formatter)
 
-
         routePoints = ArrayList()
         apiService = networkModule.test
         preferences = Preferences(requireContext())
@@ -172,10 +167,10 @@ class FragmentEventCreate : Fragment() {
             addPoint.setOnClickListener {
 
                 openFragment()
-//                when (typeOfEvent) {
-//                    0 -> addPoint()
-//                    1 -> clickForRoute()
-//                }
+                when (typeOfEvent) {
+                    0 -> addPoint()
+                    1 -> clickForRoute()
+                }
             }
 
             eventMap.setOnTouchListener { _, _ ->
@@ -208,7 +203,6 @@ class FragmentEventCreate : Fragment() {
     private fun clickForRoute() {
         startPoint = binding.eventMap.mapCenter as GeoPoint
         routePoints.add(startPoint)
-
         //drawRoute(counterPointList)
     }
 
@@ -467,15 +461,10 @@ class FragmentEventCreate : Fragment() {
     private var markerCounter = 0
 
 
-    private fun removeMarker(marker: Marker) {
-        binding.eventMap.overlays.remove(marker)
-        binding.eventMap.invalidate()
-    }
-
     private fun drawTextToBitmap(bitmap: Bitmap, text: String): Bitmap {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         paint.textSize = textSizeCircle
-        paint.color = resources.getColor(R.color.white) // колір тексту
+        paint.color = resources.getColor(R.color.white, null)
 
         val canvas = Canvas(bitmap)
         val x = (bitmap.width - paint.measureText(text)) / 2
@@ -497,7 +486,7 @@ class FragmentEventCreate : Fragment() {
     }
 
 
-    var myCounterPointer = ArrayList<CounterPoint>()
+    var myCounterPointer = ArrayList<CounterPointModel>()
 
     private fun addMarkerCurrent(geoPoint: GeoPoint) {
 
@@ -510,8 +499,8 @@ class FragmentEventCreate : Fragment() {
         marker.position
         marker.icon = getMarkerByPosition(markerCounter)
 
-        var mypoint = CounterPoint(markerCounter, marker)
-        myCounterPointer.add(mypoint)
+        val myPoint = CounterPointModel(markerCounter, marker)
+        myCounterPointer.add(myPoint)
 
 
         val newArray = ArrayList<GeoPoint>()
@@ -532,7 +521,7 @@ class FragmentEventCreate : Fragment() {
             override fun onMarkerDragEnd(marker: Marker) {
                 for (point in myCounterPointer) {
 
-                    if (point.marker.equals(marker)) {
+                    if (point.marker == marker) {
                         point.marker = marker
                     }
                     newArray.add(point.marker.position)
@@ -565,7 +554,7 @@ class FragmentEventCreate : Fragment() {
 
         val roadOverlay = RoadManager.buildRoadOverlay(
             road,
-            colorRoouteLine,
+            colorRouteLine,
             widthRoutLine
         )
         binding.eventMap.overlays.add(roadOverlay)
@@ -588,7 +577,7 @@ class FragmentEventCreate : Fragment() {
 
     private fun addMarkerCurrentPoint(geoPoints: ArrayList<Marker>) {
 
-        for(m in geoPoints){
+        for (m in geoPoints) {
             binding.eventMap.overlays.remove(m)
             binding.eventMap.overlays.add(m)
             binding.eventMap.invalidate()
@@ -599,6 +588,8 @@ class FragmentEventCreate : Fragment() {
     private fun getMarkerByPosition(pointNumber: Int): Drawable {
         val text = pointNumber.toString()
         val radius = 50f
+        val centerX = 50f
+        val centerY = 50f
         val colorCircle = Color.BLUE
 
         val bitmap =
@@ -608,14 +599,11 @@ class FragmentEventCreate : Fragment() {
         paint.color = colorCircle
         paint.isAntiAlias = true
 
-        val centerX = radius
-        val centerY = radius
         canvas.drawCircle(centerX, centerY, radius, paint)
         val textBitmap = drawTextToBitmap(bitmap, text)
         val combinedBitmap = combineBitmaps(bitmap, textBitmap)
-        val combinedDrawable = BitmapDrawable(resources, combinedBitmap)
 
-        return combinedDrawable
+        return BitmapDrawable(resources, combinedBitmap)
     }
 
 }

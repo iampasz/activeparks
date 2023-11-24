@@ -1,4 +1,4 @@
-package com.app.activeparks.ui.event;
+package com.app.activeparks.ui.event.activity;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -21,6 +21,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.app.activeparks.ui.event.EventModelFactory;
+import com.app.activeparks.ui.event.interfaces.EventScanerListener;
+import com.app.activeparks.ui.event.MeetingsFragment;
+import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 import com.app.activeparks.ui.participants.ParticipantsFragment;
 import com.app.activeparks.ui.routepoint.RoutePointFragment;
 import com.app.activeparks.util.ButtonSelect;

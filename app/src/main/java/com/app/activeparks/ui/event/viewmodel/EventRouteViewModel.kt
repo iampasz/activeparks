@@ -1,4 +1,4 @@
-package com.app.activeparks.ui.event
+package com.app.activeparks.ui.event.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

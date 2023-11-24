@@ -7,15 +7,15 @@ import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.activeparks.ui.event.adapter.GeoPointAdapter
+import com.app.activeparks.ui.event.interfaces.RemoveItemPosition
+import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
 import com.app.activeparks.util.MapsViewController
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentChangeRouteBinding
@@ -34,8 +34,8 @@ class FragmentChangeRoute : Fragment() {
     private val textSizeCircle = 40f
     private lateinit var adapter: GeoPointAdapter
 
-    var sarnavskyiGeoPointsList = ArrayList<GeoPoint>()
-    var sarnavskyiMarkerList = ArrayList<Marker>()
+    var geoPointsList = ArrayList<GeoPoint>()
+    var markerList = ArrayList<Marker>()
 
     lateinit var binding: FragmentChangeRouteBinding
     private val viewModel: EventRouteViewModel by activityViewModels()
@@ -67,11 +67,11 @@ class FragmentChangeRoute : Fragment() {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
                 p?.let {
 
-                    sarnavskyiGeoPointsList.add(it)
-                    sarnavskyiMarkerList.clear()
-                    drawRoute(sarnavskyiGeoPointsList)
-                    sarnavskyiDrawMarkers(sarnavskyiGeoPointsList)
-                    adapter.notifyItemInserted(sarnavskyiGeoPointsList.size)
+                    geoPointsList.add(it)
+                    markerList.clear()
+                    drawRoute(geoPointsList)
+                    drawMarkers(geoPointsList)
+                    adapter.notifyItemInserted(geoPointsList.size)
 
                 }
                 return true
@@ -83,29 +83,26 @@ class FragmentChangeRoute : Fragment() {
         }))
 
 
-
-
-
     }
 
 
     private fun observeGeoPoints() {
         viewModel.geoPointsLiveData.observe(viewLifecycleOwner) { geoPoints ->
 
-            sarnavskyiGeoPointsList = geoPoints
-            drawRoute(sarnavskyiGeoPointsList)
+            geoPointsList = geoPoints
+            drawRoute(geoPointsList)
 
-            sarnavskyiDrawMarkers(sarnavskyiGeoPointsList)
+            drawMarkers(geoPointsList)
 
             val onItemClickListener = object : RemoveItemPosition {
                 override fun removePosition(position: Int) {
 
-                    sarnavskyiGeoPointsList.removeAt(position)
-                    sarnavskyiMarkerList.removeAt(position)
+                    geoPointsList.removeAt(position)
+                    markerList.removeAt(position)
 
-                    if (sarnavskyiGeoPointsList.size > 0) {
-                        drawRoute(sarnavskyiGeoPointsList)
-                        sarnavskyiDrawMarkers(sarnavskyiGeoPointsList)
+                    if (geoPointsList.size > 0) {
+                        drawRoute(geoPointsList)
+                        drawMarkers(geoPointsList)
                     } else {
                         binding.editRouteMap.overlays.removeAll { it is Polyline }
                         binding.editRouteMap.overlays.removeAll { it is Marker }
@@ -114,10 +111,10 @@ class FragmentChangeRoute : Fragment() {
                     adapter.notifyItemRemoved(position)
 
 
-                    if (position < sarnavskyiGeoPointsList.size) {
+                    if (position < geoPointsList.size) {
                         adapter.notifyItemRangeChanged(
                             position,
-                            sarnavskyiGeoPointsList.size - position
+                            geoPointsList.size - position
                         )
                     }
 
@@ -131,7 +128,6 @@ class FragmentChangeRoute : Fragment() {
 
             adapter = GeoPointAdapter(geoPoints, onItemClickListener)
             binding.recyclerView.adapter = adapter
-
 
 
         }
@@ -152,10 +148,10 @@ class FragmentChangeRoute : Fragment() {
 
     }
 
-    private fun sarnavskyiDrawMarkers(points: ArrayList<GeoPoint>) {
+    private fun drawMarkers(points: ArrayList<GeoPoint>) {
 
         binding.editRouteMap.overlays.removeAll { it is Marker }
-        sarnavskyiMarkerList.clear()
+        markerList.clear()
 
         for ((index, p) in points.withIndex()) {
             val marker = Marker(binding.editRouteMap)
@@ -171,16 +167,16 @@ class FragmentChangeRoute : Fragment() {
 
                 override fun onMarkerDragEnd(marker: Marker) {
 
-                    for ((i, point) in sarnavskyiMarkerList.withIndex()) {
+                    for ((i, point) in markerList.withIndex()) {
 
                         if (point == marker) {
-                            sarnavskyiGeoPointsList[i] = marker.position
+                            geoPointsList[i] = marker.position
                             point.position = marker.position
                         }
                     }
 
-                    drawRoute(sarnavskyiGeoPointsList)
-                    sarnavskyiDrawMarkers(sarnavskyiGeoPointsList)
+                    drawRoute(geoPointsList)
+                    drawMarkers(geoPointsList)
 
                 }
 
@@ -189,7 +185,7 @@ class FragmentChangeRoute : Fragment() {
                 }
             })
 
-            sarnavskyiMarkerList.add(marker)
+            markerList.add(marker)
             binding.editRouteMap.overlays.add(marker)
 
         }
@@ -230,7 +226,7 @@ class FragmentChangeRoute : Fragment() {
     private fun drawTextToBitmap(bitmap: Bitmap, text: String): Bitmap {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         paint.textSize = textSizeCircle
-        paint.color = resources.getColor(R.color.white, null) // колір тексту
+        paint.color = resources.getColor(R.color.white, null)
 
         val canvas = Canvas(bitmap)
         val x = (bitmap.width - paint.measureText(text)) / 2

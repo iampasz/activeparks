@@ -1,20 +1,22 @@
-package com.app.activeparks.ui.event
+package com.app.activeparks.ui.event.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.app.activeparks.ui.event.interfaces.RemoveItemPosition
+import com.app.activeparks.data.model.events.SampleModel
 import com.technodreams.activeparks.databinding.ItemRowBinding
 
 class BaseAdapter(private val removeItem: RemoveItemPosition)  : RecyclerView.Adapter<BaseAdapter.ViewHolder>(){
     private lateinit var binding: ItemRowBinding
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         binding= ItemRowBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return ViewHolder()
     }
 
-    override fun onBindViewHolder(holder: BaseAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.setData(differ.currentList[position])
         holder.setIsRecyclable(false)
     }

@@ -1,4 +1,4 @@
-package com.app.activeparks.ui.event;
+package com.app.activeparks.ui.event.interfaces;
 
 public interface EventScanerListener {
     void update();

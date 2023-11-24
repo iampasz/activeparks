@@ -19,7 +19,7 @@ import com.app.activeparks.data.model.parks.ParksItem;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportsgrounds.ItemSportsground;
 import com.app.activeparks.ui.adapter.PhotosAdaper;
-import com.app.activeparks.ui.event.EventActivity;
+import com.app.activeparks.ui.event.activity.EventActivity;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
 import com.app.activeparks.ui.park.adapter.ParkListAdaper;
 import com.app.activeparks.util.MapsViewController;

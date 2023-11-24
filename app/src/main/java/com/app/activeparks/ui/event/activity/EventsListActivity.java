@@ -1,4 +1,4 @@
-package com.app.activeparks.ui.event;
+package com.app.activeparks.ui.event.activity;
 
 
 import android.Manifest;
@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,7 +25,11 @@ import com.app.activeparks.data.model.calendar.CalendarItem;
 import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
+import com.app.activeparks.ui.event.EventModelFactory;
+import com.app.activeparks.ui.event.FragmentEventCreate;
+import com.app.activeparks.ui.event.activity.EventActivity;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
+import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
@@ -42,8 +45,8 @@ import java.util.List;
 public class EventsListActivity extends AppCompatActivity implements LocationListener {
 
     private EventViewModel viewModel;
-    private FrameLayout frame_events;
-    private String id = null;
+
+    private final String id = null;
     private CalendarView calendarView;
     private TextView listStatus;
     private RecyclerView listClubOwner;
@@ -64,14 +67,9 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         listClubOwner = findViewById(R.id.list_events);
-        frame_events = findViewById(R.id.frame_events_container);
-
         calendarView = findViewById(R.id.calendarView);
-
         listStatus = findViewById(R.id.list_null);
-
         createEventButton = findViewById(R.id.create_event_button2);
-
         selectFilter = findViewById(R.id.select_filter);
         selectFilter.setVisibility(View.VISIBLE);
         selectFilter.getTabAt(1).select();
@@ -84,18 +82,11 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
             onBackPressed();
         });
 
-
-        createEventButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
+        createEventButton.setOnClickListener(view ->
                 getSupportFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.frame_events_container, new FragmentEventCreate())
-                        .commit();
-
-            }
-        });
+                .beginTransaction()
+                .add(R.id.frame_events_container, new FragmentEventCreate())
+                .commit());
 
         viewModel.getSportEventsList().observe(this, events -> {
             setAdapter(events);
@@ -122,16 +113,13 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
-
-
-
-
-
     }
 
     public void setMaperAdapter(CalendarModel calendarItem) {

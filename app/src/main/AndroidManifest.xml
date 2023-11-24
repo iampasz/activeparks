@@ -79,7 +79,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.app.activeparks.ui.web.WebActivity" />
-        <activity android:name="com.app.activeparks.ui.event.EventActivity" />
+        <activity android:name="com.app.activeparks.ui.event.activity.EventActivity" />
         <activity android:name="com.app.activeparks.ui.park.ParkActivity" />
         <activity android:name="com.app.activeparks.ui.calling.WebViewActivity" />
         <activity android:name="com.app.activeparks.ui.clubs.ClubActivity" />
@@ -88,7 +88,7 @@
         <activity android:name="com.app.activeparks.ui.support.SupportActivity" />
         <activity android:name="com.app.activeparks.ui.support.SupportAddActivity" />
         <activity android:name="com.app.activeparks.ui.news.NewsCreateActivity" />
-        <activity android:name="com.app.activeparks.ui.event.EventsListActivity" />
+        <activity android:name="com.app.activeparks.ui.event.activity.EventsListActivity" />
         <activity android:name="com.app.activeparks.ui.people.UserActivity" />
         <activity
             android:name="com.app.activeparks.util.cropper.CropImageActivity"

@@ -5,12 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.app.activeparks.ui.event.MyItemDiffCallback
-import com.app.activeparks.ui.event.RemoveItemPosition
+import com.app.activeparks.ui.event.interfaces.RemoveItemPosition
 import com.technodreams.activeparks.R
-import org.osmdroid.api.IGeoPoint
 import org.osmdroid.util.GeoPoint
 
 class GeoPointAdapter(
