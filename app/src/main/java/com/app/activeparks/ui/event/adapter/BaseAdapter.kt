@@ -45,8 +45,5 @@ class BaseAdapter(private val removeItem: RemoveItemPosition)  : RecyclerView.Ad
         }
     }
 
-    val differ = AsyncListDiffer(this,differCallback)
-
-
-
+    private val differ = AsyncListDiffer(this,differCallback)
 }

@@ -35,7 +35,6 @@ class FragmentChangeRoute : Fragment() {
     private val colorRouteLine = Color.RED
     private val textSizeCircle = 40f
     private lateinit var adapter: GeoPointAdapter
-
     var geoPointsList = ArrayList<GeoPoint>()
     var markerList = ArrayList<Marker>()
 
@@ -71,6 +70,8 @@ class FragmentChangeRoute : Fragment() {
         val onItemClickListener = object : RemoveItemPosition {
             override fun removePosition(position: Int) {
 
+                sendDataToViewModel()
+
                 geoPointsList.removeAt(position)
                 markerList.removeAt(position)
 
@@ -91,6 +92,7 @@ class FragmentChangeRoute : Fragment() {
                     )
                 }
 
+
             }
         }
         adapter = GeoPointAdapter(geoPointsList, onItemClickListener)
@@ -99,6 +101,8 @@ class FragmentChangeRoute : Fragment() {
 
         binding.editRouteMap.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+
+
                 p?.let {
 
                     geoPointsList.add(it)
@@ -115,7 +119,13 @@ class FragmentChangeRoute : Fragment() {
                             geoPointsList.size - i
                         )
                     }
+
+
                 }
+
+
+
+
                 return true
             }
 
@@ -127,46 +137,9 @@ class FragmentChangeRoute : Fragment() {
     }
 
     private fun observeGeoPoints() {
-        viewModel.geoPointsLiveData.observe(viewLifecycleOwner) { geoPoints ->
-
-            geoPointsList = geoPoints
-            if(geoPoints.size>0){
-                drawRoute(geoPointsList)
-                drawMarkers(geoPointsList)
-            }
-
-
-            val onItemClickListener = object : RemoveItemPosition {
-                override fun removePosition(position: Int) {
-
-                    geoPointsList.removeAt(position)
-                    markerList.removeAt(position)
-
-                    if (geoPointsList.size > 0) {
-                        drawRoute(geoPointsList)
-                        drawMarkers(geoPointsList)
-                    } else {
-                        binding.editRouteMap.overlays.removeAll { it is Polyline }
-                        binding.editRouteMap.overlays.removeAll { it is Marker }
-                    }
-
-                    adapter.notifyItemRemoved(position)
-
-                    if (position < geoPointsList.size) {
-                        adapter.notifyItemRangeChanged(
-                            position,
-                            geoPointsList.size - position
-                        )
-                    }
-
-                }
-            }
-            adapter = GeoPointAdapter(geoPointsList, onItemClickListener)
-            binding.recyclerView.adapter = adapter
-
-
-
-        }
+        initRouteData()
+        val lastPoint = viewModel.getLastMapGeoPoint()
+        binding.editRouteMap.controller.setCenter(lastPoint)
     }
 
     private fun drawRoute(points: ArrayList<GeoPoint>) {
@@ -231,10 +204,9 @@ class FragmentChangeRoute : Fragment() {
     private fun closeFragment() {
 
         sendDataToViewModel()
-
         parentFragmentManager
             .beginTransaction()
-            .hide(this)
+            .replace(R.id.frame_events_container, FragmentEventCreate())
             .commit()
     }
 
@@ -287,6 +259,46 @@ class FragmentChangeRoute : Fragment() {
 
     private fun sendDataToViewModel() {
         viewModel.setGeoPoints(geoPointsList)
+        viewModel.setLastMapGeoPoint(binding.editRouteMap.mapCenter)
     }
 
+    private fun initRouteData() {
+
+        viewModel.geoPointsLiveData.observe(viewLifecycleOwner) { geoPoints ->
+            geoPointsList = geoPoints
+            if (geoPoints.size > 0) {
+                drawRoute(geoPointsList)
+                drawMarkers(geoPointsList)
+            }
+
+            val onItemClickListener = object : RemoveItemPosition {
+                override fun removePosition(position: Int) {
+
+
+                    geoPointsList.removeAt(position)
+                    markerList.removeAt(position)
+
+                    if (geoPointsList.size > 0) {
+                        drawRoute(geoPointsList)
+                        drawMarkers(geoPointsList)
+                    } else {
+                        binding.editRouteMap.overlays.removeAll { it is Polyline }
+                        binding.editRouteMap.overlays.removeAll { it is Marker }
+                    }
+
+                    adapter.notifyItemRemoved(position)
+
+                    if (position < geoPointsList.size) {
+                        adapter.notifyItemRangeChanged(
+                            position,
+                            geoPointsList.size - position
+                        )
+                    }
+
+                }
+            }
+            adapter = GeoPointAdapter(geoPointsList, onItemClickListener)
+            binding.recyclerView.adapter = adapter
+        }
+    }
 }

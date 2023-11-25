@@ -32,11 +32,11 @@ import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.points.RoutePoint
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.network.ApiService
-import com.app.activeparks.util.GeocodingAsyncTask
 import com.app.activeparks.data.network.NetworkModule
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
+import com.app.activeparks.util.GeocodingAsyncTask
 import com.app.activeparks.util.MapsViewController
 import com.app.activeparks.util.cropper.CropImage
 import com.app.activeparks.util.extention.gone
@@ -125,7 +125,10 @@ class FragmentEventCreate : Fragment() {
         binding = FragmentEventCreateBinding
             .inflate(inflater, container, false)
 
+        MapsViewController(binding.eventMap, requireContext())
+
         observeGeoPoints()
+        initSpinner()
 
         return binding.root
     }
@@ -135,15 +138,20 @@ class FragmentEventCreate : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val previousScrollPosition = sharedViewModel.getScrollPosition()
+        binding.scroll.post { binding.scroll.scrollTo(0, previousScrollPosition) }
 
-        initSpinner()
+        binding.scroll.viewTreeObserver.addOnScrollChangedListener {
+            val currentScrollPosition = binding.scroll.scrollY
+            sharedViewModel.saveScrollPosition(currentScrollPosition)
+        }
+
 
         val networkModule = NetworkModule()
         val currentDateTime = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val formattedDateTime = currentDateTime.format(formatter)
 
-        //routePoints = ArrayList()
         apiService = networkModule.test
         preferences = Preferences(requireContext())
         preferences.server = true
@@ -151,12 +159,8 @@ class FragmentEventCreate : Fragment() {
 
         with(binding) {
 
-            MapsViewController(eventMap, requireContext())
-
             imageCover.setOnClickListener { galleryDialog() }
             backButton.setOnClickListener {
-
-
                 closeFragment()
             }
             startData.setOnClickListener { setDate(startData) }
@@ -165,31 +169,36 @@ class FragmentEventCreate : Fragment() {
             endData.text = (formattedDateTime)
 
             addPoint.setOnClickListener {
-
                 openFragment()
-                when (typeOfEvent) {
-                    0 -> addPoint()
-                  //  1 -> clickForRoute()
-                }
             }
 
-
+            eventMap.setOnTouchListener { _, _ ->
+                scroll.requestDisallowInterceptTouchEvent(true)
+                false
+            }
 
             eventMap.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
                 override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-//                    p?.let {
-//                        routePoints.add(it)
-//                        addMarkerCurrent(it)
-//                    }
 
-                    p?.let {
+                    when (typeOfEvent) {
+                        0 -> {
+                            p?.let {
+                                addPoint(p)
+                            }
+                        }
 
-                        geoPointsList.add(it)
-                        markerList.clear()
-                        drawRoute(geoPointsList)
-                        drawMarkers(geoPointsList)
+                        1 -> {
+                            p?.let {
+                                geoPointsList.add(it)
+                                markerList.clear()
+                                drawRoute(geoPointsList)
+                                drawMarkers(geoPointsList)
+                            }
+                        }
 
+                        2 -> {
 
+                        }
                     }
 
                     return true
@@ -206,36 +215,17 @@ class FragmentEventCreate : Fragment() {
         }
     }
 
-//    private fun clickForRoute() {
-//        startPoint = binding.eventMap.mapCenter as GeoPoint
-//        routePoints.add(startPoint)
-//        //drawRoute(counterPointList)
-//    }
+    private fun addPoint(p: GeoPoint) {
+        binding.eventMap.overlays.removeAll { it is Marker }
+        binding.eventMap.overlays.removeAll { it is Polyline }
+        geoPointsList.clear()
 
-    private fun addPoint() {
-        val centerCoordinates = binding.eventMap.mapCenter as GeoPoint
-
-        val address = GeocodingAsyncTask().fetchData(requireContext(), centerCoordinates)
+        val address = GeocodingAsyncTask().fetchData(requireContext(), p)
         binding.editAdress.setText(address)
 
-        setMarker(centerCoordinates)
-    }
+        setMarker(p)
 
-    private fun setMarker(geoPoint: GeoPoint) {
-
-        centerMarker?.let {
-            binding.eventMap.overlayManager.remove(centerMarker)
-        }
-
-        val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_pin_green)
-
-        centerMarker = Marker(binding.eventMap)
-        centerMarker?.icon = icon
-        centerMarker?.position = geoPoint
-        centerMarker?.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-
-        binding.eventMap.overlayManager.add(centerMarker)
-        binding.eventMap.invalidate()
+        sharedViewModel.setGeoPoint(p)
     }
 
     private fun galleryDialog() {
@@ -295,7 +285,6 @@ class FragmentEventCreate : Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinner.adapter = adapter
 
-
         binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -305,9 +294,7 @@ class FragmentEventCreate : Fragment() {
             ) {
 
                 binding.eventMap.visible()
-                binding.removePoint.gone()
                 binding.addPoint.gone()
-
                 typeOfEvent = position
 
                 when (typeOfEvent) {
@@ -319,7 +306,6 @@ class FragmentEventCreate : Fragment() {
                     1 -> {
                         trainingType = routeTraining
                         binding.addPoint.visible()
-                        binding.removePoint.visible()
                     }
 
                     2 -> {
@@ -327,13 +313,13 @@ class FragmentEventCreate : Fragment() {
                         binding.eventMap.gone()
                     }
                 }
-
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
             }
         }
+
+        binding.spinner.setSelection(typeOfEvent)
     }
 
     @SuppressLint("CheckResult")
@@ -356,17 +342,22 @@ class FragmentEventCreate : Fragment() {
         if (checkFields()) {
             repository.createEmptyEvent()
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe { responseBody ->
+                .subscribe({ responseBody ->
                     val jsonString = responseBody.string()
                     val gson = Gson()
                     val eventData = gson.fromJson(jsonString, ItemEvent::class.java)
                     val eventId = eventData.id
 
                     setDataEvent(eventId, getUserEventData())
-                }
+
+                },
+                    { throwable ->
+                        throwable.printStackTrace()
+                    })
         } else {
             Toast.makeText(context, "Не всі поля заповнені", Toast.LENGTH_SHORT).show()
         }
+
 
     }
 
@@ -375,6 +366,7 @@ class FragmentEventCreate : Fragment() {
         repository.setDataEvent(eventId, itemEvent).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ publishDataEvent(eventId) }) { }
+
     }
 
     @SuppressLint("CheckResult")
@@ -398,23 +390,25 @@ class FragmentEventCreate : Fragment() {
 
         val myPoints = ArrayList<RoutePoint>()
 
-       // routePoints[0]
+        // routePoints[0]
 
-        val routePoint1 = RoutePoint()
-        routePoint1.type = 0
-        val coordinates = listOf(50.123, 30.456)
-        routePoint1.location = coordinates
-        routePoint1.pointIndex = 0
-
-        myPoints.add(routePoint1)
+        for ((i, points) in geoPointsList.withIndex()) {
+            val routePoint1 = RoutePoint()
+            routePoint1.type = 0
+            val coordinates = listOf(points.latitude, points.longitude)
+            routePoint1.location = coordinates
+            routePoint1.pointIndex = i
+            myPoints.add(routePoint1)
+        }
 
         itemEvent.routePoints = myPoints
-
         itemEvent.imageUrl = currentImage
         return itemEvent
     }
 
     private fun closeFragment() {
+
+        viewModelStore.clear()
         parentFragmentManager.beginTransaction().remove(this).commit()
     }
 
@@ -456,45 +450,20 @@ class FragmentEventCreate : Fragment() {
             currentYear,
             currentMonth,
             currentDay
-
         )
         datePickerDialog.show()
-
-
-    }
-
-
-    private fun sendDataToViewModel(geoPoints: ArrayList<GeoPoint>) {
-        sharedViewModel.setGeoPoints(geoPoints)
     }
 
     private fun openFragment() {
 
         parentFragmentManager
             .beginTransaction()
-            .add(R.id.frame_events_container, FragmentChangeRoute())
+            .replace(R.id.frame_events_container, FragmentChangeRoute())
             .addToBackStack(null)
             .commit()
 
         sendDataToViewModel(geoPointsList)
     }
-
-
-    private fun observeGeoPoints() {
-        sharedViewModel.geoPointsLiveData.observe(viewLifecycleOwner) { geoPoints ->
-
-            binding.eventMap.overlays.removeAll { it is Polyline }
-            binding.eventMap.overlays.removeAll { it is Marker }
-
-            geoPointsList = geoPoints
-            if(geoPoints.size>0){
-                drawRoute(geoPointsList)
-                drawMarkers(geoPointsList)
-            }
-
-        }
-    }
-
 
     private fun drawRoute(points: ArrayList<GeoPoint>) {
 
@@ -510,8 +479,40 @@ class FragmentEventCreate : Fragment() {
 
     }
 
-    private fun drawMarkers(points: ArrayList<GeoPoint>) {
+    private fun setMarker(geoPoint: GeoPoint) {
 
+        centerMarker.let {
+            binding.eventMap.overlayManager.remove(centerMarker)
+        }
+
+
+        val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_pin_green)
+
+        centerMarker = Marker(binding.eventMap)
+        centerMarker?.icon = icon
+        centerMarker?.position = geoPoint
+        centerMarker?.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+        centerMarker?.isDraggable = true
+
+        centerMarker?.setOnMarkerDragListener(object : Marker.OnMarkerDragListener {
+            override fun onMarkerDrag(marker: Marker) {
+            }
+
+            override fun onMarkerDragEnd(marker: Marker) {
+                // val address = GeocodingAsyncTask().fetchData(requireContext(), marker.position)
+                // binding.editAdress.setText(address)
+            }
+
+            override fun onMarkerDragStart(marker: Marker) {
+
+            }
+        })
+
+        binding.eventMap.overlayManager.add(centerMarker)
+        binding.eventMap.invalidate()
+    }
+
+    private fun drawMarkers(points: ArrayList<GeoPoint>) {
 
         binding.eventMap.overlays.removeAll { it is Marker }
         markerList.clear()
@@ -520,32 +521,32 @@ class FragmentEventCreate : Fragment() {
             val marker = Marker(binding.eventMap)
             marker.position = p
             marker.icon = getMarkerByPosition(index)
-           // marker.isDraggable = true
+            marker.isDraggable = true
             marker.position
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
 
-//            marker.setOnMarkerDragListener(object : Marker.OnMarkerDragListener {
-//                override fun onMarkerDrag(marker: Marker) {
-//                }
-//
-//                override fun onMarkerDragEnd(marker: Marker) {
-//
-//                    for ((i, point) in markerList.withIndex()) {
-//                        if (point == marker) {
-//                            geoPointsList[i] = marker.position
-//                            point.position = marker.position
-//                        }
-//                    }
-//
-//                    drawRoute(geoPointsList)
-//                    drawMarkers(geoPointsList)
-//
-//                }
-//
-//                override fun onMarkerDragStart(marker: Marker) {
-//
-//                }
-//            })
+            marker.setOnMarkerDragListener(object : Marker.OnMarkerDragListener {
+                override fun onMarkerDrag(marker: Marker) {
+                }
+
+                override fun onMarkerDragEnd(marker: Marker) {
+
+                    for ((i, point) in markerList.withIndex()) {
+                        if (point == marker) {
+                            geoPointsList[i] = marker.position
+                            point.position = marker.position
+                        }
+                    }
+
+                    drawRoute(geoPointsList)
+                    drawMarkers(geoPointsList)
+
+                }
+
+                override fun onMarkerDragStart(marker: Marker) {
+
+                }
+            })
 
             markerList.add(marker)
             binding.eventMap.overlays.add(marker)
@@ -602,5 +603,33 @@ class FragmentEventCreate : Fragment() {
         return combined
     }
 
+    private fun initRouteData() {
+
+        sharedViewModel.geoPointsLiveData.observe(viewLifecycleOwner) { geoPoints ->
+            geoPointsList = geoPoints
+            if (geoPoints.size > 0) {
+                drawRoute(geoPointsList)
+                drawMarkers(geoPointsList)
+            } else {
+                binding.eventMap.overlays.removeAll { it is Polyline }
+                binding.eventMap.overlays.removeAll { it is Marker }
+            }
+        }
+    }
+
+    private fun observeGeoPoints() {
+
+        val lastPoint = sharedViewModel.getLastMapGeoPoint()
+
+        binding.eventMap.controller.setCenter(lastPoint)
+        typeOfEvent = sharedViewModel.getSelectedPosition()
+        initRouteData()
+    }
+
+    private fun sendDataToViewModel(geoPoints: ArrayList<GeoPoint>) {
+        sharedViewModel.setGeoPoints(geoPoints)
+        sharedViewModel.setLastMapGeoPoint(binding.eventMap.mapCenter)
+        sharedViewModel.setSelectedPosition(typeOfEvent)
+    }
 }
 
