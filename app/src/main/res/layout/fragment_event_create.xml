@@ -207,7 +207,7 @@
 
 
             <ImageView
-                android:id="@+id/add_point"
+                android:id="@+id/open_full_map"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginEnd="20dp"

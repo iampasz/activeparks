@@ -2,6 +2,7 @@ package com.app.activeparks.ui.event.activity;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -25,15 +26,18 @@ import com.app.activeparks.data.model.calendar.CalendarItem;
 import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
+import com.app.activeparks.data.repository.Repository;
+import com.app.activeparks.data.storage.Preferences;
 import com.app.activeparks.ui.event.EventModelFactory;
 import com.app.activeparks.ui.event.FragmentEventCreate;
-import com.app.activeparks.ui.event.activity.EventActivity;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
+import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel;
 import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
 import com.technodreams.activeparks.R;
 
 import java.text.ParseException;
@@ -42,18 +46,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
 public class EventsListActivity extends AppCompatActivity implements LocationListener {
 
     private EventViewModel viewModel;
 
-    private final String id = null;
     private CalendarView calendarView;
     private TextView listStatus;
     private RecyclerView listClubOwner;
-    private ImageView createEventButton;
 
     private LocationManager locationManager;
-    private TabLayout selectFilter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,8 +73,8 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
         listClubOwner = findViewById(R.id.list_events);
         calendarView = findViewById(R.id.calendarView);
         listStatus = findViewById(R.id.list_null);
-        createEventButton = findViewById(R.id.create_event_button2);
-        selectFilter = findViewById(R.id.select_filter);
+        ImageView createEventButton = findViewById(R.id.create_event_button2);
+        TabLayout selectFilter = findViewById(R.id.select_filter);
         selectFilter.setVisibility(View.VISIBLE);
         selectFilter.getTabAt(1).select();
 
@@ -78,24 +82,16 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
         viewModel.calendarEvent();
         findViewById(R.id.panel_top).setVisibility(View.VISIBLE);
         findViewById(R.id.title).setVisibility(View.GONE);
-        findViewById(R.id.closed).setOnClickListener(v -> {
-            onBackPressed();
-        });
+        findViewById(R.id.closed).setOnClickListener(v -> onBackPressed());
 
-        createEventButton.setOnClickListener(view ->
-                getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.frame_events_container, new FragmentEventCreate())
-                .commit());
+        createEventButton.setOnClickListener(view -> updateViewModelData());
 
         viewModel.getSportEventsList().observe(this, events -> {
             setAdapter(events);
             listStatus.setText("Жодного запланованого заходу");
         });
 
-        viewModel.getCalendar().observe(this, events -> {
-            setMaperAdapter(events);
-        });
+        viewModel.getCalendar().observe(this, this::setMaperAdapter);
 
         calendarView.setOnDayClickListener(new OnDayClickListener() {
             @Override
@@ -203,4 +199,44 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
     public void onStatusChanged(String provider, int status, Bundle extras) {
 
     }
+
+
+    private void openCreateEventFragment() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_events_container, new FragmentEventCreate())
+                .commit();
+    }
+
+    private EventRouteViewModel eventRouteViewModel;
+
+    @SuppressLint("CheckResult")
+    private void updateViewModelData() {
+        eventRouteViewModel = new ViewModelProvider(this).get(EventRouteViewModel.class);
+
+        Preferences preferences;
+        Repository repository;
+
+        preferences = new Preferences(this);
+        preferences.setServer(true);
+        repository = new Repository(preferences);
+
+        repository.createEmptyEvent().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(responseBody -> {
+
+                    String jsonResponce = responseBody.string();
+                    Gson gson = new Gson();
+                    ItemEvent itemEvent = gson.fromJson(jsonResponce, ItemEvent.class);
+
+
+                    eventRouteViewModel.updateItemEventData(itemEvent);
+                    openCreateEventFragment();
+
+
+                }, throwable -> {
+                });
+    }
+
+
 }

@@ -152,4 +152,8 @@ dependencies {
     implementation "io.insert-koin:koin-androidx-navigation:$koin_version"
 
     implementation 'com.polidea.rxandroidble2:rxandroidble:1.11.0'
+
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.8'
+
 }

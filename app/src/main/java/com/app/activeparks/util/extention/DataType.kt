@@ -18,6 +18,7 @@ fun String.replaceAddress() = this.replace("вулиця", "вул.")
 fun String.replaceBrackets() = this.replace("(", "").replace(")", "")
 fun String.replaceNull() = this.replace("null", "")
 
+
 //Address
 fun Address.getAddress() =
     "м. ${this.locality}, ${this.thoroughfare} ${this.subThoroughfare}".replaceAddress()

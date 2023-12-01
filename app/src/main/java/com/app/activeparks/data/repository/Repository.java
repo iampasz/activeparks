@@ -720,8 +720,8 @@ public class Repository {
         return service.createEmptyEvent(token);
     }
 
-    public Observable<ResponseBody> setDataEvent(String eventId, ItemEvent itemEvent) {
-        return service.setDataEvent(token, eventId, itemEvent);
+    public Observable<ResponseBody> setDataEvent(ItemEvent itemEvent) {
+        return service.setDataEvent(token, itemEvent.getId(), itemEvent);
     }
 
     public Observable<ResponseBody> publishDataEvent(String eventId) {
@@ -732,4 +732,7 @@ public class Repository {
         return service.getAllEventsPublished();
     }
 
+    public Observable<ResponseBody> deleteEvent(String id) {
+        return service.deleteEvent(token, id);
+    }
 }

@@ -398,4 +398,8 @@ public interface ApiService {
     @GET("/api/v1/sport-events?offset=0&limit=10&sort[sort_name]=value&filters[filter_name]=value")
     Observable<ResponseBody> getAllEventsPublished();
 
+    @DELETE("/api/v1/sport-events/{id}")
+    Observable<ResponseBody> deleteEvent(@Header("Authorization") String token, @Path(value = "id") String id);
+
+
 }

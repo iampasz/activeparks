@@ -1,13 +1,11 @@
 package com.app.activeparks.ui.event.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.activeparks.ui.event.interfaces.RemoveItemPosition
-import com.technodreams.activeparks.R
+import com.technodreams.activeparks.databinding.ItemGeoPointBinding
 import org.osmdroid.util.GeoPoint
 
 class GeoPointAdapter(
@@ -18,11 +16,9 @@ class GeoPointAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GeoPointViewHolder {
-        val view =
-            LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.item_geo_point, parent, false)
-        return GeoPointViewHolder(view)
+        val binding =
+            ItemGeoPointBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return GeoPointViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: GeoPointViewHolder, position: Int) {
@@ -34,18 +30,21 @@ class GeoPointAdapter(
         return geoPoints.size
     }
 
-    inner class GeoPointViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val textView: TextView = itemView.findViewById(R.id.textView)
-        private val positionGp: TextView = itemView.findViewById(R.id.position_gp)
-        private val removeButton: Button = itemView.findViewById(R.id.removeButton)
+    inner class GeoPointViewHolder(private val binding: ItemGeoPointBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("SetTextI18n")
         fun bind(geoPoint: GeoPoint) {
-            textView.text = "Lat: ${geoPoint.latitude}, Lon: ${geoPoint.longitude}"
-            positionGp.text = absoluteAdapterPosition.toString()
-            removeButton.setOnClickListener {
+
+            val formattedLatitude = String.format("%.4f", geoPoint.latitude)
+            val formattedLongitude = String.format("%.4f", geoPoint.longitude)
+
+            binding.longitudeText.text = "Longitude: $formattedLongitude"
+            binding.latitudeText.text = "Latitude: $formattedLatitude"
+            binding.positionGp.text = absoluteAdapterPosition.toString()
+            binding.removeButton.setOnClickListener {
                 removeItem.removePosition(absoluteAdapterPosition)
             }
-
 
         }
     }
