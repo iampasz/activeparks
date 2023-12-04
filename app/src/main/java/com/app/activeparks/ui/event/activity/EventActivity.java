@@ -1,5 +1,6 @@
-package com.app.activeparks.ui.event;
+package com.app.activeparks.ui.event.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LevelListDrawable;
@@ -12,15 +13,19 @@ import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.app.activeparks.ui.event.util.EventModelFactory;
+import com.app.activeparks.ui.event.interfaces.EventScannerListener;
+import com.app.activeparks.ui.event.fragments.MeetingsFragment;
+import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 import com.app.activeparks.ui.participants.ParticipantsFragment;
 import com.app.activeparks.ui.routepoint.RoutePointFragment;
 import com.app.activeparks.util.ButtonSelect;
@@ -38,19 +43,20 @@ import java.util.Locale;
 
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
-public class EventActivity extends AppCompatActivity implements EventScanerListener, Html.ImageGetter, SwipeRefreshLayout.OnRefreshListener {
+public class EventActivity extends AppCompatActivity implements EventScannerListener, Html.ImageGetter, SwipeRefreshLayout.OnRefreshListener {
 
     private EventViewModel viewModel;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ImageView mImageView;
     private MaterialRatingBar ratingBar;
-    private ButtonSelect mDescriptionAction, mLocationAction, mRecordsAction, mPeopleAction, сonferenciaAction, startPointAction, mJoinAction;
-    private TextView mTitle, mAddress, mPhone, mStartEvent, mEndEvent, mDescription, mClubName, mEventStatus, mDay, mHour, mMinutes, mSeconds;
+    private ButtonSelect mDescriptionAction, mLocationAction, mRecordsAction, mPeopleAction, conferenceAction, startPointAction, mJoinAction;
+    private TextView mTitle, mAddress, mStartEvent, mEndEvent, mDescription, mClubName, mEventStatus, mDay, mHour, mMinutes, mSeconds;
     public MapView mapView;
     private View statusView;
     private LinearLayout layoutTimer;
     public MapsViewController mapsViewController;
 
+    @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables", "ObsoleteSdkInt", "MissingInflatedId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,27 +73,20 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
         mImageView = findViewById(R.id.image_club);
         mTitle = findViewById(R.id.title);
         mAddress = findViewById(R.id.text_address);
-        mPhone = findViewById(R.id.text_phone);
         mStartEvent = findViewById(R.id.text_start_event);
         mEndEvent = findViewById(R.id.text_end_event);
         mDescription = findViewById(R.id.text_description);
         mClubName = findViewById(R.id.text_club_name);
         mEventStatus = findViewById(R.id.status);
-        сonferenciaAction = findViewById(R.id.сonferencia_action);
+        conferenceAction = findViewById(R.id.conference_action);
         startPointAction = findViewById(R.id.start_point_action);
-
         statusView = findViewById(R.id.status_view);
-
         layoutTimer = findViewById(R.id.layout_timer);
-
         ratingBar = findViewById(R.id.ratingBar);
-
         mDay = findViewById(R.id.day_time);
         mHour = findViewById(R.id.hour_time);
         mMinutes = findViewById(R.id.minutes_time);
         mSeconds = findViewById(R.id.seconds_time);
-
-
         mDescriptionAction = findViewById(R.id.description_action);
         mLocationAction = findViewById(R.id.location_action);
         mRecordsAction = findViewById(R.id.records_action);
@@ -120,18 +119,16 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
                     }
                 }
 
-//                if (events.getCreatedBy().getPhone() != null) {
-//                    mPanelPhone.setVisibility(View.VISIBLE);
-//                    mPhone.setText(events.getCreatedBy().getPhone());
-//                }
 
                 if (events.getEventEstimation() != null) {
                     ratingBar.setRating(events.getEventEstimation());
                 }
 
+                @SuppressLint("SimpleDateFormat")
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
                     Date date = format.parse(events.getStartsAt());
+                    assert date != null;
                     mStartEvent.setText(new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -151,7 +148,7 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
                 statusView.setVisibility(View.VISIBLE);
 
                 if (events.getHoldingStatusId().contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")) {
-                    statusView.setBackground(getResources().getDrawable(R.drawable.button_color));
+                    statusView.setBackground(getResources().getDrawable(R.drawable.button_color, null));
                 }
 
                 if (events.getFullDescription() != null) {
@@ -160,9 +157,9 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
                     web = web.replace("<img ", "<br><img ");
                     mDescription.setMovementMethod(LinkMovementMethod.getInstance());
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        mDescription.setText(Html.fromHtml(web, this, null));
+                        HtmlCompat.fromHtml(web, HtmlCompat.FROM_HTML_MODE_LEGACY);
                     } else {
-                        mDescription.setText(Html.fromHtml(web));
+                        mDescription.setText(HtmlCompat.fromHtml(web, HtmlCompat.FROM_HTML_MODE_LEGACY));
                     }
                 }
                 if (events.getClub() != null) {
@@ -177,7 +174,7 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
                     mapsViewController.setMarker(viewModel.address.getLocation().get(0), viewModel.address.getLocation().get(1));
 
                     if (events.getStatusId().contains("032fd5ba-f634-469b-3c30-77a1gh63a918") && events.getHoldingStatusId().contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")) {
-                        if (events.getEventUser() != null && events.getEventUser().getIsCoordinator() == true) {
+                        if (events.getEventUser() != null && events.getEventUser().getIsCoordinator()) {
                             startPointAction.setVisibility(View.VISIBLE);
                             startPointAction.setEnabled(true);
                             if (events.getRouteStartAt() == null) {
@@ -199,7 +196,7 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
                 } else if (events.getTypeId().contains("e58e5c86-5ca7-412f-94f0-88effd1a45a8")) {
 
 
-                    сonferenciaAction.setOnClickListener(v -> {
+                    conferenceAction.setOnClickListener(v -> {
                         if (events.getConferenceLink() != null && events.getConferenceLink().length() > 0) {
                             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(events.getConferenceLink()));
                             startActivity(intent);
@@ -214,15 +211,15 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
                     } else if (events.getHoldingStatusId().contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")) {
                         mRecordsAction.setVisibility(View.GONE);
                         layoutTimer.setVisibility(View.GONE);
-                        сonferenciaAction.setVisibility(View.VISIBLE);
+                        conferenceAction.setVisibility(View.VISIBLE);
                     } else if (events.getHoldingStatusId().contains("0q8a6xc0-1nb4-1pr4-h5at-4sw3m0l387yp")) {
                         mRecordsAction.setVisibility(View.VISIBLE);
-                        сonferenciaAction.setVisibility(View.GONE);
+                        conferenceAction.setVisibility(View.GONE);
                     }
                 }
 
                 if (events.getEventUser() != null) {
-                    if (events.getEventUser().getIsApproved() == true) {
+                    if (events.getEventUser().getIsApproved()) {
                         mJoinAction.setText("Покинути захід");
                         if (events.getHoldingStatusId().contains("0q8a6xc0-1nb4-1pr4-h5at-4sw3m0l387yp")) {
                             findViewById(R.id.layout_rating).setVisibility(View.VISIBLE);
@@ -237,33 +234,27 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
 
                 if (viewModel.getUserAuth() && !events.getHoldingStatusId().contains("0q8a6xc0-1nb4-1pr4-h5at-4sw3m0l387yp")) {
                     mJoinAction.setEnabled(true);
-                    if (events.getEventUser() != null && events.getEventUser().getIsCoordinator() == true) {
+                    if (events.getEventUser() != null && events.getEventUser().getIsCoordinator()) {
                         mJoinAction.setVisibility(View.GONE);
                     } else {
                         mJoinAction.setVisibility(View.VISIBLE);
                     }
                 }
 
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
 
         });
 
-        viewModel.getLocation().observe(this, location -> {
-            mAddress.setText(location);
-        });
+        viewModel.getLocation().observe(this, location -> mAddress.setText(location));
 
-        viewModel.getMeetingRecords().observe(this, mettings -> {
-            setFragment(new MeetingsFragment(mettings));
-        });
+        viewModel.getMeetingRecords().observe(this, meetings -> setFragment(new MeetingsFragment(meetings)));
 
         initClickListener();
     }
 
     void initClickListener() {
-        findViewById(R.id.closed).setOnClickListener((View v) -> {
-            onBackPressed();
-        });
+        findViewById(R.id.closed).setOnClickListener((View v) -> onBackPressed());
 
         mDescriptionAction.setOnClickListener(v -> {
             mDescription.setVisibility(View.VISIBLE);
@@ -272,13 +263,9 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
             mDescriptionAction.on();
         });
 
-        mLocationAction.setOnClickListener(v -> {
-            showRoutePoint();
-        });
+        mLocationAction.setOnClickListener(v -> showRoutePoint());
 
-        startPointAction.setOnClickListener(v -> {
-            viewModel.startEvent();
-        });
+        startPointAction.setOnClickListener(v -> viewModel.startEvent());
 
         mRecordsAction.setOnClickListener(v -> {
             viewModel.meetingRecords();
@@ -298,15 +285,8 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
             mJoinAction.setEnabled(false);
         });
 
-        ratingBar.setOnClickListener(v -> {
-            viewModel.setEstimation(ratingBar.getRating());
-        });
-        ratingBar.setOnRatingBarChangeListener(new MaterialRatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                viewModel.setEstimation(rating);
-            }
-        });
+        ratingBar.setOnClickListener(v -> viewModel.setEstimation(ratingBar.getRating()));
+        ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> viewModel.setEstimation(rating));
 
         findViewById(R.id.copy_action).setOnClickListener((View v) -> {
             Intent intent = new Intent(android.content.Intent.ACTION_SEND);
@@ -327,12 +307,13 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
     void startTimer(long time) {
 
         if (time > 0) {
-            сonferenciaAction.setVisibility(View.VISIBLE);
+            conferenceAction.setVisibility(View.VISIBLE);
             layoutTimer.setVisibility(View.GONE);
             return;
         }
         new CountDownTimer(Math.abs(time), 1000) {
 
+            @SuppressLint("DefaultLocale")
             public void onTick(long millisUntilFinished) {
 
                 long Days = millisUntilFinished / (24 * 60 * 60 * 1000);
@@ -383,16 +364,13 @@ public class EventActivity extends AppCompatActivity implements EventScanerListe
     @Override
     public Drawable getDrawable(String source) {
         LevelListDrawable d = new LevelListDrawable();
-        Drawable empty = getResources().getDrawable(R.drawable.logo_active_parks);
+        @SuppressLint("UseCompatLoadingForDrawables") Drawable empty = getResources().getDrawable(R.drawable.logo_active_parks, null);
         d.addLevel(0, 0, empty);
         d.setBounds(0, 0, empty.getIntrinsicWidth(), empty.getIntrinsicHeight());
 
-        new LoadImage(mDescription.getWidth()).setListener(new LoadImage.Listener() {
-            @Override
-            public void onUpdate() {
-                CharSequence t = mDescription.getText();
-                mDescription.setText(t);
-            }
+        new LoadImage(mDescription.getWidth()).setListener(() -> {
+            CharSequence t = mDescription.getText();
+            mDescription.setText(t);
         }).execute(source, d);
 
         return d;

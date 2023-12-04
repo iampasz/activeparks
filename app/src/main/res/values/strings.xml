@@ -24,7 +24,7 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
-    <string name="crop_image_activity_title"></string>
+    <string name="crop_image_activity_title">Зображення</string>
     <string name="crop_image_menu_rotate_left">Повернути ліворуч</string>
     <string name="crop_image_menu_rotate_right">Повернути праворуч</string>
     <string name="crop_image_menu_crop">Обрізати</string>
@@ -112,6 +112,7 @@
 
     <string name="calendar_event">Календар заходів</string>
     <string name="create_event">Створення заходу</string>
+    <string name="event_on_map">Захід на мапі</string>
     <string name="event_name">Назва</string>
     <string name="short_description">Короткий опис</string>
     <string name="full_description">Повний опис заходу</string>
@@ -184,5 +185,12 @@
     <string name="tv_pulse_zone_picker">%s уд/хв</string>
     <string name="tv_select_height_picker">Виберіть зріст (см)</string>
     <string name="tv_height_picker">%s см</string>
+    <string name="index">0</string>
+    <string name="x">x</string>
+
+    <string name="yes">Так</string>
+    <string name="no">Ні</string>
+    <string name="event_not_publish">Подія не опублікована</string>
+    <string name="save_druft">Зберегти подію як чернетку?</string>
 
 </resources>

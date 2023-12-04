@@ -1,22 +1,16 @@
 package com.app.activeparks.ui.home;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationRequest;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -29,8 +23,8 @@ import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.ClubsListActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
-import com.app.activeparks.ui.event.EventActivity;
-import com.app.activeparks.ui.event.EventsListActivity;
+import com.app.activeparks.ui.event.activity.EventActivity;
+import com.app.activeparks.ui.event.activity.EventsListActivity;
 import com.app.activeparks.ui.home.adapter.HomeAdaper;
 import com.app.activeparks.ui.home.adapter.HorizontalAdaperEvents;
 import com.app.activeparks.ui.home.adapter.ParkHorizontalAdaper;
@@ -39,20 +33,9 @@ import com.app.activeparks.ui.news.NewsFragment;
 import com.app.activeparks.ui.park.ParkActivity;
 import com.app.activeparks.util.FragmentInteface;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.android.play.core.review.ReviewException;
-import com.google.android.play.core.review.ReviewInfo;
-import com.google.android.play.core.review.ReviewManager;
-import com.google.android.play.core.review.ReviewManagerFactory;
-import com.google.android.play.core.review.model.ReviewErrorCode;
 import com.technodreams.activeparks.R;
 import com.technodreams.activeparks.databinding.FragmentHomeBinding;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.Executor;
 
 public class HomeFragment extends Fragment implements LocationListener, SwipeRefreshLayout.OnRefreshListener {
 

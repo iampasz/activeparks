@@ -39,7 +39,7 @@ public class ItemEvent {
     private String holdingStatusText;
     @SerializedName("imageUrl")
     @Expose
-    private String imageUrl = "";
+    private String imageUrl;
     @SerializedName("routeStartedAt")
     @Expose
     private String routeStartedAt;

@@ -1,4 +1,4 @@
-package com.app.activeparks.ui.event;
+package com.app.activeparks.ui.event.fragments;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -14,14 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.app.activeparks.data.model.meetings.MeetingsModel;
 import com.app.activeparks.ui.event.adapter.MeetingListAdaper;
 import com.technodreams.activeparks.databinding.FragmentRecordBinding;
-import com.technodreams.activeparks.databinding.FragmentRoutePointBinding;
 
 import java.util.List;
 
 public class MeetingsFragment extends Fragment {
 
     private FragmentRecordBinding binding;
-    private List<MeetingsModel.MeetingItem> meetings;
+    private final List<MeetingsModel.MeetingItem> meetings;
 
     public MeetingsFragment(List<MeetingsModel.MeetingItem> meetings){
         this.meetings = meetings;
@@ -35,12 +34,7 @@ public class MeetingsFragment extends Fragment {
 
         final RecyclerView listPoint = binding.listPoint;
 
-        listPoint.setAdapter(new MeetingListAdaper(getActivity(), meetings).setOnMeetingListener(new MeetingListAdaper.MeetingListener() {
-            @Override
-            public void onInfo(String url) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-            }
-        }));
+        listPoint.setAdapter(new MeetingListAdaper(getActivity(), meetings).setOnMeetingListener(url -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)))));
 
         return root;
     }

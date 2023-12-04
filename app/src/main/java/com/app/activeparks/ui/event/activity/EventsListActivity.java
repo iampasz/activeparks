@@ -1,7 +1,7 @@
-package com.app.activeparks.ui.event;
-
+package com.app.activeparks.ui.event.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,11 +10,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,11 +27,17 @@ import com.app.activeparks.data.model.calendar.CalendarItem;
 import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
+import com.app.activeparks.data.repository.Repository;
+import com.app.activeparks.data.storage.Preferences;
+import com.app.activeparks.ui.event.util.EventModelFactory;
+import com.app.activeparks.ui.event.fragments.FragmentEventCreate;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
+import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel;
+import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
-import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
 import com.technodreams.activeparks.R;
 
 import java.text.ParseException;
@@ -38,19 +45,23 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class EventsListActivity extends AppCompatActivity implements LocationListener {
 
     private EventViewModel viewModel;
-    private FrameLayout frame_events;
-    private String id = null;
+    Disposable disposable;
+
     private CalendarView calendarView;
     private TextView listStatus;
     private RecyclerView listClubOwner;
-    private ImageView createEventButton;
 
     private LocationManager locationManager;
-    private TabLayout selectFilter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,55 +75,33 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         listClubOwner = findViewById(R.id.list_events);
-        frame_events = findViewById(R.id.frame_events_container);
-
         calendarView = findViewById(R.id.calendarView);
-
         listStatus = findViewById(R.id.list_null);
-
-        createEventButton = findViewById(R.id.create_event_button2);
-
-        selectFilter = findViewById(R.id.select_filter);
+        ImageView createEventButton = findViewById(R.id.create_event_button2);
+        TabLayout selectFilter = findViewById(R.id.select_filter);
         selectFilter.setVisibility(View.VISIBLE);
-        selectFilter.getTabAt(1).select();
+        Objects.requireNonNull(selectFilter.getTabAt(1)).select();
 
         viewModel.getEventsList();
         viewModel.calendarEvent();
         findViewById(R.id.panel_top).setVisibility(View.VISIBLE);
         findViewById(R.id.title).setVisibility(View.GONE);
-        findViewById(R.id.closed).setOnClickListener(v -> {
-            onBackPressed();
-        });
+        findViewById(R.id.closed).setOnClickListener(v -> onBackPressed());
 
-
-        createEventButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.frame_events_container, new FragmentEventCreate())
-                        .commit();
-
-            }
-        });
+        createEventButton.setOnClickListener(view -> updateViewModelData());
 
         viewModel.getSportEventsList().observe(this, events -> {
             setAdapter(events);
             listStatus.setText("Жодного запланованого заходу");
         });
 
-        viewModel.getCalendar().observe(this, events -> {
-            setMaperAdapter(events);
-        });
+        viewModel.getCalendar().observe(this, this::setMapperAdapter);
 
-        calendarView.setOnDayClickListener(new OnDayClickListener() {
-            @Override
-            public void onDayClick(EventDay eventDay) {
-                Calendar cal = eventDay.getCalendar();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                viewModel.eventsDay(dateFormat.format(cal.getTime()));
-            }
+        calendarView.setOnDayClickListener(eventDay -> {
+            Calendar cal = eventDay.getCalendar();
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            viewModel.eventsDay(dateFormat.format(cal.getTime()));
         });
 
         selectFilter.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -122,29 +111,27 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
-
-
-
-
-
     }
 
-    public void setMaperAdapter(CalendarModel calendarItem) {
+    public void setMapperAdapter(CalendarModel calendarItem) {
         List<EventDay> days = new ArrayList<>();
 
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar;
+        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         for (CalendarItem item : calendarItem.getItems()) {
             try {
                 if (item.data() != null) {
                     calendar = Calendar.getInstance();
-                    calendar.setTime(sdf.parse(item.data()));
+                    calendar.setTime(Objects.requireNonNull(sdf.parse(item.data())));
                     days.add(new EventDay(calendar, R.drawable.seekbar_drawable_mark));
                 }
             } catch (ParseException e) {
@@ -214,5 +201,55 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
 
+    }
+
+
+    private void openCreateEventFragment() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_events_container, new FragmentEventCreate())
+                .commit();
+    }
+
+    private EventRouteViewModel eventRouteViewModel;
+
+    private void updateViewModelData() {
+        eventRouteViewModel = new ViewModelProvider(this).get(EventRouteViewModel.class);
+
+        Preferences preferences;
+        Repository repository;
+
+        preferences = new Preferences(this);
+        preferences.setServer(true);
+        repository = new Repository(preferences);
+
+
+        disposable = repository.createEmptyEvent()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(responseBody -> {
+
+
+                            String jsonResponse = responseBody.string();
+                            Gson gson = new Gson();
+                            ItemEvent itemEvent = gson.fromJson(jsonResponse, ItemEvent.class);
+                            eventRouteViewModel.updateItemEventData(itemEvent);
+                            openCreateEventFragment();
+
+                        }, error -> {
+
+
+                            Log.i("THROWABLE", error.getMessage() + " ");
+
+                            Toast.makeText(this, "Виникли проблеми, спробуйте пізніше", Toast.LENGTH_SHORT).show();
+
+                        }
+                );
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        disposable.dispose();
     }
 }

@@ -37,6 +37,7 @@ fun String.timeToSeconds(): Int {
     }
 }
 
+
 //Address
 fun Address.getAddress() =
     "м. ${this.locality}, ${this.thoroughfare} ${this.subThoroughfare}".replaceAddress()
