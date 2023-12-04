@@ -227,13 +227,14 @@ class FragmentEventCreate : Fragment() {
 
             val publishResponseSuccessful = object : responseSuccessful {
                 override fun load() {
+                    viewModelStore.clear()
                     parentFragmentManager.removeFragment(this@FragmentEventCreate)
                 }
             }
 
             val setDataResponseSuccessful = object : responseSuccessful {
                 override fun load() {
-
+                    viewModelStore.clear()
                     eventController.publishDataEvent(eventData.id, publishResponseSuccessful)
                     parentFragmentManager.removeFragment(FragmentEventCreate())
 
@@ -443,10 +444,11 @@ class FragmentEventCreate : Fragment() {
         builder.setNegativeButton(requireActivity().resources.getString(R.string.no)) { _, _ ->
             eventData.id?.let {
                 eventController.deleteEvent(eventData.id)
+                viewModelStore.clear()
+                parentFragmentManager.removeFragment(this)
             }
 
-            viewModelStore.clear()
-            parentFragmentManager.removeFragment(this)
+
         }
 
         val dialog = builder.create()
@@ -549,9 +551,6 @@ class FragmentEventCreate : Fragment() {
         })
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        eventController.clearDisposables()
-    }
+
 }
 

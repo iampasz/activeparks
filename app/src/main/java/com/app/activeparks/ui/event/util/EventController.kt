@@ -72,6 +72,7 @@ class EventController(context: Context) {
             .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 Log.i("API_SERVICE", "Data was delete from API")
+                clearDisposables()
             }
             ) { Log.i("API_SERVICE", "Data wasn't delete from API") }
 
