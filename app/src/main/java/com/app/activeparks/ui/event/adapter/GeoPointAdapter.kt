@@ -39,13 +39,14 @@ class GeoPointAdapter(
             val formattedLatitude = String.format("%.4f", geoPoint.latitude)
             val formattedLongitude = String.format("%.4f", geoPoint.longitude)
 
-            binding.longitudeText.text = "Longitude: $formattedLongitude"
-            binding.latitudeText.text = "Latitude: $formattedLatitude"
-            binding.positionGp.text = absoluteAdapterPosition.toString()
-            binding.removeButton.setOnClickListener {
-                removeItem.removePosition(absoluteAdapterPosition)
+            with(binding) {
+                longitudeText.text = "Longitude: $formattedLongitude"
+                latitudeText.text = "Latitude: $formattedLatitude"
+                positionGp.text = absoluteAdapterPosition.toString()
+                removeButton.setOnClickListener {
+                    removeItem.removePosition(absoluteAdapterPosition)
+                }
             }
-
         }
     }
 }

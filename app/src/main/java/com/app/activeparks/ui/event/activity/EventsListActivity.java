@@ -1,6 +1,5 @@
 package com.app.activeparks.ui.event.activity;
 
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,10 +10,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,14 +29,13 @@ import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.ui.event.EventModelFactory;
-import com.app.activeparks.ui.event.FragmentEventCreate;
+import com.app.activeparks.ui.event.util.EventModelFactory;
+import com.app.activeparks.ui.event.fragments.FragmentEventCreate;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel;
 import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
-import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.technodreams.activeparks.R;
@@ -45,13 +45,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class EventsListActivity extends AppCompatActivity implements LocationListener {
 
     private EventViewModel viewModel;
+    Disposable disposable;
 
     private CalendarView calendarView;
     private TextView listStatus;
@@ -76,7 +80,7 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
         ImageView createEventButton = findViewById(R.id.create_event_button2);
         TabLayout selectFilter = findViewById(R.id.select_filter);
         selectFilter.setVisibility(View.VISIBLE);
-        selectFilter.getTabAt(1).select();
+        Objects.requireNonNull(selectFilter.getTabAt(1)).select();
 
         viewModel.getEventsList();
         viewModel.calendarEvent();
@@ -91,15 +95,13 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
             listStatus.setText("Жодного запланованого заходу");
         });
 
-        viewModel.getCalendar().observe(this, this::setMaperAdapter);
+        viewModel.getCalendar().observe(this, this::setMapperAdapter);
 
-        calendarView.setOnDayClickListener(new OnDayClickListener() {
-            @Override
-            public void onDayClick(EventDay eventDay) {
-                Calendar cal = eventDay.getCalendar();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                viewModel.eventsDay(dateFormat.format(cal.getTime()));
-            }
+        calendarView.setOnDayClickListener(eventDay -> {
+            Calendar cal = eventDay.getCalendar();
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            viewModel.eventsDay(dateFormat.format(cal.getTime()));
         });
 
         selectFilter.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -118,17 +120,18 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
         });
     }
 
-    public void setMaperAdapter(CalendarModel calendarItem) {
+    public void setMapperAdapter(CalendarModel calendarItem) {
         List<EventDay> days = new ArrayList<>();
 
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar;
+        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         for (CalendarItem item : calendarItem.getItems()) {
             try {
                 if (item.data() != null) {
                     calendar = Calendar.getInstance();
-                    calendar.setTime(sdf.parse(item.data()));
+                    calendar.setTime(Objects.requireNonNull(sdf.parse(item.data())));
                     days.add(new EventDay(calendar, R.drawable.seekbar_drawable_mark));
                 }
             } catch (ParseException e) {
@@ -210,7 +213,6 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
 
     private EventRouteViewModel eventRouteViewModel;
 
-    @SuppressLint("CheckResult")
     private void updateViewModelData() {
         eventRouteViewModel = new ViewModelProvider(this).get(EventRouteViewModel.class);
 
@@ -221,22 +223,33 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
         preferences.setServer(true);
         repository = new Repository(preferences);
 
-        repository.createEmptyEvent().subscribeOn(Schedulers.io())
+
+        disposable = repository.createEmptyEvent()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBody -> {
 
-                    String jsonResponce = responseBody.string();
-                    Gson gson = new Gson();
-                    ItemEvent itemEvent = gson.fromJson(jsonResponce, ItemEvent.class);
+
+                            String jsonResponse = responseBody.string();
+                            Gson gson = new Gson();
+                            ItemEvent itemEvent = gson.fromJson(jsonResponse, ItemEvent.class);
+                            eventRouteViewModel.updateItemEventData(itemEvent);
+                            openCreateEventFragment();
+
+                        }, error -> {
 
 
-                    eventRouteViewModel.updateItemEventData(itemEvent);
-                    openCreateEventFragment();
+                            Log.i("THROWABLE", error.getMessage() + " ");
 
+                            Toast.makeText(this, "Виникли проблеми, спробуйте пізніше", Toast.LENGTH_SHORT).show();
 
-                }, throwable -> {
-                });
+                        }
+                );
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        disposable.dispose();
+    }
 }

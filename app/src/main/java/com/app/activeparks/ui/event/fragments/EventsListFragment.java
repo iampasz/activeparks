@@ -1,5 +1,6 @@
-package com.app.activeparks.ui.event;
+package com.app.activeparks.ui.event.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,9 +17,9 @@ import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.ui.event.activity.EventActivity;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
+import com.app.activeparks.ui.event.util.EventModelFactory;
 import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 import com.applandeo.materialcalendarview.EventDay;
-import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.technodreams.activeparks.R;
 import com.technodreams.activeparks.databinding.FragmentEventsBinding;
 
@@ -27,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 public class EventsListFragment extends Fragment {
 
@@ -53,21 +55,14 @@ public class EventsListFragment extends Fragment {
         mViewModel.calendarEvent(id);
         mViewModel.getEventsList(id);
 
-        mViewModel.getCalendar().observe(getViewLifecycleOwner(), events -> {
-            setMaperAdapter(events);
-        });
+        mViewModel.getCalendar().observe(getViewLifecycleOwner(), this::setMapperAdapter);
 
-        mViewModel.getSportEventsList().observe(getViewLifecycleOwner(), events -> {
-            setAdapter(events);
-        });
+        mViewModel.getSportEventsList().observe(getViewLifecycleOwner(), this::setAdapter);
 
-        binding.calendarView.setOnDayClickListener(new OnDayClickListener() {
-            @Override
-            public void onDayClick(EventDay eventDay) {
-                Calendar cal = eventDay.getCalendar();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                mViewModel.getEvents(dateFormat.format(cal.getTime()), id);
-            }
+        binding.calendarView.setOnDayClickListener(eventDay -> {
+            Calendar cal = eventDay.getCalendar();
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            mViewModel.getEvents(dateFormat.format(cal.getTime()), id);
         });
 
 
@@ -75,17 +70,17 @@ public class EventsListFragment extends Fragment {
     }
 
 
-    public void setMaperAdapter(CalendarModel calendarItem) {
+    public void setMapperAdapter(CalendarModel calendarItem) {
         List<EventDay> days = new ArrayList<>();
 
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar;
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         for (CalendarItem item : calendarItem.getItems()) {
             try {
                 if (item.data() != null) {
                     calendar = Calendar.getInstance();
-                    calendar.setTime(sdf.parse(item.data()));
+                    calendar.setTime(Objects.requireNonNull(sdf.parse(item.data())));
                     days.add(new EventDay(calendar, R.drawable.seekbar_drawable_mark));
                 }
             } catch (ParseException e) {
