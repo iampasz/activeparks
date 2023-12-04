@@ -29,7 +29,7 @@ import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.ui.event.util.EventModelFactory;
+import com.app.activeparks.ui.event.EventModelFactory;
 import com.app.activeparks.ui.event.fragments.FragmentEventCreate;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel;
