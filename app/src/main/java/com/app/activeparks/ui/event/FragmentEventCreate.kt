@@ -25,8 +25,8 @@ import androidx.fragment.app.Fragment
 import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.points.RoutePoint
 import com.app.activeparks.data.model.sportevents.ItemEvent
-import com.app.activeparks.data.network.ApiService
-import com.app.activeparks.data.network.NetworkModule
+import com.app.activeparks.data.network.baseOld.ApiService
+import com.app.activeparks.data.network.baseOld.NetworkModule
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.util.MapsViewController

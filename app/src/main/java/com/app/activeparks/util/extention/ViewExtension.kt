@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -78,4 +80,10 @@ fun TextView.setPulseZone(title: String) {
             requestLayout()
         }
     }
+}
+
+fun EditText.isNotEmpty() = this.text.toString().isNotEmpty()
+
+fun Button.isSelectedToResponse(): Int {
+    return if (this.isSelected) 1 else 0
 }

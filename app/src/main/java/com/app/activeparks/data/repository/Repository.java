@@ -2,8 +2,8 @@ package com.app.activeparks.data.repository;
 
 import android.util.Log;
 
-import com.app.activeparks.data.network.NetworkModule;
-import com.app.activeparks.data.network.ApiService;
+import com.app.activeparks.data.network.baseOld.NetworkModule;
+import com.app.activeparks.data.network.baseOld.ApiService;
 import com.app.activeparks.data.model.Default;
 import com.app.activeparks.data.model.authorisation.Authorisation;
 import com.app.activeparks.data.model.authorisation.Signup;

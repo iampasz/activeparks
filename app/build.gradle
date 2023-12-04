@@ -152,4 +152,7 @@ dependencies {
     implementation "io.insert-koin:koin-androidx-navigation:$koin_version"
 
     implementation 'com.polidea.rxandroidble2:rxandroidble:1.11.0'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.35'
+
+    implementation 'com.facebook.android:facebook-login:11.2.0'
 }

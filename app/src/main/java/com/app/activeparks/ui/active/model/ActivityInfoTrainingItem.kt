@@ -59,32 +59,37 @@ data class ActivityInfoTrainingItem(
                     isPulseGadget = true,
                     isOutside = false
                 ),
-                ActivityInfoTrainingItem(8,"0","Середній темп", "(хв/км)", R.drawable.ic_avr_temp,
+                ActivityInfoTrainingItem(8,"0","Пульс мінімальний", "(уд/хв)", R.drawable.ic_max_pulse,
+                    isSelected = false,
+                    isPulseGadget = true,
+                    isOutside = false
+                ),
+                ActivityInfoTrainingItem(9,"0","Середній темп", "(хв/км)", R.drawable.ic_avr_temp,
                     isSelected = false,
                     isPulseGadget = false,
                     isOutside = true
                 ),
-                ActivityInfoTrainingItem(9,"0","Максимальна висота", "(м)", R.drawable.ic_hight_up,
+                ActivityInfoTrainingItem(10,"0","Максимальна висота", "(м)", R.drawable.ic_hight_up,
                     isSelected = false,
                     isPulseGadget = false,
                     isOutside = true
                 ),
-                ActivityInfoTrainingItem(10,"0","Кроки", " ", R.drawable.ic_steps,
+                ActivityInfoTrainingItem(11,"0","Кроки", " ", R.drawable.ic_steps,
                     isSelected = false,
                     isPulseGadget = false,
                     isOutside = true
                 ),
-                ActivityInfoTrainingItem(11,"0","Мінімальна висота", "(м)", R.drawable.ic_hight_up,
+                ActivityInfoTrainingItem(12,"0","Мінімальна висота", "(м)", R.drawable.ic_hight_up,
                     isSelected = false,
                     isPulseGadget = false,
                     isOutside = true
                 ),
-                ActivityInfoTrainingItem(12,"0","Набір висоти", "(м)", R.drawable.ic_hight_up,
+                ActivityInfoTrainingItem(13,"0","Набір висоти", "(м)", R.drawable.ic_hight_up,
                     isSelected = false,
                     isPulseGadget = false,
                     isOutside = true
                 ),
-                ActivityInfoTrainingItem(13,"0","Спуск", "(м)", R.drawable.ic_hight_up,
+                ActivityInfoTrainingItem(14,"0","Спуск", "(м)", R.drawable.ic_hight_up,
                     isSelected = false,
                     isPulseGadget = false,
                     isOutside = true

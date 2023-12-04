@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@color/registration_main">
+
+    <EditText
+        android:id="@+id/editText1"
+        style="@style/SmsCodeEditText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="1" />
+
+    <View
+        android:id="@+id/indicator1"
+        style="@style/SmsCodeIndicator"
+        app:layout_constraintEnd_toEndOf="@id/editText1"
+        app:layout_constraintStart_toStartOf="@id/editText1"
+        app:layout_constraintTop_toBottomOf="@id/editText1" />
+
+    <EditText
+        android:id="@+id/editText2"
+        style="@style/SmsCodeEditText"
+        app:layout_constraintBottom_toBottomOf="@+id/editText1"
+        app:layout_constraintStart_toEndOf="@id/editText1"
+        app:layout_constraintTop_toTopOf="@id/editText1"
+        tools:text="2" />
+
+    <View
+        android:id="@+id/indicator2"
+        style="@style/SmsCodeIndicator"
+        app:layout_constraintEnd_toEndOf="@id/editText2"
+        app:layout_constraintStart_toStartOf="@id/editText2"
+        app:layout_constraintTop_toBottomOf="@id/editText2" />
+
+    <EditText
+        android:id="@+id/editText3"
+        style="@style/SmsCodeEditText"
+        app:layout_constraintBottom_toBottomOf="@+id/editText2"
+        app:layout_constraintStart_toEndOf="@id/editText2"
+        app:layout_constraintTop_toTopOf="@id/editText2"
+        tools:text="3" />
+
+    <View
+        android:id="@+id/indicator3"
+        style="@style/SmsCodeIndicator"
+        app:layout_constraintEnd_toEndOf="@id/editText3"
+        app:layout_constraintStart_toStartOf="@id/editText3"
+        app:layout_constraintTop_toBottomOf="@id/editText3" />
+
+    <EditText
+        android:id="@+id/editText4"
+        style="@style/SmsCodeEditText"
+        app:layout_constraintBottom_toTopOf="@+id/indicator3"
+        app:layout_constraintStart_toEndOf="@id/editText3"
+        app:layout_constraintTop_toTopOf="@id/editText3"
+        tools:text="4" />
+
+    <View
+        android:id="@+id/indicator4"
+        style="@style/SmsCodeIndicator"
+        app:layout_constraintEnd_toEndOf="@id/editText4"
+        app:layout_constraintStart_toStartOf="@id/editText4"
+        app:layout_constraintTop_toBottomOf="@id/editText4" />
+
+    <EditText
+        android:id="@+id/editText5"
+        style="@style/SmsCodeEditText"
+        app:layout_constraintBottom_toBottomOf="@+id/editText4"
+        app:layout_constraintStart_toEndOf="@id/editText4"
+        app:layout_constraintTop_toTopOf="@id/editText4"
+        tools:text="5" />
+
+    <View
+        android:id="@+id/indicator5"
+        style="@style/SmsCodeIndicator"
+        app:layout_constraintEnd_toEndOf="@id/editText5"
+        app:layout_constraintStart_toStartOf="@id/editText5"
+        app:layout_constraintTop_toBottomOf="@id/editText5" />
+
+    <EditText
+        android:id="@+id/editText6"
+        style="@style/SmsCodeEditText"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/editText5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/editText5"
+        app:layout_constraintTop_toTopOf="@id/editText5"
+        tools:text="6" />
+
+    <View
+        android:id="@+id/indicator6"
+        style="@style/SmsCodeIndicator"
+        app:layout_constraintEnd_toEndOf="@id/editText6"
+        app:layout_constraintStart_toStartOf="@id/editText6"
+        app:layout_constraintTop_toBottomOf="@id/editText6" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

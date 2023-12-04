@@ -101,11 +101,12 @@
 
     <TextView
         android:id="@+id/tvSelectZone6"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/button_green"
+        android:background="@drawable/button_pulse_value_select"
+        android:gravity="center"
         android:padding="8dp"
         android:text="175 уд/хв"
         android:textColor="@color/white"
@@ -130,13 +131,14 @@
 
     <TextView
         android:id="@+id/tvSelectZone5"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/button_green"
+        android:background="@drawable/button_pulse_value_select"
+        android:gravity="center"
         android:padding="8dp"
-        android:text="175 уд/хв"
+        android:text="150 уд/хв"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/tvZone5"
         app:layout_constraintTop_toTopOf="@+id/tvZone5" />
@@ -159,13 +161,14 @@
 
     <TextView
         android:id="@+id/tvSelectZone4"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/button_green"
+        android:background="@drawable/button_pulse_value_select"
+        android:gravity="center"
         android:padding="8dp"
-        android:text="175 уд/хв"
+        android:text="125 уд/хв"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/tvZone4"
         app:layout_constraintTop_toTopOf="@+id/tvZone4" />
@@ -188,26 +191,28 @@
 
     <TextView
         android:id="@+id/tvSelectZone3"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/button_green"
+        android:background="@drawable/button_pulse_value_select"
+        android:gravity="center"
         android:padding="8dp"
-        android:text="175 уд/хв"
+        android:text="100 уд/хв"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/tvZone3"
         app:layout_constraintTop_toTopOf="@+id/tvZone3" />
 
     <TextView
         android:id="@+id/tvSelectZone2"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/button_green"
+        android:background="@drawable/button_pulse_value_select"
+        android:gravity="center"
         android:padding="8dp"
-        android:text="175 уд/хв"
+        android:text="75 уд/хв"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/tvZone2"
         app:layout_constraintTop_toTopOf="@+id/tvZone2" />
@@ -287,12 +292,12 @@
         app:layout_constraintStart_toStartOf="@+id/vPulseZoneInfo"
         app:layout_constraintTop_toBottomOf="@+id/vPulseZoneInfo" />
 
-<!--    <NumberPicker-->
-<!--        android:id="@+id/npPulse"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintBottom_toBottomOf="@+id/tvPulseInfoDescription"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent" />-->
+    <!--    <NumberPicker-->
+    <!--        android:id="@+id/npPulse"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@+id/tvPulseInfoDescription"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

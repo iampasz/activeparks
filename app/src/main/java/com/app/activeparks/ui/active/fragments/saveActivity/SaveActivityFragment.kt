@@ -20,11 +20,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.app.activeparks.ui.active.ActiveViewModel
 import com.app.activeparks.ui.active.fragments.level.ActivityInfoTrainingAdapter
 import com.app.activeparks.ui.active.model.Feeling
-import com.app.activeparks.util.EmptyTextWatcher
+import com.app.activeparks.util.EasyTextWatcher
 import com.app.activeparks.util.MapsViewController
-import com.app.activeparks.util.extention.disable
-import com.app.activeparks.util.extention.enableIf
 import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.invisible
 import com.app.activeparks.util.extention.replaceNull
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentSaveActivityBinding
@@ -86,6 +85,12 @@ class SaveActivityFragment : Fragment() {
         ivLocation.setActivityInfoItem(viewModel.startInfo.startPoint)
         calculateWidthLocation()
         ivWeather.setActivityInfoItem(viewModel.startInfo.weather)
+        if (activityViewModel.activityState.weather.isNotEmpty()) {
+            ivWeather.setTitle(activityViewModel.activityState.weather)
+            ivWeather.setImg(activityViewModel.activityState.weatherIcon)
+        } else {
+            ivWeather.invisible()
+        }
 
         viewModel.currentActivity.location = ivLocation.getItem()
         viewModel.currentActivity.weather = ivWeather.getItem()
@@ -153,7 +158,7 @@ class SaveActivityFragment : Fragment() {
     }
 
     private fun FragmentSaveActivityBinding.setListener() {
-        etDescriptionActivity.addTextChangedListener(object : EmptyTextWatcher() {
+        etDescriptionActivity.addTextChangedListener(object : EasyTextWatcher() {
             @SuppressLint("SetTextI18n")
             override fun afterTextChanged(s: Editable?) {
                 count = s?.toString()?.length ?: 0
@@ -161,10 +166,9 @@ class SaveActivityFragment : Fragment() {
                 viewModel.currentActivity.descriptionActivity = s?.toString() ?: ""
             }
         })
-        etNameTraining.addTextChangedListener(object : EmptyTextWatcher() {
+        etNameTraining.addTextChangedListener(object : EasyTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
                 viewModel.currentActivity.titleActivity = s?.toString() ?: ""
-                btnSave.enableIf(isValid())
             }
         })
 
@@ -172,12 +176,15 @@ class SaveActivityFragment : Fragment() {
         tvDeleteTraining.setOnClickListener { requireActivity().onBackPressed() }
 
         btnSave.setOnClickListener {
-            viewModel.saveActivity(activityViewModel.activityState.activeRoad, activityViewModel.activityInfoItems)
+            viewModel.saveActivity(
+                activityViewModel.activityState,
+                activityViewModel.activityInfoItems,
+                activityViewModel.activityTime
+            )
 
             binding.mapview.overlayManager.clear()
             binding.mapview.invalidate()
 
-            btnSave.disable()
             requireActivity().onBackPressed()
         }
 
@@ -209,14 +216,6 @@ class SaveActivityFragment : Fragment() {
                 context
             )
             mapsViewController?.homeView = true
-        }
-    }
-
-    private fun isValid(): Boolean {
-        with(binding) {
-            val title = etNameTraining.text.toString()
-
-            return (title.isNotEmpty() && title.length > 5)
         }
     }
 

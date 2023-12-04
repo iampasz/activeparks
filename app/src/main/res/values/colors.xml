@@ -86,7 +86,12 @@
     <!--Extra colors-->
     <color name="light_red">#F4575D</color>
     <color name="light_green">#C2D220</color>
+    <color name="light_green_disable">#66C2D220</color>
     <color name="dark_text">#262626</color>
+
+
+    <color name="registration_main">#31c5ca</color>
+    <color name="registration_tint">#FF5100</color>
 
 
 </resources>
