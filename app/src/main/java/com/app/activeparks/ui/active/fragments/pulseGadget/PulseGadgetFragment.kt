@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
 import android.bluetooth.le.BluetoothLeScanner
@@ -32,6 +33,7 @@ import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.databinding.FragmentPulseGadgetBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import java.util.UUID
 
 /**
  * Created by O.Dziuba on 06.11.2023.
@@ -43,6 +45,10 @@ class PulseGadgetFragment : Fragment() {
 
     private val bluetoothDevices = mutableListOf<BluetoothDevice>()
     private var bluetoothLeScanner: BluetoothLeScanner? = null
+
+    private val HR_MEASUREMENT_UUID: UUID = UUID.fromString("00002a37-0000-1000-8000-00805f9b34fb")
+    private val HR_SERVICE_UUID: UUID = UUID.fromString("0000180D-0000-1000-8000-00805f9b34fb")
+    private val CLIENT_CHARACTERISTIC_CONFIG_UUID: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
 
     private lateinit var bluetoothAdapter: BluetoothAdapter
     val adapter = BleDeviceAdapter {}
@@ -62,7 +68,19 @@ class PulseGadgetFragment : Fragment() {
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                val heartRateService = gatt.getService(HR_SERVICE_UUID)
+                val heartRateCharacteristic = heartRateService?.getCharacteristic(HR_MEASUREMENT_UUID)
 
+                if (heartRateCharacteristic != null) {
+                    gatt.setCharacteristicNotification(heartRateCharacteristic, true)
+
+                    val descriptor =
+                        heartRateCharacteristic.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID)
+                    descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                    gatt.writeDescriptor(descriptor)
+                }
+            }
         }
 
         @Deprecated("Deprecated in Java")
@@ -70,7 +88,13 @@ class PulseGadgetFragment : Fragment() {
             gatt: BluetoothGatt?,
             characteristic: BluetoothGattCharacteristic?
         ) {
-
+            if (HR_MEASUREMENT_UUID == characteristic?.uuid) {
+                val heartRateValue = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 1)
+                Log.d(
+                    "!@#!@#",
+                    "ПУЛЬС: ${heartRateValue}"
+                )
+            }
         }
     }
 
