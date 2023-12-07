@@ -3,8 +3,6 @@ package com.app.activeparks.ui.active.fragments.map
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -15,17 +13,14 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.app.activeparks.ui.active.ActiveViewModel
+import com.app.activeparks.ui.active.util.AddressUtil
 import com.app.activeparks.ui.active.util.CalorieCalculator
 import com.app.activeparks.util.MapsViewController
-import com.app.activeparks.util.extention.getAddress
 import com.app.activeparks.util.extention.toInfo
-import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentMapActivityBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Polyline
-import java.io.IOException
-import java.util.Locale
 import kotlin.math.abs
 
 class MapActivityFragment : Fragment(), LocationListener {
@@ -102,6 +97,8 @@ class MapActivityFragment : Fragment(), LocationListener {
         totalDescent = 0.0
         startLocation = null
         previousLocation = null
+        viewModel.activityState.startPoint = ""
+        viewModel.activityState.weather = ""
     }
 
     private fun startCheckLocation() {
@@ -129,8 +126,11 @@ class MapActivityFragment : Fragment(), LocationListener {
     }
 
     override fun onLocationChanged(location: Location) {
-        if (viewModel.activityState.startPoint.isEmpty()) {
-            viewModel.activityState.startPoint = getAddressFromLocation(requireContext(), location)
+        if (viewModel.activityState.startPoint.isEmpty() && viewModel.activityState.isTrainingStart) {
+            viewModel.activityState.startPoint =
+                AddressUtil.getAddressFromLocation(requireContext(), location)
+
+            mapsViewController?.zoomOnStart()
         }
 
         if (viewModel.activityState.isTrainingStart && !viewModel.activityState.isPause) {
@@ -139,6 +139,10 @@ class MapActivityFragment : Fragment(), LocationListener {
             calculateParameters(location, geoPoint)
 
             viewModel.activityState.currentPulse -= 1
+        }
+
+        if (viewModel.location == null) {
+            viewModel.location = location
         }
     }
 
@@ -219,29 +223,6 @@ class MapActivityFragment : Fragment(), LocationListener {
         }
     }
 
-    private fun getAddressFromLocation(context: Context, location: Location): String {
-        val geocoder = Geocoder(context, Locale.getDefault())
-        val addresses: List<Address>?
-
-        try {
-            addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-            if (!addresses.isNullOrEmpty()) {
-                val address = addresses[0]
-                val addressStringBuilder = StringBuilder()
-
-                for (i in 0..address.maxAddressLineIndex) {
-                    addressStringBuilder.append(address.getAddressLine(i)).append(" ")
-                }
-
-                return address.getAddress()
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-        return getString(R.string.tv_address_not_found)
-    }
-
     private fun saveResult(
         averageSpeed: Double, pathDistance: Double, averagePace: String,
         maxHeight: Double, minHeight: Double, totalAscent: Double,
@@ -255,34 +236,34 @@ class MapActivityFragment : Fragment(), LocationListener {
             kKal = when (viewModel.activityState.activityType.id) {
                 0 -> CalorieCalculator.calculateCaloriesForWalk(
                     viewModel.activityDuration,
-                    viewModel.getWeight(),
+                    viewModel.weight,
                     averageSpeed
                 )
 
                 1 -> CalorieCalculator.calculateCaloriesForScandinavianWalk(
                     viewModel.activityDuration,
-                    viewModel.getWeight(),
+                    viewModel.weight,
                     averageSpeed
                 )
 
                 2 -> CalorieCalculator.calculateCaloriesForBicycle(
                     viewModel.activityDuration,
-                    viewModel.getWeight(),
+                    viewModel.weight,
                     averageSpeed
                 )
 
                 else -> CalorieCalculator.calculateCaloriesForRun(
                     viewModel.activityDuration,
-                    viewModel.getWeight(),
+                    viewModel.weight,
                     averageSpeed
                 )
             }
             it[4].number = kKal.toInfo()
-            it[8].number = averagePace
-            it[9].number = maxHeight.toInfo()
-            it[11].number = minHeight.toInfo()
-            it[12].number = totalAscent.toInfo()
-            it[13].number = totalDescent.toInfo()
+            it[9].number = averagePace
+            it[10].number = maxHeight.toInfo()
+            it[12].number = minHeight.toInfo()
+            it[13].number = totalAscent.toInfo()
+            it[14].number = totalDescent.toInfo()
         }
 
         viewModel.updateActivityInfoTrainingItem.value = true

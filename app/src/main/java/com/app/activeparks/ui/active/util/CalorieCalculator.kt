@@ -7,7 +7,7 @@ class CalorieCalculator {
     companion object {
         private fun metForWalk(
             speedKmpH: Double,
-            weightKg: Double
+            weightKg: Int
         ) = speedKmpH / (3.5 * weightKg / 200)
 
         private fun metForScandinavianWalk(speedKmpH: Double) = when {
@@ -33,7 +33,7 @@ class CalorieCalculator {
 
         fun calculateCaloriesForWalk(
             durationHours: Int,
-            weightKg: Double,
+            weightKg: Int,
             speedKmpH: Double
         ): Double {
             return metForWalk(speedKmpH, weightKg) * secondsToHours(durationHours) * weightKg
@@ -41,7 +41,7 @@ class CalorieCalculator {
 
         fun calculateCaloriesForScandinavianWalk(
             durationHours: Int,
-            weightKg: Double,
+            weightKg: Int,
             speedKmpH: Double
         ): Double {
             return metForScandinavianWalk(speedKmpH) * secondsToHours(durationHours) * speedKmpH * weightKg
@@ -49,7 +49,7 @@ class CalorieCalculator {
 
         fun calculateCaloriesForBicycle(
             durationHours: Int,
-            weightKg: Double,
+            weightKg: Int,
             speedKmpH: Double
         ): Double {
             return metForBicycle(speedKmpH) * secondsToHours(durationHours) * weightKg
@@ -57,7 +57,7 @@ class CalorieCalculator {
 
         fun calculateCaloriesForRun(
             durationHours: Int,
-            weightKg: Double,
+            weightKg: Int,
             speedKmpH: Double
         ): Double {
             return metForRun(speedKmpH) * secondsToHours(durationHours) * weightKg

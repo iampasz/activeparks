@@ -2,8 +2,8 @@ package com.app.activeparks.data.repository;
 
 import android.util.Log;
 
-import com.app.activeparks.data.network.NetworkModule;
-import com.app.activeparks.data.network.ApiService;
+import com.app.activeparks.data.network.baseOld.NetworkModule;
+import com.app.activeparks.data.network.baseOld.ApiService;
 import com.app.activeparks.data.model.Default;
 import com.app.activeparks.data.model.authorisation.Authorisation;
 import com.app.activeparks.data.model.authorisation.Signup;
@@ -713,5 +713,26 @@ public class Repository {
         RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), type);
 
         return service.updateFile(token, name, (int) file.length(), 1, 1, name, filename, body);
+    }
+
+
+    public Observable<ResponseBody> createEmptyEvent() {
+        return service.createEmptyEvent(token);
+    }
+
+    public Observable<ResponseBody> setDataEvent(ItemEvent itemEvent) {
+        return service.setDataEvent(token, itemEvent.getId(), itemEvent);
+    }
+
+    public Observable<ResponseBody> publishDataEvent(String eventId) {
+        return service.publishDataEvent(token, eventId);
+    }
+
+    public Observable<ResponseBody> getAllEventsPublished() {
+        return service.getAllEventsPublished();
+    }
+
+    public Observable<ResponseBody> deleteEvent(String id) {
+        return service.deleteEvent(token, id);
     }
 }

@@ -13,3 +13,13 @@
 .externalNativeBuild
 .cxx
 local.properties
+MyJson.json
+fragment_calendar_event.xml
+Event.kt
+FragmentCalendarEvent.kt
+buildOutputCleanup.lock
+outputFiles.bin
+.gitignore
+file-system.probe
+BaseAdapter.kt
+

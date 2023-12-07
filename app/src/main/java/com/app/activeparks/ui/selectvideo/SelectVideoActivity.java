@@ -2,7 +2,6 @@ package com.app.activeparks.ui.selectvideo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -10,9 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.app.activeparks.ui.event.EventActivity;
 import com.app.activeparks.ui.video.VideoActivity;
-import com.app.activeparks.util.FragmenSelectInteface;
 import com.technodreams.activeparks.R;
 
 public class SelectVideoActivity extends AppCompatActivity implements ContentVideoCallback {
@@ -77,7 +74,7 @@ public class SelectVideoActivity extends AppCompatActivity implements ContentVid
     public void seletcFrament(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame, fragment)
+                .replace(R.id.frame_events, fragment)
                 .commit();
     }
 

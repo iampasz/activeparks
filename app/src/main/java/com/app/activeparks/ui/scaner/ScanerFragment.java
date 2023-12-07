@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.app.activeparks.ui.clubs.ClubActivity;
-import com.app.activeparks.ui.event.EventActivity;
+import com.app.activeparks.ui.event.activity.EventActivity;
 import com.app.activeparks.ui.selectvideo.SelectVideoActivity;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;

@@ -44,7 +44,7 @@
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/frame"
+        android:id="@+id/frame_events"
         android:layout_width="280dp"
         android:layout_height="280dp"
         app:layout_constraintBottom_toBottomOf="parent"

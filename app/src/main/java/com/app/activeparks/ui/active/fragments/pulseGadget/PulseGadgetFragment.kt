@@ -216,12 +216,16 @@ class PulseGadgetFragment : Fragment() {
         }
     }
 
-    private val requestMultiplePermissions =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            permissions.entries.forEach {
-                Log.d("test006", "${it.key} = ${it.value}")
+    private val requestMultiplePermissions = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        when {
+            permissions.getOrDefault(Manifest.permission.BLUETOOTH_SCAN, false) -> {
+                startScanning()
             }
+            else -> { }
         }
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initListener() {

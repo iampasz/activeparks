@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.app.activeparks.ui.active.ActiveViewModel
@@ -54,6 +55,26 @@ class PulseZoneFragment : Fragment() {
             tvZone2.setOnClickListener {
                 changeZoneInfo(tvZone2, vPulseZoneInfo, tvPulseInfoTitle)
                 setPulseZone(pulseZoneList[4])
+            }
+
+            tvSelectZone6.setOnClickListener {
+                setPulseZoneValue(tvSelectZone6, 175)
+            }
+
+            tvSelectZone5.setOnClickListener {
+                setPulseZoneValue(tvSelectZone5, 150)
+            }
+
+            tvSelectZone4.setOnClickListener {
+                setPulseZoneValue(tvSelectZone4, 125)
+            }
+
+            tvSelectZone3.setOnClickListener {
+                setPulseZoneValue(tvSelectZone3, 100)
+            }
+
+            tvSelectZone2.setOnClickListener {
+                setPulseZoneValue(tvSelectZone2, 75)
             }
 
             ivBack.setOnClickListener {
@@ -119,35 +140,26 @@ class PulseZoneFragment : Fragment() {
                     }
                 }
             )
+        }
+    }
 
-            tvSelectZone6.setOnClickListener {
-                scrollPicker(tvSelectZone6)
+
+    private fun setPulseZoneValue(textView: TextView, value: Int) {
+        val numberPicker = NumberPicker(requireContext())
+        numberPicker.minValue = 70
+        numberPicker.maxValue = 200
+        numberPicker.value = value
+
+        val dialog = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.tv_select_pulse_zone_value))
+            .setView(numberPicker)
+            .setPositiveButton(getString(R.string.tv_ok)) { _, _ ->
+                textView.text =
+                    getString(R.string.tv_pulse_zone_picker, numberPicker.value.toString())
             }
-        }
-    }
+            .create()
 
-    private fun scrollPicker(tvChange: TextView) {
-//        val data = getPulseValueForPulse()
-//        with(binding.npPulse) {
-//            minValue = 0
-//            maxValue = data.size - 1
-//            wrapSelectorWheel = false
-//            displayedValues = data
-//
-//            setOnValueChangedListener { _, _, newValue ->
-//                tvChange.text = newValue.toString()
-//
-//            }
-//        }
-    }
-
-    private fun getPulseValueForPulse(): Array<String> {
-        val list = mutableListOf<String>()
-        for (i in 75..200) {
-            list.add("$i уд/хв")
-        }
-
-        return list.toTypedArray()
+        dialog.show()
     }
 
     private fun setPulseZone(pulseZone: PulseZone) {

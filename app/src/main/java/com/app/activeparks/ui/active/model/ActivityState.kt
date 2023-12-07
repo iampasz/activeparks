@@ -10,6 +10,8 @@ data class ActivityState(
     var activityTypeOutside: LevelOfActivity = LevelOfActivity.getLevelOfActivity().first(),
     val activeRoad: MutableList<GeoPoint> = mutableListOf(),
     var startPoint: String = "",
+    var weather: String = "",
+    var weatherIcon: Int = -1,
     var currentPulse: Int = 80,
     var pulseOnPause: Int = 75,
     var maxPulse: Int = 150,

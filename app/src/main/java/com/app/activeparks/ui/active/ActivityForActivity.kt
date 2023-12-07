@@ -19,6 +19,7 @@ import com.app.activeparks.ui.active.fragments.infoItem.ActivityInfoItemFragment
 import com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityFragment
 import com.app.activeparks.ui.active.fragments.type.ActivityTypeFragment
 import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
+import com.app.activeparks.ui.active.util.AddressUtil
 import com.app.activeparks.util.extention.disable
 import com.app.activeparks.util.extention.enable
 import com.app.activeparks.util.extention.enableIf
@@ -136,16 +137,29 @@ class ActivityForActivity : AppCompatActivity() {
                 gone(btnEnd, btnContinue, gPause, vBottomView)
                 visible(navMain, btnStart)
                 restartTimer()
-                activeViewModel.activityState.isTrainingStart = false
-                activeViewModel.activityState.isPause = false
-                activeViewModel.checkLocation.value = false
-                openFragment(SaveActivityFragment())
+                with(activeViewModel) {
+                    activityState.isTrainingStart = false
+                    activityState.isPause = false
+                    checkLocation.value = false
+                    getWeather()
+                    activityTime.finishesAt = System.currentTimeMillis()
+                    activityTime.time = activityTime.finishesAt - activityTime.startsAt
+
+                    location?.let {
+                        if (activityState.startPoint.isEmpty()) {
+                            activityState.startPoint =
+                                AddressUtil.getAddressFromLocation(this@ActivityForActivity, it)
+                        }
+                    }
+                }
+                setEnableActivityInfo()
             }
             btnContinue.setOnClickListener {
                 gone(btnEnd, btnContinue, gPause)
                 visible(btnPause)
                 resumeTimer()
                 activeViewModel.activityState.isPause = false
+                setEnableActivityInfo()
             }
 
             topPanel.aivFirst.setOnClickListener {
@@ -200,6 +214,17 @@ class ActivityForActivity : AppCompatActivity() {
         pauseTimer()
         btnPause.gone()
         activeViewModel.activityState.isPause = true
+
+        setEnableActivityInfo()
+    }
+
+    private fun FragmentActiveBinding.setEnableActivityInfo() {
+        enableIf(
+            !activeViewModel.activityState.isPause,
+            topPanel.aivFirst,
+            topPanel.aivSecond,
+            topPanel.aivThird
+        )
     }
 
     private fun startActivity() {
@@ -207,9 +232,12 @@ class ActivityForActivity : AppCompatActivity() {
             startTimer()
             visible(btnPause, vBottomView)
             gone(btnStart, navMain)
-            activeViewModel.activityState.isTrainingStart = true
-            activeViewModel.updateUI.value = true
-            activeViewModel.checkLocation.value = true
+            with(activeViewModel) {
+                activityState.isTrainingStart = true
+                updateUI.value = true
+                checkLocation.value = true
+                activityTime.startsAt = System.currentTimeMillis()
+            }
         }
     }
 
@@ -314,6 +342,13 @@ class ActivityForActivity : AppCompatActivity() {
                     }
                 }
             }
+
+            updateWeather.observe(this@ActivityForActivity) {
+                if (it) {
+                    openFragment(SaveActivityFragment())
+                    updateWeather.value = false
+                }
+            }
         }
     }
 
@@ -345,13 +380,7 @@ class ActivityForActivity : AppCompatActivity() {
                     }
                     activeViewModel.activityState.onSelectedTypeFromSetting = false
 
-                    enableIf(
-                        !activityState.isTrainingStart,
-                        icActivityType,
-                        aivFirst,
-                        aivSecond,
-                        aivThird
-                    )
+                    icActivityType.enableIf(!activityState.isTrainingStart)
 
                     aivFirst.apply {
                         setActivityInfoItem(activeViewModel.activityState.aiFirst)

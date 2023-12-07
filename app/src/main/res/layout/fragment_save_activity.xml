@@ -224,7 +224,6 @@
                 android:layout_height="40dp"
                 android:layout_marginTop="32dp"
                 android:background="@drawable/selector_button_green"
-                android:enabled="false"
                 android:text="@string/tv_save"
                 android:textAllCaps="false"
                 android:textColor="@color/white"

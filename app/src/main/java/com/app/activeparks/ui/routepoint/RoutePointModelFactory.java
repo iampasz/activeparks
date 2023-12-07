@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.ui.event.EventViewModel;
 
 public class RoutePointModelFactory implements ViewModelProvider.Factory {
 

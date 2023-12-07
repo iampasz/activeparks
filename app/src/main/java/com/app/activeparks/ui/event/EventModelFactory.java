@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.app.activeparks.data.storage.Preferences;
+import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 
 public class EventModelFactory implements ViewModelProvider.Factory {
 
