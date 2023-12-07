@@ -11,6 +11,7 @@ import com.technodreams.activeparks.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -98,7 +99,8 @@ val networkModule = module {
         NetworkManagerImpl(
             get(named(WEATHER)),
             get(named(WITH_AUTH)),
-            get(named(WITHOUT_AUTH))
+            get(named(WITHOUT_AUTH)),
+            androidContext()
         )
     }
 

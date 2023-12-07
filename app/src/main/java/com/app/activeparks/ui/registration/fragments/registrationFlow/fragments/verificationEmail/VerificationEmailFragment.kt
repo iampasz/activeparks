@@ -10,6 +10,8 @@ import com.app.activeparks.ui.registration.RegistrationViewModel
 import com.app.activeparks.ui.view.SmsCodeInputView
 import com.app.activeparks.util.extention.disable
 import com.app.activeparks.util.extention.enable
+import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentVerificationEmailBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -39,9 +41,13 @@ class VerificationEmailFragment : Fragment() {
     private fun observe() {
         with(viewModel) {
             verificationEmailCodeLD.observe(viewLifecycleOwner) {
+                binding.progress.gone()
                 if (it == true) {
                     findNavController().navigate(R.id.action_fVerificationEmail_to_fAdditionalValue)
                 }
+            }
+            onHideProgress.observe(viewLifecycleOwner) {
+                binding.progress.gone()
             }
         }
     }
@@ -61,9 +67,12 @@ class VerificationEmailFragment : Fragment() {
             })
 
             btnNext.setOnClickListener {
+                btnNext.disable()
+                progress.visible()
                 viewModel.verificationEmailCode()
             }
             btnBack.setOnClickListener {
+                binding.progress.gone()
                 requireActivity().onBackPressed()
             }
         }

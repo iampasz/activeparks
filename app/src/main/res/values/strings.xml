@@ -192,5 +192,6 @@
     <string name="no">Ні</string>
     <string name="event_not_publish">Подія не опублікована</string>
     <string name="save_druft">Зберегти подію як чернетку?</string>
+    <string name="tv_somsing_went_wrong">Шось пішло не так :(</string>
 
 </resources>

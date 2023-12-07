@@ -24,7 +24,7 @@ import com.app.activeparks.data.db.entity.UserEntity
         ActivityStateEntity::class,
         UserEntity::class
     ],
-    version = 1
+    version = 2
 )
 @TypeConverters(
     GeoPointConverters::class,

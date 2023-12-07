@@ -10,9 +10,9 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
-    viewModel { ActiveViewModel(get(), get()) }
+    viewModel { ActiveViewModel(get(), get(), get()) }
     viewModel { SaveActivityViewModel(get()) }
     viewModel { PulseGadgetViewModel() }
-    viewModel { ForgotPasswordViewModel() }
+    viewModel { ForgotPasswordViewModel(get()) }
     viewModel { RegistrationViewModel(get(), androidContext()) }
 }

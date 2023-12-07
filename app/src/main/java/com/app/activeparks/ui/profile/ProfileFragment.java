@@ -29,6 +29,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.app.activeparks.MainActivity;
 import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.uservideo.UserVideoItem;
@@ -201,10 +202,10 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
                             viewModel.logout();
-                            getActivity().getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .replace(R.id.fragment_container_user, new AuthFragment())
-                                    .commit();
+
+                            if (requireActivity() instanceof MainActivity) {
+                                ((MainActivity) requireActivity()).getNavController().navigate(R.id.registration_user);
+                            }
                             dialog.cancel();
                             break;
 

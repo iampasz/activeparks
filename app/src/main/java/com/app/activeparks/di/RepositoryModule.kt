@@ -17,7 +17,7 @@ import org.koin.dsl.module
  */
 
 val repositoryModule = module{
-        single<SaveActivityRepository> { SaveActivityRepositoryImpl(get()) }
+        single<SaveActivityRepository> { SaveActivityRepositoryImpl(get(), get()) }
         single<ActivityStateRepository> { ActivityStateRepositoryImpl(get()) }
         single<WeatherRepository> { WeatherRepositoryImpl(get()) }
         single<MobileApiSessionRepository> { SharedPreferencesMobileApiSessionRepository(get()) }

@@ -1,11 +1,13 @@
 package com.app.activeparks.ui.active
 
 import android.location.Location
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.activeparks.data.useCase.activeState.ActivityStateUseCase
+import com.app.activeparks.data.useCase.registration.UserUseCase
 import com.app.activeparks.data.useCase.weatehr.WeatherUseCase
 import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
 import com.app.activeparks.ui.active.model.ActivityState
@@ -17,7 +19,8 @@ import org.osmdroid.util.GeoPoint
 
 class ActiveViewModel(
     private val activityStateUseCase: ActivityStateUseCase,
-    private val weatherUseCase: WeatherUseCase
+    private val weatherUseCase: WeatherUseCase,
+    private val userUseCase: UserUseCase
 ) : ViewModel() {
 
     val navigate = MutableLiveData<Fragment?>()
@@ -38,12 +41,24 @@ class ActiveViewModel(
     val updateMap: MutableLiveData<Boolean> = MutableLiveData(false)
     val updateWeather: MutableLiveData<Boolean> = MutableLiveData(false)
 
+    var weight = 90
+
     init {
         loadActiveState()
+        getWeight()
     }
 
-    //TODO change after completing the registration flow
-    fun getWeight() = 70.0
+    private fun getWeight() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                userUseCase.getUser()
+            }.onSuccess {
+                it?.let {
+                    weight = it.weight ?: 90
+                }
+            }
+        }
+    }
 
     fun loadActiveState() {
         viewModelScope.launch {

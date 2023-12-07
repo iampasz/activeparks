@@ -236,25 +236,25 @@ class MapActivityFragment : Fragment(), LocationListener {
             kKal = when (viewModel.activityState.activityType.id) {
                 0 -> CalorieCalculator.calculateCaloriesForWalk(
                     viewModel.activityDuration,
-                    viewModel.getWeight(),
+                    viewModel.weight,
                     averageSpeed
                 )
 
                 1 -> CalorieCalculator.calculateCaloriesForScandinavianWalk(
                     viewModel.activityDuration,
-                    viewModel.getWeight(),
+                    viewModel.weight,
                     averageSpeed
                 )
 
                 2 -> CalorieCalculator.calculateCaloriesForBicycle(
                     viewModel.activityDuration,
-                    viewModel.getWeight(),
+                    viewModel.weight,
                     averageSpeed
                 )
 
                 else -> CalorieCalculator.calculateCaloriesForRun(
                     viewModel.activityDuration,
-                    viewModel.getWeight(),
+                    viewModel.weight,
                     averageSpeed
                 )
             }

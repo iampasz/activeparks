@@ -1,10 +1,15 @@
 package com.app.activeparks.data.network.baseNew
 
+import com.app.activeparks.data.model.registration.ForgotPasswordRequest
+import com.app.activeparks.data.model.registration.LoginRequest
+import com.app.activeparks.data.model.registration.ResetPasswordResponse
 import com.app.activeparks.data.model.registration.ResponseSuccess
 import com.app.activeparks.data.model.registration.ResponseToken
 import com.app.activeparks.data.model.registration.SendCodeEmailRequest
 import com.app.activeparks.data.model.registration.SendCodePhoneRequest
+import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswordRequest
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
@@ -16,13 +21,29 @@ interface ApiWithOutAuthorization {
     @POST("/api/v1/auth-new/send-code-phone")
     suspend fun sendCodePhone(
         @Body request: SendCodePhoneRequest
-    ): ResponseSuccess
+    ): Response<ResponseSuccess>
     @POST("/api/v1/auth-new/verify-code-phone")
     suspend fun verificationPhoneCode(
         @Body request: VerificationPhoneCode
-    ): ResponseToken
+    ): Response<ResponseToken>
     @POST("/api/v1/auth-new/send-code-email")
     suspend fun sendCodeEmail(
         @Body request: SendCodeEmailRequest
-    ): ResponseSuccess
+    ): Response<ResponseSuccess>
+    @POST("/api/v1/auth-new/login-new")
+    suspend fun login(
+        @Body request: LoginRequest
+    ): Response<ResponseToken>
+    @POST("/api/v1/auth-new/change-password")
+    suspend fun forgotPassword(
+        @Body request: ForgotPasswordRequest
+    ): Response<ResponseSuccess>
+    @POST("/api/v1/auth-new/change-password-verify")
+    suspend fun verificationCode(
+        @Body request: VerificationCodeForgotPasswordRequest
+    ): Response<ResponseSuccess>
+    @POST("/api/v1/auth-new/change-password-reset")
+    suspend fun resetPassword(
+        @Body request: ResetPasswordResponse
+    ): Response<ResponseToken>
 }

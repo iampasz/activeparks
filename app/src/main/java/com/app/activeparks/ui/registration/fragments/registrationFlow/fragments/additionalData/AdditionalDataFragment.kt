@@ -10,8 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.app.activeparks.ui.registration.RegistrationViewModel
 import com.app.activeparks.util.EasyTextWatcher
+import com.app.activeparks.util.extention.disable
 import com.app.activeparks.util.extention.enableIf
+import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.isNotEmpty
+import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentAdditionalDataBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -41,7 +44,11 @@ class AdditionalDataFragment : Fragment() {
     private fun observe() {
         with(viewModel) {
             sendEmailCodeLD.observe(viewLifecycleOwner) {
+                binding.progress.gone()
                 if (it == true) findNavController().navigate(R.id.action_fAdditionalData_to_fVerificationEmail)
+            }
+            onHideProgress.observe(viewLifecycleOwner) {
+                binding.progress.gone()
             }
         }
     }
@@ -67,10 +74,13 @@ class AdditionalDataFragment : Fragment() {
                 }
             })
             btnNext.setOnClickListener {
+                btnNext.disable()
+                progress.visible()
                 viewModel.sendCodeEmail()
             }
             btnBack.setOnClickListener {
                 requireActivity().onBackPressed()
+                progress.gone()
             }
         }
     }

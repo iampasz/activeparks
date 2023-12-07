@@ -13,7 +13,10 @@ import com.app.activeparks.MainActivity
 import com.app.activeparks.ui.registration.RegistrationViewModel
 import com.app.activeparks.ui.registration.fragments.registrationFlow.fragments.additionalValue.Gender.Companion.FEMALE
 import com.app.activeparks.ui.registration.fragments.registrationFlow.fragments.additionalValue.Gender.Companion.MALE
+import com.app.activeparks.util.extention.disable
+import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.isSelectedToResponse
+import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentAdditionalValueBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -48,10 +51,17 @@ class AdditionalValueFragment : Fragment() {
     }
 
     private fun observe() {
-        viewModel.onRegistered.observe(viewLifecycleOwner) {
-            if (it == true) {
-                startActivity(Intent(requireActivity(), MainActivity::class.java))
-                requireActivity().finish()
+        with(viewModel) {
+            onRegistered.observe(viewLifecycleOwner) {
+                binding.progress.gone()
+                if (it == true) {
+                    startActivity(Intent(requireActivity(), MainActivity::class.java))
+                    requireActivity().finish()
+                }
+            }
+
+            onHideProgress.observe(viewLifecycleOwner) {
+                binding.progress.gone()
             }
         }
     }
@@ -59,6 +69,8 @@ class AdditionalValueFragment : Fragment() {
     private fun setListener() {
         with(binding) {
             btnNext.setOnClickListener {
+                btnNext.disable()
+                progress.visible()
                 viewModel.updateUserData()
             }
 
@@ -81,6 +93,7 @@ class AdditionalValueFragment : Fragment() {
                 toggleVeteranState()
             }
             btnBack.setOnClickListener {
+                progress.gone()
                 requireActivity().onBackPressed()
             }
         }

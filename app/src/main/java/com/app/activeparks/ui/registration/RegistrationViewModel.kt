@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.activeparks.data.model.registration.AdditionData
+import com.app.activeparks.data.model.registration.LoginRequest
 import com.app.activeparks.data.model.registration.PulseZoneRequest
 import com.app.activeparks.data.model.registration.SendCodeEmailRequest
 import com.app.activeparks.data.model.registration.SendCodePhoneRequest
@@ -33,19 +34,28 @@ class RegistrationViewModel(
     var verificationSmsCodeLD = MutableLiveData(false)
     var verificationEmailCodeLD = MutableLiveData(false)
     var onRegistered = MutableLiveData(false)
+    var onLoggedIn = MutableLiveData(false)
+    var onHideProgress = MutableLiveData(false)
 
     val sendCodePhoneRequest = SendCodePhoneRequest()
     val additionData = AdditionData()
+    val loginRequest = LoginRequest()
     var code = ""
     var email = ""
+
+    init {
+        clearUser()
+    }
 
     fun sendCodePhone() {
         viewModelScope.launch {
             kotlin.runCatching {
                 userUseCase.sendCodePhone(sendCodePhoneRequest)
-            }.onSuccess {
-                sendSmsCodeLD.value = true
-            }.onFailure { }
+            }.onSuccess { response ->
+                response?.let {
+                    sendSmsCodeLD.value = true
+                } ?: kotlin.run { onHideProgress.value = true }
+            }
         }
     }
 
@@ -66,9 +76,11 @@ class RegistrationViewModel(
                         sendCodePhoneRequest.password
                     )
                 )
-            }.onSuccess {
-                verificationSmsCodeLD.value = true
-            }.onFailure { }
+            }.onSuccess { response ->
+                response?.let {
+                    verificationSmsCodeLD.value = true
+                } ?: kotlin.run { onHideProgress.value = true }
+            }
         }
     }
 
@@ -76,9 +88,11 @@ class RegistrationViewModel(
         viewModelScope.launch {
             kotlin.runCatching {
                 userUseCase.sendCodeEmail(SendCodeEmailRequest(email))
-            }.onSuccess {
-                sendEmailCodeLD.value = true
-            }.onFailure { }
+            }.onSuccess { response ->
+                response?.let {
+                    sendEmailCodeLD.value = true
+                } ?: kotlin.run { onHideProgress.value = true }
+            }
         }
     }
 
@@ -93,13 +107,15 @@ class RegistrationViewModel(
                         additionData.lName
                     )
                 )
-            }.onSuccess {
-                kotlin.runCatching {
-                    userUseCase.insertUser(it.user)
-                }.onSuccess {
-                    verificationEmailCodeLD.value = true
-                }.onFailure { }
-            }.onFailure { }
+            }.onSuccess { response ->
+                response?.let {
+                    kotlin.runCatching {
+                        userUseCase.insertUser(it.user)
+                    }.onSuccess {
+                        verificationEmailCodeLD.value = true
+                    }
+                } ?: kotlin.run { onHideProgress.value = true }
+            }
         }
     }
 
@@ -116,7 +132,7 @@ class RegistrationViewModel(
                         maxHeartRate
                     )
                 )
-            }.onSuccess { }.onFailure { }
+            }.onSuccess { }
         }
     }
 
@@ -124,15 +140,41 @@ class RegistrationViewModel(
         viewModelScope.launch {
             kotlin.runCatching {
                 userUseCase.getUser()
-            }.onSuccess {
-                kotlin.runCatching {
-                    it?.id?.let { id ->
-                        userUseCase.updateData(id, additionData)
+            }.onSuccess { response ->
+                response?.let {
+                    kotlin.runCatching {
+                        response.id.let { id ->
+                            userUseCase.updateData(id, additionData)
+                        }
+                    }.onSuccess { user ->
+                        onRegistered.value = true
+                        kotlin.runCatching {
+
+                            user?.let { userUseCase.insertUser(it) }
+                        }
                     }
-                }.onSuccess {
-                    onRegistered.value = true
-                }.onFailure { }
-            }.onFailure { }
+                } ?: kotlin.run { onHideProgress.value = true }
+            }
+        }
+    }
+
+    fun login() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                userUseCase.login(loginRequest)
+            }.onSuccess { response ->
+                response?.let {
+                    onLoggedIn.value = true
+                } ?: kotlin.run { onHideProgress.value = true }
+            }
+        }
+    }
+
+    private fun clearUser() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                userUseCase.deleteUser()
+            }
         }
     }
 }

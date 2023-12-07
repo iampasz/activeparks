@@ -10,8 +10,11 @@ import androidx.navigation.fragment.findNavController
 import com.app.activeparks.ui.registration.RegistrationViewModel
 import com.app.activeparks.util.EasyTextWatcher
 import com.app.activeparks.util.MIN_PASSWORD_LENGTH
+import com.app.activeparks.util.extention.disable
 import com.app.activeparks.util.extention.enableIf
+import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.isNotEmpty
+import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentRegistrationUserDataBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -40,16 +43,19 @@ class RegistrationUserDataFragment : Fragment() {
 
         initListener()
         observes()
-//        viewModel.getId()
     }
 
     private fun observes() {
         with(viewModel) {
             sendSmsCodeLD.observe(viewLifecycleOwner) {
+                binding.progress.gone()
                 if (it == true) {
                     findNavController().navigate(R.id.action_registrationUserDataFragment_to_verificationFragment)
                     sendSmsCodeLD.value = false
                 }
+            }
+            onHideProgress.observe(viewLifecycleOwner) {
+                binding.progress.gone()
             }
         }
     }
@@ -81,10 +87,13 @@ class RegistrationUserDataFragment : Fragment() {
             })
 
             btnNext.setOnClickListener {
+                btnNext.disable()
+                progress.visible()
                 viewModel.sendCodePhone()
             }
             btnBack.setOnClickListener {
                 requireActivity().onBackPressed()
+                progress.gone()
             }
 //            phoneEditText.addTextChangedListener(object : TextWatcher {
 //                override fun beforeTextChanged(

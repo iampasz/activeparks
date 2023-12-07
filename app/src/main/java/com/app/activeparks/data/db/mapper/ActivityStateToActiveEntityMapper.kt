@@ -24,6 +24,7 @@ class ActivityStateToActiveEntityMapper {
         ): ActiveEntity {
             return ActiveEntity(
                 UUID.randomUUID().toString(),
+                "",
                 currentActivity.descriptionActivity ?: "",
                 activityTime.time,
                 activityTime.startsAt,
@@ -34,6 +35,7 @@ class ActivityStateToActiveEntityMapper {
                 activityInfoItems[2].number.toDouble().toInt(),
                 activityInfoItems[1].number.toDouble().toInt(),
                 activityInfoItems[9].number.timeToSeconds(),
+                activityInfoItems[9].number,
                 activityInfoItems[4].number.toDouble().toLong(),
                 activityState.weatherIcon.toString(),
                 startInfo.weather.unit,

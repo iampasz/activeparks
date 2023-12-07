@@ -18,5 +18,5 @@ val useCaseModule = module {
     single<SaveActivityUseCase> { SaveActivityUseCaseImpl(get()) }
     single<ActivityStateUseCase> { ActivityStateUseCaseImpl(get()) }
     single<WeatherUseCase> { WeatherUseCaseImpl(get()) }
-    single<UserUseCase> { UserUseCaseImpl(get(), get()) }
+    single<UserUseCase> { UserUseCaseImpl(get(), get(), get()) }
 }

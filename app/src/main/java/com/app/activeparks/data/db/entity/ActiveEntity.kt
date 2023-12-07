@@ -11,6 +11,7 @@ import androidx.room.PrimaryKey
 data class ActiveEntity(
     @PrimaryKey(autoGenerate = false)
     var idLocal: String,
+    @ColumnInfo("id") val id: String,
     @ColumnInfo("notes") val notes: String,
     @ColumnInfo("time") val time: Long,
     @ColumnInfo("startsAt") val startsAt: Long,
@@ -21,6 +22,7 @@ data class ActiveEntity(
     @ColumnInfo("speedMax") val speedMax: Int,
     @ColumnInfo("speed") val speed: Int,
     @ColumnInfo("temp") val temp: Int,
+    @ColumnInfo("tempText") val tempText: String,
     @ColumnInfo("calories") val calories: Long,
     @ColumnInfo("weatherIcon") val weatherIcon: String,
     @ColumnInfo("temperature") val temperature: String,
