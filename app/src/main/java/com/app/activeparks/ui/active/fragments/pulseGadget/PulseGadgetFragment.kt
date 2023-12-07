@@ -69,10 +69,17 @@ class PulseGadgetFragment : Fragment() {
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                val heartRateService = gatt.getService(HR_SERVICE_UUID)
+                val heartRateService = gatt?.getService(HR_SERVICE_UUID)
                 val heartRateCharacteristic = heartRateService?.getCharacteristic(HR_MEASUREMENT_UUID)
 
                 if (heartRateCharacteristic != null) {
+                    if (ActivityCompat.checkSelfPermission(
+                            requireContext(),
+                            Manifest.permission.BLUETOOTH_CONNECT
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        return
+                    }
                     gatt.setCharacteristicNotification(heartRateCharacteristic, true)
 
                     val descriptor =
@@ -90,9 +97,9 @@ class PulseGadgetFragment : Fragment() {
         ) {
             if (HR_MEASUREMENT_UUID == characteristic?.uuid) {
                 val heartRateValue = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 1)
-                Log.d(
+                Log.e(
                     "!@#!@#",
-                    "ПУЛЬС: ${heartRateValue}"
+                    "ПУЛЬС: $heartRateValue"
                 )
             }
         }
