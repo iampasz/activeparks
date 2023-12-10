@@ -1,18 +1,20 @@
 package com.app.activeparks.ui.event.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.app.activeparks.ui.event.interfaces.RemoveItemPosition
-import com.app.activeparks.data.model.events.SampleModel
-import com.technodreams.activeparks.databinding.ItemRowBinding
+import com.app.activeparks.data.model.sportevents.ItemEvent
+import com.app.activeparks.ui.event.util.EventController
+import com.squareup.picasso.Picasso
+import com.technodreams.activeparks.databinding.ItemEventBinding
 
-class BaseAdapter(private val removeItem: RemoveItemPosition)  : RecyclerView.Adapter<BaseAdapter.ViewHolder>(){
-    private lateinit var binding: ItemRowBinding
+class BaseAdapter : RecyclerView.Adapter<BaseAdapter.ViewHolder>(){
+    private lateinit var binding: ItemEventBinding
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        binding= ItemRowBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        binding= ItemEventBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return ViewHolder()
     }
 
@@ -24,26 +26,37 @@ class BaseAdapter(private val removeItem: RemoveItemPosition)  : RecyclerView.Ad
     override fun getItemCount()=differ.currentList.size
 
     inner class ViewHolder : RecyclerView.ViewHolder(binding.root){
-        fun setData(item : SampleModel){
-            binding.apply {
-                tvId.text=item.id.toString()
-                tvName.text = item.geoPoint.latitude.toString()
-                button4.setOnClickListener{
-                    removeItem
-                }
+        @SuppressLint("SetTextI18n")
+        fun setData(item : ItemEvent){
+            item.imageUrl?.let {
+                Picasso.get().load(item.imageUrl).into(binding.photo)
             }
+
+           binding.photo.setOnClickListener{
+             EventController(binding.photo.context).deleteEvent(item.id)
+           }
+
+            binding.date.text = item.updatedAt
+            binding.nameEvent.text = item.title
+
+
+            item.memberAmount?.let {
+                binding.counterText.text = "+${item.memberAmount -1}"
+            }
+
         }
     }
 
-    private val differCallback = object : DiffUtil.ItemCallback<SampleModel>(){
-        override fun areItemsTheSame(oldItem: SampleModel, newItem: SampleModel): Boolean {
+    private val differCallback = object : DiffUtil.ItemCallback<ItemEvent>(){
+        override fun areItemsTheSame(oldItem: ItemEvent, newItem: ItemEvent): Boolean {
             return  oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: SampleModel, newItem: SampleModel): Boolean {
-            return oldItem == newItem
+        override fun areContentsTheSame(oldItem: ItemEvent, newItem: ItemEvent): Boolean {
+            //return oldItem == newItem
+            return oldItem.id == newItem.id
         }
     }
 
-    private val differ = AsyncListDiffer(this,differCallback)
+    val differ = AsyncListDiffer(this,differCallback)
 }

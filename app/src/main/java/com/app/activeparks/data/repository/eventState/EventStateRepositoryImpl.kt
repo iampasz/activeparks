@@ -1,7 +1,6 @@
 package com.app.activeparks.data.repository.eventState
 
 import com.app.activeparks.data.db.dao.EventStateDao
-import com.app.activeparks.data.db.mapper.ActivityStateMapper
 import com.app.activeparks.data.db.mapper.EventStateMapper
 import com.app.activeparks.ui.active.model.EventState
 

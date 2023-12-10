@@ -61,6 +61,11 @@ public class ItemEvent {
     @SerializedName("notifyBefore")
     @Expose
     private Integer notifyBefore;
+
+    @SerializedName("memberAmount")
+    @Expose
+    private Integer memberAmount;
+
     @SerializedName("createdAt")
     @Expose
     private String createdAt;
@@ -134,6 +139,14 @@ public class ItemEvent {
 
     public String getTitle() {
         return title;
+    }
+
+    public Integer getMemberAmount() {
+        return memberAmount;
+    }
+
+    public void setMemberAmount(Integer memberAmount) {
+        this.memberAmount = memberAmount;
     }
 
     public void setTitle(String title) {

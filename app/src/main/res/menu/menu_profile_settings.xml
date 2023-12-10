@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_maps"
+        android:icon="@drawable/ic_ai_duration"
+        android:title="@string/clubs" />
+
+    <item
+        android:id="@+id/ff"
+        android:icon="@drawable/ic_calendar_day"
+        android:title="@string/events" />
+
+    <item
+        android:id="@+id/navigation_scaner"
+        android:icon="@drawable/ic_step"
+        android:title="@string/statistic" />
+
+    <item
+        android:id="@+id/navigation_active"
+        android:icon="@drawable/ic_camera"
+        android:title="@string/video" />
+
+    <item
+        android:id="@+id/navigation_user"
+        android:icon="@drawable/ic_heart"
+        android:title="@string/healse" />
+</menu>

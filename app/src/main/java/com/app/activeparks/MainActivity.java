@@ -38,7 +38,6 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity implements FragmentInteface {
 
     private ActivityMainBinding binding;
-//test
     private AppUpdateManager appUpdateManager;
 
     @Override
@@ -94,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
         if (requestCode == 3 || requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             EditProfileActivity fragment = (EditProfileActivity) getSupportFragmentManager().findFragmentByTag("MY_FRAGMENT_TAG");
+            assert fragment != null;
             fragment.onActivityResult(requestCode, resultCode, data);
         }
 
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
     public void updatePushToken(){
         Preferences preferences = new Preferences(this);
-        if (preferences.getServer() == true) {
+        if (preferences.getServer()) {
             message("Тестовий сервер включений");
         }
         if (preferences.getPushToken() != null) {
@@ -153,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
                 Task<Void> flow = manager.launchReviewFlow(this, reviewInfo);
                 flow.addOnCompleteListener(tasks -> {
                 });
-            } else {
             }
         });
     }

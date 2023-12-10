@@ -3,14 +3,13 @@ package com.app.activeparks.ui.profile;
 import static android.app.Activity.RESULT_OK;
 
 import android.Manifest;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,21 +18,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.app.activeparks.ui.dialog.BottomEmailDialog;
 import com.app.activeparks.ui.dialog.BottomPhoneDialog;
-import com.app.activeparks.ui.dialog.BottomSearchDialog;
 import com.app.activeparks.util.cropper.CropImage;
 import com.app.activeparks.util.cropper.CropImageView;
 import com.bumptech.glide.Glide;
@@ -53,12 +49,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class EditProfileActivity extends BottomSheetDialogFragment {
 
     private EditProfileInterfece editProfileInterfece;
 
-    private ProfileViewModel viewModel;
+    private ProfileViewModelOld viewModel;
     final Calendar mCalendar = Calendar.getInstance();
     private ImageView photo;
     private EditText phone, email, firstName, lastName, secondName, birthday, weight, height, about, healt, city;
@@ -74,7 +71,7 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
         super.onCreate(savedInstanceState);
         setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.CustomBottomSheetDialogTheme);
         viewModel =
-                new ViewModelProvider(this, new ProfileModelFactory(getContext())).get(ProfileViewModel.class);
+                new ViewModelProvider(this, new ProfileModelFactory(getContext())).get(ProfileViewModelOld.class);
     }
 
     @Nullable
@@ -113,60 +110,43 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
             dismiss();
         });
 
-        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int day) {
-                mCalendar.set(Calendar.YEAR, year);
-                mCalendar.set(Calendar.MONTH, month);
-                mCalendar.set(Calendar.DAY_OF_MONTH, day);
-                updateDate();
-            }
+        DatePickerDialog.OnDateSetListener date = (view1, year, month, day) -> {
+            mCalendar.set(Calendar.YEAR, year);
+            mCalendar.set(Calendar.MONTH, month);
+            mCalendar.set(Calendar.DAY_OF_MONTH, day);
+            updateDate();
         };
 
-        birthday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new DatePickerDialog(getContext(), date, mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
+        birthday.setOnClickListener(view12 -> new DatePickerDialog(requireContext(), date, mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH)).show());
 
         ArrayAdapter<?> adapter =
-                ArrayAdapter.createFromResource(getContext(), R.array.sex,
+                ArrayAdapter.createFromResource(requireContext(), R.array.sex,
                         android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sex.setAdapter(adapter);
 
         phone.setOnClickListener((View v) -> {
             BottomPhoneDialog dialog = BottomPhoneDialog.newInstance();
-            dialog.onListener(new BottomPhoneDialog.OnBottomSheetCancelListener() {
-                @Override
-                public void onBottomSheetCancel() {
-                    viewModel.user();
-                }
-            });
-            dialog.show(getActivity().getSupportFragmentManager(),
+            dialog.onListener(() -> viewModel.user());
+            dialog.show(requireActivity().getSupportFragmentManager(),
                     "fragment_phone");
         });
 
         email.setOnClickListener((View v) -> {
             BottomEmailDialog dialog = BottomEmailDialog.newInstance();
-            dialog.show(getActivity().getSupportFragmentManager(),
+            dialog.show(requireActivity().getSupportFragmentManager(),
                     "fragment_email");
 
         });
 
-        view.findViewById(R.id.photo_action).setOnClickListener((View v) -> {
-            galleryDialog();
-        });
+        view.findViewById(R.id.photo_action).setOnClickListener((View v) -> galleryDialog());
 
-        view.findViewById(R.id.save_action).setOnClickListener((View v) -> {
-            updateUser();
-        });
+        view.findViewById(R.id.save_action).setOnClickListener((View v) -> updateUser());
 
         viewModel.user();
 
         viewModel.getUser().observe(this, user -> {
-            try {
+
                 phone.setText(user.getPhone());
                 email.setText(user.getEmail());
 
@@ -180,7 +160,8 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
                 sex.setSelection(user.getSex().contains("male") ? 0 : 1);
 
                 try {
-                    Date dateBirthday = new SimpleDateFormat("yyyy-MM-dd").parse(user.getBirthday());
+                    @SuppressLint("SimpleDateFormat") Date dateBirthday = new SimpleDateFormat("yyyy-MM-dd").parse(user.getBirthday());
+                    assert dateBirthday != null;
                     birthday.setText(new SimpleDateFormat("dd.MM.yyyy", new Locale("uk", "UA")).format(dateBirthday));
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -195,8 +176,7 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
                 if (user.getPhoto() != null) {
                     Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(photo);
                 }
-            } catch (Exception e) {
-            }
+
         });
 
         viewModel.getDefault().observe(this, def -> {
@@ -204,9 +184,7 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
             dismiss();
         });
 
-        viewModel.getMessage().observe(this, msg -> {
-            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
-        });
+        viewModel.getMessage().observe(this, msg -> Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show());
 
 
         return view;
@@ -219,11 +197,11 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
                 .setCropShape(CropImageView.CropShape.RECTANGLE)
                 .setFixAspectRatio(true)
                 .setCropMenuCropButtonTitle("Зберегти")
-                .start(getActivity(), this);
+                .start(requireActivity(), this);
     }
 
     private void updateDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         birthday.setText(dateFormat.format(mCalendar.getTime()));
     }
 
@@ -244,7 +222,8 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
 
             if (!birthday.getText().toString().isEmpty()) {
                 try {
-                    Date dateBirthday = new SimpleDateFormat("dd.MM.yyyy").parse(birthday.getText().toString());
+                    @SuppressLint("SimpleDateFormat") Date dateBirthday = new SimpleDateFormat("dd.MM.yyyy").parse(birthday.getText().toString());
+                    assert dateBirthday != null;
                     viewModel.userUpdate.setBirthday(new SimpleDateFormat("yyyy-MM-dd", new Locale("uk", "UA")).format(dateBirthday));
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -264,7 +243,8 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
 
             viewModel.userUpdate.setSex(sex.getSelectedItemPosition() == 0 ? "male" : "female");
 
-            viewModel.userUpdate.setCity(city.getText().toString()  != null ? city.getText().toString()  :  viewModel.mProfile.getCity());
+            city.getText();
+            viewModel.userUpdate.setCity(city.getText().toString());
 
             viewModel.updateUser();
             if (editProfileInterfece != null) {
@@ -273,14 +253,16 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
         }
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
     void galleryDialog() {
-        BottomSheetDialog dialog = new BottomSheetDialog(getContext(), R.style.CustomBottomSheetDialogTheme);
+        BottomSheetDialog dialog = new BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialogTheme);
         dialog.setContentView(R.layout.dialog_gallery);
 
 
         LinearLayout galleryAction = dialog.findViewById(R.id.gallery_action);
+        assert galleryAction != null;
         galleryAction.setOnClickListener(view -> {
-            if (ContextCompat.checkSelfPermission(getActivity(),
+            if (ContextCompat.checkSelfPermission(requireActivity(),
                     Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent();
@@ -289,7 +271,7 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), 3);
             } else {
                 Toast.makeText(getActivity(), "Додайте доступ до фото", Toast.LENGTH_SHORT).show();
-                ActivityCompat.requestPermissions(getActivity(),
+                ActivityCompat.requestPermissions(requireActivity(),
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         1);
             }
@@ -297,17 +279,18 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
         });
 
         LinearLayout cameraAction = dialog.findViewById(R.id.camera_action);
+        assert cameraAction != null;
         cameraAction.setOnClickListener(view -> {
-            if (ContextCompat.checkSelfPermission(getActivity(),
+            if (ContextCompat.checkSelfPermission(requireActivity(),
                     Manifest.permission.CAMERA)
                     == PackageManager.PERMISSION_GRANTED) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                if (takePictureIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
                     startActivityForResult(takePictureIntent, 4);
                 }
             } else {
                 Toast.makeText(getActivity(), "Додайте доступ до камери", Toast.LENGTH_SHORT).show();
-                ActivityCompat.requestPermissions(getActivity(),
+                ActivityCompat.requestPermissions(requireActivity(),
                         new String[]{Manifest.permission.CAMERA},
                         5);
             }
@@ -315,9 +298,8 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
         });
 
         LinearLayout cancel = dialog.findViewById(R.id.cancel);
-        cancel.setOnClickListener(view -> {
-            dialog.dismiss();
-        });
+        assert cancel != null;
+        cancel.setOnClickListener(view -> dialog.dismiss());
         dialog.show();
     }
 
@@ -335,26 +317,24 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
             if (resultCode == RESULT_OK) {
                 Uri croppedImageUri = result.getUri();
 
-                Bitmap bm = null;
+                Bitmap bm;
                 try {
                     File file = saveImageToFile(croppedImageUri);
 
                     viewModel.updateFile(file);
 
-                    bm = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), croppedImageUri);
+                    bm = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), croppedImageUri);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
 
                 photo.setImageBitmap(bm);
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-                // Handle the error
-            }
+            }  // Handle the error
+
         }
         if (requestCode == 4 && resultCode == RESULT_OK) {
             // Get the photo as a Bitmap
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            Bitmap bitmap = (Bitmap) Objects.requireNonNull(data.getExtras()).get("data");
 
             try {
                 // Get the directory to save the file in
@@ -367,6 +347,7 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
                 FileOutputStream fileOutputStream = new FileOutputStream(camera);
 
                 // Write the Bitmap to the file as JPEG with 100% quality
+                assert bitmap != null;
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
 
                 // Flush and close the file output stream
@@ -381,25 +362,28 @@ public class EditProfileActivity extends BottomSheetDialogFragment {
 
 
     private File saveImageToFile(Uri imageUri) {
-        ContentResolver resolver = getActivity().getContentResolver();
+        ContentResolver resolver = requireActivity().getContentResolver();
         File file = null;
 
         try {
             InputStream inputStream = resolver.openInputStream(imageUri);
 
-            file = new File(getActivity().getFilesDir(), "image.jpg");
+            file = new File(requireActivity().getFilesDir(), "image.jpg");
 
             FileOutputStream outputStream = new FileOutputStream(file);
 
             byte[] buffer = new byte[1024];
             int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
+            while (true) {
+                assert inputStream != null;
+                if ((bytesRead = inputStream.read(buffer)) == -1) break;
                 outputStream.write(buffer, 0, bytesRead);
             }
 
             IOUtils.closeQuietly(inputStream);
             IOUtils.closeQuietly(outputStream);
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return file;

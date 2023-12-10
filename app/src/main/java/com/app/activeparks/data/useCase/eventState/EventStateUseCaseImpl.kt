@@ -1,4 +1,4 @@
-package com.app.activeparks.data.useCase.testEventState
+package com.app.activeparks.data.useCase.eventState
 
 import com.app.activeparks.data.repository.eventState.EventStateRepository
 import com.app.activeparks.ui.active.model.EventState

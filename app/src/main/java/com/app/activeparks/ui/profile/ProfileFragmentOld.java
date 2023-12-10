@@ -1,5 +1,6 @@
 package com.app.activeparks.ui.profile;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -29,10 +30,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.uservideo.UserVideoItem;
 import com.app.activeparks.data.model.workout.WorkoutItem;
+import com.app.activeparks.ui.auth.AuthFragment;
 import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
 import com.app.activeparks.ui.event.activity.EventActivity;
@@ -41,24 +42,23 @@ import com.app.activeparks.ui.profile.uservideo.UserAddVideoActivity;
 import com.app.activeparks.ui.profile.uservideo.adapter.UserVideoAdapter;
 import com.app.activeparks.ui.support.SupportActivity;
 import com.app.activeparks.ui.training.TrainingDialog;
-import com.app.activeparks.ui.auth.AuthFragment;
 import com.app.activeparks.ui.workout.adapter.journal.JournalListAdaper;
 import com.app.activeparks.ui.workout.adapter.plan.PlanListAdaper;
 import com.app.activeparks.util.ButtonSelect;
 import com.app.activeparks.util.FragmentInteface;
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.technodreams.activeparks.BuildConfig;
 import com.technodreams.activeparks.R;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class ProfileFragmentOld extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private ProfileViewModel viewModel;
+    private ProfileViewModelOld viewModel;
     private View view;
     private ImageView photo;
     private RecyclerView profileList;
@@ -68,20 +68,21 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private TextView statusView;
     private ButtonSelect clubs, event, result, video, journal, plan;
 
-    public static ProfileFragment newInstance() {
-        return new ProfileFragment();
+    public static ProfileFragmentOld newInstance() {
+        return new ProfileFragmentOld();
     }
 
+    @SuppressLint("SetTextI18n")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        viewModel = new ViewModelProvider(this, new ProfileModelFactory(getContext())).get(ProfileViewModel.class);
+        viewModel = new ViewModelProvider(this, new ProfileModelFactory(getContext())).get(ProfileViewModelOld.class);
 
-        view = inflater.inflate(R.layout.fragment_profile, container, false);
+        view = inflater.inflate(R.layout.fragment_profile_old, container, false);
 
-        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
 
         photo = view.findViewById(R.id.photo);
 
@@ -117,7 +118,7 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
         swipeRefreshLayout.setOnRefreshListener(this);
 
         viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            try {
+
                 if (user.getFirstName().length() + user.getLastName().length() > 1) {
                     name.setVisibility(View.VISIBLE);
                     name.setText(user.getFirstName() + " " + user.getLastName());
@@ -134,7 +135,7 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     sex.setText(user.getSex().equals("male") ? "Чоловік" : "Жінка");
                 }
 
-                if (viewModel.isProfile(user.getRoleId()) == true) {
+                if (viewModel.isProfile(user.getRoleId())) {
                     view.findViewById(R.id.web_title_action).setVisibility(View.VISIBLE);
                     view.findViewById(R.id.web_action).setVisibility(View.VISIBLE);
                 }
@@ -142,7 +143,8 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 if (user.getBirthday() != null && user.getBirthday().length() > 0) {
                     view.findViewById(R.id.layout_birthday).setVisibility(View.VISIBLE);
                     try {
-                        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(user.getBirthday());
+                        @SuppressLint("SimpleDateFormat") Date date = new SimpleDateFormat("yyyy-MM-dd").parse(user.getBirthday());
+                        assert date != null;
                         birthday.setText(new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
                     } catch (ParseException e) {
                         birthday.setVisibility(View.GONE);
@@ -188,30 +190,23 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 email.setText(user.getEmail());
                 profileFilling.setProgress(user.getProfileFilling());
 
-            } catch (Exception e) {
-            }
+
         });
 
         exit.setOnClickListener(v -> {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case DialogInterface.BUTTON_POSITIVE:
-                            viewModel.logout();
-                            getActivity().getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .replace(R.id.fragment_container_user, new AuthFragment())
-                                    .commit();
-                            dialog.cancel();
-                            break;
-
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            dialog.cancel();
-                            break;
+            DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE -> {
+                        viewModel.logout();
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_container_user, new AuthFragment())
+                                .commit();
+                        dialog.cancel();
                     }
+                    case DialogInterface.BUTTON_NEGATIVE -> dialog.cancel();
                 }
             };
             builder.setMessage("Ви дійсно бажаєте вийти?").setPositiveButton("Так", dialogClickListener)
@@ -254,20 +249,18 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
             plan.on();
         });
 
-        view.findViewById(R.id.setting_action).setOnClickListener(v -> {
-            dialogShow();
-        });
+        view.findViewById(R.id.setting_action).setOnClickListener(v -> dialogShow());
 
         view.findViewById(R.id.phone).setOnClickListener(v -> {
             ClipData clip = ClipData.newPlainText("", phone.getText().toString());
             clipboard.setPrimaryClip(clip);
-            ((FragmentInteface) getActivity()).message("Скопійовано");
+            ((FragmentInteface) requireActivity()).message("Скопійовано");
         });
 
         view.findViewById(R.id.email).setOnClickListener(v -> {
             ClipData clip = ClipData.newPlainText("", email.getText().toString());
             clipboard.setPrimaryClip(clip);
-            ((FragmentInteface) getActivity()).message("Скопійовано");
+            ((FragmentInteface) requireActivity()).message("Скопійовано");
         });
 
 
@@ -301,18 +294,10 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
         super.onResume();
         statusView.setVisibility(View.VISIBLE);
         switch (viewModel.select) {
-            case 0:
-                viewModel.clubs();
-                break;
-            case 1:
-                viewModel.event();
-                break;
-            case 2:
-                viewModel.journal();
-                break;
-            case 3:
-                viewModel.userVideoList();
-                break;
+            case 0 -> viewModel.clubs();
+            case 1 -> viewModel.event();
+            case 2 -> viewModel.journal();
+            case 3 -> viewModel.userVideoList();
         }
     }
 
@@ -329,13 +314,8 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
             } else {
                 statusView.setText("Ви ще не вступили \n в жоден клуб");
             }
-            profileList.setAdapter(new ClubsAdaper(getContext(), clubs).setOnClubsListener(new ClubsAdaper.ClubsListener() {
-                @Override
-                public void onInfo(ItemClub itemClub) {
-                    startActivity(new Intent(getContext(), ClubActivity.class)
-                            .putExtra("id", itemClub.getId()));
-                }
-            }));
+            profileList.setAdapter(new ClubsAdaper(getContext(), clubs).setOnClubsListener(itemClub -> startActivity(new Intent(getContext(), ClubActivity.class)
+                    .putExtra("id", itemClub.getId()))));
         });
 
         viewModel.getEvents().observe(getViewLifecycleOwner(), result -> {
@@ -409,14 +389,12 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 @Override
                 public void getNotes(String id, int position) {
                     viewModel.notes(id);
-                    viewModel.getNotes().observe(getViewLifecycleOwner(), notes -> {
-                        adaper.updateWorkout(notes, position);
-                    });
+                    viewModel.getNotes().observe(getViewLifecycleOwner(), notes -> adaper.updateWorkout(notes, position));
                 }
 
                 @Override
                 public void sendMessage(String id, String idNotes, String msg, boolean edit) {
-                    if (edit == true && idNotes != null) {
+                    if (edit && idNotes != null) {
                         viewModel.cangeNotes(id, idNotes, msg);
                     } else {
                         viewModel.sendNotes(id, msg);
@@ -431,13 +409,10 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
             }else{
                 statusView.setText("Немая жодних активностей");
             }
-            profileList.setAdapter(new PlanListAdaper(getActivity(), plan).setListener(new PlanListAdaper.PlanListener() {
-                @Override
-                public void onInfo(String id) {
-                    TrainingDialog dialog = TrainingDialog.newInstance(id, viewModel.mProfile.getId());
-                    dialog.show(getActivity().getSupportFragmentManager(),
-                            "training_dialog");
-                }
+            profileList.setAdapter(new PlanListAdaper(getActivity(), plan).setListener(id -> {
+                TrainingDialog dialog = TrainingDialog.newInstance(id, viewModel.mProfile.getId());
+                dialog.show(requireActivity().getSupportFragmentManager(),
+                        "training_dialog");
             }));
         });
     }
@@ -455,35 +430,34 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     void dialogShow() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.CustomBottomSheetDialogTheme);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.dialog_select_setting);
 
         LinearLayout editAction = bottomSheetDialog.findViewById(R.id.edit_action);
+        assert editAction != null;
         editAction.setOnClickListener(view -> {
             //startActivity(new Intent(getActivity(), EditProfileActivity.class));
             EditProfileActivity dialog = EditProfileActivity.newInstance();
-            dialog.setOnEditProfile(new EditProfileActivity.EditProfileInterfece() {
-                @Override
-                public void onUpdate() {
-                    viewModel.user();
-                }
-            }).show(getActivity().getSupportFragmentManager(),
+            dialog.setOnEditProfile(() -> viewModel.user()).show(requireActivity().getSupportFragmentManager(),
                     "edit_profile");
             bottomSheetDialog.dismiss();
         });
         LinearLayout settingAction = bottomSheetDialog.findViewById(R.id.setting_action);
+        assert settingAction != null;
         settingAction.setOnClickListener(view -> {
             dialogSetting();
             bottomSheetDialog.dismiss();
         });
 
         LinearLayout supportlistAtion = bottomSheetDialog.findViewById(R.id.supportlist_action);
+        assert supportlistAtion != null;
         supportlistAtion.setOnClickListener(view -> {
             startActivity(new Intent(getActivity(), SupportActivity.class));
             bottomSheetDialog.dismiss();
         });
 
         LinearLayout infolistAction = bottomSheetDialog.findViewById(R.id.infolist_action);
+        assert infolistAction != null;
         infolistAction.setOnClickListener(view -> {
             startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse("https://ap.sportforall.gov.ua/infolist/start")));
@@ -491,20 +465,15 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
         });
 
         LinearLayout removeUserAction = bottomSheetDialog.findViewById(R.id.remove_user_action);
+        assert removeUserAction != null;
         removeUserAction.setOnClickListener(view -> {
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case DialogInterface.BUTTON_POSITIVE:
-                            viewModel.removeUser();
-                            dialog.cancel();
-                            break;
-
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            dialog.cancel();
-                            break;
+            DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE -> {
+                        viewModel.removeUser();
+                        dialog.cancel();
                     }
+                    case DialogInterface.BUTTON_NEGATIVE -> dialog.cancel();
                 }
             };
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -513,17 +482,18 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
         });
 
         LinearLayout cancel = bottomSheetDialog.findViewById(R.id.cancel);
-        cancel.setOnClickListener(view -> {
-            bottomSheetDialog.dismiss();
-        });
+        assert cancel != null;
+        cancel.setOnClickListener(view -> bottomSheetDialog.dismiss());
         bottomSheetDialog.show();
     }
 
+    @SuppressLint("SetTextI18n")
     void dialogSetting() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.CustomBottomSheetDialogTheme);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.dialog_bottom_setting);
 
-        Switch server = bottomSheetDialog.findViewById(R.id.server);
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch server = bottomSheetDialog.findViewById(R.id.server);
+        assert server != null;
         server.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Для активації функції потрібно заново авторизуватися", Toast.LENGTH_LONG).show();
             viewModel.setServer(!viewModel.getServer());
@@ -532,12 +502,14 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
         server.setChecked(viewModel.getServer());
 
         LinearLayout cacheAction = bottomSheetDialog.findViewById(R.id.cache_action);
+        assert cacheAction != null;
         cacheAction.setOnClickListener(view -> {
             Toast.makeText(getContext(), "Кеш очищено", Toast.LENGTH_LONG).show();
             bottomSheetDialog.dismiss();
         });
 
         LinearLayout googleplayAction = bottomSheetDialog.findViewById(R.id.google_play_action);
+        assert googleplayAction != null;
         googleplayAction.setOnClickListener(view -> {
             startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse("https://play.google.com/store/apps/details?id=com.technodreams.activeparks")));
@@ -546,12 +518,12 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         TextView version = bottomSheetDialog.findViewById(R.id.version);
 
+        assert version != null;
         version.setText("Вироблено під замовлення ВЦФЗН «Спорт для всіх» \n made by «TechnoDreams Group» \n\n Версія: " + BuildConfig.VERSION_NAME);
 
         LinearLayout cancel = bottomSheetDialog.findViewById(R.id.cancel);
-        cancel.setOnClickListener(view -> {
-            bottomSheetDialog.dismiss();
-        });
+        assert cancel != null;
+        cancel.setOnClickListener(view -> bottomSheetDialog.dismiss());
         bottomSheetDialog.show();
     }
 
@@ -560,18 +532,10 @@ public class ProfileFragment extends Fragment implements SwipeRefreshLayout.OnRe
         swipeRefreshLayout.setRefreshing(false);
         viewModel.user();
         switch (viewModel.select) {
-            case 0:
-                viewModel.clubs();
-                break;
-            case 1:
-                viewModel.event();
-                break;
-            case 2:
-                viewModel.journal();
-                break;
-            case 3:
-                viewModel.userVideoList();
-                break;
+            case 0 -> viewModel.clubs();
+            case 1 -> viewModel.event();
+            case 2 -> viewModel.journal();
+            case 3 -> viewModel.userVideoList();
         }
     }
 }

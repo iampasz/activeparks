@@ -20,6 +20,6 @@ public class ProfileModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new ProfileViewModel(sharedPrefsUserRepository);
+        return (T) new ProfileViewModelOld(sharedPrefsUserRepository);
     }
 }

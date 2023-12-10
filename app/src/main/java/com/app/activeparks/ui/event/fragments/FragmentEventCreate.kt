@@ -25,22 +25,19 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import com.app.activeparks.data.model.points.RoutePoint
 import com.app.activeparks.data.model.sportevents.ItemEvent
-import com.app.activeparks.ui.event.interfaces.responseSuccessful
+import com.app.activeparks.ui.event.interfaces.ResponseCallBack
 import com.app.activeparks.ui.event.util.EventController
 import com.app.activeparks.ui.event.util.EventHelper
+import com.app.activeparks.ui.event.util.EventTypes
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
 import com.app.activeparks.util.ChangeDateType
 import com.app.activeparks.util.MapsViewController
 import com.app.activeparks.util.cropper.CropImage
 import com.app.activeparks.util.extention.gone
-import com.app.activeparks.util.extention.onlineTraining
 import com.app.activeparks.util.extention.removeFragment
 import com.app.activeparks.util.extention.replaceFragment
-import com.app.activeparks.util.extention.routeTraining
-import com.app.activeparks.util.extention.simpleTraining
 import com.app.activeparks.util.extention.visible
 import com.squareup.picasso.Picasso
 import com.technodreams.activeparks.R
@@ -49,6 +46,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.MapEventsOverlay
@@ -62,7 +60,9 @@ import java.util.Locale
 class FragmentEventCreate : Fragment() {
 
     lateinit var binding: FragmentEventCreateBinding
-    private val viewModel: EventRouteViewModel by activityViewModels()
+    //private val viewModel: EventRouteViewModel by activityViewModels()
+        private val viewModel: EventRouteViewModel by sharedViewModel()
+
     private var eventData = ItemEvent()
     var currentTrainingType = ""
     var geoPointsList = ArrayList<GeoPoint>()
@@ -152,12 +152,12 @@ class FragmentEventCreate : Fragment() {
         observer(myListener)
 
 
-        val previousScrollPosition = viewModel.getScrollPosition()
-        binding.scroll.post { binding.scroll.scrollTo(0, previousScrollPosition) }
+       // val previousScrollPosition = viewModel.getScrollPosition()
+       // binding.scroll.post { binding.scroll.scrollTo(0, previousScrollPosition) }
 
         binding.scroll.viewTreeObserver.addOnScrollChangedListener {
             val currentScrollPosition = binding.scroll.scrollY
-            viewModel.saveScrollPosition(currentScrollPosition)
+            //viewModel.saveScrollPosition(currentScrollPosition)
         }
 
         val currentDateTime = LocalDateTime.now()
@@ -179,9 +179,10 @@ class FragmentEventCreate : Fragment() {
             binding.openFullMap.setOnClickListener {
                 collectEventData()
                 viewModel.setGeoPoints(geoPointsList)
+                //viewModel.updateItemEventData(eventData)
                 viewModel.setLastMapGeoPoint(binding.eventMap.mapCenter)
                 parentFragmentManager.replaceFragment(
-                    R.id.frame_events_container,
+                    R.id.constrain_events_container,
                     FragmentChangeRoute()
                 )
 
@@ -197,7 +198,8 @@ class FragmentEventCreate : Fragment() {
                 override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
 
                     when (currentTrainingType) {
-                        simpleTraining() -> {
+
+                        EventTypes.SIMPLE_TRAINING.type -> {
                             geoPointsList.clear()
                         }
                     }
@@ -225,15 +227,16 @@ class FragmentEventCreate : Fragment() {
 
             }))
 
-            val publishResponseSuccessful = object : responseSuccessful {
-                override fun load() {
+            val publishResponseSuccessful = object : ResponseCallBack {
+                override fun load(responseFromApi: String) {
                     viewModelStore.clear()
                     parentFragmentManager.removeFragment(this@FragmentEventCreate)
                 }
+
             }
 
-            val setDataResponseSuccessful = object : responseSuccessful {
-                override fun load() {
+            val setDataResponseSuccessful = object : ResponseCallBack {
+                override fun load(responseFromApi: String) {
                     viewModelStore.clear()
                     eventController.publishDataEvent(eventData.id, publishResponseSuccessful)
                     parentFragmentManager.removeFragment(FragmentEventCreate())
@@ -252,7 +255,6 @@ class FragmentEventCreate : Fragment() {
                     }
                 } else {
                     Toast.makeText(context, "Не всі поля заповнені", Toast.LENGTH_SHORT).show()
-
                 }
 
             }
@@ -265,12 +267,10 @@ class FragmentEventCreate : Fragment() {
             @SuppressLint("SetTextI18n")
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val charCount = s?.length ?: 0
-
                 binding.textCounter.text = "$charCount / 255"
             }
 
             override fun afterTextChanged(s: Editable?) {
-
             }
         })
 
@@ -332,7 +332,6 @@ class FragmentEventCreate : Fragment() {
         val timePickerDialog = TimePickerDialog(
             requireContext(),
             { _, hourOfDay, minute ->
-                //textView.text = formatDateTime(year, month, day, hourOfDay, minute)
                 textView.text = ChangeDateType.formatDateTime(year, month, day, hourOfDay, minute)
             },
             LocalTime.now().hour,
@@ -368,19 +367,19 @@ class FragmentEventCreate : Fragment() {
                 when (position) {
                     0 -> {
                         binding.openFullMap.visible()
-                        currentTrainingType = simpleTraining()
+                        currentTrainingType = EventTypes.SIMPLE_TRAINING.type
                         markerType = 0
                     }
 
                     1 -> {
                         binding.openFullMap.visible()
-                        currentTrainingType = routeTraining()
+                        currentTrainingType = EventTypes.ROUTE_TRAINING.type
                         markerType = 1
                     }
 
                     2 -> {
                         binding.eventMap.gone()
-                        currentTrainingType = onlineTraining()
+                        currentTrainingType = EventTypes.ONLINE_TRAINING.type
                     }
                 }
             }
@@ -396,8 +395,8 @@ class FragmentEventCreate : Fragment() {
             title = binding.editNameEvent.text.toString()
             fullDescription = binding.editFullDescription.text.toString()
             shortDescription = binding.editDescriptionEvent.text.toString()
-            startsAt = ChangeDateType.formatDateTimeReverse(binding.startData.text.toString())
-            finishesAt = ChangeDateType.formatDateTimeReverse(binding.endData.text.toString())
+          //  startsAt = ChangeDateType.formatDateTimeReverse(binding.startData.text.toString())
+           // finishesAt = ChangeDateType.formatDateTimeReverse(binding.endData.text.toString())
             typeId = currentTrainingType
             routePoints = getRoutePointFromGeoPointList()
         }
@@ -413,9 +412,9 @@ class FragmentEventCreate : Fragment() {
 
 
             when (eventData.typeId) {
-                simpleTraining() -> routePoint.type = 0
-                routeTraining() -> routePoint.type = 1
-                onlineTraining() -> routePoint.type = 2
+                EventTypes.SIMPLE_TRAINING.type -> routePoint.type = 0
+                EventTypes.ROUTE_TRAINING.type -> routePoint.type = 1
+                EventTypes.ONLINE_TRAINING.type -> routePoint.type = 2
             }
 
             routePointList.add(routePoint)
@@ -432,8 +431,8 @@ class FragmentEventCreate : Fragment() {
         builder.setPositiveButton(requireActivity().resources.getString(R.string.yes)) { _, _ ->
             collectEventData()
 
-            val responseSuccessful = object : responseSuccessful {
-                override fun load() {
+            val responseSuccessful = object : ResponseCallBack {
+                override fun load(responseFromApi: String) {
                     viewModelStore.clear()
                     parentFragmentManager.removeFragment(this@FragmentEventCreate)
                 }
@@ -461,6 +460,9 @@ class FragmentEventCreate : Fragment() {
         binding.eventMap.controller.setCenter(lastPoint)
 
         viewModel.dataEvent.observe(viewLifecycleOwner) { newData ->
+
+            Log.i("GETEVENTDATA", "ось тут я маю взяти свій клас з даними")
+
             eventData = newData
             with(binding) {
 
@@ -474,16 +476,16 @@ class FragmentEventCreate : Fragment() {
             }
 
 
-            currentTrainingType = newData.typeId ?: simpleTraining()
+            currentTrainingType = newData.typeId ?: EventTypes.SIMPLE_TRAINING.type
 
 
             when (currentTrainingType) {
-                simpleTraining() -> {
+                EventTypes.SIMPLE_TRAINING.type -> {
                     binding.spinner.setSelection(0)
                     markerType = 0
                 }
 
-                routeTraining() -> {
+                EventTypes.ROUTE_TRAINING.type -> {
                     binding.spinner.setSelection(1)
                     markerType = 1
                 }
@@ -550,7 +552,6 @@ class FragmentEventCreate : Fragment() {
             }
         })
     }
-
 
 }
 

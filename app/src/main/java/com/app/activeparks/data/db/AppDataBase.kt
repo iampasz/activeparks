@@ -8,8 +8,12 @@ import com.app.activeparks.data.db.converter.GeoPointConverters
 import com.app.activeparks.data.db.converter.UriTypeConverter
 import com.app.activeparks.data.db.dao.ActiveDao
 import com.app.activeparks.data.db.dao.ActivityStateDao
+import com.app.activeparks.data.db.dao.EventStateDao
+import com.app.activeparks.data.db.dao.ProfileStateDao
 import com.app.activeparks.data.db.entity.ActiveEntity
 import com.app.activeparks.data.db.entity.ActivityStateEntity
+import com.app.activeparks.data.db.entity.EventStateEntity
+import com.app.activeparks.data.db.entity.ProfileStateEntity
 
 /**
  * Created by O.Dziuba on 09.11.2023.
@@ -17,7 +21,9 @@ import com.app.activeparks.data.db.entity.ActivityStateEntity
 @Database(
     entities = [
         ActiveEntity::class,
-        ActivityStateEntity::class
+        ActivityStateEntity::class,
+        EventStateEntity::class,
+        ProfileStateEntity::class
     ],
     version = 1
 )
@@ -29,4 +35,7 @@ import com.app.activeparks.data.db.entity.ActivityStateEntity
 abstract class AppDataBase : RoomDatabase() {
     abstract fun activeDao(): ActiveDao
     abstract fun activeStateDao(): ActivityStateDao
+
+    abstract fun eventStateDao(): EventStateDao
+    abstract fun profileStateDao(): ProfileStateDao
 }

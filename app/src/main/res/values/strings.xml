@@ -154,4 +154,17 @@
     <string name="event_not_publish">Подія не опублікована</string>
     <string name="save_druft">Зберегти подію як чернетку?</string>
 
+    <string name="clubs">Клуби</string>
+    <string name="events">Заходи</string>
+    <string name="statistic">Статистика</string>
+    <string name="video">Відео</string>
+    <string name="healse">Здоров\'я</string>
+
+    <string name="week">Тиждень</string>
+    <string name="month">Місяць</string>
+    <string name="year">Рік</string>
+    <string name="all_the_time">Весь час</string>
+
+    <string name="profile">Профіль</string>
+
 </resources>

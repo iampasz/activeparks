@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.app.activeparks.ui.event.EventsListFragment;
+import com.app.activeparks.ui.event.fragments.EventsListFragment;
 import com.app.activeparks.ui.qr.QrCodeActivity;
 import com.app.activeparks.ui.news.NewsFragment;
 import com.app.activeparks.ui.participants.ParticipantsFragment;

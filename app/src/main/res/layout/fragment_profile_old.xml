@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical"
+    tools:context="com.app.activeparks.ui.user.UserFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:background="#EDEDF0"
+        android:elevation="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="4dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="1"
+            android:text="Особистий профіль"
+            android:textColor="@color/text_color"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+
+        <ImageView
+            android:id="@+id/setting_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_setting" />
+
+        <TextView
+            android:id="@+id/exit_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:drawableRight="@drawable/ic_goout"
+            android:text=""
+            android:textColor="@color/color_park"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="124dp"
+                        android:layout_height="124dp">
+
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:elevation="10dp"
+                            app:cardCornerRadius="80dp">
+
+
+                            <ImageView
+                                android:id="@+id/photo"
+                                android:layout_width="114dp"
+                                android:layout_height="114dp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/ic_prew" />
+
+                        </androidx.cardview.widget.CardView>
+
+
+                        <ProgressBar
+                            android:id="@+id/profileFilling"
+                            style="@style/CircularDeterminateProgressBar"
+                            android:layout_width="154dp"
+                            android:layout_height="154dp"
+                            android:layout_gravity="center" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/text_color"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/role"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/text_color"
+                            android:textSize="14sp" />
+
+                        <LinearLayout
+                            android:id="@+id/layout_location"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:visibility="gone"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_location_profile" />
+
+                            <TextView
+                                android:id="@+id/address"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:text=""
+                                android:textColor="@color/text_color"
+                                android:textSize="15sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_sex"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:visibility="gone"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_sex_status" />
+
+
+                            <TextView
+                                android:id="@+id/sex"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:text=""
+                                android:textColor="@color/text_color"
+                                android:textSize="15sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_birthday"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:visibility="gone"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ic_birthday"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_birthday"
+                                android:visibility="visible" />
+
+
+                            <TextView
+                                android:id="@+id/birthday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:text=""
+                                android:textColor="@color/text_color"
+                                android:textSize="15sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_raiting_two"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/reiting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:text="0.00"
+                        android:textColor="@color/text_color"
+                        android:textSize="20sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/title_about"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Про мене"
+                    android:textColor="@color/text_color"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/about"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Немає даних"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/item_height"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="clip_vertical"
+                        android:visibility="gone"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/icon_height"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_health_worker_form" />
+
+                        <TextView
+                            android:id="@+id/title_height"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:text="Зріст:"
+                            android:textColor="@color/text_color"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/height"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:text="0"
+                            android:textColor="@color/text_color"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/item_weight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="clip_vertical"
+                        android:visibility="gone"
+                        android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/icon_weight"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_weight" />
+
+                    <TextView
+                        android:id="@+id/title_weight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:text="Вага:"
+                        android:textColor="@color/text_color"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/weight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:text="0"
+                        android:textColor="@color/text_color"
+                        android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/title_healt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Стан здоров’я "
+                    android:textColor="@color/text_color"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/healt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Немає даних"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Контактні дані"
+                    android:textColor="@color/text_color"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+
+                <FrameLayout
+                    android:id="@+id/phone_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone">
+
+
+                    <TextView
+                        android:id="@+id/phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/backround_edit_text"
+                        android:drawableRight="@drawable/ic_copy"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="8dp"
+                        android:text=""
+                        android:textColor="@color/text_color"
+                        android:textSize="16sp" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:background="@color/background"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:text="Телефон"
+                        android:textColor="@color/text_color"
+                        android:textStyle="bold" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <TextView
+                        android:id="@+id/email"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/backround_edit_text"
+                        android:drawableRight="@drawable/ic_copy"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="8dp"
+                        android:text=""
+                        android:textColor="@color/text_color"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:background="@color/background"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:text="Пошта"
+                        android:textColor="@color/text_color"
+                        android:textStyle="bold" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/web_title_action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="16dp"
+                    android:text="Адміністрування"
+                    android:textColor="@color/text_color"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/web_action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="Для адміністрування зокрема і таких, як створення заходів та клубів потрібно перейти на веб-версію Активних парків"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <com.app.activeparks.util.ButtonSelect
+                            android:id="@+id/clubs_action"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginRight="4dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:onClick="stater"
+                            android:text="Мої клуби"
+                            android:textAllCaps="false"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            android:textColor="@color/text_color"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#DEDFE1"
+                            app:cornerRadius="10dp"
+                            app:icon="@drawable/ic_rocket"
+                            app:iconGravity="textStart"
+                            app:iconPadding="8dp"
+                            app:iconTint="#444F60" />
+
+
+                        <com.app.activeparks.util.ButtonSelect
+                            android:id="@+id/event_action"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="4dp"
+                            android:layout_weight="1"
+                            android:text="Мої заходи"
+                            android:textAllCaps="false"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            android:textColor="@color/text_color"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#DEDFE1"
+                            app:cornerRadius="10dp"
+                            app:icon="@drawable/ic_calendar"
+                            app:iconGravity="textStart"
+                            app:iconPadding="8dp"
+                            app:iconTint="#444F60" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <com.app.activeparks.util.ButtonSelect
+                            android:id="@+id/journal_action"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="4dp"
+                            android:layout_weight="1"
+                            android:text="Журнал"
+                            android:textAllCaps="false"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            android:textColor="@color/text_color"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#DEDFE1"
+                            app:cornerRadius="10dp"
+                            app:icon="@drawable/ic_journal"
+                            app:iconGravity="textStart"
+                            app:iconPadding="8dp"
+                            app:iconTint="#444F60" />
+
+                        <com.app.activeparks.util.ButtonSelect
+                            android:id="@+id/result_action"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="4dp"
+                            android:layout_weight="1"
+                            android:text="Результати"
+                            android:textAllCaps="false"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            android:textColor="@color/text_color"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            app:backgroundTint="#DEDFE1"
+                            app:cornerRadius="10dp"
+                            app:icon="@drawable/ic_file"
+                            app:iconGravity="textStart"
+                            app:iconPadding="8dp"
+                            app:iconTint="#444F60" />
+
+                        <com.app.activeparks.util.ButtonSelect
+                            android:id="@+id/video_action"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="4dp"
+                            android:layout_weight="1"
+                            android:text="Мої відео"
+                            android:textAllCaps="false"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            android:textColor="@color/text_color"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#DEDFE1"
+                            app:cornerRadius="10dp"
+                            app:icon="@drawable/ic_video"
+                            app:iconGravity="textStart"
+                            app:iconPadding="8dp"
+                            app:iconTint="#444F60" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="25dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+
+                        <com.app.activeparks.util.ButtonSelect
+                            android:id="@+id/plan_action"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="4dp"
+                            android:layout_weight="1"
+                            android:text="План тренування"
+                            android:textAllCaps="false"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            android:textColor="@color/text_color"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#DEDFE1"
+                            app:cornerRadius="10dp"
+                            app:icon="@drawable/ic_plan"
+                            app:iconGravity="textStart"
+                            app:iconPadding="8dp"
+                            app:iconTint="#444F60" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/button_style" />
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/profile_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                </RelativeLayout>
+
+
+                <TextView
+                    android:id="@+id/list_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:gravity="center"
+                    android:text="Немає інформації"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</LinearLayout>

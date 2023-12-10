@@ -1,187 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
-    android:orientation="vertical">
+    android:layout_height="200dp"
+    android:layout_marginStart="15dp"
+    android:layout_marginTop="15dp"
+    android:layout_marginEnd="15dp"
+    android:elevation="0dp"
+    app:cardCornerRadius="8dp">
 
-
-    <TextView
-        android:id="@+id/data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/center_button_event"
-        android:textColor="@color/white"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp"
-        android:textStyle="bold"
-        android:text="" />
-
-
-    <LinearLayout
-        android:id="@+id/fon"
+    <ImageView
+        android:id="@+id/photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:elevation="8dp"
-        android:padding="12dp"
-        android:background="@drawable/backround_result"
-        android:orientation="vertical">
+        android:scaleType="centerCrop"
+        android:src="@drawable/preview_one" />
 
-
-    <LinearLayout
+    <ImageView
+        android:id="@+id/gradient"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:src="@drawable/shadow_gradient" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="10dp"
-            app:cardCornerRadius="45dp">
-
+            android:id="@+id/circle_image_second"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginEnd="-5dp"
+            android:elevation="12dp"
+            android:innerRadius="0dp"
+            android:shape="ring"
+            android:thicknessRatio="1.9"
+            app:cardCornerRadius="40dp"
+            app:layout_constraintBottom_toBottomOf="@+id/circle_image_first"
+            app:layout_constraintEnd_toStartOf="@+id/circle_image_first"
+            app:layout_constraintTop_toTopOf="@+id/circle_image_first">
 
             <ImageView
-                android:id="@+id/photo"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:src="@drawable/ic_prew" />
+                android:id="@+id/image_second"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/prew_user"></ImageView>
+        </androidx.cardview.widget.CardView>
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/circle_image_first"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginEnd="-5dp"
+            android:elevation="12dp"
+            android:innerRadius="0dp"
+            android:shape="ring"
+            android:thicknessRatio="1.9"
+            app:cardCornerRadius="40dp"
+            app:layout_constraintBottom_toBottomOf="@+id/circle_counter"
+            app:layout_constraintEnd_toStartOf="@+id/circle_counter"
+            app:layout_constraintTop_toTopOf="@+id/circle_counter">
+
+            <ImageView
+                android:id="@+id/image_first"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/prew_user"></ImageView>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/circle_counter"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerHorizontal="true"
+            android:elevation="12dp"
+            android:innerRadius="0dp"
+            android:shape="ring"
+            android:thicknessRatio="1.9"
+            app:cardBackgroundColor="@color/link_color"
+            app:cardCornerRadius="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/counter_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="+21"
+                android:textColor="@color/white" />
 
         </androidx.cardview.widget.CardView>
 
         <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text="Немає заголовку"
-            android:textColor="@color/text_color"
-            android:layout_marginLeft="16dp"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/panel_location"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
+            android:id="@+id/status_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="2dp"
+            android:text="Захід не розпочався"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/name_event"
+            app:layout_constraintStart_toEndOf="@+id/grean_square" />
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            app:srcCompat="@drawable/ic_location" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/text_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:textColor="@color/text_color"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:text="---" />
-
-            <TextView
-                android:id="@+id/text_location_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_color"
-                android:textSize="14sp"
-                android:text="Місце проведення заходу" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                app:srcCompat="@drawable/ic_clock"
-                app:tint="@color/text_color" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/text_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_color"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:text="16:00 - 20:00" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="@color/text_color"
-                    android:textSize="14sp"
-                    android:text="Час проведення" />
-            </LinearLayout>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/text_color"
-        android:maxLines="3"
-        android:layout_marginTop="8dp"
-        android:textSize="16sp"
-        android:text="Немає опису" />
-
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+            android:id="@+id/grean_square"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:src="@drawable/shape_green"
+            app:layout_constraintBottom_toTopOf="@+id/name_event"
+            app:layout_constraintStart_toStartOf="@+id/name_event"
+            app:layout_constraintTop_toTopOf="@+id/status_event" />
 
         <TextView
-            android:id="@+id/status"
-            android:background="@drawable/button_style"
+            android:id="@+id/name_event"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:text="Підтримка добровольців"
             android:textColor="@color/white"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:textSize="16sp"
-            android:text="Відмінено" />
+            app:layout_constraintBottom_toTopOf="@+id/type_event"
+            app:layout_constraintStart_toStartOf="@+id/type_event" />
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textColor="@color/color_park"
-            android:gravity="right"
-            android:textSize="16sp"
-            android:text="Докладніше" />
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="28/08/22 | 12:00 - 14:00"
+            android:textColor="@color/tv_description"
+            app:layout_constraintBottom_toBottomOf="@+id/type_event"
+            app:layout_constraintStart_toEndOf="@+id/blue_dot"
+            app:layout_constraintTop_toTopOf="@+id/type_event" />
 
-    </LinearLayout>
-    </LinearLayout>
-</LinearLayout>
+        <ImageView
+            android:id="@+id/blue_dot"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/shape_circle_blue"
+            app:layout_constraintBottom_toBottomOf="@+id/type_event"
+            app:layout_constraintStart_toEndOf="@+id/type_event"
+            app:layout_constraintTop_toTopOf="@+id/type_event" />
+
+        <TextView
+            android:id="@+id/type_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Марафон"
+            android:textColor="@color/tv_description"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="23.1"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/textView4"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:text="км"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView5"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
+
+
