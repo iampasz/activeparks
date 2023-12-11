@@ -27,13 +27,12 @@ import com.app.activeparks.data.model.calendar.CalendarItem;
 import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
-import com.app.activeparks.data.network.ApiService;
-import com.app.activeparks.data.network.NetworkModule;
+
 import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.storage.Preferences;
 import com.app.activeparks.data.useCase.eventState.EventStateUseCase;
 import com.app.activeparks.ui.event.util.EventModelFactory;
-import com.app.activeparks.ui.event.EventModelFactory;
+
 import com.app.activeparks.ui.event.fragments.FragmentEventCreate;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel;

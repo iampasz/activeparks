@@ -37,8 +37,7 @@ import com.app.activeparks.data.model.video.Video;
 import com.app.activeparks.data.model.workout.PlanModel;
 import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.data.model.workout.WorkoutModel;
-import com.app.activeparks.data.network.ApiService;
-import com.app.activeparks.data.network.NetworkModule;
+
 import com.app.activeparks.data.storage.Preferences;
 
 import java.io.File;

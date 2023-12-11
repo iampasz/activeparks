@@ -26,8 +26,8 @@ import com.app.activeparks.data.db.entity.ProfileStateEntity
     entities = [
         ActiveEntity::class,
         ActivityStateEntity::class,
-        UserEntity::class
-        ActivityStateEntity::class,
+        UserEntity::class,
+       // ActivityStateEntity::class,
         EventStateEntity::class,
         ProfileStateEntity::class
     ],

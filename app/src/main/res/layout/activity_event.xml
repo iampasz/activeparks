@@ -502,7 +502,6 @@
 
                     <com.app.activeparks.util.ButtonSelect
                         android:id="@+id/conference_action"
-                        android:id="@+id/conferencial_action"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_gravity="center"

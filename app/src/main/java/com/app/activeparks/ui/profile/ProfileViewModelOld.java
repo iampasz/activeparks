@@ -41,7 +41,7 @@ public class ProfileViewModelOld extends ViewModel {
 
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private Repository repository;
+
     public SharedPreferencesMobileApiSessionRepository newRepository;
 
     public MutableLiveData<User> user = new MutableLiveData<>();
@@ -69,7 +69,7 @@ public class ProfileViewModelOld extends ViewModel {
 
     public UserUpdate userUpdate = new UserUpdate();
 
-    ProfileViewModel(Preferences sharedPreferences, SharedPreferencesMobileApiSessionRepository newRepository) {
+
     ProfileViewModelOld(Preferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
         this.newRepository = newRepository;
