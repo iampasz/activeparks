@@ -5,10 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.app.activeparks.data.db.mapper.ActivityStateToActiveEntityMapper
 import com.app.activeparks.data.useCase.saveActivity.SaveActivityUseCase
 import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
+import com.app.activeparks.ui.active.model.ActivityState
+import com.app.activeparks.ui.active.model.ActivityTime
 import com.app.activeparks.ui.active.model.CurrentActivity
 import com.app.activeparks.ui.active.model.StartInfo
 import kotlinx.coroutines.launch
-import org.osmdroid.util.GeoPoint
 
 /**
  * Created by O.Dziuba on 08.11.2023.
@@ -20,20 +21,22 @@ class SaveActivityViewModel(
     var currentActivity = CurrentActivity()
     var startInfo = StartInfo()
 
+
     fun saveActivity(
-        activeRoad: List<GeoPoint>,
-        activityInfoItems: List<ActivityInfoTrainingItem>
+        activityState: ActivityState,
+        activityInfoItems: List<ActivityInfoTrainingItem>,
+        activityTime: ActivityTime
     ) {
         viewModelScope.launch {
             kotlin.runCatching {
-                saveActivityUseCase.insert(
-                    ActivityStateToActiveEntityMapper.map(
-                        startInfo,
-                        currentActivity,
-                        activeRoad,
-                        activityInfoItems
-                    )
+                val activity = ActivityStateToActiveEntityMapper.map(
+                    startInfo,
+                    currentActivity,
+                    activityState,
+                    activityInfoItems,
+                    activityTime
                 )
+                saveActivityUseCase.insert(activity)
             }
         }
     }

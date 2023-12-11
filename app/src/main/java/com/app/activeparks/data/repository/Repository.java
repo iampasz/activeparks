@@ -2,8 +2,8 @@ package com.app.activeparks.data.repository;
 
 import android.util.Log;
 
-import com.app.activeparks.data.network.NetworkModule;
-import com.app.activeparks.data.network.ApiService;
+import com.app.activeparks.data.network.baseOld.NetworkModule;
+import com.app.activeparks.data.network.baseOld.ApiService;
 import com.app.activeparks.data.model.Default;
 import com.app.activeparks.data.model.authorisation.Authorisation;
 import com.app.activeparks.data.model.authorisation.Signup;
@@ -720,8 +720,8 @@ public class Repository {
         return service.createEmptyEvent(token);
     }
 
-    public Observable<ResponseBody> setDataEvent(String eventId, ItemEvent itemEvent) {
-        return service.setDataEvent(token, eventId, itemEvent);
+    public Observable<ResponseBody> setDataEvent(ItemEvent itemEvent) {
+        return service.setDataEvent(token, itemEvent.getId(), itemEvent);
     }
 
     public Observable<ResponseBody> publishDataEvent(String eventId) {
@@ -732,4 +732,7 @@ public class Repository {
         return service.getAllEventsPublished();
     }
 
+    public Observable<ResponseBody> deleteEvent(String id) {
+        return service.deleteEvent(token, id);
+    }
 }

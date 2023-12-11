@@ -7,44 +7,31 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.style.ClickableSpan;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
-import com.app.activeparks.data.model.uservideo.UserVideoItem;
 import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
-import com.app.activeparks.ui.event.EventActivity;
+import com.app.activeparks.ui.event.activity.EventActivity;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
-import com.app.activeparks.ui.profile.uservideo.UserAddVideoActivity;
-import com.app.activeparks.ui.profile.uservideo.adapter.UserVideoAdapter;
 import com.app.activeparks.ui.training.TrainingDialog;
 import com.app.activeparks.ui.workout.adapter.journal.JournalListAdaper;
 import com.app.activeparks.ui.workout.adapter.plan.PlanListAdaper;
 import com.app.activeparks.util.ButtonSelect;
-import com.app.activeparks.util.FragmentInteface;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class UserActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 

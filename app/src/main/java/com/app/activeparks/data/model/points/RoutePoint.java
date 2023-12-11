@@ -70,7 +70,7 @@ public class RoutePoint implements Comparable<RoutePoint>{
         this.pointIndex = pointIndex;
     }
 
-    public List<Double> getLocation() {
+        public List<Double> getLocation() {
         return location;
     }
 

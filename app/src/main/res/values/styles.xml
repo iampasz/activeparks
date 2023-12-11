@@ -67,5 +67,33 @@
         <item name="android:colorForeground">#42221f1f
         </item>
     </style>
+    <style name="Theme.MyApp" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="textInputStyle">@style/Widget.MyApp.TextInputLayout</item>
+    </style>
+
+    <style name="Widget.MyApp.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+    </style>
+
+    <style name="SmsCodeEditText">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:inputType">number</item>
+        <item name="android:maxLength">1</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="SmsCodeIndicator">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">4px</item>
+        <item name="android:background">@color/black</item>
+    </style>
 
 </resources>
