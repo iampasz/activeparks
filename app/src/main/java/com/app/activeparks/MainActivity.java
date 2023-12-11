@@ -1,6 +1,7 @@
 package com.app.activeparks;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
@@ -13,8 +14,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
-import com.app.activeparks.data.storage.Preferences;
 import com.app.activeparks.data.repository.Repository;
+import com.app.activeparks.data.storage.Preferences;
 import com.app.activeparks.ui.maps.MapsFragment;
 import com.app.activeparks.ui.profile.EditProfileActivity;
 import com.app.activeparks.util.Dictionarie;
@@ -39,7 +40,10 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
     private ActivityMainBinding binding;
     private AppUpdateManager appUpdateManager;
+    private NavController navController;
+    private Preferences preferences;
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
         appUpdateManager =  AppUpdateManagerFactory.create(this);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         new Dictionarie().init(this);
@@ -61,7 +65,24 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         configuration.locale = locale;
         getBaseContext().getResources().updateConfiguration(configuration, null);
 
+        binding.navView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.navigation_home -> navController.navigate(R.id.navigation_home);
+                case R.id.navigation_maps -> navController.navigate(R.id.navigation_maps);
+                case R.id.navigation_scaner -> navController.navigate(R.id.navigation_scaner);
+                case R.id.navigation_active -> navController.navigate(R.id.navigation_active);
+                case R.id.navigation_user -> {
+                    preferences = new Preferences(this);
+                    if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
+                        navController.navigate(R.id.registration_user);
+                    } else {
+                        navController.navigate(R.id.navigation_user);
+                    }
+                }
+            }
 
+            return false;
+        });
 
         Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
 
@@ -78,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
         //startActivity(new Intent(this, TestUpdate.class));
 
+    }
+
+    public NavController getNavController() {
+        return navController;
     }
 
     @Override

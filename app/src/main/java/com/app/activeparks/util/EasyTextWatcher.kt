@@ -6,7 +6,7 @@ import android.text.TextWatcher
 /**
  * Created by O.Dziuba on 08.11.2023.
  */
-open class EmptyTextWatcher: TextWatcher {
+open class EasyTextWatcher: TextWatcher {
     override fun afterTextChanged(s: Editable?) {
     }
 

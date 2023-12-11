@@ -53,7 +53,7 @@ public class ClubsAdaper extends RecyclerView.Adapter<ClubsAdaper.ViewHolder> {
             if (item.isUser().contains("userIsMember")) {
                 holder.status.setText("Ви учасник");
                 holder.status.setTextColor(inflater.getContext().getResources().getColor(R.color.white));
-                holder.status.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.button_yellow));
+                holder.status.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.button_orange));
             } else {
                 holder.status.setText("Ви координатор");
                 holder.status.setTextColor(inflater.getContext().getResources().getColor(R.color.text_color));

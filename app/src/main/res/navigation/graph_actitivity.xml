@@ -24,6 +24,7 @@
         tools:layout="@layout/fragment_settings_activity" />
     <fragment
         android:id="@+id/pulseZoneFragment"
+        tools:layout="@layout/dialog_pulse_zone"
         android:name="com.app.activeparks.ui.active.fragments.pulseZone.PulseZoneFragment"
         android:label="PulseZoneFragment" />
 </navigation>

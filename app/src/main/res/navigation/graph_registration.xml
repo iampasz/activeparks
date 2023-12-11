@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/graphRegistration"
+    app:startDestination="@id/fRegistration">
+
+    <fragment
+        android:id="@+id/fRegistration"
+        android:name="com.app.activeparks.ui.registration.fragments.registration.RegistrationFragment"
+        android:label="fragmentRegistration"
+        tools:layout="@layout/fragment_registration">
+        <action
+            android:id="@+id/action_fRegistration_to_authorizationFragment"
+            app:destination="@id/fAuthorization" />
+        <action
+            android:id="@+id/action_fRegistration_to_registrationUserDataFragment"
+            app:destination="@id/fRegistrationUserData" />
+    </fragment>
+    <fragment
+        android:id="@+id/fAuthorization"
+        android:name="com.app.activeparks.ui.registration.fragments.authorization.AuthorizationFragment"
+        android:label="AuthorizationFragment"
+        tools:layout="@layout/fragment_authorization">
+        <action
+            android:id="@+id/action_fAuthorization_to_fForgotPassword"
+            app:destination="@id/fForgotPassword" />
+    </fragment>
+    <fragment
+        android:id="@+id/fForgotPassword"
+        android:name="com.app.activeparks.ui.registration.fragments.forgotPassword.ForgotPasswordFragment"
+        android:label="ForgotPasswordFragment"
+        tools:layout="@layout/fragment_forgot_password">
+        <action
+            android:id="@+id/action_fForgotPassword_to_fAuthorization"
+            app:destination="@id/fAuthorization" />
+    </fragment>
+    <fragment
+        android:id="@+id/fRegistrationUserData"
+        android:name="com.app.activeparks.ui.registration.fragments.registrationFlow.fragments.userData.RegistrationUserDataFragment"
+        android:label="RegistrationUserDataFragment"
+        tools:layout="@layout/fragment_registration_user_data" >
+        <action
+            android:id="@+id/action_registrationUserDataFragment_to_verificationFragment"
+            app:destination="@id/fVerification" />
+    </fragment>
+    <fragment
+        android:id="@+id/fVerification"
+        tools:layout="@layout/fragment_verification_phone"
+        android:name="com.app.activeparks.ui.registration.fragments.registrationFlow.fragments.verificationPhone.VerificationPhoneFragment"
+        android:label="VerificationFragment" >
+        <action
+            android:id="@+id/action_verificationFragment_to_additionalDataFragment"
+            app:destination="@id/fAdditionalData" />
+    </fragment>
+    <fragment
+        android:id="@+id/fAdditionalData"
+        tools:layout="@layout/fragment_additional_data"
+        android:name="com.app.activeparks.ui.registration.fragments.registrationFlow.fragments.additionalData.AdditionalDataFragment"
+        android:label="AdditionalDataFragment" >
+        <action
+            android:id="@+id/action_fAdditionalData_to_fVerificationEmail"
+            app:destination="@id/fVerificationEmail" />
+    </fragment>
+    <fragment
+        android:id="@+id/fAdditionalValue"
+        tools:layout="@layout/fragment_additional_value"
+        android:name="com.app.activeparks.ui.registration.fragments.registrationFlow.fragments.additionalValue.AdditionalValueFragment"
+        android:label="AdditionalValueFragment" />
+    <fragment
+        android:id="@+id/fVerificationEmail"
+        tools:layout="@layout/fragment_verification_email"
+        android:name="com.app.activeparks.ui.registration.fragments.registrationFlow.fragments.verificationEmail.VerificationEmailFragment"
+        android:label="VerificationEmailFragment" >
+        <action
+            android:id="@+id/action_fVerificationEmail_to_fAdditionalValue"
+            app:destination="@id/fAdditionalValue" />
+    </fragment>
+
+</navigation>

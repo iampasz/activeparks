@@ -48,7 +48,7 @@ class InfoView constructor(
         binding.tvDescription.text = number
     }
 
-    private fun setImg(id: Int) {
+    fun setImg(id: Int) {
         binding.ivIcon.setImageResource(id)
     }
 

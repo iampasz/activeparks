@@ -14,7 +14,7 @@ import com.app.activeparks.data.db.entity.ActiveEntity
 interface ActiveDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(active: ActiveEntity)
-    @Query("SELECT * FROM active WHERE keyId = :keyId")
+    @Query("SELECT * FROM active WHERE idLocal = :keyId")
     suspend fun getActive(keyId: Long): ActiveEntity
     @Query("SELECT * FROM active")
     suspend fun getActives(): List<ActiveEntity>

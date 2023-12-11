@@ -1,4 +1,4 @@
-package com.app.activeparks.data.network;
+package com.app.activeparks.data.network.baseOld;
 
 import com.app.activeparks.data.model.Default;
 import com.app.activeparks.data.model.authorisation.Authorisation;
@@ -33,7 +33,6 @@ import com.app.activeparks.data.model.workout.PlanModel;
 import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.data.model.workout.WorkoutModel;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import io.reactivex.Observable;
@@ -41,11 +40,9 @@ import io.reactivex.Single;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;

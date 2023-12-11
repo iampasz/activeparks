@@ -19,7 +19,7 @@ data class TypeOfActivity(
         fun getTypeOfActivity(): List<TypeOfActivity> {
             return listOf(
                 TypeOfActivity(
-                    0, "Хотьба", R.drawable.ic_at_walk,
+                    0, "Ходьба", R.drawable.ic_at_walk,
                     isOutside = true,
                     isSelected = false
                 ),

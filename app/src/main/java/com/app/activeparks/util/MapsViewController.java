@@ -244,6 +244,10 @@ public class MapsViewController implements MapEventsReceiver {
         mapController.setZoom(mapView.getZoomLevelDouble() - 0.2);
     }
 
+    public void zoomOnStart() {
+        mapController.setZoom(18.0);
+    }
+
     public void setPositionMap(double lat, double lon) {
         new Handler(Looper.getMainLooper()).post(() -> {
             mapView.getController().animateTo(new GeoPoint(lat, lon));

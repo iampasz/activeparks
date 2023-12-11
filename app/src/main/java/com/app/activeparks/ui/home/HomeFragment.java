@@ -19,7 +19,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.app.activeparks.MainActivity;
 import com.app.activeparks.data.model.clubs.ItemClub;
+import com.app.activeparks.data.storage.Preferences;
 import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.ClubsListActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
@@ -111,7 +113,7 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
             binding.listNews.setOffscreenPageLimit(3);
 
             binding.listNews.setPageTransformer((page, position) -> {
-                float myOffset = position * - 80;
+                float myOffset = position * -80;
                 if (position <= 1) {
                     float scaleFactor = 1 - (0.20f * Math.abs(position));
                     page.setTranslationX(myOffset);
@@ -195,7 +197,12 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
         });
 
         binding.panelUser.setOnClickListener(v -> {
-            ((FragmentInteface) getActivity()).navigation(R.id.navigation_user);
+            Preferences preferences = new Preferences(requireContext());
+            if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
+                ((MainActivity) requireActivity()).getNavController().navigate(R.id.registration_user);
+            } else {
+                ((MainActivity) requireActivity()).getNavController().navigate(R.id.navigation_user);
+            }
         });
 
         binding.allNews.setOnClickListener(v -> {

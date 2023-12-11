@@ -21,4 +21,5 @@ val dbModule = module {
     single { get<AppDataBase>().activeStateDao() }
     single { get<AppDataBase>().eventStateDao() }
     single { get<AppDataBase>().profileStateDao() }
+    single { get<AppDataBase>().userDao() }
 }

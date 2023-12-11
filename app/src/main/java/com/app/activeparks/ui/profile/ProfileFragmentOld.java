@@ -30,6 +30,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.app.activeparks.MainActivity;
+import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.uservideo.UserVideoItem;
 import com.app.activeparks.data.model.workout.WorkoutItem;
@@ -196,6 +198,22 @@ public class ProfileFragmentOld extends Fragment implements SwipeRefreshLayout.O
         exit.setOnClickListener(v -> {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            viewModel.logout();
+
+                            if (requireActivity() instanceof MainActivity) {
+                                ((MainActivity) requireActivity()).getNavController().navigate(R.id.registration_user);
+                            }
+                            dialog.cancel();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            dialog.cancel();
+                            break;
             DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE -> {
@@ -294,10 +312,18 @@ public class ProfileFragmentOld extends Fragment implements SwipeRefreshLayout.O
         super.onResume();
         statusView.setVisibility(View.VISIBLE);
         switch (viewModel.select) {
-            case 0 -> viewModel.clubs();
-            case 1 -> viewModel.event();
-            case 2 -> viewModel.journal();
-            case 3 -> viewModel.userVideoList();
+            case 0:
+                viewModel.clubs();
+                break;
+            case 1:
+                viewModel.event();
+                break;
+            case 2:
+                viewModel.journal();
+                break;
+            case 3:
+                viewModel.userVideoList();
+                break;
         }
     }
 

@@ -19,6 +19,7 @@ import com.app.activeparks.data.model.user.UserUpdate;
 import com.app.activeparks.data.model.uservideo.UserVideo;
 import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.data.repository.Repository;
+import com.app.activeparks.data.repository.sesion.SharedPreferencesMobileApiSessionRepository;
 import com.app.activeparks.data.storage.Preferences;
 import com.google.gson.Gson;
 
@@ -40,6 +41,8 @@ public class ProfileViewModelOld extends ViewModel {
 
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private Repository repository;
+    public SharedPreferencesMobileApiSessionRepository newRepository;
 
     public MutableLiveData<User> user = new MutableLiveData<>();
     public MutableLiveData<List<ItemClub>> clubsList = new MutableLiveData<>();
@@ -66,8 +69,10 @@ public class ProfileViewModelOld extends ViewModel {
 
     public UserUpdate userUpdate = new UserUpdate();
 
+    ProfileViewModel(Preferences sharedPreferences, SharedPreferencesMobileApiSessionRepository newRepository) {
     ProfileViewModelOld(Preferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
+        this.newRepository = newRepository;
         this.repository = new Repository(sharedPreferences);
     }
 
@@ -386,6 +391,7 @@ public class ProfileViewModelOld extends ViewModel {
     }
 
     public void logout() {
+        newRepository.clear();
         repository.logout();
         sharedPreferences.setToken(null);
         sharedPreferences.setId(null);
