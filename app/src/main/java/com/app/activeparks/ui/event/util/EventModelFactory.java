@@ -1,4 +1,4 @@
-package com.app.activeparks.ui.event;
+package com.app.activeparks.ui.event.util;
 
 import android.content.Context;
 
@@ -21,6 +21,7 @@ public class EventModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+
         return (T) new EventViewModel(sharedPrefsUserRepository);
     }
 }

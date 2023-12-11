@@ -22,9 +22,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.app.activeparks.ui.event.EventModelFactory;
 import com.app.activeparks.ui.event.interfaces.EventScannerListener;
 import com.app.activeparks.ui.event.fragments.MeetingsFragment;
+import com.app.activeparks.ui.event.util.EventModelFactory;
 import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 import com.app.activeparks.ui.participants.ParticipantsFragment;
 import com.app.activeparks.ui.routepoint.RoutePointFragment;
@@ -78,7 +78,7 @@ public class EventActivity extends AppCompatActivity implements EventScannerList
         mDescription = findViewById(R.id.text_description);
         mClubName = findViewById(R.id.text_club_name);
         mEventStatus = findViewById(R.id.status);
-        conferenceAction = findViewById(R.id.conferencial_action);
+        conferenceAction = findViewById(R.id.conference_action);
         startPointAction = findViewById(R.id.start_point_action);
         statusView = findViewById(R.id.status_view);
         layoutTimer = findViewById(R.id.layout_timer);

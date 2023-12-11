@@ -6,7 +6,7 @@ import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
-import com.app.activeparks.ui.event.interfaces.responseSuccessful
+import com.app.activeparks.ui.event.interfaces.ResponseCallBack
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -42,11 +42,11 @@ class EventController(context: Context) {
         compositeDisposable.add(loadedFile)
     }
 
-    fun setDataEvent(loaded: responseSuccessful, eventData: ItemEvent) {
+    fun setDataEvent(responseCallBack: ResponseCallBack, eventData: ItemEvent) {
         val dataSet = repository.setDataEvent(eventData).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                loaded.load()
+            .subscribe({responce ->
+                responseCallBack.load(responce.string())
             }) { throwable ->
                 Log.e("ERROR", "Error: ${throwable.message}")
             }
@@ -54,17 +54,16 @@ class EventController(context: Context) {
         compositeDisposable.add(dataSet)
     }
 
-    fun publishDataEvent(eventToken: String, responseSuccessful: responseSuccessful) {
+    fun publishDataEvent(eventToken: String, responseCallBack: ResponseCallBack) {
         val publishData = repository.publishDataEvent(eventToken)
             .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                responseSuccessful.load()
+            .subscribe({responce ->
+                responseCallBack.load(responce.string())
             }
             ) { throwable -> Log.i("API SERVICE", throwable.message + " NOU") }
 
         compositeDisposable.add(publishData)
     }
-
 
     fun deleteEvent(eventId: String) {
 
@@ -79,7 +78,35 @@ class EventController(context: Context) {
         compositeDisposable.add(dataDeleted)
     }
 
-    fun clearDisposables() {
+//    fun getAllEvents(responseCallBack: ResponseCallBack) {
+//
+//        val dataEvents = repository.allEventsPublished
+//            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({
+//                responseFrom ->
+//                    responseCallBack.load(responseFrom.string())
+//                    clearDisposables()
+//            }
+//            ) { Log.i("API_SERVICE", "Data wasn't delete from API") }
+//
+//        compositeDisposable.add(dataEvents)
+//    }
+
+    fun getMyEvents(responseCallBack: ResponseCallBack) {
+
+        val dataEvents = repository.myEvents
+            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                    responseFrom ->
+                responseCallBack.load(responseFrom.string())
+                clearDisposables()
+            }
+            ) { Log.i("API_SERVICE", "Data wasn't delete from API") }
+
+        compositeDisposable.add(dataEvents)
+    }
+
+    private fun clearDisposables() {
         compositeDisposable.clear()
     }
 

@@ -27,9 +27,12 @@ import com.app.activeparks.data.model.calendar.CalendarItem;
 import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
+
 import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.ui.event.EventModelFactory;
+import com.app.activeparks.data.useCase.eventState.EventStateUseCase;
+import com.app.activeparks.ui.event.util.EventModelFactory;
+
 import com.app.activeparks.ui.event.fragments.FragmentEventCreate;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel;
@@ -51,6 +54,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Request;
 
 public class EventsListActivity extends AppCompatActivity implements LocationListener {
 
@@ -76,28 +80,41 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
 
         listClubOwner = findViewById(R.id.list_events);
         calendarView = findViewById(R.id.calendarView);
-        listStatus = findViewById(R.id.list_null);
-        ImageView createEventButton = findViewById(R.id.create_event_button2);
+        //listStatus = findViewById(R.id.list_null);
+        ImageView createEventButton = findViewById(R.id.create_event);
         TabLayout selectFilter = findViewById(R.id.select_filter);
         selectFilter.setVisibility(View.VISIBLE);
         Objects.requireNonNull(selectFilter.getTabAt(1)).select();
 
         viewModel.getEventsList();
         viewModel.calendarEvent();
-        findViewById(R.id.panel_top).setVisibility(View.VISIBLE);
-        findViewById(R.id.title).setVisibility(View.GONE);
+        //findViewById(R.id.panel_top).setVisibility(View.VISIBLE);
+       //findViewById(R.id.title).setVisibility(View.GONE);
         findViewById(R.id.closed).setOnClickListener(v -> onBackPressed());
 
-        createEventButton.setOnClickListener(view -> updateViewModelData());
+        createEventButton.setOnClickListener(view ->
 
-        viewModel.getSportEventsList().observe(this, events -> {
-            setAdapter(events);
-            listStatus.setText("Жодного запланованого заходу");
-        });
+                updateViewModelData()
 
-        viewModel.getCalendar().observe(this, this::setMapperAdapter);
 
-        calendarView.setOnDayClickListener(eventDay -> {
+        );
+
+        viewModel.getSportEventsList().
+
+                observe(this, events ->
+
+                {
+                    setAdapter(events);
+                    listStatus.setText("Жодного запланованого заходу");
+                });
+
+        viewModel.getCalendar().
+
+                observe(this, this::setMapperAdapter);
+
+        calendarView.setOnDayClickListener(eventDay ->
+
+        {
             Calendar cal = eventDay.getCalendar();
             @SuppressLint("SimpleDateFormat")
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -207,14 +224,18 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
     private void openCreateEventFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.frame_events_container, new FragmentEventCreate())
+                .add(R.id.constrain_events_container, new FragmentEventCreate())
                 .commit();
     }
 
     private EventRouteViewModel eventRouteViewModel;
 
     private void updateViewModelData() {
+
+
+
         eventRouteViewModel = new ViewModelProvider(this).get(EventRouteViewModel.class);
+
 
         Preferences preferences;
         Repository repository;
@@ -223,12 +244,10 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
         preferences.setServer(true);
         repository = new Repository(preferences);
 
-
         disposable = repository.createEmptyEvent()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBody -> {
-
 
                             String jsonResponse = responseBody.string();
                             Gson gson = new Gson();
@@ -238,11 +257,8 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
 
                         }, error -> {
 
-
                             Log.i("THROWABLE", error.getMessage() + " ");
-
                             Toast.makeText(this, "Виникли проблеми, спробуйте пізніше", Toast.LENGTH_SHORT).show();
-
                         }
                 );
     }
@@ -250,6 +266,6 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        disposable.dispose();
+        //disposable.dispose();
     }
 }

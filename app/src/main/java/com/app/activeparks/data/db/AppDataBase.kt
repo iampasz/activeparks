@@ -10,10 +10,14 @@ import com.app.activeparks.data.db.converter.RegionsConverters
 import com.app.activeparks.data.db.converter.UriTypeConverter
 import com.app.activeparks.data.db.dao.ActiveDao
 import com.app.activeparks.data.db.dao.ActivityStateDao
+import com.app.activeparks.data.db.dao.EventStateDao
+import com.app.activeparks.data.db.dao.ProfileStateDao
 import com.app.activeparks.data.db.dao.UserDao
 import com.app.activeparks.data.db.entity.ActiveEntity
 import com.app.activeparks.data.db.entity.ActivityStateEntity
 import com.app.activeparks.data.db.entity.UserEntity
+import com.app.activeparks.data.db.entity.EventStateEntity
+import com.app.activeparks.data.db.entity.ProfileStateEntity
 
 /**
  * Created by O.Dziuba on 09.11.2023.
@@ -22,7 +26,10 @@ import com.app.activeparks.data.db.entity.UserEntity
     entities = [
         ActiveEntity::class,
         ActivityStateEntity::class,
-        UserEntity::class
+        UserEntity::class,
+       // ActivityStateEntity::class,
+        EventStateEntity::class,
+        ProfileStateEntity::class
     ],
     version = 2
 )
@@ -36,5 +43,8 @@ import com.app.activeparks.data.db.entity.UserEntity
 abstract class AppDataBase : RoomDatabase() {
     abstract fun activeDao(): ActiveDao
     abstract fun activeStateDao(): ActivityStateDao
+
+    abstract fun eventStateDao(): EventStateDao
+    abstract fun profileStateDao(): ProfileStateDao
     abstract fun userDao(): UserDao
 }

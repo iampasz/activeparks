@@ -393,10 +393,14 @@ public interface ApiService {
     Observable<ResponseBody> publishDataEvent(@Header("Authorization") String token, @Path("id") String id);
 
     @GET("/api/v1/sport-events?offset=0&limit=10&sort[sort_name]=value&filters[filter_name]=value")
-    Observable<ResponseBody> getAllEventsPublished();
+    Observable<ResponseBody> getAllEventsPublished(@Header("Authorization") String token);
 
     @DELETE("/api/v1/sport-events/{id}")
     Observable<ResponseBody> deleteEvent(@Header("Authorization") String token, @Path(value = "id") String id);
+
+
+    @GET("/api/v1/sport-events/my?offset=0&limit=10&filters[isClubEvent]=0&sort[createdAt]=desc")
+    Observable<ResponseBody> getMyEvents(@Header("Authorization") String token);
 
 
 }

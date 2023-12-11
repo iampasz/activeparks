@@ -1,5 +1,6 @@
 package com.app.activeparks.data.repository;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.app.activeparks.data.network.baseOld.NetworkModule;
@@ -36,6 +37,7 @@ import com.app.activeparks.data.model.video.Video;
 import com.app.activeparks.data.model.workout.PlanModel;
 import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.data.model.workout.WorkoutModel;
+
 import com.app.activeparks.data.storage.Preferences;
 
 import java.io.File;
@@ -63,8 +65,8 @@ public class Repository {
     private String token = "";
     private String userId = "";
     private ApiService service;
-    private ApiService serviceSearch = new NetworkModule().getInterfaceSearch();
-    private ApiService serviceLocation = new NetworkModule().getInterfacLocation();
+    private final ApiService serviceSearch = new NetworkModule().getInterfaceSearch();
+    private final ApiService serviceLocation = new NetworkModule().getInterfacLocation();
 
     public Repository(Preferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
@@ -75,7 +77,7 @@ public class Repository {
 
         userId = sharedPreferences.getId();
 
-        if (sharedPreferences.getServer() == true) {
+        if (sharedPreferences.getServer()) {
             service = new NetworkModule().getTest();
         } else {
             service = new NetworkModule().getInterface();
@@ -140,7 +142,7 @@ public class Repository {
         if (date == null) {
             date = new Date();
         }
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
 
@@ -156,9 +158,7 @@ public class Repository {
         String startsTo = dateFormat.format(dateLost);
 
         Map<String, String> params = new HashMap<>();
-        if (startsFrom != null) {
-            params.put("filters[startsFrom]", startsFrom);
-        }
+        params.put("filters[startsFrom]", startsFrom);
         params.put("filters[startsTo]", startsTo);
         params.put("sort[startsAt]", "asc");
         if (clubId != null) {
@@ -169,7 +169,7 @@ public class Repository {
     }
 
     public Observable<SportEvents> myEventsNotifications() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Map<String, String> data = new HashMap<>();
         data.put("offset", "0");
         data.put("limit", "10");
@@ -215,7 +215,7 @@ public class Repository {
     }
 
     public Observable<SportEvents> eventsHome(int limit) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Map<String, String> data = new HashMap<>();
         data.put("filters[startsFrom]", dateFormat.format(new Date()));
         data.put("sort[startsAt]", "asc");
@@ -235,7 +235,7 @@ public class Repository {
     }
 
     public Observable<WorkoutModel> journal(String userId) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Map<String, String> data = new HashMap<>();
         data.put("userId", String.valueOf(userId));
         data.put("direction", "next");
@@ -247,7 +247,7 @@ public class Repository {
     }
 
     public Observable<SportEvents> myevents() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Map<String, String> data = new HashMap<>();
         data.put("userId", String.valueOf(userId));
         data.put("direction", "next");
@@ -259,7 +259,7 @@ public class Repository {
     }
 
     public Observable<SportEvents> eventsUser(String userId) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Map<String, String> data = new HashMap<>();
         data.put("userId", userId);
         data.put("direction", "next");
@@ -271,7 +271,7 @@ public class Repository {
     }
 
     public Observable<WorkoutModel> journal() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Map<String, String> data = new HashMap<>();
         data.put("userId", String.valueOf(userId));
         data.put("direction", "next");
@@ -729,7 +729,11 @@ public class Repository {
     }
 
     public Observable<ResponseBody> getAllEventsPublished() {
-        return service.getAllEventsPublished();
+        return service.getAllEventsPublished(token);
+    }
+
+    public Observable<ResponseBody> getMyEvents() {
+        return service.getMyEvents(token);
     }
 
     public Observable<ResponseBody> deleteEvent(String id) {

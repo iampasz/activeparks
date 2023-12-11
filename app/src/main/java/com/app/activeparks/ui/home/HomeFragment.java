@@ -26,6 +26,7 @@ import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.ClubsListActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
 import com.app.activeparks.ui.event.activity.EventActivity;
+import com.app.activeparks.ui.event.activity.EventListActivity2;
 import com.app.activeparks.ui.event.activity.EventsListActivity;
 import com.app.activeparks.ui.home.adapter.HomeAdaper;
 import com.app.activeparks.ui.home.adapter.HorizontalAdaperEvents;
@@ -213,7 +214,7 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
         });
 
         binding.allActivities.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), EventsListActivity.class));
+            startActivity(new Intent(getActivity(), EventListActivity2.class));
         });
 
         binding.allClubs.setOnClickListener(v -> {

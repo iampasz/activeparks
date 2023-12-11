@@ -15,9 +15,10 @@ import com.app.activeparks.data.model.calendar.CalendarItem;
 import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
-import com.app.activeparks.ui.event.EventModelFactory;
+
 import com.app.activeparks.ui.event.activity.EventActivity;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
+import com.app.activeparks.ui.event.util.EventModelFactory;
 import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 import com.applandeo.materialcalendarview.EventDay;
 import com.technodreams.activeparks.R;
@@ -51,7 +52,7 @@ public class EventsListFragment extends Fragment {
 
         View root = binding.getRoot();
 
-        binding.panelTop.setVisibility(View.GONE);
+        binding.titleText2.setVisibility(View.GONE);
         mViewModel.calendarEvent(id);
         mViewModel.getEventsList(id);
 
@@ -93,7 +94,7 @@ public class EventsListFragment extends Fragment {
 
     public void setAdapter(SportEvents events) {
         if (events.getItems().size() > 0) {
-            binding.listNull.setVisibility(View.GONE);
+            binding.titleText2.setVisibility(View.GONE);
         }
         binding.listEvents.setAdapter(new EventsListAdaper(getActivity(), events.getItems()).setOnEventListener(new EventsListAdaper.EventsListener() {
             @Override
