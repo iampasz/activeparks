@@ -1,5 +1,6 @@
 package com.app.activeparks.ui.active.fragments.pulseZone
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.ImageView
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.app.activeparks.data.model.registration.PulseZoneRequest
 import com.app.activeparks.ui.active.ActiveViewModel
 import com.app.activeparks.ui.active.model.InfoItem
 import com.app.activeparks.ui.active.model.PulseZone
@@ -19,6 +21,8 @@ class PulseZoneFragment : Fragment() {
 
     lateinit var binding: DialogPulseZoneBinding
     private val viewModel: ActiveViewModel by activityViewModel()
+
+    private val minPauseZone = 60
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,9 +36,79 @@ class PulseZoneFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val pulseZoneList = PulseZone.getPulseZone()
 
+        viewModel.getPulseZone()
+
+        setListener(pulseZoneList)
+        observe()
+    }
+
+    private fun observe() {
         with(binding) {
-            vInfoOne.setPulseInfoItem(InfoItem.pausePulse())
-            vInfoTwo.setPulseInfoItem(InfoItem.maxPulse())
+            viewModel.pulseZoneRequest.observe(viewLifecycleOwner) {
+
+                it?.let {
+                    viewModel.pulseZone.upperBorder = it.upperBorder
+                    viewModel.pulseZone.anaerobic = it.anaerobic
+                    viewModel.pulseZone.aerobic = it.aerobic
+                    viewModel.pulseZone.fatBurning = it.fatBurning
+                    viewModel.pulseZone.easy = it.easy
+                    viewModel.pulseZone.pausePulse = it.pausePulse
+
+                    if (viewModel.activityState.isAutoPulseZone) {
+                        setAutoPulseZone()
+                    } else {
+                        changePulseZone(it)
+                    }
+                } ?: kotlin.run {
+                    setDefaultZone()
+                }
+            }
+        }
+    }
+
+    private fun DialogPulseZoneBinding.setDefaultZone() {
+        vInfoOne.setPulseInfoItem(InfoItem.pausePulse())
+        vInfoTwo.setPulseInfoItem(InfoItem.maxPulse())
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun DialogPulseZoneBinding.changePulseZone(it: PulseZoneRequest) {
+        tvSelectZone6.text = "${it.upperBorder} уд/хв"
+        tvSelectZone5.text = "${it.anaerobic} уд/хв"
+        tvSelectZone4.text = "${it.aerobic} уд/хв"
+        tvSelectZone3.text = "${it.fatBurning} уд/хв"
+        tvSelectZone2.text = "${it.easy} уд/хв"
+
+        vInfoOne.setPulseInfoItem(InfoItem.pausePulse(it.pausePulse))
+        vInfoTwo.setPulseInfoItem(InfoItem.maxPulse(it.upperBorder))
+    }
+
+    private fun setListener(pulseZoneList: List<PulseZone>) {
+        with(binding) {
+            setDefaultZone()
+            vInfoOne.setOnClickListener {
+                setPulseZoneValue(
+                    tvSelectZone6,
+                    minPauseZone,
+                    minPauseZone,
+                    viewModel.pulseZone.upperBorder
+                ) {
+                    viewModel.pulseZone.pausePulse = it
+                    viewModel.savePulseZone()
+                    vInfoOne.setPulseInfoItem(InfoItem.pausePulse(it))
+                }
+            }
+
+            vInfoTwo.setOnClickListener {
+                setPulseZoneValue(
+                    tvSelectZone6,
+                    viewModel.pulseZone.upperBorder
+                ) {
+                    viewModel.pulseZone.upperBorder = it
+                    viewModel.savePulseZone()
+                    vInfoTwo.setPulseInfoItem(InfoItem.maxPulse(it))
+                }
+            }
 
             tvZone6.setOnClickListener {
                 changeZoneInfo(tvZone6, vPulseZoneInfo, tvPulseInfoTitle)
@@ -58,23 +132,72 @@ class PulseZoneFragment : Fragment() {
             }
 
             tvSelectZone6.setOnClickListener {
-                setPulseZoneValue(tvSelectZone6, 175)
+                if (!viewModel.activityState.isAutoPulseZone) {
+                    setPulseZoneValue(
+                        tvSelectZone6,
+                        viewModel.pulseZone.upperBorder,
+                        viewModel.pulseZone.anaerobic + 1,
+                        viewModel.pulseZone.upperBorder
+                    ) {
+                        viewModel.pulseZone.upperBorder = it
+                        viewModel.savePulseZone()
+                    }
+                }
             }
 
             tvSelectZone5.setOnClickListener {
-                setPulseZoneValue(tvSelectZone5, 150)
+                if (!viewModel.activityState.isAutoPulseZone) {
+                    setPulseZoneValue(
+                        tvSelectZone5,
+                        viewModel.pulseZone.anaerobic,
+                        viewModel.pulseZone.aerobic + 1,
+                        viewModel.pulseZone.upperBorder - 1
+                    ) {
+                        viewModel.pulseZone.anaerobic = it
+                        viewModel.savePulseZone()
+                    }
+                }
             }
 
             tvSelectZone4.setOnClickListener {
-                setPulseZoneValue(tvSelectZone4, 125)
+                if (!viewModel.activityState.isAutoPulseZone) {
+                    setPulseZoneValue(
+                        tvSelectZone4,
+                        viewModel.pulseZone.aerobic,
+                        viewModel.pulseZone.fatBurning + 1,
+                        viewModel.pulseZone.anaerobic - 1
+                    ) {
+                        viewModel.pulseZone.aerobic = it
+                        viewModel.savePulseZone()
+                    }
+                }
             }
 
             tvSelectZone3.setOnClickListener {
-                setPulseZoneValue(tvSelectZone3, 100)
+                if (!viewModel.activityState.isAutoPulseZone) {
+                    setPulseZoneValue(
+                        tvSelectZone3,
+                        viewModel.pulseZone.fatBurning,
+                        viewModel.pulseZone.easy + 1,
+                        viewModel.pulseZone.aerobic - 1
+                    ) {
+                        viewModel.pulseZone.fatBurning = it
+                        viewModel.savePulseZone()
+                    }
+                }
             }
 
             tvSelectZone2.setOnClickListener {
-                setPulseZoneValue(tvSelectZone2, 75)
+                if (!viewModel.activityState.isAutoPulseZone) {
+                    setPulseZoneValue(
+                        tvSelectZone2, viewModel.pulseZone.easy,
+                        viewModel.pulseZone.easy + 1,
+                        viewModel.pulseZone.fatBurning - 1
+                    ) {
+                        viewModel.pulseZone.easy = it
+                        viewModel.savePulseZone()
+                    }
+                }
             }
 
             ivBack.setOnClickListener {
@@ -85,6 +208,11 @@ class PulseZoneFragment : Fragment() {
                 isChecked = viewModel.activityState.isAutoPulseZone
                 setOnCheckedChangeListener { _, isChecked ->
                     viewModel.activityState.isAutoPulseZone = isChecked
+                    if (isChecked) {
+                        setAutoPulseZone()
+                    } else {
+                        changePulseZone(viewModel.pulseZone)
+                    }
                 }
             }
             val pulseZone = viewModel.activityState.pulseZone
@@ -143,12 +271,29 @@ class PulseZoneFragment : Fragment() {
         }
     }
 
+    private fun DialogPulseZoneBinding.setAutoPulseZone() {
+        viewModel.pulseZoneRequest.value?.let {
+            changePulseZone(
+                PulseZoneRequest.getAutoPulseZone(
+                    viewModel.age, it.pausePulse
+                )
+            )
+        }
+    }
 
-    private fun setPulseZoneValue(textView: TextView, value: Int) {
+
+    private fun setPulseZoneValue(
+        textView: TextView,
+        value: Int,
+        minValue: Int? = null,
+        maxValue: Int? = null,
+        update: (Int) -> Unit
+    ) {
         val numberPicker = NumberPicker(requireContext())
-        numberPicker.minValue = 70
-        numberPicker.maxValue = 200
+        numberPicker.minValue = minValue ?: 70
+        numberPicker.maxValue = maxValue ?: 200
         numberPicker.value = value
+        numberPicker.wrapSelectorWheel = false
 
         val dialog = androidx.appcompat.app.AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.tv_select_pulse_zone_value))
@@ -156,6 +301,7 @@ class PulseZoneFragment : Fragment() {
             .setPositiveButton(getString(R.string.tv_ok)) { _, _ ->
                 textView.text =
                     getString(R.string.tv_pulse_zone_picker, numberPicker.value.toString())
+                update(numberPicker.value)
             }
             .create()
 

@@ -83,8 +83,12 @@ data class UserRepositoryImpl(
         return userDao.getUser()?.let { UserMapper.mapToUser(it) }
     }
 
-    override suspend fun heartRateZones(request: PulseZoneRequest): ResponseSuccess? {
-        return networkManager.heartRateZones(request)
+    override suspend fun setHeartRateZones(request: PulseZoneRequest): ResponseSuccess? {
+        return networkManager.setHeartRateZones(request)
+    }
+
+    override suspend fun getHeartRateZones(): PulseZoneRequest? {
+        return networkManager.getHeartRateZones()
     }
 
 }

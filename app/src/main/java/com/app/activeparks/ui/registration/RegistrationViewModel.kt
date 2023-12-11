@@ -27,8 +27,6 @@ class RegistrationViewModel(
     private val context: Context
 ) : ViewModel() {
 
-    private val heartRateConst = 220
-
     var sendSmsCodeLD = MutableLiveData(false)
     var sendEmailCodeLD = MutableLiveData(false)
     var verificationSmsCodeLD = MutableLiveData(false)
@@ -120,17 +118,10 @@ class RegistrationViewModel(
     }
 
     fun calculatePulseZone(age: Int) {
-        val maxHeartRate = heartRateConst - age
         viewModelScope.launch {
             kotlin.runCatching {
-                userUseCase.heartRateZones(
-                    PulseZoneRequest(
-                        (maxHeartRate * 0.6).toInt(),
-                        (maxHeartRate * 0.7).toInt(),
-                        (maxHeartRate * 0.8).toInt(),
-                        (maxHeartRate * 0.9).toInt(),
-                        maxHeartRate
-                    )
+                userUseCase.setHeartRateZones(
+                    PulseZoneRequest.getAutoPulseZone(age, 60)
                 )
             }.onSuccess { }
         }

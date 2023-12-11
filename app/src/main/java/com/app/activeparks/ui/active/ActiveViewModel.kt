@@ -1,11 +1,11 @@
 package com.app.activeparks.ui.active
 
 import android.location.Location
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.activeparks.data.model.registration.PulseZoneRequest
 import com.app.activeparks.data.useCase.activeState.ActivityStateUseCase
 import com.app.activeparks.data.useCase.registration.UserUseCase
 import com.app.activeparks.data.useCase.weatehr.WeatherUseCase
@@ -16,6 +16,8 @@ import com.app.activeparks.ui.active.model.InfoItem
 import com.technodreams.activeparks.R
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class ActiveViewModel(
     private val activityStateUseCase: ActivityStateUseCase,
@@ -40,8 +42,11 @@ class ActiveViewModel(
     val saved: MutableLiveData<Boolean> = MutableLiveData(false)
     val updateMap: MutableLiveData<Boolean> = MutableLiveData(false)
     val updateWeather: MutableLiveData<Boolean> = MutableLiveData(false)
+    val pulseZoneRequest: MutableLiveData<PulseZoneRequest> = MutableLiveData()
+    var pulseZone = PulseZoneRequest()
 
     var weight = 90
+    var age = 30
 
     init {
         loadActiveState()
@@ -55,9 +60,22 @@ class ActiveViewModel(
             }.onSuccess {
                 it?.let {
                     weight = it.weight ?: 90
+                    it.birthday?.let { bDay -> age = calculateAge(bDay) }
                 }
             }
         }
+    }
+
+    private fun calculateAge(dateOfBirth: String): Int {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val birthDate = LocalDate.parse(dateOfBirth, formatter)
+        val currentDate = LocalDate.now()
+        val age = currentDate.year - birthDate.year
+        if (currentDate.dayOfYear < birthDate.dayOfYear) {
+            return age - 1
+        }
+
+        return age
     }
 
     fun loadActiveState() {
@@ -129,4 +147,27 @@ class ActiveViewModel(
         return resourceId
     }
 
+    fun getPulseZone() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                userUseCase.getHeartRateZones()
+            }.onSuccess { request ->
+                request?.upperBorder?.let {
+                    pulseZoneRequest.value = if (it == 0) {
+                        PulseZoneRequest.getAutoPulseZone(age, pulseZoneRequest.value?.pausePulse ?: 60)
+                    } else {
+                        request
+                    }
+                }
+            }
+        }
+    }
+
+    fun savePulseZone() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                userUseCase.setHeartRateZones(pulseZone)
+            }
+        }
+    }
 }

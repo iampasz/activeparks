@@ -31,9 +31,11 @@ interface ApiWithAuthorization {
     ): Response<User>
 
     @POST("/api/v1/heart-rate-zones")
-    suspend fun heartRateZones(
+    suspend fun setHeartRateZones(
         @Body request: PulseZoneRequest
     ): Response<ResponseSuccess>
+    @GET("/api/v1/heart-rate-zones")
+    suspend fun getHeartRateZones(): Response<PulseZoneRequest>
 
     @POST("/api/v1/workouts-activity")
     suspend fun createActivity(

@@ -131,8 +131,18 @@ class NetworkManagerImpl(
         return response.body()
     }
 
-    override suspend fun heartRateZones(request: PulseZoneRequest): ResponseSuccess? {
-        val response = apiWithAuthorization.heartRateZones(request)
+    override suspend fun setHeartRateZones(request: PulseZoneRequest): ResponseSuccess? {
+        val response = apiWithAuthorization.setHeartRateZones(request)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getHeartRateZones(): PulseZoneRequest? {
+        val response = apiWithAuthorization.getHeartRateZones()
 
         if (!response.isSuccessful) {
             Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()

@@ -16,6 +16,7 @@ import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswordRequest
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
 import com.app.activeparks.data.model.weather.WeatherResponse
+import retrofit2.Response
 
 /**
  * Created by O.Dziuba on 27.11.2023.
@@ -40,7 +41,8 @@ interface NetworkManager {
     //With Authorization
     suspend fun verificationEmailCode(request: VerificationCodeEmailRequest): UserResponse?
     suspend fun updateData(id: String, request: AdditionData): User?
-    suspend fun heartRateZones(request: PulseZoneRequest): ResponseSuccess?
+    suspend fun setHeartRateZones(request: PulseZoneRequest): ResponseSuccess?
+    suspend fun getHeartRateZones(): PulseZoneRequest?
     suspend fun createActivity(request: ActiveEntity): ActiveEntity?
     suspend fun getUser(id: String): User?
 }

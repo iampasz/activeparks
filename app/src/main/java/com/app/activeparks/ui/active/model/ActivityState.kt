@@ -26,6 +26,6 @@ data class ActivityState(
     var isLazyStart: Boolean = false,
     var isTrainingStart: Boolean = false,
     var isPause: Boolean = false,
-    var isAutoPulseZone: Boolean = false,
+    var isAutoPulseZone: Boolean = true,
     var isAutoBlockScreen: Boolean = false,
 )

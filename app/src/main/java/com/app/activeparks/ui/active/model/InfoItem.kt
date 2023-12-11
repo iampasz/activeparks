@@ -27,12 +27,12 @@ data class InfoItem(
             )
         }
 
-        fun pausePulse() = InfoItem(
-            10, "75", " уд/хв", "На паузу", R.drawable.ic_heartbeat_min
+        fun pausePulse(pulse: Int? = null) = InfoItem(
+            10, "${if (pulse == null || pulse == 0) 75 else pulse}", " уд/хв", "На паузу", R.drawable.ic_heartbeat_min
         )
 
-        fun maxPulse() = InfoItem(
-            11, "175", " уд/хв", "Максимальний", R.drawable.ic_heartbeat_max
+        fun maxPulse(pulse: Int? = null) = InfoItem(
+            11, "${pulse ?: 175}", " уд/хв", "Максимальний", R.drawable.ic_heartbeat_max
         )
     }
 }

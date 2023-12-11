@@ -30,12 +30,13 @@ interface UserRepository {
     suspend fun forgotPassword(request: ForgotPasswordRequest): ResponseSuccess?
     suspend fun verificationCode(request: VerificationCodeForgotPasswordRequest): ResponseSuccess?
     suspend fun resetPassword(request: ResetPasswordResponse): ResponseToken?
+    suspend fun setHeartRateZones(request: PulseZoneRequest): ResponseSuccess?
+    suspend fun getHeartRateZones(): PulseZoneRequest?
 
     //Dao
     suspend fun insertUser(user: User)
     suspend fun updateUser(user: User)
     suspend fun deleteUser()
     suspend fun getUser(): User?
-    suspend fun heartRateZones(request: PulseZoneRequest): ResponseSuccess?
 
 }

@@ -12,5 +12,25 @@ data class PulseZoneRequest(
 	@SerializedName("anaerobic")
 	var anaerobic: Int = 0,
 	@SerializedName("upperBorder")
-	var upperBorder: Int = 0
-)
+	var upperBorder: Int = 0,
+	@SerializedName("pausePulse")
+	var pausePulse: Int = 0
+) {
+	companion object {
+
+		private const val heartRateConst = 220
+
+		fun getAutoPulseZone(age: Int, pauseZone: Int): PulseZoneRequest {
+			val maxHeartRate = heartRateConst - age
+
+			return PulseZoneRequest(
+				(maxHeartRate * 0.6).toInt(),
+				(maxHeartRate * 0.7).toInt(),
+				(maxHeartRate * 0.8).toInt(),
+				(maxHeartRate * 0.9).toInt(),
+				maxHeartRate,
+				pauseZone
+			)
+		}
+	}
+}

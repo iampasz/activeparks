@@ -111,8 +111,12 @@ data class UserUseCaseImpl(
         return userRepository.getUser()
     }
 
-    override suspend fun heartRateZones(request: PulseZoneRequest): ResponseSuccess? {
-        return userRepository.heartRateZones(request)
+    override suspend fun setHeartRateZones(request: PulseZoneRequest): ResponseSuccess? {
+        return userRepository.setHeartRateZones(request)
+    }
+
+    override suspend fun getHeartRateZones(): PulseZoneRequest? {
+        return userRepository.getHeartRateZones()
     }
 
 }
