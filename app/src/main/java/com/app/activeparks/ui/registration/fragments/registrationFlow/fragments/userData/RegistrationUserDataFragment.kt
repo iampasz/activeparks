@@ -26,8 +26,6 @@ class RegistrationUserDataFragment : Fragment() {
 
     private lateinit var binding: FragmentRegistrationUserDataBinding
     private val viewModel: RegistrationViewModel by activityViewModel()
-//    private val phoneNumberUtil = PhoneNumberUtil.getInstance()
-//    private var isUserTyping = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,48 +93,6 @@ class RegistrationUserDataFragment : Fragment() {
                 requireActivity().onBackPressed()
                 progress.gone()
             }
-//            phoneEditText.addTextChangedListener(object : TextWatcher {
-//                override fun beforeTextChanged(
-//                    s: CharSequence?,
-//                    start: Int,
-//                    count: Int,
-//                    after: Int
-//                ) {
-//
-//                    if (phoneEditText.text.toString().isEmpty()) {
-//                        phoneEditText.setText("+38 (0")
-//                        phoneEditText.setSelection(phoneEditText.text?.length ?: 0)
-//                    }
-//                }
-//
-//                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                    if (s == null) return
-//                    if (s.toString() == "+38 (0") {
-//                        phoneEditText.setText("+38 (0")
-//                        return
-//                    }
-//
-//                    val currentText = s.toString()
-//
-//
-//                    // Форматування, коли введено дві цифри
-//                    if (currentText.length == 5 && count == 1) {
-//                        phoneEditText.setText("$currentText) ")
-//                        phoneEditText.setSelection(phoneEditText.text?.length ?: 0)
-//                    }
-//
-//                    // Видалення останнього блоку цифр при натисканні "Backspace"
-//                    if (before == 1 && count == 0) {
-//                        val lastCharIndex = currentText.length - 1
-//                        if (currentText[lastCharIndex] == ' ' || currentText[lastCharIndex] == ')') {
-//                            phoneEditText.setText(currentText.substring(0, lastCharIndex - 1))
-//                            phoneEditText.setSelection(phoneEditText.text?.length ?: 0)
-//                        }
-//                    }
-//                }
-//
-//                override fun afterTextChanged(s: Editable?) {}
-//            })
         }
     }
 
