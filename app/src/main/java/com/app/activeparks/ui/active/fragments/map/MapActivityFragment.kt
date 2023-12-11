@@ -66,8 +66,6 @@ class MapActivityFragment : Fragment(), LocationListener {
             checkLocation.observe(viewLifecycleOwner) {
                 if (it) {
                     startCheckLocation()
-                } else {
-//                    locationManager?.removeUpdates(this@MapActivityFragment)
                 }
             }
 

@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
@@ -41,11 +40,11 @@ public class MapsViewController implements MapEventsReceiver {
     private Context ctx;
     private GeoPoint geoPoint;
 
-    public OnlineTileSourceBase MAPNIK = new XYTileSource("Map",
-            5, 20, 256, ".png", new String[]{
+    public OnlineTileSourceBase MAPNIK = new XYTileSource("Map", 5, 20, 1024, ".png", new String[]{
             "https://tiles.openstreetmap.org.ua/tile/",
             "https://tiles.openstreetmap.org.ua/tile/",
-            "https://tiles.openstreetmap.org.ua/tile/"}, "© OpenStreetMap contributors");
+            "https://tiles.openstreetmap.org.ua/tile/"},
+            "© OpenStreetMap contributors");
 
     private MapView mapView;
     private MyLocationNewOverlay myLocationOverlay;
@@ -73,10 +72,8 @@ public class MapsViewController implements MapEventsReceiver {
     private void setStartUI(Context context) {
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
 
+        mapView.setTileSource(MAPNIK);
 
-        //mapView.setTileSource(new MapTilerTileSource());
-
-        mapView.setTileSource(new MapTilerTileSource());
         mapView.setMultiTouchControls(true);
         mapView.setTilesScaledToDpi(true);
         mapController = (MapController) mapView.getController();
@@ -212,7 +209,7 @@ public class MapsViewController implements MapEventsReceiver {
             startMarker.setPosition(new GeoPoint(item.getLocation().get(0), item.getLocation().get(1)));
             if (item.getPointIndex() == 0) {
                 startMarker.setIcon(ctx.getResources().getDrawable(R.drawable.ic_map_marker).mutate());
-            }else if (item.getType() == 0) {
+            } else if (item.getType() == 0) {
                 Bitmap markerBitmap = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.ic_material_location); // Завантажуємо зображення маркера
                 Bitmap mutableBitmap = markerBitmap.copy(Bitmap.Config.ARGB_8888, true); // Копіюємо зображення маркера для редагування
                 Canvas canvas = new Canvas(mutableBitmap); // Створюємо канву для редагування зображення маркера
@@ -225,7 +222,7 @@ public class MapsViewController implements MapEventsReceiver {
                 startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
                 index = index + 1;
-            }else{
+            } else {
                 startMarker.setIcon(ctx.getResources().getDrawable(R.drawable.ic_default_dot).mutate());
             }
             mapView.getOverlays().add(startMarker);
@@ -245,7 +242,7 @@ public class MapsViewController implements MapEventsReceiver {
     }
 
     public void zoomOnStart() {
-        mapController.setZoom(18.0);
+        mapController.setZoom(20.0);
     }
 
     public void setPositionMap(double lat, double lon) {
