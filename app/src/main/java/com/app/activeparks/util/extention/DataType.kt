@@ -15,6 +15,7 @@ fun Double.toInfo() = String.format("%.2f", this).replace(",", ".")
 fun Float.toInfo() = String.format("%.2f", this).replace(",", ".")
 
 //String
+fun String.isPhone() = this.contains("+380")
 fun String.replaceAddress() = this.replace("вулиця", "вул.")
 fun String.replaceBrackets() = this.replace("(", "").replace(")", "")
 fun String.replaceNull() = this.replace("null", "")

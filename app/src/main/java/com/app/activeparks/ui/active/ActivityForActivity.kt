@@ -96,17 +96,33 @@ class ActivityForActivity : AppCompatActivity() {
 
     private fun initStartValue() {
         with(binding) {
-            topPanel.aivFirst.apply {
-                setActivityInfoItem(activeViewModel.activityState.aiFirst)
-            }
-            topPanel.aivSecond.apply {
-                setActivityInfoItem(activeViewModel.activityState.aiSecond)
-            }
-            topPanel.aivThird.apply {
-                setActivityInfoItem(activeViewModel.activityState.aiThird)
-            }
+            setInfoItem()
 
             navMain.selectedItemId = R.id.navigation_active
+        }
+    }
+
+    private fun FragmentActiveBinding.setInfoItem() {
+        topPanel.aivFirst.apply {
+            if (activeViewModel.activityState.activityType.isOutside) {
+                setActivityInfoItem(activeViewModel.activityState.aiFirst)
+            } else {
+                setActivityInfoItem(activeViewModel.activityState.aiFirstOutside)
+            }
+        }
+        topPanel.aivSecond.apply {
+            if (activeViewModel.activityState.activityType.isOutside) {
+                setActivityInfoItem(activeViewModel.activityState.aiSecond)
+            } else {
+                setActivityInfoItem(activeViewModel.activityState.aiSecondOutside)
+            }
+        }
+        topPanel.aivThird.apply {
+            if (activeViewModel.activityState.activityType.isOutside) {
+                setActivityInfoItem(activeViewModel.activityState.aiThird)
+            } else {
+                setActivityInfoItem(activeViewModel.activityState.aiThirdOutside)
+            }
         }
     }
 
@@ -382,15 +398,7 @@ class ActivityForActivity : AppCompatActivity() {
 
                     icActivityType.enableIf(!activityState.isTrainingStart)
 
-                    aivFirst.apply {
-                        setActivityInfoItem(activeViewModel.activityState.aiFirst)
-                    }
-                    aivSecond.apply {
-                        setActivityInfoItem(activeViewModel.activityState.aiSecond)
-                    }
-                    aivThird.apply {
-                        setActivityInfoItem(activeViewModel.activityState.aiThird)
-                    }
+                    binding.setInfoItem()
                 }
             }
         }

@@ -87,26 +87,30 @@ class PulseZoneFragment : Fragment() {
         with(binding) {
             setDefaultZone()
             vInfoOne.setOnClickListener {
-                setPulseZoneValue(
-                    tvSelectZone6,
-                    minPauseZone,
-                    minPauseZone,
-                    viewModel.pulseZone.upperBorder
-                ) {
-                    viewModel.pulseZone.pausePulse = it
-                    viewModel.savePulseZone()
-                    vInfoOne.setPulseInfoItem(InfoItem.pausePulse(it))
+                if (viewModel.isAuth) {
+                    setPulseZoneValue(
+                        tvSelectZone6,
+                        minPauseZone,
+                        minPauseZone,
+                        viewModel.pulseZone.upperBorder
+                    ) {
+                        viewModel.pulseZone.pausePulse = it
+                        viewModel.savePulseZone()
+                        vInfoOne.setPulseInfoItem(InfoItem.pausePulse(it))
+                    }
                 }
             }
 
             vInfoTwo.setOnClickListener {
-                setPulseZoneValue(
-                    tvSelectZone6,
-                    viewModel.pulseZone.upperBorder
-                ) {
-                    viewModel.pulseZone.upperBorder = it
-                    viewModel.savePulseZone()
-                    vInfoTwo.setPulseInfoItem(InfoItem.maxPulse(it))
+                if (viewModel.isAuth) {
+                    setPulseZoneValue(
+                        tvSelectZone6,
+                        viewModel.pulseZone.upperBorder
+                    ) {
+                        viewModel.pulseZone.upperBorder = it
+                        viewModel.savePulseZone()
+                        vInfoTwo.setPulseInfoItem(InfoItem.maxPulse(it))
+                    }
                 }
             }
 
@@ -132,7 +136,7 @@ class PulseZoneFragment : Fragment() {
             }
 
             tvSelectZone6.setOnClickListener {
-                if (!viewModel.activityState.isAutoPulseZone) {
+                if (!viewModel.activityState.isAutoPulseZone && viewModel.isAuth) {
                     setPulseZoneValue(
                         tvSelectZone6,
                         viewModel.pulseZone.upperBorder,
@@ -146,7 +150,7 @@ class PulseZoneFragment : Fragment() {
             }
 
             tvSelectZone5.setOnClickListener {
-                if (!viewModel.activityState.isAutoPulseZone) {
+                if (!viewModel.activityState.isAutoPulseZone && viewModel.isAuth) {
                     setPulseZoneValue(
                         tvSelectZone5,
                         viewModel.pulseZone.anaerobic,
@@ -160,7 +164,7 @@ class PulseZoneFragment : Fragment() {
             }
 
             tvSelectZone4.setOnClickListener {
-                if (!viewModel.activityState.isAutoPulseZone) {
+                if (!viewModel.activityState.isAutoPulseZone && viewModel.isAuth) {
                     setPulseZoneValue(
                         tvSelectZone4,
                         viewModel.pulseZone.aerobic,
@@ -174,7 +178,7 @@ class PulseZoneFragment : Fragment() {
             }
 
             tvSelectZone3.setOnClickListener {
-                if (!viewModel.activityState.isAutoPulseZone) {
+                if (!viewModel.activityState.isAutoPulseZone && viewModel.isAuth) {
                     setPulseZoneValue(
                         tvSelectZone3,
                         viewModel.pulseZone.fatBurning,
@@ -188,7 +192,7 @@ class PulseZoneFragment : Fragment() {
             }
 
             tvSelectZone2.setOnClickListener {
-                if (!viewModel.activityState.isAutoPulseZone) {
+                if (!viewModel.activityState.isAutoPulseZone && viewModel.isAuth) {
                     setPulseZoneValue(
                         tvSelectZone2, viewModel.pulseZone.easy,
                         viewModel.pulseZone.easy + 1,
@@ -207,11 +211,13 @@ class PulseZoneFragment : Fragment() {
             swAuto.apply {
                 isChecked = viewModel.activityState.isAutoPulseZone
                 setOnCheckedChangeListener { _, isChecked ->
-                    viewModel.activityState.isAutoPulseZone = isChecked
-                    if (isChecked) {
-                        setAutoPulseZone()
-                    } else {
-                        changePulseZone(viewModel.pulseZone)
+                    if (viewModel.isAuth) {
+                        viewModel.activityState.isAutoPulseZone = isChecked
+                        if (isChecked) {
+                            setAutoPulseZone()
+                        } else {
+                            changePulseZone(viewModel.pulseZone)
+                        }
                     }
                 }
             }
@@ -290,8 +296,8 @@ class PulseZoneFragment : Fragment() {
         update: (Int) -> Unit
     ) {
         val numberPicker = NumberPicker(requireContext())
-        numberPicker.minValue = minValue ?: 70
-        numberPicker.maxValue = maxValue ?: 200
+        numberPicker.minValue = if (minValue == null || minValue < 0 ) 75 else minValue
+        numberPicker.maxValue = if (maxValue == null || maxValue < 0 ) 200 else maxValue
         numberPicker.value = value
         numberPicker.wrapSelectorWheel = false
 

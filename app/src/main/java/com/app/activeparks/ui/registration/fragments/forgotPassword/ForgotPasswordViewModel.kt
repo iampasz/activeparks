@@ -21,6 +21,7 @@ class ForgotPasswordViewModel(
     val verificationCodeForgotPasswordRequest = VerificationCodeForgotPasswordRequest()
     val resetPasswordResponse = ResetPasswordResponse()
 
+    var typeOfForgot = TypeOfForgot.PHONE
 
     var updateUI = MutableLiveData(false)
     var onHideProgress = MutableLiveData(false)
@@ -35,7 +36,7 @@ class ForgotPasswordViewModel(
                 response?.let {
                     state.isSms = true
                     updateUI.value = true
-                }
+                } ?: kotlin.run { onHideProgress.value = true }
             }.onFailure {
                 onHideProgress.value = true
             }
@@ -50,7 +51,7 @@ class ForgotPasswordViewModel(
                 response?.let {
                     state.isPassword = true
                     updateUI.value = true
-                }
+                } ?: kotlin.run { onHideProgress.value = true }
             }.onFailure {
                 onHideProgress.value = true
             }
@@ -65,7 +66,7 @@ class ForgotPasswordViewModel(
                 response?.let {
                     state.isComplete = true
                     updateUI.value = true
-                }
+                } ?: kotlin.run { onHideProgress.value = true }
             }.onFailure {
                 onHideProgress.value = true
             }

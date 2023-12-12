@@ -3,11 +3,11 @@ package com.app.activeparks.ui.registration.fragments.forgotPassword
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.app.activeparks.MainActivity
 import com.app.activeparks.ui.view.SmsCodeInputView
 import com.app.activeparks.util.EasyTextWatcher
@@ -17,6 +17,7 @@ import com.app.activeparks.util.extention.disable
 import com.app.activeparks.util.extention.enable
 import com.app.activeparks.util.extention.enableIf
 import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.isPhone
 import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentForgotPasswordBinding
@@ -57,6 +58,11 @@ class ForgotPasswordFragment : Fragment() {
                                 gEnterEmail.gone()
                                 gEnterSms.visible()
                                 btnNext.disable()
+                                tvTitleSms.text = if (typeOfForgot == TypeOfForgot.EMAIl) {
+                                    getString(R.string.tv_enter_email)
+                                } else {
+                                    getString(R.string.tv_enter_sms)
+                                }
                                 Keyboard.hideKeyboard(requireContext(), requireView())
                             } else if (isSms && !isComplete) {
                                 btnNext.disable()
@@ -116,6 +122,13 @@ class ForgotPasswordFragment : Fragment() {
                     btnNext.enableIf(s.toString().isNotEmpty())
                     viewModel.apply {
                         val login = s.toString()
+                        typeOfForgot = if (isEmail(login)) {
+                            TypeOfForgot.EMAIl
+                        } else if (login.isPhone()){
+                            TypeOfForgot.PHONE
+                        } else {
+                            TypeOfForgot.NICK
+                        }
                         forgotPasswordRequest.phoneLogin = login
                         verificationCodeForgotPasswordRequest.phoneLogin = login
                         resetPasswordResponse.phoneLogin = login
@@ -168,5 +181,10 @@ class ForgotPasswordFragment : Fragment() {
         val isConfirmationMatch = password == confirmPassword
 
         return isPasswordValid && isConfirmationMatch
+    }
+
+
+    private fun isEmail(email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 }

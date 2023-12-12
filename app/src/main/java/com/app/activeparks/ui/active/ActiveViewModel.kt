@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.activeparks.data.model.registration.PulseZoneRequest
+import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.data.useCase.activeState.ActivityStateUseCase
 import com.app.activeparks.data.useCase.registration.UserUseCase
 import com.app.activeparks.data.useCase.weatehr.WeatherUseCase
@@ -22,7 +23,8 @@ import java.time.format.DateTimeFormatter
 class ActiveViewModel(
     private val activityStateUseCase: ActivityStateUseCase,
     private val weatherUseCase: WeatherUseCase,
-    private val userUseCase: UserUseCase
+    private val userUseCase: UserUseCase,
+    private val preferences: Preferences
 ) : ViewModel() {
 
     val navigate = MutableLiveData<Fragment?>()
@@ -47,10 +49,12 @@ class ActiveViewModel(
 
     var weight = 90
     var age = 30
+    var isAuth = false
 
     init {
         loadActiveState()
         getWeight()
+        isAuth = !preferences.token.isNullOrEmpty()
     }
 
     private fun getWeight() {
@@ -148,25 +152,33 @@ class ActiveViewModel(
     }
 
     fun getPulseZone() {
-        viewModelScope.launch {
-            kotlin.runCatching {
-                userUseCase.getHeartRateZones()
-            }.onSuccess { request ->
-                request?.upperBorder?.let {
-                    pulseZoneRequest.value = if (it == 0) {
-                        PulseZoneRequest.getAutoPulseZone(age, pulseZoneRequest.value?.pausePulse ?: 60)
-                    } else {
-                        request
+        if (isAuth) {
+            viewModelScope.launch {
+                kotlin.runCatching {
+                    userUseCase.getHeartRateZones()
+                }.onSuccess { request ->
+                    request?.upperBorder?.let {
+                        pulseZoneRequest.value = if (it == 0) {
+                            PulseZoneRequest.getAutoPulseZone(
+                                age,
+                                pulseZoneRequest.value?.pausePulse ?: 60
+                            )
+                        } else {
+                            request
+                        }
                     }
                 }
             }
         }
+
     }
 
     fun savePulseZone() {
-        viewModelScope.launch {
-            kotlin.runCatching {
-                userUseCase.setHeartRateZones(pulseZone)
+        if (isAuth) {
+            viewModelScope.launch {
+                kotlin.runCatching {
+                    userUseCase.setHeartRateZones(pulseZone)
+                }
             }
         }
     }

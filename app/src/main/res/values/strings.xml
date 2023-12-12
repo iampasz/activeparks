@@ -160,6 +160,7 @@
     <string name="tv_enter_password">Відновити пароль</string>
     <string name="tv_forgot_pass_desc">Вкажіть ввідні дані, щоб ми могли допомогти для вас з відновленням паролю</string>
     <string name="tv_enter_sms">Введіть код з СМС</string>
+    <string name="tv_enter_email">Введіть код з Email</string>
     <string name="tv_not_recived_sms">Не отримали жодного коду?</string>
     <string name="tv_new_password">Новий пароль</string>
     <string name="tv_regex_password">Мінімум 8 символів. Пароль повинен містити цифри, та літери верхнього та нижнього регістру</string>

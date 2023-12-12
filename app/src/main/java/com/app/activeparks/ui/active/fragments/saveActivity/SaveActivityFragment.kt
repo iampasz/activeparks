@@ -25,6 +25,7 @@ import com.app.activeparks.util.MapsViewController
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.invisible
 import com.app.activeparks.util.extention.replaceNull
+import com.app.activeparks.util.extention.visibleIf
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentSaveActivityBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -81,7 +82,9 @@ class SaveActivityFragment : Fragment() {
 
         viewModel.startInfo.startPoint.unit =
             activityViewModel.activityState.startPoint.replaceNull()
-
+        
+        ivLocation.visibleIf(activityViewModel.activityState.activityType.isOutside)
+        ivWeather.visibleIf(activityViewModel.activityState.activityType.isOutside)
         ivLocation.setActivityInfoItem(viewModel.startInfo.startPoint)
         calculateWidthLocation()
         ivWeather.setActivityInfoItem(viewModel.startInfo.weather)
