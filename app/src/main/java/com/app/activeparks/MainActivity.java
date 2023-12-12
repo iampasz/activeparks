@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -65,6 +66,16 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         configuration.locale = locale;
         getBaseContext().getResources().updateConfiguration(configuration, null);
 
+        Menu menu = binding.navView.getMenu();
+        preferences = new Preferences(this);
+
+        if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
+            menu.removeItem(R.id.navigation_active);
+        } else {
+            menu.clear();
+            binding.navView.inflateMenu(R.menu.bottom_nav_menu);
+        }
+
         binding.navView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.navigation_home -> navController.navigate(R.id.navigation_home);
@@ -72,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
                 case R.id.navigation_scaner -> navController.navigate(R.id.navigation_scaner);
                 case R.id.navigation_active -> navController.navigate(R.id.navigation_active);
                 case R.id.navigation_user -> {
-                    preferences = new Preferences(this);
                     if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
                         navController.navigate(R.id.registration_user);
                     } else {
