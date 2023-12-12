@@ -69,19 +69,20 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         Menu menu = binding.navView.getMenu();
         preferences = new Preferences(this);
 
-        if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
-            menu.removeItem(R.id.navigation_active);
-        } else {
-            menu.clear();
-            binding.navView.inflateMenu(R.menu.bottom_nav_menu);
-        }
 
         binding.navView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.navigation_home -> navController.navigate(R.id.navigation_home);
                 case R.id.navigation_maps -> navController.navigate(R.id.navigation_maps);
                 case R.id.navigation_scaner -> navController.navigate(R.id.navigation_scaner);
-                case R.id.navigation_active -> navController.navigate(R.id.navigation_active);
+                case R.id.navigation_active -> {
+                    if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
+                        navController.navigate(R.id.registration_user);
+                    } else {
+                        menu.removeItem(R.id.navigation_active);
+                    }
+
+                }
                 case R.id.navigation_user -> {
                     if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
                         navController.navigate(R.id.registration_user);
