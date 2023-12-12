@@ -79,9 +79,8 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
                     if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
                         navController.navigate(R.id.registration_user);
                     } else {
-                        menu.removeItem(R.id.navigation_active);
+                        navController.navigate(R.id.navigation_active);
                     }
-
                 }
                 case R.id.navigation_user -> {
                     if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
