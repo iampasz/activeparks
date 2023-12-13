@@ -18,10 +18,12 @@ import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.GoogleSignInResult
-import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentRegistrationBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -45,8 +47,7 @@ class RegistrationFragment : Fragment() {
     private var currentIndex = 0
     private val delayMillis: Long = 752
     private val rcSignIn = 9001
-    private var mGoogleApiClient: GoogleApiClient? = null
-    private var clientId = "97103190835-c98mket2dgt5e849h870jqrulba3p8fa.apps.googleusercontent.com"
+    private var googleSignInClient: GoogleSignInClient? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,13 +70,10 @@ class RegistrationFragment : Fragment() {
 
     private fun initGoogle() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(clientId)
             .requestEmail()
             .build()
 
-        mGoogleApiClient = GoogleApiClient.Builder(requireActivity())
-            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-            .build()
+        googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
         binding.btnGoogle.setOnClickListener {
             signIn()
@@ -83,8 +81,8 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun signIn() {
-        mGoogleApiClient?.let {
-            val signInIntent = Auth.GoogleSignInApi.getSignInIntent(it)
+        googleSignInClient?.let {
+            val signInIntent: Intent = it.signInIntent
             startActivityForResult(signInIntent, rcSignIn)
         }
     }
@@ -95,18 +93,20 @@ class RegistrationFragment : Fragment() {
 
         data?.let {
             if (requestCode == rcSignIn) {
-                val result = Auth.GoogleSignInApi.getSignInResultFromIntent(it)
-                result?.apply {
-                    handleSignInResult(this)
-                }
+                val task: Task<GoogleSignInAccount> =
+                    GoogleSignIn.getSignedInAccountFromIntent(data)
+                handleSignInResult(task)
             }
         }
     }
 
-    private fun handleSignInResult(result: GoogleSignInResult) {
-        if (result.isSuccess) {
-            viewModel.additionData.googleToken = result.signInAccount?.idToken ?: ""
-        } else {
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+
+            viewModel.additionData.googleToken = account?.id ?: ""
+            findNavController().navigate(R.id.action_fRegistration_to_registrationUserDataFragment)
+        } catch (e: ApiException) {
             Toast.makeText(
                 requireContext(),
                 getString(R.string.tv_somsing_went_wrong), Toast.LENGTH_LONG

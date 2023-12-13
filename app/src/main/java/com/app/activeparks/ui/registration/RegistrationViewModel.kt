@@ -71,7 +71,9 @@ class RegistrationViewModel(
                         ),
                         ANDROID_TYPE_ID,
                         sendCodePhoneRequest.nickname,
-                        sendCodePhoneRequest.password
+                        sendCodePhoneRequest.password,
+                        additionData.facebookToken,
+                        additionData.googleToken
                     )
                 )
             }.onSuccess { response ->

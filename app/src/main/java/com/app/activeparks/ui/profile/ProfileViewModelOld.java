@@ -52,6 +52,7 @@ public class ProfileViewModelOld extends ViewModel {
     public MutableLiveData<UserVideo> userVideoList = new MutableLiveData<>();
     public MutableLiveData<String> message = new MutableLiveData<>();
     public MutableLiveData<Boolean> defaults = new MutableLiveData<>();
+    public MutableLiveData<Boolean> logout = new MutableLiveData<>();
 
     private final List<String> mRegion = new ArrayList<>();
     private final List<String> mDictionaries = new ArrayList<>();
@@ -64,7 +65,7 @@ public class ProfileViewModelOld extends ViewModel {
     public UserUpdate userUpdate = new UserUpdate();
 
 
-    ProfileViewModelOld(Preferences sharedPreferences) {
+    ProfileViewModelOld(Preferences sharedPreferences, SharedPreferencesMobileApiSessionRepository newRepository) {
         this.sharedPreferences = sharedPreferences;
         this.newRepository = newRepository;
         this.repository = new Repository(sharedPreferences);
@@ -114,6 +115,10 @@ public class ProfileViewModelOld extends ViewModel {
         return defaults;
     }
 
+    public LiveData<Boolean> getLogout() {
+        return logout;
+    }
+
     @SuppressLint("CheckResult")
     public void user() {
         if (sharedPreferences.getUser() != null) {
@@ -141,7 +146,7 @@ public class ProfileViewModelOld extends ViewModel {
     @SuppressLint("CheckResult")
     public void clubs() {
         select = 0;
-        Disposable getMyClubs =  repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        Disposable getMyClubs = repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             List<ItemClub> itemClubs = new ArrayList<>();
                             for (ItemClub item : result.getItems().getUserIsMember()) {
@@ -385,6 +390,8 @@ public class ProfileViewModelOld extends ViewModel {
     }
 
     public void logout() {
+        newRepository.clear();
+        logout.setValue(true);
         repository.logout();
         sharedPreferences.setToken(null);
         sharedPreferences.setId(null);

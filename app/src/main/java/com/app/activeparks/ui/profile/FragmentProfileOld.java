@@ -47,6 +47,9 @@ import com.app.activeparks.ui.workout.adapter.plan.PlanListAdaper;
 import com.app.activeparks.util.ButtonSelect;
 import com.app.activeparks.util.FragmentInteface;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.technodreams.activeparks.BuildConfig;
 import com.technodreams.activeparks.R;
@@ -428,6 +431,16 @@ public class FragmentProfileOld extends Fragment implements SwipeRefreshLayout.O
                     dialog.show(requireActivity().getSupportFragmentManager(),
                             "training_dialog");
                 }));
+            });
+
+            viewModel.getLogout().observe(getViewLifecycleOwner(), logout -> {
+                if (logout) {
+                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestEmail()
+                            .build();
+                    GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
+                    mGoogleSignInClient.signOut();
+                }
             });
         }
 
