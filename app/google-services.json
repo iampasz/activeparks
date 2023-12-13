@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:97103190835:android:c2d828bfdb4cfd21d77c46",
+        "mobilesdk_app_id": "1:97103190835:android:01de8f0e0c4cd6e7d77c46",
         "android_client_info": {
           "package_name": "com.technodreams.activeparks"
         }
@@ -27,8 +27,16 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "97103190835-m56h66rdq64os2dsi78f769f22uuaejb.apps.googleusercontent.com",
+              "client_id": "97103190835-1ucn7psnnptna8otqpdvirt5ua3c2sba.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "97103190835-b2h0lr10ebhb3k2ao5npp5e96cr83s0e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "hutsalod.activeparks",
+                "app_store_id": "https://apps.apple.com/us/app/ГђВ°ГђВєГ‘В‚ГђВёГђВІГђВЅГ‘В–-ГђВїГђВ°Г‘ВЂГђВєГђВё/id1661291870"
+              }
             }
           ]
         }

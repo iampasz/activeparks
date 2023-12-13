@@ -65,8 +65,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         Configuration configuration = new Configuration();
         configuration.locale = locale;
         getBaseContext().getResources().updateConfiguration(configuration, null);
-
-        Menu menu = binding.navView.getMenu();
         preferences = new Preferences(this);
 
 
@@ -106,9 +104,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
                 }
             }
         });
-
-        //startActivity(new Intent(this, TestUpdate.class));
-
     }
 
     public NavController getNavController() {
