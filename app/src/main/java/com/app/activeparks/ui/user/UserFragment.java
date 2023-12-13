@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.app.activeparks.ui.auth.AuthFragment;
+import com.app.activeparks.ui.profile.FragmentProfileOld;
 import com.app.activeparks.ui.profile.ProfileFragment;
 import com.technodreams.activeparks.R;
 import com.technodreams.activeparks.databinding.FragmentUserBinding;
@@ -28,7 +29,7 @@ public class UserFragment extends Fragment {
         View root = binding.getRoot();
 
         if (userViewModel.getUserAuth()){
-            show(new ProfileFragment());
+            show(new FragmentProfileOld());
         }else {
             show(new AuthFragment());
         }
