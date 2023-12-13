@@ -82,9 +82,13 @@ class SaveActivityFragment : Fragment() {
 
         viewModel.startInfo.startPoint.unit =
             activityViewModel.activityState.startPoint.replaceNull()
-        
-        ivLocation.visibleIf(activityViewModel.activityState.activityType.isOutside)
-        ivWeather.visibleIf(activityViewModel.activityState.activityType.isOutside)
+
+        activityViewModel.activityState.apply {
+            ivLocation.visibleIf(activityType.isOutside && startPoint.isNotEmpty() && activeRoad.isNotEmpty())
+            ivWeather.visibleIf(activityType.isOutside && weather.isNotEmpty())
+
+        }
+
         ivLocation.setActivityInfoItem(viewModel.startInfo.startPoint)
         calculateWidthLocation()
         ivWeather.setActivityInfoItem(viewModel.startInfo.weather)

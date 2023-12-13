@@ -37,8 +37,14 @@ class ActivityInfoItemFragment(
         binding.rvActivity.adapter = adapter
         val types = viewModel.activityInfoItems
         types.forEach { if (it.id == infoViewId) it.isSelected = true }
-        adapter.list.submitList(types.filter { it.id != firstId && it.id != secondId }
-            .filter { it.isOutside == viewModel.activityState.activityType.isOutside })
+        adapter.list.submitList(if (viewModel.activityState.activityType.id == 2) {
+            types.filter { it.id != firstId && it.id != secondId }
+                .filter { it.isOutside == viewModel.activityState.activityType.isOutside }
+                .filter { it.id != 11 }
+        } else {
+            types.filter { it.id != firstId && it.id != secondId }
+                .filter { it.isOutside == viewModel.activityState.activityType.isOutside }
+        })
 
         binding.ivBack.setOnClickListener {
             requireActivity().onBackPressed()

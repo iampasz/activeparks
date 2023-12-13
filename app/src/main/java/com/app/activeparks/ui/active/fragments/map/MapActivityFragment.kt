@@ -3,6 +3,9 @@ package com.app.activeparks.ui.active.fragments.map
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -15,6 +18,7 @@ import androidx.fragment.app.Fragment
 import com.app.activeparks.ui.active.ActiveViewModel
 import com.app.activeparks.ui.active.util.AddressUtil
 import com.app.activeparks.ui.active.util.CalorieCalculator
+import com.app.activeparks.util.EasySensorEventListener
 import com.app.activeparks.util.MapsViewController
 import com.app.activeparks.util.extention.toInfo
 import com.technodreams.activeparks.databinding.FragmentMapActivityBinding
@@ -23,12 +27,20 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Polyline
 import kotlin.math.abs
 
-class MapActivityFragment : Fragment(), LocationListener {
+class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListener {
+
+
+    private var sensorManager: SensorManager? = null
+
+    private var previousX = 0f
+    private var previousY = 0f
+    private var previousZ = 0f
+    private var threshold = 4f
 
     private var pathDistance = 0.0
     private var pathDuration = 0L
     private var maxHeight = 0.0
-    private var minHeight = 0.0
+    private var minHeight = 10000.0
     private var maxSpeed = 0.0
     private var kKal = 0.0
     private var previousAltitude = 0.0
@@ -53,12 +65,25 @@ class MapActivityFragment : Fragment(), LocationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        locationManager =
-            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        initValue()
         setCurrentLocation()
         observes()
 
         startCheckLocation()
+    }
+
+    private fun initValue() {
+        locationManager =
+            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        sensorManager = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.apply {
+            sensorManager?.registerListener(
+                this@MapActivityFragment,
+                this,
+                SensorManager.SENSOR_DELAY_NORMAL
+            )
+        }
     }
 
     private fun observes() {
@@ -127,6 +152,7 @@ class MapActivityFragment : Fragment(), LocationListener {
         if (viewModel.activityState.startPoint.isEmpty() && viewModel.activityState.isTrainingStart) {
             viewModel.activityState.startPoint =
                 AddressUtil.getAddressFromLocation(requireContext(), location)
+            viewModel.stepCount = 0
 
             mapsViewController?.zoomOnStart()
         }
@@ -259,11 +285,30 @@ class MapActivityFragment : Fragment(), LocationListener {
             it[4].number = kKal.toInfo()
             it[9].number = averagePace
             it[10].number = maxHeight.toInfo()
+            it[11].number = (viewModel.stepCount / 2).toString()
             it[12].number = minHeight.toInfo()
             it[13].number = totalAscent.toInfo()
             it[14].number = totalDescent.toInfo()
         }
 
         viewModel.updateActivityInfoTrainingItem.value = true
+    }
+
+    override fun onSensorChanged(event: SensorEvent) {
+        val x = event.values[0]
+        val y = event.values[1]
+        val z = event.values[2]
+
+        val deltaX = abs(x - previousX)
+        val deltaY = abs(y - previousY)
+        val deltaZ = abs(z - previousZ)
+
+        if (deltaX > threshold || deltaY > threshold || deltaZ > threshold) {
+            viewModel.stepCount++
+        }
+
+        previousX = x
+        previousY = y
+        previousZ = z
     }
 }

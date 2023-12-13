@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "97103190835-m56h66rdq64os2dsi78f769f22uuaejb.apps.googleusercontent.com",
+          "client_id": "97103190835-oodkc1dcsd2cvn1kdvf7r39rphevu0nq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.technodreams.activeparks",
+            "certificate_hash": "fac32c07031da7a3b963f14dd75749f9a846388a"
+          }
+        },
+        {
+          "client_id": "97103190835-ls9vnubpv1oi4kn76odpuhn4bechpn71.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

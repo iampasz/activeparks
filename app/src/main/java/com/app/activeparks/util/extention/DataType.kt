@@ -54,7 +54,17 @@ fun Long.getStingForSpeak() = when (this / 1000) {
 fun List<ActivityInfoTrainingItem>.filterInside() =
     this.filter { !it.isOutside }.filter { !it.isPulseGadget }
 
-fun List<ActivityInfoTrainingItem>.filterOutside() = this.filter { !it.isPulseGadget }
+
+fun List<ActivityInfoTrainingItem>.filterOutside(activeTypeId: Int): List<ActivityInfoTrainingItem> {
+    return if (activeTypeId == 2) {
+        this.filter { it.isOutside }
+            .filter { !it.isPulseGadget }
+            .filter { it.id != 11 }
+    } else {
+        this.filter { it.isOutside }
+            .filter { !it.isPulseGadget }
+    }
+}
 
 fun List<GeoPoint>.getListForBack(): List<List<Double>> {
     return this.map { geoPoint ->

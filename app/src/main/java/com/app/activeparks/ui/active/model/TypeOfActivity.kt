@@ -43,29 +43,7 @@ data class TypeOfActivity(
                     isOutside = false,
                     isSelected = false,
                     isInclude = true
-                ),
-//                TypeOfActivity(
-//                    5, "Легка фізична активність", R.drawable.ic_at_at_home,
-//                    isOutside = false,
-//                    isSelected = false,
-//                    isInclude = false, "Степ-аеробіка, йога, стречінг, танці та подібне"
-//                ),
-//                TypeOfActivity(
-//                    6,
-//                    "Мірна фізична активність",
-//                    R.drawable.ic_at_at_home,
-//                    isOutside = false,
-//                    isSelected = false,
-//                    isInclude = false, "Біг на біговій доріжці, вправи з власною вагою, велотренажер та подібне"
-//                ),
-//                TypeOfActivity(
-//                    7,
-//                    "Інтенсивна фізична активність",
-//                    R.drawable.ic_at_at_home,
-//                    isOutside = false,
-//                    isSelected = false,
-//                    isInclude = false, "Тренування з важкими вантажами, Кросфіт,TRX, єдиноборства та подібне"
-//                )
+                )
             )
         }
     }

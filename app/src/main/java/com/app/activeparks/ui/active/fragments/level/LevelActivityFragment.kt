@@ -1,5 +1,6 @@
 package com.app.activeparks.ui.active.fragments.level
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +34,7 @@ class LevelActivityFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -45,9 +47,13 @@ class LevelActivityFragment : Fragment() {
         viewModel.updateActivityInfoTrainingItem.observe(viewLifecycleOwner) { isUpdate ->
             if (isUpdate) {
                 if (viewModel.activityState.activityType.isInclude) {
-                    adapterInfoItem.list.submitList(viewModel.activityInfoItems.filterInside())
+                    adapterInfoItem.list.submitList(
+                        viewModel.activityInfoItems.filterInside()
+                    )
                 } else {
-                    adapterInfoItem.list.submitList(viewModel.activityInfoItems.filterOutside())
+                    adapterInfoItem.list.submitList(viewModel.activityInfoItems.filterOutside(
+                        viewModel.activityState.activityType.id
+                    ))
                 }
                 adapterInfoItem.notifyDataSetChanged()
             }
@@ -126,7 +132,7 @@ class LevelActivityFragment : Fragment() {
             } else {
                 binding.tvTitleRecyclerView.gone()
                 binding.gLevelActivity.gone()
-                adapterInfoItem.list.submitList(viewModel.activityInfoItems.filterOutside())
+                adapterInfoItem.list.submitList(viewModel.activityInfoItems.filterOutside(viewModel.activityState.activityType.id))
             }
         }
     }

@@ -32,6 +32,8 @@ class ActiveViewModel(
 
     var activityDuration = 0
 
+    var stepCount = 0
+
     var activityState = ActivityState()
     var activityTime = ActivityTime()
     var activityInfoItems: List<ActivityInfoTrainingItem> =
