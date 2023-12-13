@@ -35,3 +35,8 @@ local.properties
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+.idea/*.xml
+.idea/gradle.xml
+.idea/kotlinc.xml
+.idea/navEditor.xml

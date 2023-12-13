@@ -35,10 +35,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ProfileViewModelOld extends ViewModel {
 
-
     public final Preferences sharedPreferences;
     private final Repository repository;
-
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -47,17 +45,13 @@ public class ProfileViewModelOld extends ViewModel {
     public MutableLiveData<User> user = new MutableLiveData<>();
     public MutableLiveData<List<ItemClub>> clubsList = new MutableLiveData<>();
     public MutableLiveData<List<ItemEvent>> eventsList = new MutableLiveData<>();
-
     public MutableLiveData<SportEvents> resultList = new MutableLiveData<>();
     public MutableLiveData<List<WorkoutItem>> journalList = new MutableLiveData<>();
     public MutableLiveData<WorkoutItem> notes = new MutableLiveData<>();
     public MutableLiveData<List<WorkoutItem>> planList = new MutableLiveData<>();
     public MutableLiveData<UserVideo> userVideoList = new MutableLiveData<>();
-
     public MutableLiveData<String> message = new MutableLiveData<>();
-
     public MutableLiveData<Boolean> defaults = new MutableLiveData<>();
-
 
     private final List<String> mRegion = new ArrayList<>();
     private final List<String> mDictionaries = new ArrayList<>();
@@ -173,14 +167,14 @@ public class ProfileViewModelOld extends ViewModel {
         Disposable subscribeOn = repository.myevents().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
 
-                                List<ItemEvent> events = new ArrayList<>();
-                                for (ItemEvent items : result.getItems()) {
-                                    if (items.getHoldingStatusId() != null) {
-                                        items.setHoldingStatusText(statusMapper(items.getHoldingStatusId()));
-                                        events.add(items);
-                                    }
+                            List<ItemEvent> events = new ArrayList<>();
+                            for (ItemEvent items : result.getItems()) {
+                                if (items.getHoldingStatusId() != null) {
+                                    items.setHoldingStatusText(statusMapper(items.getHoldingStatusId()));
+                                    events.add(items);
                                 }
-                                eventsList.setValue(events);
+                            }
+                            eventsList.setValue(events);
 
                         },
                         error -> {
@@ -207,7 +201,7 @@ public class ProfileViewModelOld extends ViewModel {
     public void journal() {
         select = 2;
         Disposable journal = repository.journal().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> journalList.setValue(result.getItems()), error -> Log.e("ProfileViewModel", "getPokemons: " + error.getMessage()));
-    compositeDisposable.add(journal);
+        compositeDisposable.add(journal);
     }
 
     public void notes(String id) {
@@ -391,7 +385,6 @@ public class ProfileViewModelOld extends ViewModel {
     }
 
     public void logout() {
-        newRepository.clear();
         repository.logout();
         sharedPreferences.setToken(null);
         sharedPreferences.setId(null);
