@@ -30,10 +30,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.app.activeparks.MainActivity;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.uservideo.UserVideoItem;
 import com.app.activeparks.data.model.workout.WorkoutItem;
-import com.app.activeparks.ui.auth.AuthFragment;
 import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
 import com.app.activeparks.ui.event.activity.EventActivity;
@@ -201,11 +201,9 @@ public class FragmentProfileOld extends Fragment implements SwipeRefreshLayout.O
                     switch (which) {
                         case DialogInterface.BUTTON_POSITIVE -> {
                             viewModel.logout();
-                            requireActivity().getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .replace(R.id.fragment_container_user, new AuthFragment())
-                                    .commit();
-                            dialog.cancel();
+                            if (requireActivity() instanceof MainActivity) {
+                                ((MainActivity) requireActivity()).getNavController().navigate(R.id.registration_user);
+                            }
                         }
                         case DialogInterface.BUTTON_NEGATIVE -> dialog.cancel();
                     }
