@@ -1,6 +1,7 @@
 package com.app.activeparks.ui.registration.fragments.registrationFlow.fragments.verificationPhone
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,19 @@ class VerificationPhoneFragment : Fragment() {
     lateinit var binding: FragmentVerificationPhoneBinding
     private val viewModel: RegistrationViewModel by activityViewModel()
 
+    private var countDownTimer: CountDownTimer =
+        object : CountDownTimer(60000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                binding.tvSmsTimerTitle.text =
+                    getString(R.string.tv_sms_timer, (millisUntilFinished / 1000).toString())
+            }
+
+            override fun onFinish() {
+                binding.tvSmsTimerTitle.gone()
+                binding.tvHelpSms.enable()
+            }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,6 +48,7 @@ class VerificationPhoneFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        countDownTimer.start()
         setListener()
         observe()
     }
@@ -69,11 +84,18 @@ class VerificationPhoneFragment : Fragment() {
             btnNext.setOnClickListener {
                 btnNext.disable()
                 progress.visible()
+                countDownTimer.cancel()
                 viewModel.verificationSmsCode()
             }
             btnBack.setOnClickListener {
                 progress.gone()
                 requireActivity().onBackPressed()
+            }
+            tvHelpSms.setOnClickListener {
+                viewModel.sendCodePhone()
+                countDownTimer.start()
+                tvSmsTimerTitle.visible()
+                tvHelpSms.disable()
             }
         }
     }

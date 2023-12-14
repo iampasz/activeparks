@@ -2,6 +2,7 @@ package com.app.activeparks.ui.registration.fragments.forgotPassword
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
 import android.util.Patterns
 import android.view.LayoutInflater
@@ -30,6 +31,18 @@ class ForgotPasswordFragment : Fragment() {
 
     private lateinit var binding: FragmentForgotPasswordBinding
     private val viewModel: ForgotPasswordViewModel by viewModel()
+    private var countDownTimer: CountDownTimer =
+        object : CountDownTimer(60000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                binding.tvSmsTimerTitle.text =
+                    getString(R.string.tv_sms_timer, (millisUntilFinished / 1000).toString())
+            }
+
+            override fun onFinish() {
+                binding.tvSmsTimerTitle.gone()
+                binding.tvHelpSms.enable()
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -108,13 +121,18 @@ class ForgotPasswordFragment : Fragment() {
                     btnNext.disable()
                     progress.visible()
                     if (isEmail && (!isSms && !isPassword)) {
-                        viewModel.forgotPassword()
+                        sendCode()
                     } else if (isSms && !isPassword) {
                         viewModel.verificationCode()
+                        countDownTimer.cancel()
                     } else if (isEmail && isSms) {
                         viewModel.resetPassword()
                     }
                 }
+            }
+
+            tvHelpSms.setOnClickListener {
+                sendCode()
             }
 
             emailEditText.addTextChangedListener(object : EasyTextWatcher() {
@@ -124,7 +142,7 @@ class ForgotPasswordFragment : Fragment() {
                         val login = s.toString()
                         typeOfForgot = if (isEmail(login)) {
                             TypeOfForgot.EMAIl
-                        } else if (login.isPhone()){
+                        } else if (login.isPhone()) {
                             TypeOfForgot.PHONE
                         } else {
                             TypeOfForgot.NICK
@@ -167,6 +185,13 @@ class ForgotPasswordFragment : Fragment() {
                 requireActivity().onBackPressed()
             }
         }
+    }
+
+    private fun sendCode() {
+        binding.tvSmsTimerTitle.visible()
+        binding.tvHelpSms.disable()
+        viewModel.forgotPassword()
+        countDownTimer.start()
     }
 
     private fun isPasswordValid(password: String, confirmPassword: String): Boolean {

@@ -53,8 +53,9 @@ public class NewsFragment extends Fragment {
         }
 
         mViewModel.getNewsList().observe(getViewLifecycleOwner(), news -> {
-            if (news.getItems().size() > 0) {
-                binding.listNull.setVisibility(View.GONE);
+            binding.pbLoanNews.setVisibility(View.GONE);
+            if (news.getItems().size() == 0) {
+                binding.listNull.setVisibility(View.VISIBLE);
             }
 
             listNews.setAdapter(new HorizontalAdaper(getActivity(), news).setOnCliclListener(itemNews -> {

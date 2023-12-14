@@ -40,6 +40,7 @@ class RegistrationViewModel(
     val loginRequest = LoginRequest()
     var code = ""
     var email = ""
+    private var userId = ""
 
     init {
         clearUser()
@@ -78,6 +79,7 @@ class RegistrationViewModel(
                 )
             }.onSuccess { response ->
                 response?.let {
+                    userId = it.payload.id
                     verificationSmsCodeLD.value = true
                 } ?: kotlin.run { onHideProgress.value = true }
             }
@@ -134,19 +136,16 @@ class RegistrationViewModel(
             kotlin.runCatching {
                 userUseCase.getUser()
             }.onSuccess { response ->
-                response?.let {
-                    kotlin.runCatching {
-                        response.id.let { id ->
-                            userUseCase.updateData(id, additionData)
-                        }
-                    }.onSuccess { user ->
+                kotlin.runCatching {
+                    userUseCase.updateData(response?.id ?: userId, additionData)
+                }.onSuccess { user ->
+                    user?.let {
                         onRegistered.value = true
                         kotlin.runCatching {
-
-                            user?.let { userUseCase.insertUser(it) }
+                            userUseCase.insertUser(it)
                         }
-                    }
-                } ?: kotlin.run { onHideProgress.value = true }
+                    } ?: kotlin.run { onHideProgress.value = true }
+                }
             }
         }
     }

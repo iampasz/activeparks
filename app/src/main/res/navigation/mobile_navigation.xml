@@ -23,7 +23,7 @@
     <activity
         android:id="@+id/navigation_active"
         android:name="com.app.activeparks.ui.active.ActivityForActivity"
-        android:label="ActiveFragment"
+        android:label="@string/title_activity"
         tools:layout="@layout/fragment_active" />
     <activity
         android:id="@+id/registration_user"

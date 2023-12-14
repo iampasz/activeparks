@@ -44,8 +44,7 @@ class RegistrationFragment : Fragment() {
         R.drawable.ic_exercises_3
     )
 
-    private var currentIndex = 0
-    private val delayMillis: Long = 752
+    private val delayMillis: Long = 1752
     private val rcSignIn = 9001
     private var googleSignInClient: GoogleSignInClient? = null
 
@@ -105,6 +104,7 @@ class RegistrationFragment : Fragment() {
             val account = completedTask.getResult(ApiException::class.java)
 
             viewModel.additionData.googleToken = account?.id ?: ""
+            viewModel.email = account?.email ?: ""
             findNavController().navigate(R.id.action_fRegistration_to_registrationUserDataFragment)
         } catch (e: ApiException) {
             Toast.makeText(
@@ -146,8 +146,13 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun showNextImage() {
-        binding.ivMain1.setImageResource(imageList[currentIndex])
-        currentIndex = (currentIndex + 1) % imageList.size
-        Handler(Looper.getMainLooper()).postDelayed({ showNextImage() }, delayMillis)
+        Handler(Looper.getMainLooper()).postDelayed(
+            { binding.ivMain1.setImageResource(imageList[1]) },
+            delayMillis
+        )
+        Handler(Looper.getMainLooper()).postDelayed(
+            { binding.ivMain1.setImageResource(imageList[2]) },
+            delayMillis*2
+        )
     }
 }

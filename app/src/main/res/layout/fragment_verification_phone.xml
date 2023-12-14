@@ -92,10 +92,23 @@
             android:layout_marginTop="16dp"
             android:text="@string/tv_not_recived_sms"
             android:textColor="@color/white"
+            android:enabled="false"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/smsCodeInputView"
             app:layout_constraintStart_toStartOf="@+id/smsCodeInputView"
             app:layout_constraintTop_toBottomOf="@+id/smsCodeInputView" />
+
+        <TextView
+            android:id="@+id/tvSmsTimerTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/tv_sms_timer"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/smsCodeInputView"
+            app:layout_constraintStart_toStartOf="@+id/smsCodeInputView"
+            app:layout_constraintTop_toBottomOf="@+id/tvHelpSms" />
 
 
         <android.widget.Button
@@ -108,15 +121,25 @@
             android:layout_marginBottom="64dp"
             android:background="@drawable/selector_button_light_green"
             android:enabled="false"
-            android:text="@string/tv_next_step"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/ivVp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvHelpSms"
+            app:layout_constraintTop_toBottomOf="@+id/tvSmsTimerTitle"
             app:layout_constraintVertical_bias="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:elevation="10dp"
+            android:text="@string/tv_next_step"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:drawableEndCompat="@drawable/long_arrow_alt_right"
+            app:layout_constraintBottom_toBottomOf="@+id/btnNext"
+            app:layout_constraintEnd_toEndOf="@+id/btnNext"
+            app:layout_constraintStart_toStartOf="@+id/btnNext"
+            app:layout_constraintTop_toTopOf="@+id/btnNext" />
 
 
         <ImageView

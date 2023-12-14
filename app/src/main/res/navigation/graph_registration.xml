@@ -61,6 +61,9 @@
         <action
             android:id="@+id/action_fAdditionalData_to_fVerificationEmail"
             app:destination="@id/fVerificationEmail" />
+        <action
+            android:id="@+id/action_fAdditionalData_to_fAdditionalValue"
+            app:destination="@id/fAdditionalValue" />
     </fragment>
     <fragment
         android:id="@+id/fAdditionalValue"

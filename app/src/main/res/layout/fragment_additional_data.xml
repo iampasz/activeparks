@@ -151,6 +151,24 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <android.widget.Button
+            android:id="@+id/btnSkip"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/background_white_btn"
+            android:text="@string/tv_skip"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/btnNext"
+            app:layout_constraintEnd_toEndOf="@+id/lNameInputLayout"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/lNameInputLayout"
+            app:layout_constraintTop_toBottomOf="@+id/lNameInputLayout"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <android.widget.Button
             android:id="@+id/btnNext"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -160,16 +178,25 @@
             android:layout_marginBottom="64dp"
             android:background="@drawable/selector_button_light_green"
             android:enabled="false"
-            android:text="@string/tv_next_step"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/ivVp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lNameInputLayout"
             app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:elevation="10dp"
+            android:text="@string/tv_next_step"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:drawableEndCompat="@drawable/long_arrow_alt_right"
+            app:layout_constraintBottom_toBottomOf="@+id/btnNext"
+            app:layout_constraintEnd_toEndOf="@+id/btnNext"
+            app:layout_constraintStart_toStartOf="@+id/btnNext"
+            app:layout_constraintTop_toTopOf="@+id/btnNext" />
 
         <ImageView
             android:id="@+id/ivVp"

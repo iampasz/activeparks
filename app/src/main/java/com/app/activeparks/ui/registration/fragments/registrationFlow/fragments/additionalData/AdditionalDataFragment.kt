@@ -55,6 +55,9 @@ class AdditionalDataFragment : Fragment() {
 
     private fun setListener() {
         with(binding) {
+            if (viewModel.email.isNotEmpty()) {
+                emailEditText.setText(viewModel.email)
+            }
             emailEditText.addTextChangedListener(object : EasyTextWatcher() {
                 override fun afterTextChanged(s: Editable?) {
                     btnNext.enableIf(isDataValid())
@@ -81,6 +84,9 @@ class AdditionalDataFragment : Fragment() {
             btnBack.setOnClickListener {
                 requireActivity().onBackPressed()
                 progress.gone()
+            }
+            btnSkip.setOnClickListener {
+                findNavController().navigate(R.id.action_fAdditionalData_to_fAdditionalValue)
             }
         }
     }
