@@ -8,12 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.app.activeparks.data.model.registration.PulseZoneRequest
 import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.data.useCase.activeState.ActivityStateUseCase
+import com.app.activeparks.data.useCase.pauseActivity.PauseActivityUseCase
 import com.app.activeparks.data.useCase.registration.UserUseCase
 import com.app.activeparks.data.useCase.weatehr.WeatherUseCase
-import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
 import com.app.activeparks.ui.active.model.ActivityState
-import com.app.activeparks.ui.active.model.ActivityTime
-import com.app.activeparks.ui.active.model.InfoItem
 import com.technodreams.activeparks.R
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
@@ -24,21 +22,14 @@ class ActiveViewModel(
     private val activityStateUseCase: ActivityStateUseCase,
     private val weatherUseCase: WeatherUseCase,
     private val userUseCase: UserUseCase,
-    private val preferences: Preferences
+    private val pauseActivityUseCase: PauseActivityUseCase,
+    preferences: Preferences
 ) : ViewModel() {
 
     val navigate = MutableLiveData<Fragment?>()
     var location: Location? = null
 
-    var activityDuration = 0
-
-    var stepCount = 0
-
     var activityState = ActivityState()
-    var activityTime = ActivityTime()
-    var activityInfoItems: List<ActivityInfoTrainingItem> =
-        ActivityInfoTrainingItem.getActivityInfoItem()
-    var activityPulseItems: List<InfoItem> = InfoItem.getPulseInfo()
 
     var updateActivityInfoTrainingItem = MutableLiveData(false)
     val updateUI: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -49,14 +40,38 @@ class ActiveViewModel(
     val pulseZoneRequest: MutableLiveData<PulseZoneRequest> = MutableLiveData()
     var pulseZone = PulseZoneRequest()
 
-    var weight = 90
-    var age = 30
     var isAuth = false
 
     init {
         loadActiveState()
         getWeight()
         isAuth = !preferences.token.isNullOrEmpty()
+
+    }
+
+    fun isActivityPause() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                pauseActivityUseCase.getActive()
+            }.onSuccess {
+                it?.apply {
+                    activityState = this
+                    activityState.isPause = true
+                    activityState.isTrainingStart = true
+                    updateUI.value = true
+                }
+            }
+        }
+    }
+    fun pauseActivity() {
+        viewModelScope.launch {
+            pauseActivityUseCase.insert(activityState)
+        }
+    }
+    fun deletePauseActivity() {
+        viewModelScope.launch {
+            pauseActivityUseCase.delete()
+        }
     }
 
     private fun getWeight() {
@@ -65,8 +80,8 @@ class ActiveViewModel(
                 userUseCase.getUser()
             }.onSuccess {
                 it?.let {
-                    weight = it.weight ?: 90
-                    it.birthday?.let { bDay -> age = calculateAge(bDay) }
+                    activityState.weight = it.weight ?: 90
+                    it.birthday?.let { bDay -> activityState.age = calculateAge(bDay) }
                 }
             }
         }
@@ -162,7 +177,7 @@ class ActiveViewModel(
                     request?.upperBorder?.let {
                         pulseZoneRequest.value = if (it == 0) {
                             PulseZoneRequest.getAutoPulseZone(
-                                age,
+                                activityState.age,
                                 pulseZoneRequest.value?.pausePulse ?: 60
                             )
                         } else {

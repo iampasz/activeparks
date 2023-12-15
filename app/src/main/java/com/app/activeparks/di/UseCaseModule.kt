@@ -8,6 +8,8 @@ import com.app.activeparks.data.useCase.saveActivity.SaveActivityUseCase
 import com.app.activeparks.data.useCase.saveActivity.SaveActivityUseCaseImpl
 import com.app.activeparks.data.useCase.eventState.EventStateUseCase
 import com.app.activeparks.data.useCase.eventState.EventStateUseCaseImpl
+import com.app.activeparks.data.useCase.pauseActivity.PauseActivityUseCase
+import com.app.activeparks.data.useCase.pauseActivity.PauseActivityUseCaseImpl
 import com.app.activeparks.data.useCase.profileState.ProfileStateUseCase
 import com.app.activeparks.data.useCase.profileState.ProfileStateUseCaseImpl
 import com.app.activeparks.data.useCase.weatehr.WeatherUseCase
@@ -20,6 +22,7 @@ import org.koin.dsl.module
 
 val useCaseModule = module {
     single<SaveActivityUseCase> { SaveActivityUseCaseImpl(get()) }
+    single<PauseActivityUseCase> { PauseActivityUseCaseImpl(get()) }
     single<ActivityStateUseCase> { ActivityStateUseCaseImpl(get()) }
     single<EventStateUseCase> { EventStateUseCaseImpl(get()) }
     single<ProfileStateUseCase> { ProfileStateUseCaseImpl(get()) }

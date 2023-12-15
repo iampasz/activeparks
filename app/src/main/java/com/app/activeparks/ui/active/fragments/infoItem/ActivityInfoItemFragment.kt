@@ -35,7 +35,7 @@ class ActivityInfoItemFragment(
         val adapter = ActivityInfoItemAdapter(
         ) { item -> onItemSelected(item) }
         binding.rvActivity.adapter = adapter
-        val types = viewModel.activityInfoItems
+        val types = viewModel.activityState.activityInfoItems
         types.forEach { if (it.id == infoViewId) it.isSelected = true }
         adapter.list.submitList(if (viewModel.activityState.activityType.id == 2) {
             types.filter { it.id != firstId && it.id != secondId }

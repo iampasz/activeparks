@@ -152,7 +152,7 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
         if (viewModel.activityState.startPoint.isEmpty() && viewModel.activityState.isTrainingStart) {
             viewModel.activityState.startPoint =
                 AddressUtil.getAddressFromLocation(requireContext(), location)
-            viewModel.stepCount = 0
+            viewModel.activityState.stepCount = 0
 
             mapsViewController?.zoomOnStart()
         }
@@ -252,40 +252,40 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
         maxHeight: Double, minHeight: Double, totalAscent: Double,
         totalDescent: Double, currentSpeed: Double, maxSpeed: Double
     ) {
-        viewModel.activityInfoItems.let {
+        viewModel.activityState.activityInfoItems.let {
             it[0].number = currentSpeed.toInfo()
             it[1].number = averageSpeed.toInfo()
             it[2].number = maxSpeed.toInfo()
             it[3].number = pathDistance.toInfo()
             kKal = when (viewModel.activityState.activityType.id) {
                 0 -> CalorieCalculator.calculateCaloriesForWalk(
-                    viewModel.activityDuration,
-                    viewModel.weight,
+                    viewModel.activityState.activityDuration,
+                    viewModel.activityState.weight,
                     averageSpeed
                 )
 
                 1 -> CalorieCalculator.calculateCaloriesForScandinavianWalk(
-                    viewModel.activityDuration,
-                    viewModel.weight,
+                    viewModel.activityState.activityDuration,
+                    viewModel.activityState.weight,
                     averageSpeed
                 )
 
                 2 -> CalorieCalculator.calculateCaloriesForBicycle(
-                    viewModel.activityDuration,
-                    viewModel.weight,
+                    viewModel.activityState.activityDuration,
+                    viewModel.activityState.weight,
                     averageSpeed
                 )
 
                 else -> CalorieCalculator.calculateCaloriesForRun(
-                    viewModel.activityDuration,
-                    viewModel.weight,
+                    viewModel.activityState.activityDuration,
+                    viewModel.activityState.weight,
                     averageSpeed
                 )
             }
             it[4].number = kKal.toInfo()
             it[9].number = averagePace
             it[10].number = maxHeight.toInfo()
-            it[11].number = (viewModel.stepCount / 2).toString()
+            it[11].number = (viewModel.activityState.stepCount / 2).toString()
             it[12].number = minHeight.toInfo()
             it[13].number = totalAscent.toInfo()
             it[14].number = totalDescent.toInfo()
@@ -304,7 +304,7 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
         val deltaZ = abs(z - previousZ)
 
         if (deltaX > threshold || deltaY > threshold || deltaZ > threshold) {
-            viewModel.stepCount++
+            viewModel.activityState.stepCount++
         }
 
         previousX = x
