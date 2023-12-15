@@ -1,5 +1,6 @@
 package com.app.activeparks.ui.event.fragments
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
@@ -7,9 +8,13 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Geocoder
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -19,14 +24,19 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.app.activeparks.data.model.points.RoutePoint
 import com.app.activeparks.data.model.sportevents.ItemEvent
+import com.app.activeparks.ui.dialog.BottomSearchDialog
 import com.app.activeparks.ui.event.interfaces.ResponseCallBack
 import com.app.activeparks.ui.event.util.EventController
 import com.app.activeparks.ui.event.util.EventHelper
@@ -39,6 +49,7 @@ import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.removeFragment
 import com.app.activeparks.util.extention.replaceFragment
 import com.app.activeparks.util.extention.visible
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.squareup.picasso.Picasso
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentEventCreateBinding
@@ -51,25 +62,31 @@ import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
 
+@Suppress("DEPRECATION")
 class FragmentEventCreate : Fragment() {
 
     lateinit var binding: FragmentEventCreateBinding
-    //private val viewModel: EventRouteViewModel by activityViewModels()
-        private val viewModel: EventRouteViewModel by sharedViewModel()
-
+    private lateinit var mapsViewController: MapsViewController
+    private val viewModel: EventRouteViewModel by sharedViewModel()
     private var eventData = ItemEvent()
     var currentTrainingType = ""
     var geoPointsList = ArrayList<GeoPoint>()
     var markerList = ArrayList<Marker>()
     var markerType = 0
     lateinit var eventController: EventController
-
+    private lateinit var currentPhotoPath: String
+    private var photoURI: Uri? = null
+    private var formattedDateTime = ""
     private val getContentLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             val ratioWidth = 3
@@ -79,7 +96,6 @@ class FragmentEventCreate : Fragment() {
                 .getIntent(requireContext())
             cropActivityResultLauncher.launch(cropIntent)
         }
-
     private val cropActivityResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -92,8 +108,6 @@ class FragmentEventCreate : Fragment() {
 
                     Log.i("CHECK_IMAGE", "Image was loaded")
                     Log.i("CHECK_IMAGE", "${checkFieldsAndEnableButton()} result")
-
-
                 }
             }
         }
@@ -112,35 +126,29 @@ class FragmentEventCreate : Fragment() {
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         eventController = EventController(requireContext())
+        mapsViewController = MapsViewController(binding.eventMap, requireContext())
 
         var currentPoint = 0
         val myListener: Marker.OnMarkerDragListener = object : Marker.OnMarkerDragListener {
-
-
             override fun onMarkerDrag(marker: Marker) {
             }
 
             @SuppressLint("NotifyDataSetChanged")
             override fun onMarkerDragEnd(marker: Marker) {
-
                 geoPointsList[currentPoint].longitude = marker.position.longitude
                 geoPointsList[currentPoint].latitude = marker.position.latitude
-
                 EventHelper.drawRoute(geoPointsList, binding.eventMap)
                 EventHelper.drawMarkers(binding.eventMap, geoPointsList, this, markerType)
-
+                getAddress(marker.position)
             }
 
             override fun onMarkerDragStart(marker: Marker) {
-
                 for ((i, position) in geoPointsList.withIndex()) {
-
                     if (position == marker.position) {
                         currentPoint = i
                     }
@@ -148,62 +156,44 @@ class FragmentEventCreate : Fragment() {
             }
         }
 
-
         observer(myListener)
-
-
-       // val previousScrollPosition = viewModel.getScrollPosition()
-       // binding.scroll.post { binding.scroll.scrollTo(0, previousScrollPosition) }
+        //TODO save scroll to view model
+        // val previousScrollPosition = viewModel.getScrollPosition()
+        // binding.scroll.post { binding.scroll.scrollTo(0, previousScrollPosition) }
 
         binding.scroll.viewTreeObserver.addOnScrollChangedListener {
-            val currentScrollPosition = binding.scroll.scrollY
-            //viewModel.saveScrollPosition(currentScrollPosition)
+            //TODO save scroll to view model
+            // val currentScrollPosition = binding.scroll.scrollY
+            // viewModel.saveScrollPosition(currentScrollPosition)
         }
 
         val currentDateTime = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        val formattedDateTime = currentDateTime.format(formatter)
-
+        formattedDateTime = currentDateTime.format(formatter)
 
         with(binding) {
 
-            imageCover.setOnClickListener { getContentLauncher.launch("image/*") }
+            imageCover.setOnClickListener { setCoverImageDialog() }
             backButton.setOnClickListener {
                 alertBeforeClosing()
             }
             startData.setOnClickListener { setDate(startData) }
             endData.setOnClickListener { setDate(endData) }
-            startData.text = (formattedDateTime)
-            endData.text = (formattedDateTime)
-
-            binding.openFullMap.setOnClickListener {
-                collectEventData()
-                viewModel.setGeoPoints(geoPointsList)
-                //viewModel.updateItemEventData(eventData)
-                viewModel.setLastMapGeoPoint(binding.eventMap.mapCenter)
-                parentFragmentManager.replaceFragment(
-                    R.id.constrain_events_container,
-                    FragmentChangeRoute()
-                )
-
-            }
-
+            startData.text = formattedDateTime
+            endData.text = formattedDateTime
+            openFullMap.setOnClickListener { openFullMap() }
             eventMap.setOnTouchListener { _, _ ->
                 scroll.requestDisallowInterceptTouchEvent(true)
                 false
             }
-
             eventMap.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
                 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
                 override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-
                     when (currentTrainingType) {
-
                         EventTypes.SIMPLE_TRAINING.type -> {
                             geoPointsList.clear()
                         }
                     }
-
                     p?.let {
                         geoPointsList.add(it)
                         markerList.clear()
@@ -234,7 +224,6 @@ class FragmentEventCreate : Fragment() {
                 }
 
             }
-
             val setDataResponseSuccessful = object : ResponseCallBack {
                 override fun load(responseFromApi: String) {
                     viewModelStore.clear()
@@ -244,49 +233,39 @@ class FragmentEventCreate : Fragment() {
                 }
             }
 
-            buttonPublish.setOnClickListener {
-                collectEventData()
-                if (EventHelper.checkFields(binding)) {
-
-                    if (eventData.imageUrl != null) {
-                        eventController.setDataEvent(setDataResponseSuccessful, eventData)
-                    } else {
-                        Toast.makeText(context, "Додайте зображення", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(context, "Не всі поля заповнені", Toast.LENGTH_SHORT).show()
+            buttonPublish.setOnClickListener { publishFielldEvent(setDataResponseSuccessful) }
+            editFullDescription.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
                 }
 
-            }
+                @SuppressLint("SetTextI18n")
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val charCount = s?.length ?: 0
+                    val maxTextSize = 255
+                    binding.textCounter.text = "$charCount / $maxTextSize"
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                }
+            })
+
+            checkEditTextListener(editNameEvent)
+            checkEditTextListener(editDescriptionEvent)
+            checkEditTextListener(editFullDescription)
+
+            editAdress.setOnClickListener { setAddressBySearch(myListener) }
         }
-
-        binding.editFullDescription.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            @SuppressLint("SetTextI18n")
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val charCount = s?.length ?: 0
-                binding.textCounter.text = "$charCount / 255"
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-            }
-        })
-
-
-        checkEditTextListener(binding.editNameEvent)
-        checkEditTextListener(binding.editDescriptionEvent)
-        checkEditTextListener(binding.editFullDescription)
-
-
     }
 
     private fun fetchData(
         context: Context,
         coordinate: GeoPoint
     ): String {
-
         val geocoder = Geocoder(context, Locale.getDefault())
         var address = ""
         try {
@@ -296,14 +275,12 @@ class FragmentEventCreate : Fragment() {
                 coordinate.longitude,
                 1
             )
-
             if (addresses != null) {
                 address = addresses[0].getAddressLine(0) ?: ""
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
         return address
     }
 
@@ -327,18 +304,18 @@ class FragmentEventCreate : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun choseTime(year: Int, month: Int, day: Int, textView: TextView) {
+    private fun choseTime(year: Int, month: Int, day: Int, chosenData: TextView) {
         val timePickerDialog = TimePickerDialog(
             requireContext(),
             { _, hourOfDay, minute ->
-                textView.text = ChangeDateType.formatDateTime(year, month, day, hourOfDay, minute)
+                chosenData.text =
+                    ChangeDateType.formatDateTime(year, month, day, hourOfDay, minute)
+                compareStartEndDate()
             },
             LocalTime.now().hour,
             LocalTime.now().minute,
-            false
+            true
         )
-
         timePickerDialog.show()
     }
 
@@ -395,8 +372,6 @@ class FragmentEventCreate : Fragment() {
             title = binding.editNameEvent.text.toString()
             fullDescription = binding.editFullDescription.text.toString()
             shortDescription = binding.editDescriptionEvent.text.toString()
-          //  startsAt = ChangeDateType.formatDateTimeReverse(binding.startData.text.toString())
-           // finishesAt = ChangeDateType.formatDateTimeReverse(binding.endData.text.toString())
             typeId = currentTrainingType
             routePoints = getRoutePointFromGeoPointList()
         }
@@ -424,10 +399,8 @@ class FragmentEventCreate : Fragment() {
 
     private fun alertBeforeClosing() {
         val builder = AlertDialog.Builder(requireContext())
-
         builder.setTitle(requireActivity().resources.getString(R.string.event_not_publish))
         builder.setMessage(requireActivity().resources.getString(R.string.save_druft))
-
         builder.setPositiveButton(requireActivity().resources.getString(R.string.yes)) { _, _ ->
             collectEventData()
 
@@ -439,15 +412,12 @@ class FragmentEventCreate : Fragment() {
             }
             eventController.setDataEvent(responseSuccessful, eventData)
         }
-
         builder.setNegativeButton(requireActivity().resources.getString(R.string.no)) { _, _ ->
             eventData.id?.let {
                 eventController.deleteEvent(eventData.id)
                 viewModelStore.clear()
                 parentFragmentManager.removeFragment(this)
             }
-
-
         }
 
         val dialog = builder.create()
@@ -455,13 +425,10 @@ class FragmentEventCreate : Fragment() {
     }
 
     private fun observer(myListener: Marker.OnMarkerDragListener) {
-
         val lastPoint = viewModel.getLastMapGeoPoint()
         binding.eventMap.controller.setCenter(lastPoint)
 
         viewModel.dataEvent.observe(viewLifecycleOwner) { newData ->
-
-            Log.i("GETEVENTDATA", "ось тут я маю взяти свій клас з даними")
 
             eventData = newData
             with(binding) {
@@ -475,9 +442,7 @@ class FragmentEventCreate : Fragment() {
                     ChangeDateType.formatDateTime(newData.finishesAt)
             }
 
-
             currentTrainingType = newData.typeId ?: EventTypes.SIMPLE_TRAINING.type
-
 
             when (currentTrainingType) {
                 EventTypes.SIMPLE_TRAINING.type -> {
@@ -491,9 +456,7 @@ class FragmentEventCreate : Fragment() {
                 }
 
             }
-
             newData?.imageUrl?.let { Picasso.get().load(it).into(binding.imageCover) }
-
         }
 
         viewModel.getGeoPointsLiveData().observe(viewLifecycleOwner) { geoPoints ->
@@ -508,17 +471,19 @@ class FragmentEventCreate : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setDate(editText: TextView) {
         val datePickerDialog = DatePickerDialog(
             requireContext(),
             { _, year, month, day ->
                 choseTime(year, month, day, editText)
             },
+
+
             LocalDate.now().year,
-            LocalDate.now().monthValue,
+            LocalDate.now().monthValue - 1,
             LocalDate.now().dayOfMonth
         )
+
         datePickerDialog.show()
     }
 
@@ -538,10 +503,8 @@ class FragmentEventCreate : Fragment() {
     }
 
     private fun checkEditTextListener(editText: EditText) {
-
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -553,5 +516,231 @@ class FragmentEventCreate : Fragment() {
         })
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun setCoverImageDialog() {
+        val dialog = BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialogTheme)
+        dialog.setContentView(R.layout.dialog_gallery)
+        val galleryAction = dialog.findViewById<LinearLayout>(R.id.gallery_action)
+        galleryAction?.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                getContentLauncher.launch("image/*")
+            } else {
+                Toast.makeText(
+                    activity,
+                    getString(R.string.add_access_to_photo),
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    1
+                )
+            }
+            dialog.dismiss()
+        }
+
+        val cameraAction = dialog.findViewById<LinearLayout>(R.id.camera_action)!!
+        cameraAction.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.CAMERA
+                )
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                dispatchTakePictureIntent()
+            } else {
+                Toast.makeText(
+                    activity,
+                    getString(R.string.add_access_to_camera),
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.CAMERA),
+                    5
+                )
+            }
+            dialog.dismiss()
+        }
+
+        val cancel = dialog.findViewById<LinearLayout>(R.id.cancel)!!
+        cancel.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+    }
+
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun dispatchTakePictureIntent() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
+                val photoFile: File? = try {
+                    createImageFile()
+                } catch (ex: IOException) {
+                    null
+                }
+                photoFile?.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                        requireContext(),
+                        "com.example.android.fileprovider",
+                        it
+                    )
+
+                    this.photoURI = photoURI
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    takePictureLauncherAgain.launch(takePictureIntent)
+                }
+            }
+        }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File? =
+            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = absolutePath
+        }
+    }
+
+    private val takePictureLauncherAgain =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                Activity.RESULT_OK -> {
+                    val imageUri = photoURI
+
+                    val ratioWidth = 3
+                    val ratioHeight = 2
+                    val cropIntent = CropImage.activity(imageUri)
+                        .setAspectRatio(ratioWidth, ratioHeight)
+                        .getIntent(requireContext())
+                    cropActivityResultLauncher.launch(cropIntent)
+
+                }
+
+                Activity.RESULT_CANCELED -> {
+                }
+
+                else -> {
+                }
+            }
+        }
+
+
+    private fun setAddressBySearch(myListener: Marker.OnMarkerDragListener) {
+        val addPhotoBottomDialogFragment =
+            BottomSearchDialog.newInstance().setOnCliclListener { lat, lon ->
+                mapsViewController.setPositionMap(lat, lon)
+                geoPointsList.clear()
+
+
+                val myPoint = GeoPoint(lat, lon)
+
+                geoPointsList.add(myPoint)
+                markerList.clear()
+                EventHelper.drawRoute(geoPointsList, binding.eventMap)
+                EventHelper.drawMarkers(
+                    binding.eventMap,
+                    geoPointsList,
+                    myListener,
+                    markerType
+                )
+                getAddress(myPoint)
+
+                //  EventHelper.drawMarkers()
+                //viewModel.setUpdateSportsGroundList(50, lat, lon)
+            }
+        addPhotoBottomDialogFragment.show(
+            requireActivity().supportFragmentManager,
+            "fragment_search"
+        )
+    }
+
+
+    private fun compareStartEndDate() {
+
+        val myCompareStart =
+            compareStartDates(
+                binding.startData.text.toString(),
+                ChangeDateType.formatDateTime(formattedDateTime).toString()
+            )
+
+
+        if (myCompareStart) {
+            val myCompare =
+                compareDates(binding.startData.text.toString(), binding.endData.text.toString())
+
+            if (!myCompare) {
+                Toast.makeText(
+                    context,
+                    getString(R.string.date_later_end),
+                    Toast.LENGTH_SHORT
+                ).show()
+                binding.endData.text = binding.startData.text
+            }
+        } else {
+            Toast.makeText(
+                context,
+                getString(R.string.date_before_current),
+                Toast.LENGTH_SHORT
+            ).show()
+
+            binding.startData.text = ChangeDateType.formatDateTime(formattedDateTime).toString()
+        }
+    }
+
+    private fun compareDates(startDateText: String, endDateText: String): Boolean {
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+        val startDate = LocalDateTime.parse(startDateText, formatter)
+        val endDate = LocalDateTime.parse(endDateText, formatter)
+        return !endDate.isBefore(startDate)
+    }
+
+    private fun compareStartDates(startDateText: String, currentDateText: String): Boolean {
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+
+        val startDate = LocalDateTime.parse(startDateText, formatter)
+        val endDate = LocalDateTime.parse(currentDateText, formatter)
+
+        return !startDate.isBefore(endDate)
+    }
+
+    private fun openFullMap() {
+        collectEventData()
+        viewModel.setGeoPoints(geoPointsList)
+        //viewModel.updateItemEventData(eventData)
+        viewModel.setLastMapGeoPoint(binding.eventMap.mapCenter)
+        parentFragmentManager.replaceFragment(
+            R.id.constrain_events_container,
+            FragmentChangeRoute()
+        )
+    }
+
+    private fun publishFielldEvent(setDataResponseSuccessful: ResponseCallBack) {
+        collectEventData()
+        if (EventHelper.checkFields(binding)) {
+
+            if (eventData.imageUrl != null) {
+                eventController.setDataEvent(setDataResponseSuccessful, eventData)
+            } else {
+                Toast.makeText(context, "Додайте зображення", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(context, "Не всі поля заповнені", Toast.LENGTH_SHORT).show()
+        }
+    }
 }
 
