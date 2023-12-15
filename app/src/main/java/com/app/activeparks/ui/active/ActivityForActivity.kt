@@ -8,6 +8,7 @@ import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
@@ -16,9 +17,11 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.app.activeparks.MainActivity
 import com.app.activeparks.ui.active.fragments.infoItem.ActivityInfoItemFragment
+import com.app.activeparks.ui.active.fragments.map.MapActivityFragment
 import com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityFragment
 import com.app.activeparks.ui.active.fragments.type.ActivityTypeFragment
 import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
+import com.app.activeparks.ui.active.model.ActivityState
 import com.app.activeparks.ui.active.util.AddressUtil
 import com.app.activeparks.util.extention.disable
 import com.app.activeparks.util.extention.enable
@@ -41,7 +44,7 @@ class ActivityForActivity : AppCompatActivity() {
     private var isTimerRunning = false
 
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var runnable: Runnable
+    private var runnable: Runnable? = null
     private lateinit var textToSpeech: TextToSpeech
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,18 +86,41 @@ class ActivityForActivity : AppCompatActivity() {
                     updateMap.value = true
                     updateUI.value = true
                     loadActiveState()
-                    activityInfoItems = ActivityInfoTrainingItem.getActivityInfoItem()
+                    activityState.activityInfoItems = ActivityInfoTrainingItem.getActivityInfoItem()
                 }
             }
             supportFragmentManager.beginTransaction()
                 .remove(supportFragmentManager.fragments.last()).commit()
             activeViewModel.updateUI.value = true
         } else {
-            super.onBackPressed()
+            if (activeViewModel.activityState.isTrainingStart &&
+                supportFragmentManager.fragments.first().childFragmentManager.fragments.first() is MapActivityFragment
+            ) {
+                showPauseDialog { super.onBackPressed() }
+            } else {
+                super.onBackPressed()
+            }
         }
     }
 
+    private fun showPauseDialog(back: () -> Unit) {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage(getString(R.string.tv_dialog_on_pause_activity))
+        builder.setPositiveButton(getString(R.string.tv_yes)) { dialog, _ ->
+            activeViewModel.pauseActivity()
+            back()
+            dialog.dismiss()
+        }
+
+        builder.setNegativeButton(getString(R.string.tv_no)) { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        builder.create().show()
+    }
+
     private fun initStartValue() {
+        activeViewModel.isActivityPause()
         with(binding) {
             setInfoItem()
 
@@ -158,8 +184,9 @@ class ActivityForActivity : AppCompatActivity() {
                     activityState.isPause = false
                     checkLocation.value = false
                     getWeather()
-                    activityTime.finishesAt = System.currentTimeMillis()
-                    activityTime.time = activityTime.finishesAt - activityTime.startsAt
+                    activityState.activityTime.finishesAt = System.currentTimeMillis()
+                    activityState.activityTime.time =
+                        activityState.activityTime.finishesAt - activityState.activityTime.startsAt
 
                     location?.let {
                         if (activityState.startPoint.isEmpty()) {
@@ -169,6 +196,7 @@ class ActivityForActivity : AppCompatActivity() {
                     }
                 }
                 setEnableActivityInfo()
+                activeViewModel.deletePauseActivity()
             }
             btnContinue.setOnClickListener {
                 gone(btnEnd, btnContinue, gPause)
@@ -252,7 +280,7 @@ class ActivityForActivity : AppCompatActivity() {
                 activityState.isTrainingStart = true
                 updateUI.value = true
                 checkLocation.value = true
-                activityTime.startsAt = System.currentTimeMillis()
+                activityState.activityTime.startsAt = System.currentTimeMillis()
             }
         }
     }
@@ -298,34 +326,35 @@ class ActivityForActivity : AppCompatActivity() {
         isTimerRunning = true
         runnable = object : Runnable {
             override fun run() {
-                activeViewModel.activityDuration++
+                activeViewModel.activityState.activityDuration++
                 updateTimerText()
                 handler.postDelayed(this, 1000)
             }
         }
-        handler.post(runnable)
+        runnable?.let { handler.post(it) }
     }
 
     private fun pauseTimer() {
         isTimerRunning = false
-        handler.removeCallbacks(runnable)
+        runnable?.let { handler.removeCallbacks(it) }
+
     }
 
     private fun resumeTimer() {
         isTimerRunning = true
-        handler.post(runnable)
+        runnable?.let { handler.post(it) }
     }
 
     private fun restartTimer() {
         isTimerRunning = false
-        activeViewModel.activityDuration = 0
+        activeViewModel.activityState.activityDuration = 0
         updateTimerText()
     }
 
     private fun updateTimerText() {
-        val hours = activeViewModel.activityDuration / 3600
-        val minutes = (activeViewModel.activityDuration % 3600) / 60
-        val secs = activeViewModel.activityDuration % 60
+        val hours = activeViewModel.activityState.activityDuration / 3600
+        val minutes = (activeViewModel.activityState.activityDuration % 3600) / 60
+        val secs = activeViewModel.activityState.activityDuration % 60
 
         binding.topPanel.time.text =
             String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, secs)
@@ -341,17 +370,7 @@ class ActivityForActivity : AppCompatActivity() {
             }
             updateActivityInfoTrainingItem.observe(this@ActivityForActivity) {
                 if (it) {
-                    with(binding) {
-                        topPanel.aivFirst.getActivityInfoItem()?.id?.let { id ->
-                            topPanel.aivFirst.setNumber(activityInfoItems[id].number)
-                        }
-                        topPanel.aivSecond.getActivityInfoItem()?.id?.let { id ->
-                            topPanel.aivSecond.setNumber(activityInfoItems[id].number)
-                        }
-                        topPanel.aivThird.getActivityInfoItem()?.id?.let { id ->
-                            topPanel.aivThird.setNumber(activityInfoItems[id].number)
-                        }
-                    }
+                    updateInfoItem(activityState)
 
                     if (activityState.pulseOnPause >= activityState.currentPulse && activityState.isAutoPause) {
                         binding.onPause()
@@ -399,7 +418,35 @@ class ActivityForActivity : AppCompatActivity() {
                     icActivityType.enableIf(!activityState.isTrainingStart)
 
                     binding.setInfoItem()
+
+                    updateInfoItem(activityState)
+
+                    if (activityState.isPause) {
+                        if (runnable == null) {
+                            startTimer()
+                            updateTimerText()
+                        }
+                        with(binding) {
+                            onPause()
+                            visible(btnEnd, btnContinue, gPause, vBottomView)
+                            gone(btnStart, navMain)
+                        }
+                    }
                 }
+            }
+        }
+    }
+
+    private fun updateInfoItem(activityState: ActivityState) {
+        with(binding) {
+            topPanel.aivFirst.getActivityInfoItem()?.id?.let { id ->
+                topPanel.aivFirst.setNumber(activityState.activityInfoItems[id].number)
+            }
+            topPanel.aivSecond.getActivityInfoItem()?.id?.let { id ->
+                topPanel.aivSecond.setNumber(activityState.activityInfoItems[id].number)
+            }
+            topPanel.aivThird.getActivityInfoItem()?.id?.let { id ->
+                topPanel.aivThird.setNumber(activityState.activityInfoItems[id].number)
             }
         }
     }

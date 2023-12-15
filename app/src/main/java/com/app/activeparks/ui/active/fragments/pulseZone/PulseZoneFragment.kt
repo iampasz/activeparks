@@ -281,7 +281,7 @@ class PulseZoneFragment : Fragment() {
         viewModel.pulseZoneRequest.value?.let {
             changePulseZone(
                 PulseZoneRequest.getAutoPulseZone(
-                    viewModel.age, it.pausePulse
+                    viewModel.activityState.age, it.pausePulse
                 )
             )
         }

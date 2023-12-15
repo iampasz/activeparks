@@ -85,7 +85,7 @@ class SaveActivityFragment : Fragment() {
 
         activityViewModel.activityState.apply {
             ivLocation.visibleIf(activityType.isOutside && startPoint.isNotEmpty() && activeRoad.isNotEmpty())
-            ivWeather.visibleIf(activityType.isOutside && weather.isNotEmpty())
+            ivWeather.visibleIf(activityType.isOutside && startPoint.isNotEmpty() && activeRoad.isNotEmpty() && activityType.isOutside && weather.isNotEmpty())
 
         }
 
@@ -108,7 +108,7 @@ class SaveActivityFragment : Fragment() {
             adapter = adapterInfoItem
             layoutManager = GridLayoutManager(requireContext(), 2)
 
-            val list = activityViewModel.activityInfoItems.filter {
+            val list = activityViewModel.activityState.activityInfoItems.filter {
                 (!activityViewModel.activityState.activityType.isInclude || !it.isOutside) &&
                         (activityViewModel.activityState.isPulseGadgetConnected || !it.isPulseGadget)
             }
@@ -185,8 +185,8 @@ class SaveActivityFragment : Fragment() {
         btnSave.setOnClickListener {
             viewModel.saveActivity(
                 activityViewModel.activityState,
-                activityViewModel.activityInfoItems,
-                activityViewModel.activityTime
+                activityViewModel.activityState.activityInfoItems,
+                activityViewModel.activityState.activityTime
             )
 
             binding.mapview.overlayManager.clear()

@@ -48,10 +48,10 @@ class LevelActivityFragment : Fragment() {
             if (isUpdate) {
                 if (viewModel.activityState.activityType.isInclude) {
                     adapterInfoItem.list.submitList(
-                        viewModel.activityInfoItems.filterInside()
+                        viewModel.activityState.activityInfoItems.filterInside()
                     )
                 } else {
-                    adapterInfoItem.list.submitList(viewModel.activityInfoItems.filterOutside(
+                    adapterInfoItem.list.submitList(viewModel.activityState.activityInfoItems.filterOutside(
                         viewModel.activityState.activityType.id
                     ))
                 }
@@ -69,9 +69,9 @@ class LevelActivityFragment : Fragment() {
                 rvTrainingInfo.visible()
 
                 if (viewModel.activityState.isPulseGadgetConnected) {
-                    vInfoOne.setPulseInfoItem(viewModel.activityPulseItems[0])
-                    vInfoTwo.setPulseInfoItem(viewModel.activityPulseItems[1])
-                    vInfoThree.setPulseInfoItem(viewModel.activityPulseItems[2])
+                    vInfoOne.setPulseInfoItem(viewModel.activityState.activityPulseItems[0])
+                    vInfoTwo.setPulseInfoItem(viewModel.activityState.activityPulseItems[1])
+                    vInfoThree.setPulseInfoItem(viewModel.activityState.activityPulseItems[2])
                 }
 
                 llPulseZone.apply {
@@ -128,11 +128,11 @@ class LevelActivityFragment : Fragment() {
                 }
                 adapter.list.submitList(list)
                 binding.rvActivityStreet.visible()
-                adapterInfoItem.list.submitList(viewModel.activityInfoItems.filterInside())
+                adapterInfoItem.list.submitList(viewModel.activityState.activityInfoItems.filterInside())
             } else {
                 binding.tvTitleRecyclerView.gone()
                 binding.gLevelActivity.gone()
-                adapterInfoItem.list.submitList(viewModel.activityInfoItems.filterOutside(viewModel.activityState.activityType.id))
+                adapterInfoItem.list.submitList(viewModel.activityState.activityInfoItems.filterOutside(viewModel.activityState.activityType.id))
             }
         }
     }

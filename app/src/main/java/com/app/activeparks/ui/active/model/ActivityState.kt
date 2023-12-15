@@ -31,4 +31,12 @@ data class ActivityState(
     var isPause: Boolean = false,
     var isAutoPulseZone: Boolean = true,
     var isAutoBlockScreen: Boolean = false,
+    var weight: Int = 90,
+    var stepCount: Int = 0,
+    var activityDuration: Int = 0,
+    var age: Int = 30,
+    var activityTime: ActivityTime = ActivityTime(),
+    var activityInfoItems: List<ActivityInfoTrainingItem> =
+        ActivityInfoTrainingItem.getActivityInfoItem(),
+    var activityPulseItems: List<InfoItem> = InfoItem.getPulseInfo()
 )

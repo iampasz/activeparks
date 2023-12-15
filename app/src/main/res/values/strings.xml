@@ -209,6 +209,9 @@
     <string name="profile">Профіль</string>
     <string name="tv_sms_timer">Отримати код знову можна через: %s сек.</string>
     <string name="tv_skip">Пропустити</string>
+    <string name="tv_dialog_on_pause_activity">Зараз іде тренування. Хочете вийти і поставити на паузу?</string>
+    <string name="tv_yes">Так</string>
+    <string name="tv_no">Ні</string>
 
     <string name="add_access_to_photo">Додайте доступ до фото</string>
     <string name="add_access_to_camera">Додайте доступ до камери</string>

@@ -9,14 +9,10 @@ import androidx.room.PrimaryKey
 data class ProfileStateEntity(
     @PrimaryKey(autoGenerate = false)
     var keyId: Long = 0,
-
-
     @ColumnInfo(name = "pulse_on_pause")
     val pulseOnPause: Int,
     @ColumnInfo(name = "max_pulse")
     val maxPulse: Int,
-
-
     @ColumnInfo(name = "is_auto_pause")
     val isAutoPause: Boolean,
     @ColumnInfo(name = "is_audio_helper")
