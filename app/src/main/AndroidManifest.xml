@@ -7,7 +7,9 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -17,7 +19,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -33,7 +36,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ActiveParks">
+        android:theme="@style/Theme.ActiveParks"
+        tools:targetApi="s">
         <activity
             android:name="com.app.activeparks.ui.registration.RegistrationActivity"
             android:screenOrientation="portrait"
@@ -53,20 +57,19 @@
         <activity
             android:name="com.app.activeparks.ui.selectvideo.SelectVideoActivity"
             android:exported="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name="com.app.activeparks.ui.profile.uservideo.UserAddVideoActivity"
             android:exported="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name="com.app.activeparks.ui.news.NewsActivity"
             android:exported="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name="com.app.activeparks.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -78,13 +81,11 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data
-                    android:host="ap.sportforall.gov.ua"
-                    android:path="/start"
-                    android:scheme="https" />
-                <data
-                    android:host="ap.sportforall.gov.ua"
-                    android:scheme="https" />
+                <data android:scheme="https"/>
+                <data android:host="ap.sportforall.gov.ua"/>
+                <data android:path="/start"/>
+                <data android:scheme="https"/>
+                <data android:host="ap.sportforall.gov.ua"/>
             </intent-filter>
         </activity>
         <activity android:name="com.app.activeparks.ui.web.WebActivity" />
@@ -116,10 +117,21 @@
             </intent-filter>
         </service>
 
-        <service
-            android:name=".LocationService"
-            android:enabled="true"
-            android:exported="false" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+
+            android:authorities="com.example.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+<!--        <service-->
+<!--            android:name=".LocationService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="false" />-->
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

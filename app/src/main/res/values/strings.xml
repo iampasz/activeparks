@@ -181,7 +181,7 @@
     <string name="tv_additional_value_description">Вкажіть ваші фізичні дані та дату народження</string>
     <string name="tv_select_weight">Виберіть вагу (кг)</string>
     <string name="tv_select_pulse_zone_value">Виберіть значення (уд/хв)</string>
-    <string name="tv_ok">Ok</string>
+    <string name="tv_ok">OK</string>
     <string name="tv_weight_picker">%s кг</string>
     <string name="tv_pulse_zone_picker">%s уд/хв</string>
     <string name="tv_select_height_picker">Виберіть зріст (см)</string>
@@ -209,5 +209,10 @@
     <string name="profile">Профіль</string>
     <string name="tv_sms_timer">Отримати код знову можна через: %s сек.</string>
     <string name="tv_skip">Пропустити</string>
+
+    <string name="add_access_to_photo">Додайте доступ до фото</string>
+    <string name="add_access_to_camera">Додайте доступ до камери</string>
+    <string name="date_later_end">Дата початку не може починатись пізніше ніж дата закінчення</string>
+    <string name="date_before_current">Захід не може починатися раніше поточна дата</string>
 
 </resources>
