@@ -38,6 +38,7 @@ import java.util.UUID
 /**
  * Created by O.Dziuba on 06.11.2023.
  */
+@Suppress("DEPRECATION")
 class PulseGadgetFragment : Fragment() {
 
     lateinit var binding: FragmentPulseGadgetBinding
@@ -51,14 +52,18 @@ class PulseGadgetFragment : Fragment() {
     private val CLIENT_CHARACTERISTIC_CONFIG_UUID: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
 
     private lateinit var bluetoothAdapter: BluetoothAdapter
-    val adapter = BleDeviceAdapter {}
+
+    @SuppressLint("MissingPermission")
+    val adapter = BleDeviceAdapter { item ->
+        viewModel.activityState.device = item
+    }
 
     private val gattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 if (ActivityCompat.checkSelfPermission(
                         requireContext(),
-                        Manifest.permission.BLUETOOTH_CONNECT
+                        Manifest.permission.BLUETOOTH_ADMIN
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
                     return
@@ -75,7 +80,7 @@ class PulseGadgetFragment : Fragment() {
                 if (heartRateCharacteristic != null) {
                     if (ActivityCompat.checkSelfPermission(
                             requireContext(),
-                            Manifest.permission.BLUETOOTH_CONNECT
+                            Manifest.permission.BLUETOOTH_ADMIN
                         ) != PackageManager.PERMISSION_GRANTED
                     ) {
                         return
@@ -106,21 +111,21 @@ class PulseGadgetFragment : Fragment() {
     }
 
     private val bleCallBack = object : ScanCallback() {
-        @SuppressLint("NotifyDataSetChanged")
+        @SuppressLint("NotifyDataSetChanged", "MissingPermission")
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             super.onScanResult(callbackType, result)
             val device = result.device
             //TODO for test
-            if (device.name == "Mi Smart Band 5") {
-                if (ActivityCompat.checkSelfPermission(
-                        requireActivity(),
-                        Manifest.permission.BLUETOOTH_CONNECT
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    return
-                }
-                device.connectGatt(requireContext(), false, gattCallback)
-            }
+//            if (device.name == "HRMPro+:704908") {
+//                if (ActivityCompat.checkSelfPermission(
+//                        requireActivity(),
+//                        Manifest.permission.BLUETOOTH_ADMIN
+//                    ) != PackageManager.PERMISSION_GRANTED
+//                ) {
+//                    return
+//                }
+//               device.connectGatt(requireContext(), false, gattCallback)
+//            }
 
             if (!bluetoothDevices.contains(device) && !device.name.isNullOrEmpty()) {
                 bluetoothDevices.add(device)
@@ -130,7 +135,7 @@ class PulseGadgetFragment : Fragment() {
 
                 if (ActivityCompat.checkSelfPermission(
                         requireActivity(),
-                        Manifest.permission.BLUETOOTH_CONNECT
+                        Manifest.permission.BLUETOOTH_ADMIN
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
                     return
@@ -205,7 +210,7 @@ class PulseGadgetFragment : Fragment() {
             requestMultiplePermissions.launch(
                 arrayOf(
                     Manifest.permission.BLUETOOTH_SCAN,
-                    Manifest.permission.BLUETOOTH_CONNECT
+                    Manifest.permission.BLUETOOTH_ADMIN
                 )
             )
             startScanning()
@@ -253,7 +258,7 @@ class PulseGadgetFragment : Fragment() {
     private fun startScanning() {
         if (ActivityCompat.checkSelfPermission(
                 requireActivity(),
-                Manifest.permission.BLUETOOTH_SCAN
+                Manifest.permission.BLUETOOTH_ADMIN
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             return
@@ -276,7 +281,7 @@ class PulseGadgetFragment : Fragment() {
         super.onDestroy()
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
-                Manifest.permission.BLUETOOTH_SCAN
+                Manifest.permission.BLUETOOTH_ADMIN
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             return
