@@ -1,5 +1,6 @@
 package com.app.activeparks.ui.active.model
 
+import android.bluetooth.BluetoothDevice
 import org.osmdroid.util.GeoPoint
 
 /**
@@ -38,5 +39,6 @@ data class ActivityState(
     var activityTime: ActivityTime = ActivityTime(),
     var activityInfoItems: List<ActivityInfoTrainingItem> =
         ActivityInfoTrainingItem.getActivityInfoItem(),
-    var activityPulseItems: List<InfoItem> = InfoItem.getPulseInfo()
+    var activityPulseItems: List<InfoItem> = InfoItem.getPulseInfo(),
+    var device: BluetoothDevice? = null
 )

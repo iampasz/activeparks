@@ -27,7 +27,10 @@
                 android:id="@+id/gLevelActivity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="tvTitleRecyclerView, rvActivityStreet" />
+                app:constraint_referenced_ids="tvTitleRecyclerView, rvActivityStreet"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="NotSibling" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/gPulse"
@@ -40,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="130"
+                android:text="0"
                 android:textSize="64sp"
                 android:textStyle="bold"
                 app:drawableEndCompat="@drawable/ic_red_heart"

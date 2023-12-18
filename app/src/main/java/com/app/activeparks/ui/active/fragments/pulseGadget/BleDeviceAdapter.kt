@@ -1,6 +1,7 @@
 package com.app.activeparks.ui.active.fragments.pulseGadget
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.content.pm.PackageManager
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.ItemBleGadgetBinding
 
 
@@ -49,17 +51,23 @@ class BleDeviceAdapter(
 
     override fun getItemCount() = list.currentList.size
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: LevelOfActivityVH, position: Int) {
         val item = list.currentList[position]
         ItemBleGadgetBinding.bind(holder.itemView).apply {
             if (ActivityCompat.checkSelfPermission(
                     tvTitle.context,
-                    Manifest.permission.BLUETOOTH_CONNECT
+                    Manifest.permission.BLUETOOTH_ADMIN
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 return
             }
             tvTitle.text = item.name
+            tvTitle.setOnClickListener{
+                 notifyDataSetChanged()
+                itemSelected(item)
+                tvTitle.setBackgroundResource(R.drawable.backround_event)
+            }
         }
     }
 }
