@@ -8,8 +8,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.ui.event.util.EventController
+import com.app.activeparks.util.extention.gone
 import com.squareup.picasso.Picasso
 import com.technodreams.activeparks.databinding.ItemEventBinding
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class BaseAdapter : RecyclerView.Adapter<BaseAdapter.ViewHolder>(){
     private lateinit var binding: ItemEventBinding
@@ -38,6 +41,12 @@ class BaseAdapter : RecyclerView.Adapter<BaseAdapter.ViewHolder>(){
 
             binding.date.text = item.updatedAt
             binding.nameEvent.text = item.title
+            binding.statusEvent.text = ""
+            binding.textView4.text = ""
+            binding.textView5.text = ""
+            binding.circleImageFirst.gone()
+            binding.circleImageSecond.gone()
+            binding.date.text = changeDataFormat(item.startsAt)
 
 
             item.memberAmount?.let {
@@ -59,4 +68,12 @@ class BaseAdapter : RecyclerView.Adapter<BaseAdapter.ViewHolder>(){
     }
 
     val differ = AsyncListDiffer(this,differCallback)
+
+
+    private fun changeDataFormat(dateString:String) : String{
+        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val dateTime = LocalDateTime.parse(dateString, inputFormatter)
+        val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yy | HH:mm")
+        return dateTime.format(outputFormatter)
+    }
 }

@@ -117,10 +117,12 @@ class EventListActivity2 : AppCompatActivity(), LocationListener {
 
         binding.closed.setOnClickListener { onBackPressed() }
         binding.createEvent.setOnClickListener { updateViewModelData() }
+
         viewModel.sportEventsList.observe(this) { result: SportEvents ->
             run {
                 setAdapter(result)
-                binding.titleText2.text = "Жодного запланованого заходу"
+                    //
+            // binding.titleText2.text = "Жодного запланованого заходу"
             }
         }
 
