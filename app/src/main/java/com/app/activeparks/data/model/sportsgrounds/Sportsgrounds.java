@@ -9,7 +9,7 @@ public class Sportsgrounds {
 
     @SerializedName("items")
     @Expose
-    private List<ItemSportsground> items = null;
+    public List<ItemSportsground> items = null;
     @SerializedName("total")
     @Expose
     private Integer total;

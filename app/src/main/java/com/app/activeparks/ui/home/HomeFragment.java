@@ -27,7 +27,6 @@ import com.app.activeparks.ui.clubs.ClubsListActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
 import com.app.activeparks.ui.event.activity.EventActivity;
 import com.app.activeparks.ui.event.activity.EventListActivity2;
-import com.app.activeparks.ui.event.activity.EventsListActivity;
 import com.app.activeparks.ui.home.adapter.HomeAdaper;
 import com.app.activeparks.ui.home.adapter.HorizontalAdaperEvents;
 import com.app.activeparks.ui.home.adapter.ParkHorizontalAdaper;
@@ -199,9 +198,9 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
         binding.panelUser.setOnClickListener(v -> {
             Preferences preferences = new Preferences(requireContext());
             if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
-                ((MainActivity) requireActivity()).getNavController().navigate(R.id.registration_user);
+                ((MainActivity) requireActivity()).getNavControllerMain().navigate(R.id.registration_user);
             } else {
-                ((MainActivity) requireActivity()).getNavController().navigate(R.id.navigation_user);
+                ((MainActivity) requireActivity()).getNavControllerMain().navigate(R.id.navigation_user);
             }
         });
 

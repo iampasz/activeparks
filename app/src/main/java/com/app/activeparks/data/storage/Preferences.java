@@ -67,11 +67,19 @@ public class Preferences {
         User user = gson.fromJson(data, User.class);
         return user != null ? user : null;
     }
+    public String getUserName() {
+        String data = mSettings.getString("user_name", "");
+        return data;
+    }
 
     public void setUser(User user) {
         Gson gson = new Gson();
         String data = gson.toJson(user);
         mSettings.edit().putString("profile", data).apply();
+    }
+
+    public void setUserName(String name) {
+        mSettings.edit().putString("user_name", name).apply();
     }
 
     public Notifications getNotification() {

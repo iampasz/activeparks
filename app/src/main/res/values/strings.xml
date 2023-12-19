@@ -217,5 +217,22 @@
     <string name="add_access_to_camera">Додайте доступ до камери</string>
     <string name="date_later_end">Дата початку не може починатись пізніше ніж дата закінчення</string>
     <string name="date_before_current">Захід не може починатися раніше поточна дата</string>
+    <string name="tv_main_title">ГОЛОВНА</string>
+    <string name="tv_user_title">Вітаємо тебе,</string>
+    <string name="tv_menu_events">Заходи</string>
+    <string name="tv_menu_location">Локації</string>
+    <string name="tv_menu_blog">Блог</string>
+    <string name="tv_menu_clubs">Клуби</string>
+    <string name="tv_events_calendar"><u>Календар заходів</u></string>
+    <string name="tv_all_parks"><u>Показати перелік активних парків</u></string>
+    <string name="tv_all_news"><u>Перейти до всіх новин</u></string>
+    <string name="tv_all_clubs"><u>Перейти до всіх клубів</u></string>
+    <string name="tv_more"><u>Більше</u></string>
+    <string name="tv_my_events">Мої заходи</string>
+    <string name="tv_title_active_parks">Активні парки</string>
+    <string name="tv_distance">Дистанція %s</string>
+    <string name="tv_no_clubs">Клуби відсутні</string>
+    <string name="tv_my_clubs">Мої клуби</string>
+    <string name="tv_no_events">Заходи відсутні</string>
 
 </resources>

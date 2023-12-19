@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/navEventsHomeUser">
+
+    <fragment
+        android:id="@+id/navEventsHomeUser"
+        android:name="com.app.activeparks.ui.homeWithUser.fragments.home.HomeEventsFragment"
+        android:label="@string/tv_menu_events"
+        tools:layout="@layout/fragment_home_events" >
+        <action
+            android:id="@+id/action_navEventsHomeUser_to_eventsListFragment"
+            app:destination="@id/eventsListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/eventsListFragment"
+        android:name="com.app.activeparks.ui.event.fragments.EventsListFragment"
+        tools:layout="@layout/fragment_events"
+        android:label="EventsListFragment" />
+
+
+    <fragment
+        android:id="@+id/navLocationHomeUser"
+        android:name="com.app.activeparks.ui.homeWithUser.fragments.location.HomeLocationFragment"
+        android:label="fragment_home_events"
+        tools:layout="@layout/fragment_home_location" />
+    <fragment
+        android:id="@+id/navBlogHomeUser"
+        android:name="com.app.activeparks.ui.homeWithUser.fragments.blog.HomeBlogFragment"
+        android:label="fragment_home_events"
+        tools:layout="@layout/fragment_home_blog" />
+    <fragment
+        android:id="@+id/navClubHomeUser"
+        android:name="com.app.activeparks.ui.homeWithUser.fragments.clubs.HomeClubsFragment"
+        android:label="fragment_home_events"
+        tools:layout="@layout/fragment_home_clubs" />
+</navigation>
+
