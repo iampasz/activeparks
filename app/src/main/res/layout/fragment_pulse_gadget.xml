@@ -8,6 +8,18 @@
     android:orientation="vertical"
     android:paddingBottom="76dp">
 
+    <Button
+        android:id="@+id/scan_devises"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_activity_test_update" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_activity_test_update" />
+
     <com.app.activeparks.util.SwipeToRefresh
         android:id="@+id/srUpdate"
         android:layout_width="match_parent"
@@ -42,6 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:src="@drawable/ic_back_action"
+                android:contentDescription="@string/icon"
                 app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvTitle" />
@@ -58,8 +71,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:visibility="gone"
                 android:text="@string/tv_swipe_to_refresh"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvTitle" />

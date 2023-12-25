@@ -78,20 +78,6 @@ class EventController(context: Context) {
         compositeDisposable.add(dataDeleted)
     }
 
-//    fun getAllEvents(responseCallBack: ResponseCallBack) {
-//
-//        val dataEvents = repository.allEventsPublished
-//            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-//            .subscribe({
-//                responseFrom ->
-//                    responseCallBack.load(responseFrom.string())
-//                    clearDisposables()
-//            }
-//            ) { Log.i("API_SERVICE", "Data wasn't delete from API") }
-//
-//        compositeDisposable.add(dataEvents)
-//    }
-
     fun getMyEvents(responseCallBack: ResponseCallBack) {
 
         val dataEvents = repository.myEvents

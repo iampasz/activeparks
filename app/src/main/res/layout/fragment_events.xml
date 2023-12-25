@@ -1,53 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constrain_events_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/select_filter"
-        style="@style/Base.Widget.Design.TabLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:alpha="0.9"
-        android:background="@drawable/background_tablayout"
-        android:elevation="2dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:tabGravity="start"
-        app:tabIndicatorHeight="0dp"
-        app:tabMode="fixed"
-        app:tabPaddingEnd="4dp"
-        app:tabPaddingStart="4dp"
-        app:tabSelectedTextColor="@color/text_color"
-        app:tabTextAppearance="@style/Base.Widget.Design.TabText"
-        app:tabTextColor="@color/gray_500">
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="За відстанню" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="За часом" />
-
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Актуальне" />
-
-
-    </com.google.android.material.tabs.TabLayout>
 
     <TextView
         android:id="@+id/titleText2"
@@ -88,6 +46,7 @@
         android:layout_marginTop="14dp"
         android:layout_marginEnd="14dp"
         android:layout_marginBottom="14dp"
+        android:contentDescription="@string/icon"
         app:layout_constraintBottom_toBottomOf="@+id/titleText2"
         app:layout_constraintEnd_toEndOf="@+id/titleText2"
         app:layout_constraintTop_toTopOf="parent"
@@ -114,7 +73,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="50dp">
 
 
             <com.applandeo.materialcalendarview.CalendarView
@@ -125,7 +85,7 @@
                 app:abbreviationsBarColor="@color/background"
                 app:abbreviationsLabelsColor="@color/text_color"
                 app:eventsEnabled="true"
-                app:forwardButtonSrc="@drawable/ic_arrow_right"
+                app:forwardButtonSrc="@drawable/ic_arrow_right_gray"
                 app:headerColor="@color/background"
                 app:headerLabelColor="@color/text_color"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -134,7 +94,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_goneMarginBaseline="0dp"
                 app:pagesColor="@color/background"
-                app:previousButtonSrc="@drawable/ic_arrow_left"
+                app:previousButtonSrc="@drawable/ic_arrow_left_gray"
                 app:selectionColor="@color/color_park"
                 app:todayLabelColor="@color/color_park"
                 app:type="one_day_picker">
@@ -145,7 +105,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_title"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -158,7 +120,7 @@
                 android:layout_marginStart="14dp"
                 android:layout_marginTop="50dp"
                 android:layout_marginEnd="14dp"
-                android:text="Найближчий захід"
+                android:text="@string/nearest_event"
                 android:textAllCaps="true"
                 android:textColor="@color/text_color"
                 android:textSize="22sp"
@@ -181,5 +143,61 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+
+    <TextView
+        android:id="@+id/btDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="23dp"
+        android:background="@drawable/background_green"
+        android:text="@string/by_distance"
+        android:paddingTop="4dp"
+        android:textAllCaps="true"
+        android:paddingBottom="4dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btTime"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/btTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="23dp"
+        android:background="@drawable/background_green"
+        android:text="@string/by_time"
+        android:textAllCaps="true"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btRelecant"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btDistance" />
+
+    <TextView
+        android:id="@+id/btRelecant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="23dp"
+        android:textAllCaps="true"
+        android:background="@drawable/background_green"
+        android:text="@string/by_time"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btTime" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

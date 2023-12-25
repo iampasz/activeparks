@@ -218,4 +218,32 @@
     <string name="date_later_end">Дата початку не може починатись пізніше ніж дата закінчення</string>
     <string name="date_before_current">Захід не може починатися раніше поточна дата</string>
 
+    <string name="my_event">Мої заходи</string>
+    <string name="my_clubs">Мої клуби</string>
+    <string name="all_clubs">Всі клуби</string>
+    <string name="public_events">Загальні</string>
+
+    <string name="nearest_event">Найближчий захід</string>
+    <string name="by_distance">За відстанню</string>
+    <string name="by_time">За часом</string>
+    <string name="last_news">Останні новини</string>
+    <string name="more">Більше</string>
+    <string name="none_news">Новини відсутні</string>
+    <string name="none_clubs">Клуби відсутні</string>
+    <string name="nearest_events">Найближчі заходи</string>
+    <string name="nearest_parks">Найближчі парки</string>
+    <string name="not_found_event">Заходів не знайдено</string>
+    <string name="not_found_parks">Парків не знайдено</string>
+    <string name="fat_burning">Спалювання жиру</string>
+    <string name="search">Пошук…</string>
+    <string name="mood_yourself">Самопочуття</string>
+
+    <string name="login">Увійти</string>
+    <string name="zero">0</string>
+    <string name="max_text_count">255/255</string>
+
+    <string name="all_activities">Всі активності</string>
+    <string name="review">Огляд</string>
+    <string name="activities">Активності</string>
+
 </resources>

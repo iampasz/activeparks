@@ -8,6 +8,7 @@
     android:paddingBottom="75dp"
     tools:context="com.app.activeparks.ui.active.fragments.level.LevelActivityFragment">
 
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -43,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="0"
+                android:text="@string/zero"
                 android:textSize="64sp"
                 android:textStyle="bold"
                 app:drawableEndCompat="@drawable/ic_red_heart"
@@ -89,7 +90,7 @@
                     android:layout_weight="10"
                     android:background="@drawable/view_puls_level_2"
                     android:paddingStart="8dp"
-                    android:text="Спалювання жиру"
+                    android:text="@string/fat_burning"
                     android:textColor="@color/white"
                     tools:ignore="RtlSymmetry" />
 
@@ -208,4 +209,5 @@
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
 </LinearLayout>

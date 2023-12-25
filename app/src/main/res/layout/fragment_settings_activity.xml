@@ -29,7 +29,7 @@
                 android:gravity="center|start"
                 android:padding="4dp"
                 android:text="@string/tv_activity_type"
-                app:drawableEndCompat="@drawable/ic_arrow_right"
+                app:drawableEndCompat="@drawable/ic_arrow_right_gray"
                 app:drawableStartCompat="@drawable/ic_person_simple"
                 app:drawableTint="@color/purple_500" />
 
@@ -42,7 +42,7 @@
                 android:gravity="center|start"
                 android:padding="4dp"
                 android:text="@string/tv_pulse_zone"
-                app:drawableEndCompat="@drawable/ic_arrow_right"
+                app:drawableEndCompat="@drawable/ic_arrow_right_gray"
                 app:drawableStartCompat="@drawable/ic_heart"
                 app:drawableTint="@color/purple_500" />
 
@@ -55,7 +55,7 @@
                 android:gravity="center|start"
                 android:padding="4dp"
                 android:text="@string/tvPulseDevise"
-                app:drawableEndCompat="@drawable/ic_arrow_right"
+                app:drawableEndCompat="@drawable/ic_arrow_right_gray"
                 app:drawableStartCompat="@drawable/ic_pulse_device"
                 app:drawableTint="@color/purple_500" />
 

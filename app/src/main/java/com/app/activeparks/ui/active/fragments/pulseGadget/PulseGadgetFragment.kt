@@ -3,27 +3,29 @@ package com.app.activeparks.ui.active.fragments.pulseGadget
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
-import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothManager
-import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
+import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.Handler
+import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.app.activeparks.ui.active.ActiveViewModel
+import com.app.activeparks.ui.active.ActivityForActivity
+import com.app.activeparks.ui.active.util.BluetoothHelper
+import com.app.activeparks.ui.active.util.BluetoothService
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.databinding.FragmentPulseGadgetBinding
@@ -32,60 +34,41 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 /**
  * Created by O.Dziuba on 06.11.2023.
  */
+
+@Suppress("DEPRECATION")
+@SuppressLint("MissingPermission")
 class PulseGadgetFragment : Fragment() {
 
     lateinit var binding: FragmentPulseGadgetBinding
     private val viewModel: ActiveViewModel by activityViewModel()
+    private val TIME_FOR_SEARCH = 20000L
 
-    private val bluetoothDevices = mutableListOf<BluetoothDevice>()
-    private var bluetoothLeScanner: BluetoothLeScanner? = null
+    private var bluetoothService: BluetoothService? = null
 
-    private lateinit var bluetoothAdapter: BluetoothAdapter
 
-    @SuppressLint("MissingPermission")
     val adapter = BleDeviceAdapter { item ->
-        viewModel.activityState.device = item
+        bluetoothService?.setDevise(item)
+        viewModel.heartRateList.clear()
+        viewModel.activityState.isPulseGadgetConnected = true
     }
 
+    private var requestBluetooth: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                scanBluetoothDevises(scanCallBack)
+            }
+        }
 
-
-    private val bleCallBack = object : ScanCallback() {
-        @SuppressLint("NotifyDataSetChanged", "MissingPermission")
-        override fun onScanResult(callbackType: Int, result: ScanResult) {
-            super.onScanResult(callbackType, result)
-            val device = result.device
-            if (!bluetoothDevices.contains(device) && !device.name.isNullOrEmpty()) {
-                bluetoothDevices.add(device)
-
-                adapter.list.submitList(bluetoothDevices)
-                adapter.notifyDataSetChanged()
-
-                if (ActivityCompat.checkSelfPermission(
-                        requireActivity(),
-                        Manifest.permission.BLUETOOTH_ADMIN
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    return
-                }
-                if (!device.name.isNullOrEmpty()) Log.e(
-                    "!@#!@#",
-                    "onScanResult: ${device.name}    ${device.uuids}"
-                )
-
-                val scanRecord = result.scanRecord
-                val serviceUuids = scanRecord?.serviceUuids
-                if (serviceUuids != null) {
-                    for (uuid in serviceUuids) {
-                        if (!device.name.isNullOrEmpty()) Log.e(
-                            "!@#!@#",
-                            "onScanResult: ${device.name}    ${device.uuids}"
-                        )
-                    }
+    private val requestMultiplePermissions: ActivityResultLauncher<Array<String>> =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            when {
+                permissions.getOrDefault(Manifest.permission.BLUETOOTH_SCAN, false) -> {
+                    scanBluetoothDevises(scanCallBack)
                 }
             }
-
         }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,67 +78,62 @@ class PulseGadgetFragment : Fragment() {
         return binding.root
     }
 
+    private var isServiceBound = false
+
+
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as BluetoothService.LocalBinder
+            bluetoothService = binder.getService()
+            isServiceBound = true
+
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            isServiceBound = false
+        }
+    }
+
+    private fun bindBluetoothService() {
+
+
+        val serviceIntent = Intent(requireContext(), BluetoothService::class.java)
+        requireContext().bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+
+    }
+
+    private fun unbindBluetoothService() {
+        if (isServiceBound) {
+            requireContext().unbindService(serviceConnection)
+            isServiceBound = false
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        bindBluetoothService()
+
         initListener()
-        findBLEGadget()
-        binding.rvPulseGadget.adapter = adapter
-    }
 
-    private var requestBluetooth =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                //granted
-                startScanning()
-            } else {
-                //deny
-            }
-        }
-
-    private fun findBLEGadget() {
-        val bluetoothManager = requireContext().getSystemService(BluetoothManager::class.java)
-        bluetoothAdapter = bluetoothManager.adapter
-
-        if (!requireContext().packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            return
-        }
-
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.BLUETOOTH
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
+        if (BluetoothHelper.findBLEGadget(
                 requireActivity(),
-                arrayOf(Manifest.permission.BLUETOOTH),
-                PERMISSION_REQUEST_CODE
+                requestBluetooth,
+                requestMultiplePermissions
             )
-        }
+        ) {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            requestMultiplePermissions.launch(
-                arrayOf(
-                    Manifest.permission.BLUETOOTH_SCAN,
-                    Manifest.permission.BLUETOOTH_ADMIN
-                )
-            )
-            startScanning()
+             scanBluetoothDevises(scanCallBack)
         } else {
-            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            requestBluetooth.launch(enableBtIntent)
-            startScanning()
+            Toast.makeText(context, "Помилка підключення до блютуз", Toast.LENGTH_SHORT).show()
         }
-    }
 
-    private val requestMultiplePermissions = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        when {
-            permissions.getOrDefault(Manifest.permission.BLUETOOTH_SCAN, false) -> {
-                startScanning()
-            }
-            else -> { }
+        binding.rvPulseGadget.adapter = adapter
+
+        //TODO START test block
+        binding.button5.setOnClickListener {
+            val answer = (activity as ActivityForActivity?)?.testDevice()
+            binding.button5.text = answer.toString()
         }
     }
 
@@ -163,10 +141,11 @@ class PulseGadgetFragment : Fragment() {
     private fun initListener() {
         with(binding) {
             ivBack.setOnClickListener { requireActivity().onBackPressed() }
+
             swPG.apply {
-                isChecked = viewModel.activityState.isPulseGadgetConnected
+                //isChecked = viewModel.activityState.isPulseGadgetConnected
                 setOnCheckedChangeListener { _, isChecked ->
-                    viewModel.activityState.isPulseGadgetConnected = isChecked
+                    //viewModel.activityState.isPulseGadgetConnected = isChecked
                 }
             }
 
@@ -176,27 +155,61 @@ class PulseGadgetFragment : Fragment() {
                 adapter.list.submitList(listOf())
                 adapter.notifyDataSetChanged()
                 srUpdate.isRefreshing = false
-                bluetoothDevices.clear()
-                startScanning()
+
+                scanBluetoothDevises(scanCallBack)
             }
         }
     }
 
-    private fun startScanning() {
-        if (ActivityCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.BLUETOOTH_ADMIN
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
-        bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
 
-        bluetoothLeScanner?.startScan(bleCallBack)
+    private var bound = false
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        //bluetoothLeScanner.stopScan(scanCallBack)
+
+        if (bound) {
+            requireActivity().unbindService(serviceConnection)
+            bound = false
+        }
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        bluetoothService?.stopScanBluetoothDevises(scanCallBack)
+        unbindBluetoothService()
+    }
+
+    private val bluetoothDevices = mutableListOf<BluetoothDevice>()
+
+    private val scanCallBack = object : ScanCallback() {
+        @SuppressLint("MissingPermission", "NotifyDataSetChanged")
+        override fun onScanResult(callbackType: Int, result: ScanResult) {
+            super.onScanResult(callbackType, result)
+
+            val device = BluetoothHelper.sortOutDevice(result)
+            if (!bluetoothDevices.contains(device)) {
+                device?.let {
+                    bluetoothDevices.add(device)
+
+
+                    adapter.list.submitList(bluetoothDevices)
+                    adapter.notifyDataSetChanged()
+
+                    viewModel.activityState.minPulse = 300
+                    viewModel.activityState.maxPulse = 0
+                    viewModel.activityState.currentPulse = 0
+                }
+            }
+        }
+    }
+
+    private fun showScanningProgress() {
         binding.gProgress.visible()
         Handler(Looper.getMainLooper()).postDelayed({
-            bluetoothLeScanner?.stopScan(bleCallBack)
-
+            bluetoothService?.stopScanBluetoothDevises(scanCallBack)
             with(binding) {
                 tvUpdate.visible()
                 gProgress.gone()
@@ -204,20 +217,12 @@ class PulseGadgetFragment : Fragment() {
         }, TIME_FOR_SEARCH)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.BLUETOOTH_ADMIN
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
-        bluetoothLeScanner?.stopScan(bleCallBack)
+
+    private fun scanBluetoothDevises(scanCallBack: ScanCallback) {
+        Log.i("BLUETOOTH_SERVICE", "Scan bluetooth devises")
+        bluetoothDevices.clear()
+        bluetoothService?.scanBluetoothDevises(scanCallBack)
+        showScanningProgress()
     }
 
-    companion object {
-        private const val PERMISSION_REQUEST_CODE = 2
-        private const val TIME_FOR_SEARCH = 20000L
-    }
 }

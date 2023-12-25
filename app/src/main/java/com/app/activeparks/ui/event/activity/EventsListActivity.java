@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,14 +26,11 @@ import com.app.activeparks.data.model.calendar.CalendarItem;
 import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
-
 import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.data.useCase.eventState.EventStateUseCase;
-import com.app.activeparks.ui.event.util.EventModelFactory;
-
-import com.app.activeparks.ui.event.fragments.FragmentEventCreate;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
+import com.app.activeparks.ui.event.fragments.FragmentEventCreate;
+import com.app.activeparks.ui.event.util.EventModelFactory;
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel;
 import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 import com.applandeo.materialcalendarview.CalendarView;
@@ -51,10 +47,8 @@ import java.util.List;
 import java.util.Objects;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Request;
 
 public class EventsListActivity extends AppCompatActivity implements LocationListener {
 
@@ -80,41 +74,28 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
 
         listClubOwner = findViewById(R.id.list_events);
         calendarView = findViewById(R.id.calendarView);
-        //listStatus = findViewById(R.id.list_null);
+        listStatus = findViewById(R.id.titleText2);
         ImageView createEventButton = findViewById(R.id.create_event);
-        TabLayout selectFilter = findViewById(R.id.select_filter);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TabLayout selectFilter = findViewById(R.id.select_filter);
         selectFilter.setVisibility(View.VISIBLE);
         Objects.requireNonNull(selectFilter.getTabAt(1)).select();
 
         viewModel.getEventsList();
         viewModel.calendarEvent();
         //findViewById(R.id.panel_top).setVisibility(View.VISIBLE);
-       //findViewById(R.id.title).setVisibility(View.GONE);
+        //findViewById(R.id.titleText2).setVisibility(View.GONE);
         findViewById(R.id.closed).setOnClickListener(v -> onBackPressed());
 
-        createEventButton.setOnClickListener(view ->
+        createEventButton.setOnClickListener(view -> updateViewModelData());
 
-                updateViewModelData()
+        viewModel.getSportEventsList().observe(this, events -> {
+            setAdapter(events);
+            listStatus.setText("Жодного запланованого заходу");
+        });
 
+        viewModel.getCalendar().observe(this, this::setMapperAdapter);
 
-        );
-
-        viewModel.getSportEventsList().
-
-                observe(this, events ->
-
-                {
-                    setAdapter(events);
-                    listStatus.setText("Жодного запланованого заходу");
-                });
-
-        viewModel.getCalendar().
-
-                observe(this, this::setMapperAdapter);
-
-        calendarView.setOnDayClickListener(eventDay ->
-
-        {
+        calendarView.setOnDayClickListener(eventDay -> {
             Calendar cal = eventDay.getCalendar();
             @SuppressLint("SimpleDateFormat")
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -164,19 +145,21 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
         if (events.getItems().size() > 0) {
             findViewById(R.id.list_null).setVisibility(View.GONE);
         }
-        listClubOwner.setAdapter(new EventsListAdaper(this, events.getItems()).setOnEventListener(new EventsListAdaper.EventsListener() {
-            @Override
-            public void onInfo(ItemEvent itemClub) {
-                startActivity(new Intent(getBaseContext(), EventActivity.class).putExtra("id", itemClub.getId()));
-            }
+        listClubOwner.setAdapter(new EventsListAdaper(
+                this, events.getItems()).setOnEventListener(
+                new EventsListAdaper.EventsListener() {
+                    @Override
+                    public void onInfo(ItemEvent itemClub) {
+                        startActivity(new Intent(getBaseContext(), EventActivity.class).putExtra("id", itemClub.getId()));
+                    }
 
-            @Override
-            public void onOpenMaps(double lat, double lon) {
-                String uri = "https://www.google.com/maps/search/?api=1&query=" + lat + "," + lon;
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                startActivity(intent);
-            }
-        }));
+                    @Override
+                    public void onOpenMaps(double lat, double lon) {
+                        String uri = "https://www.google.com/maps/search/?api=1&query=" + lat + "," + lon;
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                        startActivity(intent);
+                    }
+                }));
 
     }
 
@@ -231,11 +214,7 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
     private EventRouteViewModel eventRouteViewModel;
 
     private void updateViewModelData() {
-
-
-
         eventRouteViewModel = new ViewModelProvider(this).get(EventRouteViewModel.class);
-
 
         Preferences preferences;
         Repository repository;
@@ -266,6 +245,6 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //disposable.dispose();
+        disposable.dispose();
     }
 }

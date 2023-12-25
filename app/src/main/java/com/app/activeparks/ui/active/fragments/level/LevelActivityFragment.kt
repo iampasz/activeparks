@@ -1,20 +1,12 @@
 package com.app.activeparks.ui.active.fragments.level
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.bluetooth.BluetoothGatt
-import android.bluetooth.BluetoothGattCallback
-import android.bluetooth.BluetoothGattCharacteristic
-import android.bluetooth.BluetoothGattDescriptor
-import android.bluetooth.BluetoothProfile
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.app.activeparks.ui.active.ActiveViewModel
@@ -28,18 +20,11 @@ import com.app.activeparks.util.extention.visible
 import com.app.activeparks.util.extention.visibleIf
 import com.technodreams.activeparks.databinding.FragmentLevelActivityBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import java.util.UUID
 
-@Suppress("DEPRECATION")
 class LevelActivityFragment : Fragment() {
 
     lateinit var binding: FragmentLevelActivityBinding
     private val viewModel: ActiveViewModel by activityViewModel()
-
-    private val HR_MEASUREMENT_UUID: UUID = UUID.fromString("00002a37-0000-1000-8000-00805f9b34fb")
-    private val HR_SERVICE_UUID: UUID = UUID.fromString("0000180D-0000-1000-8000-00805f9b34fb")
-    private val CLIENT_CHARACTERISTIC_CONFIG_UUID: UUID =
-        UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,6 +46,7 @@ class LevelActivityFragment : Fragment() {
 
         viewModel.updateActivityInfoTrainingItem.observe(viewLifecycleOwner) { isUpdate ->
             if (isUpdate) {
+                binding.tvPulseNumber.text = viewModel.activityState.currentPulse.toString()
                 if (viewModel.activityState.activityType.isInclude) {
                     adapterInfoItem.list.submitList(
                         viewModel.activityState.activityInfoItems.filterInside()
@@ -150,62 +136,13 @@ class LevelActivityFragment : Fragment() {
                 adapterInfoItem.list.submitList(viewModel.activityState.activityInfoItems.filterOutside(viewModel.activityState.activityType.id))
             }
         }
-
-        val gattCallback = object : BluetoothGattCallback() {
-
-            override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-                if (newState == BluetoothProfile.STATE_CONNECTED) {
-                    if (ActivityCompat.checkSelfPermission(
-                            requireContext(),
-                            Manifest.permission.BLUETOOTH_ADMIN
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        return
-                    }
-                    gatt?.discoverServices()
-                }
-            }
-
-            override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-                if (status == BluetoothGatt.GATT_SUCCESS) {
-                    val heartRateService = gatt?.getService(HR_SERVICE_UUID)
-                    val heartRateCharacteristic =
-                        heartRateService?.getCharacteristic(HR_MEASUREMENT_UUID)
-
-                    if (heartRateCharacteristic != null) {
-                        if (ActivityCompat.checkSelfPermission(
-                                requireContext(),
-                                Manifest.permission.BLUETOOTH_ADMIN
-                            ) != PackageManager.PERMISSION_GRANTED
-                        ) {
-                            return
-                        }
-                        gatt.setCharacteristicNotification(heartRateCharacteristic, true)
-
-                        val descriptor =
-                            heartRateCharacteristic.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID)
-                        descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                        gatt.writeDescriptor(descriptor)
-                    }
-                }
-            }
-
-            @Deprecated("Deprecated in Java")
-            override fun onCharacteristicChanged(
-                gatt: BluetoothGatt?,
-                characteristic: BluetoothGattCharacteristic?
-            ) {
-                if (HR_MEASUREMENT_UUID == characteristic?.uuid) {
-                    val heartRateValue =
-                        characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 1)
-
-                    requireActivity().runOnUiThread {
-                        binding.tvPulseNumber.text = heartRateValue.toString()
-                    }
-                }
-            }
-        }
-        val currentDevice = viewModel.activityState.device
-        currentDevice?.connectGatt(requireContext(), false, gattCallback)
+//        val currentDevice = viewModel.activityState.device
+//        currentDevice?.connectGatt(
+//            requireContext(),
+//            false,
+//           // BluetoothHelper.getCallBack(requireActivity(), viewModel)
+//        )
     }
+
+
 }

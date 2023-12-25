@@ -15,28 +15,28 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.activeparks.data.model.calendar.CalendarModel
 import com.app.activeparks.data.model.sportevents.EventList
 import com.app.activeparks.data.model.sportevents.ItemEvent
+import com.app.activeparks.data.model.sportevents.ItemEventTitle
 import com.app.activeparks.data.model.sportevents.SportEvents
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
-import com.app.activeparks.ui.event.adapter.BaseAdapter
+import com.app.activeparks.ui.event.adapter.EventsListAdapterKT
+import com.app.activeparks.ui.event.adapter.EventTypeAdapter
 import com.app.activeparks.ui.event.adapter.EventsListAdaper
 import com.app.activeparks.ui.event.fragments.FragmentEventCreate
+import com.app.activeparks.ui.event.interfaces.OnItemClickListener
 import com.app.activeparks.ui.event.interfaces.ResponseCallBack
 import com.app.activeparks.ui.event.util.EventController
 import com.app.activeparks.ui.event.util.EventModelFactory
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
 import com.app.activeparks.ui.event.viewmodel.EventViewModel
-import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.replaceFragment
-import com.app.activeparks.util.extention.visible
 import com.applandeo.materialcalendarview.CalendarWeekDay
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.gson.Gson
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentEventsBinding
@@ -50,17 +50,18 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Objects
 
+
 @Suppress("DEPRECATION")
-class EventListActivity2 : AppCompatActivity(), LocationListener {
+class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickListener {
 
     lateinit var binding: FragmentEventsBinding
     private lateinit var viewModel: EventViewModel
-    //private val viewModel: EventRouteViewModel by activityViewModels()
-
     private lateinit var disposable: Disposable
-
     private var locationManager: LocationManager? = null
 
+    var nameList: MutableList<ItemEvent> = mutableListOf()
+
+    val eventsListAdapter = EventsListAdapterKT(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,15 +69,6 @@ class EventListActivity2 : AppCompatActivity(), LocationListener {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this, EventModelFactory(this))[EventViewModel::class.java]
-
-//        val removeItem = object : RemoveItemPosition {
-//
-//            override fun removePosition(position: Int) {
-//
-//            }
-//        }
-
-        val baseAdapter = BaseAdapter()
 
         val setDataResponseSuccessful = object : ResponseCallBack {
             override fun load(responseFromApi: String) {
@@ -88,12 +80,15 @@ class EventListActivity2 : AppCompatActivity(), LocationListener {
                         EventList::class.java
                     )
 
-                val nameList: MutableList<ItemEvent> = mutableListOf()
+
                 nameList.addAll(eventList.items)
 
-                baseAdapter.differ.submitList(nameList)
+                eventsListAdapter.differ.submitList(nameList)
 
-                binding.listEvents.adapter = baseAdapter
+
+
+
+                binding.listEvents.adapter = eventsListAdapter
             }
 
         }
@@ -103,8 +98,9 @@ class EventListActivity2 : AppCompatActivity(), LocationListener {
         EventController(this).getMyEvents(setDataResponseSuccessful)
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
 
-        binding.selectFilter.visibility = View.VISIBLE
-        Objects.requireNonNull(binding.selectFilter.getTabAt(1))?.select()
+//        binding.selectFilter.visibility = View.VISIBLE
+     //   Objects.requireNonNull(binding.selectFilter.getTabAt(1))?.select()
+
 
 
 
@@ -112,8 +108,8 @@ class EventListActivity2 : AppCompatActivity(), LocationListener {
 
         viewModel.getEventsList()
         viewModel.calendarEvent()
-        binding.listTitle.visible()
-        binding.listTitle.gone()
+        //binding.listTitle.visible()
+        //binding.listTitle.gone()
 
         binding.closed.setOnClickListener { onBackPressed() }
         binding.createEvent.setOnClickListener { updateViewModelData() }
@@ -121,8 +117,17 @@ class EventListActivity2 : AppCompatActivity(), LocationListener {
         viewModel.sportEventsList.observe(this) { result: SportEvents ->
             run {
                 setAdapter(result)
-                    //
-            // binding.titleText2.text = "Жодного запланованого заходу"
+
+                // binding.titleText2.text = "Жодного запланованого заходу"
+            }
+        }
+
+        viewModel.testSportEventsList.observe(this) { result: EventList ->
+            run {
+                testSetAdapter(result)
+
+
+                // binding.titleText2.text = "Жодного запланованого заходу"
             }
         }
 
@@ -143,18 +148,13 @@ class EventListActivity2 : AppCompatActivity(), LocationListener {
                 @SuppressLint("SimpleDateFormat") val dateFormat =
                     SimpleDateFormat("yyyy-MM-dd")
                 viewModel.eventsDay(dateFormat.format(cal.time))
+                viewModel.testEventsDay(dateFormat.format(cal.time))
+
+                Log.i("GJHVBDDM","gf ffgfgfg")
             }
         })
 
-        binding.selectFilter.addOnTabSelectedListener(object : OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                viewModel.selectFilter(tab.position)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {}
-            override fun onTabReselected(tab: TabLayout.Tab) {}
-        })
-
+        addEventTitlesList()
     }
 
 
@@ -189,6 +189,15 @@ class EventListActivity2 : AppCompatActivity(), LocationListener {
         })
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun testSetAdapter(events: EventList) {
+
+        nameList = events.items as MutableList<ItemEvent>
+        eventsListAdapter.differ.submitList(events.items)
+        eventsListAdapter.notifyDataSetChanged()
+
+    }
+
     private fun setMapperAdapter(calendarItem: CalendarModel) {
         val days: MutableList<EventDay> = ArrayList()
         var calendar: Calendar
@@ -208,6 +217,7 @@ class EventListActivity2 : AppCompatActivity(), LocationListener {
         binding.calendarView.setEvents(days)
         binding.calendarView.setCalendarDayLayout(R.layout.custom_calendar_day)
         binding.calendarView.setFirstDayOfWeek(CalendarWeekDay.MONDAY)
+        // binding.calendarView.setPreviousButtonImage(resources.getDrawable(R.drawable.ic_arrow_left_gray))
 
     }
 
@@ -247,7 +257,6 @@ class EventListActivity2 : AppCompatActivity(), LocationListener {
     override fun onProviderDisabled(provider: String) {}
 
 
-
     private val eventRouteViewModel: EventRouteViewModel by viewModel()
 
     private fun updateViewModelData() {
@@ -281,5 +290,52 @@ class EventListActivity2 : AppCompatActivity(), LocationListener {
             }
     }
 
+    private lateinit var evetTypeAdapter: EventTypeAdapter
+    private fun addEventTitlesList() {
 
+        val itemList = listOf(
+            ItemEventTitle(
+                1,
+                resources.getString(R.string.my_event),
+                true,
+                R.drawable.background_green
+            ),
+            ItemEventTitle(2, resources.getString(R.string.my_clubs)),
+            ItemEventTitle(3, resources.getString(R.string.all_clubs)),
+            ItemEventTitle(4, resources.getString(R.string.public_events))
+        )
+
+        evetTypeAdapter = EventTypeAdapter(itemList) { position ->
+
+            for (i in itemList.indices) {
+                if (i != position && itemList[i].isSelected) {
+                    itemList[i].isSelected = false
+                    itemList[i].backgroundResource = R.drawable.backround_field_item
+                    evetTypeAdapter.notifyItemChanged(i)
+                } else {
+                    itemList[i].isSelected = false
+                }
+            }
+
+            val selectedItem = itemList[position]
+            selectedItem.isSelected = !selectedItem.isSelected
+            selectedItem.backgroundResource = R.drawable.background_green
+
+            evetTypeAdapter.notifyItemChanged(position)
+
+        }
+
+        binding.listTitle.adapter = evetTypeAdapter
+        binding.listTitle.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+    }
+
+    override fun onItemClick(position: Int) {
+        startActivity(
+            Intent(baseContext, EventActivity::class.java).putExtra(
+                "id",
+                nameList[position].id
+            )
+        )
+    }
 }

@@ -9,14 +9,14 @@ import androidx.fragment.app.Fragment
 import com.app.activeparks.data.model.sportevents.EventList
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.ui.event.activity.EventListActivity2
-import com.app.activeparks.ui.event.adapter.BaseAdapter
-import com.app.activeparks.ui.event.interfaces.RemoveItemPosition
+import com.app.activeparks.ui.event.adapter.EventsListAdapterKT
+import com.app.activeparks.ui.event.interfaces.OnItemClickListener
 import com.app.activeparks.ui.event.interfaces.ResponseCallBack
 import com.app.activeparks.ui.event.util.EventController
 import com.google.gson.Gson
 import com.technodreams.activeparks.databinding.FragmentMyEventBinding
 
-class MyEventsFragment : Fragment() {
+class MyEventsFragment : Fragment(), OnItemClickListener {
 
     lateinit var binding: FragmentMyEventBinding
 
@@ -24,11 +24,11 @@ class MyEventsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = FragmentMyEventBinding.inflate(inflater, container, false)
 
-        return binding.getRoot()
+        return binding.root
     }
 
 
@@ -36,42 +36,35 @@ class MyEventsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val removeItem = object : RemoveItemPosition {
 
-            override fun removePosition(position: Int) {
-
-            }
-        }
-
-        val baseAdapter = BaseAdapter()
+        val eventsListAdapter = EventsListAdapterKT(this)
 
         val setDataResponseSuccessful = object : ResponseCallBack {
-            override fun load(responseCallBack: String) {
+            override fun load(responseFromApi: String) {
 
                 val gson = Gson()
                 val eventList =
                     gson.fromJson(
-                        responseCallBack,
+                        responseFromApi,
                         EventList::class.java
                     )
 
                 val nameList: MutableList<ItemEvent> = mutableListOf()
                 nameList.addAll(eventList.items)
+                eventsListAdapter.differ.submitList(nameList)
 
-                baseAdapter.differ.submitList(nameList)
-
-                binding.listEvents.adapter = baseAdapter
+                binding.listEvents.adapter = eventsListAdapter
             }
-
         }
 
         EventController(requireContext()).getMyEvents(setDataResponseSuccessful)
-
 
         binding.eventCalendar.setOnClickListener{
             startActivity(Intent(activity, EventListActivity2::class.java))
         }
     }
 
-
+    override fun onItemClick(position: Int) {
+        TODO("Not yet implemented")
+    }
 }

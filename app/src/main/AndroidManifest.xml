@@ -117,6 +117,8 @@
             </intent-filter>
         </service>
 
+        <service android:name="com.app.activeparks.ui.active.util.BluetoothService" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
 
@@ -135,7 +137,7 @@
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="716615996947732" />
+            android:value="860919992102549" />
     </application>
 
 </manifest>
