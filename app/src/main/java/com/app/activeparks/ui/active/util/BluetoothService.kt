@@ -29,7 +29,6 @@ class BluetoothService : Service() {
         Log.i("MAIN_ACTIVITY", "BLE SERVICE onCreate")
     }
 
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("BLUETOOTH_SERVICE", "BluetoothService started")
         return START_STICKY

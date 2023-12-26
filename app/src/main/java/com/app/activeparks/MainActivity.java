@@ -12,7 +12,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -24,6 +24,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.storage.Preferences;
+import com.app.activeparks.ui.active.util.BluetoothService;
 import com.app.activeparks.ui.maps.MapsFragment;
 import com.app.activeparks.ui.profile.EditProfileActivity;
 import com.app.activeparks.util.Dictionarie;
@@ -44,7 +45,6 @@ import com.technodreams.activeparks.databinding.ActivityMainBinding;
 import java.io.IOException;
 import java.util.Locale;
 
-
 public class MainActivity extends AppCompatActivity implements FragmentInteface {
 
     private ActivityMainBinding binding;
@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.i("MAIN_ACTIVITY", "MainActivity onCreate");
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -251,4 +253,14 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+
+        Intent serviceIntent = new Intent(this, BluetoothService.class);
+        this.stopService(serviceIntent);
+
+        Log.i("MAIN_ACTIVITY", "MainActivity onDestroy");
+    }
 }
