@@ -39,7 +39,6 @@ class BluetoothService : Service() {
         fun getService(): BluetoothService = this@BluetoothService
     }
 
-
     @SuppressLint("MissingPermission")
     fun connectToDevice(bluetoothGattCallback: BluetoothGattCallback) {
         device?.connectGatt(this@BluetoothService, false, bluetoothGattCallback)

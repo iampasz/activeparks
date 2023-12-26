@@ -40,3 +40,9 @@ Thumbs.db
 .idea/gradle.xml
 .idea/kotlinc.xml
 .idea/navEditor.xml
+
+.idea/.gitignore
+outputFiles.bin
+buildOutputCleanup.lock
+file-system.probe
+local.properties
