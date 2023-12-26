@@ -23,5 +23,9 @@ local.properties
 outputFiles.bin
 buildOutputCleanup.lock
 file-system.probe
-local.properties
+
+build.gradle
+.local.properties
+buildOutputCleanup
+.gitignore
 
