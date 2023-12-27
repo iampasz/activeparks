@@ -258,8 +258,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         super.onDestroy();
 
 
-        Intent serviceIntent = new Intent(this, BluetoothService.class);
-        this.stopService(serviceIntent);
+
 
         Log.i("MAIN_ACTIVITY", "MainActivity onDestroy");
     }

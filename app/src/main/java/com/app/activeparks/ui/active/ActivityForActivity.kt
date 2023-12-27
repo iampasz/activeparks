@@ -162,6 +162,11 @@ class ActivityForActivity : AppCompatActivity() {
 
         Log.i("MAIN_ACTIVITY", "Create ActivityForActivity")
 
+        val serviceIntent = Intent(this, BluetoothService::class.java)
+        startService(serviceIntent)
+
+        Log.i("MAIN_ACTIVITY", "Service startService")
+
         binding = FragmentActiveBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -617,6 +622,9 @@ class ActivityForActivity : AppCompatActivity() {
         super.onDestroy()
         bluetoothService?.setActiveState(activeViewModel.activityState)
         unbindBluetoothService()
+
+        val serviceIntent = Intent(this, BluetoothService::class.java)
+        stopService(serviceIntent)
 
         Log.i("MAIN_ACTIVITY", "Destroy ActivityForActivity")
     }

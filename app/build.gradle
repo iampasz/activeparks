@@ -13,7 +13,7 @@ android {
         applicationId "com.technodreams.activeparks"
         minSdk 26
         targetSdk 34
-        versionCode 74
+        versionCode 174
         versionName "1.6.4"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
