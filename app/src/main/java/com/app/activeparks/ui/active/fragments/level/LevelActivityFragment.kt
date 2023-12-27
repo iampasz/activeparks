@@ -46,6 +46,7 @@ class LevelActivityFragment : Fragment() {
 
         viewModel.updateActivityInfoTrainingItem.observe(viewLifecycleOwner) { isUpdate ->
             if (isUpdate) {
+                binding.tvPulseNumber.text = viewModel.activityState.currentPulse.toString()
                 if (viewModel.activityState.activityType.isInclude) {
                     adapterInfoItem.list.submitList(
                         viewModel.activityState.activityInfoItems.filterInside()

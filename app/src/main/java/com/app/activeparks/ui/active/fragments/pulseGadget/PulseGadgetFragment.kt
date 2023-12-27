@@ -23,7 +23,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.app.activeparks.ui.active.ActiveViewModel
-import com.app.activeparks.ui.active.ActivityForActivity
 import com.app.activeparks.ui.active.util.BluetoothHelper
 import com.app.activeparks.ui.active.util.BluetoothService
 import com.app.activeparks.util.extention.gone
@@ -35,7 +34,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
  * Created by O.Dziuba on 06.11.2023.
  */
 
-@Suppress("DEPRECATION")
+
 @SuppressLint("MissingPermission")
 class PulseGadgetFragment : Fragment() {
 
@@ -130,11 +129,7 @@ class PulseGadgetFragment : Fragment() {
 
         binding.rvPulseGadget.adapter = adapter
 
-        //TODO START test block
-        binding.button5.setOnClickListener {
-            val answer = (activity as ActivityForActivity?)?.testDevice()
-            binding.button5.text = answer.toString()
-        }
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -142,12 +137,12 @@ class PulseGadgetFragment : Fragment() {
         with(binding) {
             ivBack.setOnClickListener { requireActivity().onBackPressed() }
 
-            swPG.apply {
-                //isChecked = viewModel.activityState.isPulseGadgetConnected
-                setOnCheckedChangeListener { _, isChecked ->
-                    //viewModel.activityState.isPulseGadgetConnected = isChecked
-                }
-            }
+//            swPG.apply {
+//                //isChecked = viewModel.activityState.isPulseGadgetConnected
+//                setOnCheckedChangeListener { _, isChecked ->
+//                    //viewModel.activityState.isPulseGadgetConnected = isChecked
+//                }
+//            }
 
             srUpdate.setOnRefreshListener {
                 tvUpdate.gone()
@@ -194,10 +189,8 @@ class PulseGadgetFragment : Fragment() {
                 device?.let {
                     bluetoothDevices.add(device)
 
-
                     adapter.list.submitList(bluetoothDevices)
                     adapter.notifyDataSetChanged()
-
                     viewModel.activityState.minPulse = 300
                     viewModel.activityState.maxPulse = 0
                     viewModel.activityState.currentPulse = 0
