@@ -629,4 +629,26 @@ class ActivityForActivity : AppCompatActivity() {
         Log.i("MAIN_ACTIVITY", "Destroy ActivityForActivity")
     }
 
+    //TODO start test device block
+    private val pulseSimulator = PulseSimulator { pulseValue ->
+        activeViewModel.heartRateList.add(pulseValue)
+        activeViewModel.activityState.activityInfoItems[5].number = pulseValue.toString()
+        activeViewModel.activityState.currentPulse = pulseValue
+        activeViewModel.updatePulses()
+       // activeViewModel.updateUI.value = true
+        activeViewModel.updateActivityInfoTrainingItem.value = true
+        activeViewModel.activityState.isAutoPulseZone = true
+    }
+    private var buttonClicked = false
+    fun testDevice(): Boolean {
+        if (!buttonClicked) {
+            buttonClicked = true
+            pulseSimulator.startSimulation()
+        } else {
+            buttonClicked = false
+            pulseSimulator.stopSimulation()
+            activeViewModel.activityState.currentPulse = 0
+        }
+        return buttonClicked
+    }
 }
