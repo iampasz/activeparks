@@ -23,6 +23,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.app.activeparks.ui.active.ActiveViewModel
+import com.app.activeparks.ui.active.ActivityForActivity
 import com.app.activeparks.ui.active.util.BluetoothHelper
 import com.app.activeparks.ui.active.util.BluetoothService
 import com.app.activeparks.util.extention.gone
@@ -129,7 +130,11 @@ class PulseGadgetFragment : Fragment() {
 
         binding.rvPulseGadget.adapter = adapter
 
-
+        //TODO START test block
+        binding.button5.setOnClickListener {
+            val answer = (activity as ActivityForActivity?)?.testDevice()
+            binding.button5.text = answer.toString()
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

@@ -2,6 +2,7 @@ package com.app.activeparks.ui.active.fragments.level
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,7 @@ class LevelActivityFragment : Fragment() {
         viewModel.updateActivityInfoTrainingItem.observe(viewLifecycleOwner) { isUpdate ->
             if (isUpdate) {
                 binding.tvPulseNumber.text = viewModel.activityState.currentPulse.toString()
+                Log.i("LNNLNN", "JNKJNKJNJKN ${viewModel.activityState.currentPulse.toString()}")
 
                 changePulseZone(viewModel.activityState.currentPulse)
 
@@ -149,49 +151,40 @@ class LevelActivityFragment : Fragment() {
         }
 
 
-
     }
 
     private fun changePulseZone(number: Int) {
-        with(viewModel.activityState.pulseZoneBorders) {
-            when (number) {
-                in easyMin..easyMax -> {
-                    if (viewModel.activityState.pulseZone.id != 4) {
-                        viewModel.activityState.pulseZone = PulseZone.getPulseZone()[4]
-                    }
-                }
 
-                in fatBurningMin..fatBurningMax -> {
-                    if (viewModel.activityState.pulseZone.id != 3) {
-                        viewModel.activityState.pulseZone = PulseZone.getPulseZone()[3]
-                    }
-                }
+        when {
+            number < viewModel.pulseZone.pausePulse -> {
+            }
 
-                in aerobicMin..aerobicMax -> {
-                    if (viewModel.activityState.pulseZone.id != 2) {
-                        viewModel.activityState.pulseZone = PulseZone.getPulseZone()[2]
-                    }
-                }
+            number in viewModel.pulseZone.pausePulse + 1..viewModel.pulseZone.easy -> {
+                viewModel.activityState.pulseZone = PulseZone.getPulseZone()[4]
+                viewModel.updateUI.value = true
+            }
 
-                in anaerobicMin..anaerobicMax -> {
-                    if (viewModel.activityState.pulseZone.id != 1) {
-                        viewModel.activityState.pulseZone = PulseZone.getPulseZone()[1]
-                    }
-                }
+            number in viewModel.pulseZone.easy + 1..viewModel.pulseZone.anaerobic -> {
+                viewModel.activityState.pulseZone = PulseZone.getPulseZone()[3]
+                viewModel.updateUI.value = true
+            }
 
-                in upperBorderMin..upperBorderMax -> {
-                    if (viewModel.activityState.pulseZone.id != 0) {
-                        viewModel.activityState.pulseZone = PulseZone.getPulseZone()[0]
-                    }
-                }
+            number in viewModel.pulseZone.anaerobic + 1..viewModel.pulseZone.aerobic -> {
+                viewModel.activityState.pulseZone = PulseZone.getPulseZone()[2]
+                viewModel.updateUI.value = true
+            }
 
-                else -> {
-                    if (viewModel.activityState.pulseZone.id != 1) {
-                        viewModel.activityState.pulseZone = PulseZone.getPulseZone()[0]
-                    }
-                }
+            number in viewModel.pulseZone.anaerobic + 1..viewModel.pulseZone.aerobic -> {
+                viewModel.activityState.pulseZone = PulseZone.getPulseZone()[1]
+                viewModel.updateUI.value = true
+            }
+
+            number > viewModel.pulseZone.aerobic -> {
+                viewModel.activityState.pulseZone = PulseZone.getPulseZone()[0]
+                viewModel.updateUI.value = true
             }
         }
 
     }
+
 }

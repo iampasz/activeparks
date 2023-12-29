@@ -33,6 +33,7 @@ import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
 import com.app.activeparks.ui.active.model.ActivityState
 import com.app.activeparks.ui.active.util.AddressUtil
 import com.app.activeparks.ui.active.util.BluetoothService
+import com.app.activeparks.ui.active.util.PulseSimulator
 import com.app.activeparks.util.extention.disable
 import com.app.activeparks.util.extention.enable
 import com.app.activeparks.util.extention.enableIf
