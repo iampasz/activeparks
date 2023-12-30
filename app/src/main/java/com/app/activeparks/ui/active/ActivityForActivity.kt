@@ -31,6 +31,7 @@ import com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityFragment
 import com.app.activeparks.ui.active.fragments.type.ActivityTypeFragment
 import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
 import com.app.activeparks.ui.active.model.ActivityState
+import com.app.activeparks.ui.active.model.PulseZone
 import com.app.activeparks.ui.active.util.AddressUtil
 import com.app.activeparks.ui.active.util.BluetoothService
 import com.app.activeparks.ui.active.util.PulseSimulator
@@ -67,7 +68,6 @@ class ActivityForActivity : AppCompatActivity() {
 
     private var bluetoothService: BluetoothService? = null
     private var isServiceBound = false
-
     private var bluetoothGatt : BluetoothGatt? = null
 
     private val serviceConnection = object : ServiceConnection {
@@ -75,7 +75,6 @@ class ActivityForActivity : AppCompatActivity() {
             val binder = service as BluetoothService.LocalBinder
             bluetoothService = binder.getService()
             isServiceBound = true
-
             val savedActiveState = bluetoothService?.getGetActiveState()
             savedActiveState?.let {
                 activeViewModel.activityState = savedActiveState
@@ -100,11 +99,7 @@ class ActivityForActivity : AppCompatActivity() {
         ) {
 
             bluetoothGatt = gatt
-
-
-
             gatt?.discoverServices()
-
             activeViewModel.activityState.isPulseGadgetConnected = true
 
             if (status == 19) {
@@ -115,6 +110,8 @@ class ActivityForActivity : AppCompatActivity() {
                         Toast.LENGTH_LONG
                     ).show()
 
+                    activeViewModel.activityState.pulseZone = PulseZone.getPulseZone()[5]
+                    activeViewModel.updateUI.value = true
                     activeViewModel.activityState.isPulseGadgetConnected = false
                 }
             }
@@ -126,11 +123,8 @@ class ActivityForActivity : AppCompatActivity() {
                 val heartRateService = gatt?.getService(HR_SERVICE_UUID)
                 val heartRateCharacteristic =
                     heartRateService?.getCharacteristic(HR_MEASUREMENT_UUID)
-
                 if (heartRateCharacteristic != null) {
-
                     gatt.setCharacteristicNotification(heartRateCharacteristic, true)
-
                     val descriptor =
                         heartRateCharacteristic.getDescriptor(
                             CLIENT_CHARACTERISTIC_CONFIG_UUID
@@ -159,7 +153,6 @@ class ActivityForActivity : AppCompatActivity() {
                     activeViewModel.updateUI.value = true
                     activeViewModel.updateActivityInfoTrainingItem.value = true
                     activeViewModel.activityState.isAutoPulseZone = true
-
                 }
             }
         }
@@ -169,19 +162,13 @@ class ActivityForActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.i("MAIN_ACTIVITY", "Create ActivityForActivity")
-
         val serviceIntent = Intent(this, BluetoothService::class.java)
         startService(serviceIntent)
-
-        Log.i("MAIN_ACTIVITY", "Service startService")
+        bindBluetoothService()
 
         binding = FragmentActiveBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        startService(Intent(this, BluetoothService::class.java))
-
-        bindBluetoothService()
         val navView: BottomNavigationView = binding.topPanel.navActivitySettings
 
         navController = findNavController(R.id.navActivity)
@@ -624,14 +611,11 @@ class ActivityForActivity : AppCompatActivity() {
     }
 
     fun connectCurrentPulse() {
-        Log.i("MAIN_ACTIVITY","saveCurrentPulse")
             bluetoothService?.connectToDevice(bluetoothGattCallback)
-
     }
 
     @SuppressLint("MissingPermission")
      fun disconnectCurrentPulse() {
-        Log.i("MAIN_ACTIVITY","disconnectCurrentPulse")
         bluetoothGatt?.disconnect()
         bluetoothGatt?.close()
     }
@@ -641,8 +625,6 @@ class ActivityForActivity : AppCompatActivity() {
         super.onDestroy()
         bluetoothService?.setActiveState(activeViewModel.activityState)
         unbindBluetoothService()
-
-        Log.i("MAIN_ACTIVITY", "Destroy ActivityForActivity")
     }
 
     //TODO start test device block

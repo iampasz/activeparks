@@ -40,7 +40,6 @@ class LevelActivityFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         val adapterInfoItem = ActivityInfoTrainingAdapter {}
         binding.rvTrainingInfo.apply {
             adapter = adapterInfoItem
@@ -50,10 +49,7 @@ class LevelActivityFragment : Fragment() {
         viewModel.updateActivityInfoTrainingItem.observe(viewLifecycleOwner) { isUpdate ->
             if (isUpdate) {
                 binding.tvPulseNumber.text = viewModel.activityState.currentPulse.toString()
-                Log.i("LNNLNN", "JNKJNKJNJKN ${viewModel.activityState.currentPulse.toString()}")
-
                 changePulseZone(viewModel.activityState.currentPulse)
-
                 if (viewModel.activityState.activityType.isInclude) {
                     adapterInfoItem.list.submitList(
                         viewModel.activityState.activityInfoItems.filterInside()
@@ -114,6 +110,10 @@ class LevelActivityFragment : Fragment() {
                         4 -> {
                             tvTwo.setPulseZone(pulseZone.title)
                         }
+
+                        5 -> {
+                            tvOne.setPulseZone(pulseZone.title)
+                        }
                     }
 
                 }
@@ -149,42 +149,58 @@ class LevelActivityFragment : Fragment() {
                 )
             }
         }
-
-
     }
 
     private fun changePulseZone(number: Int) {
+        with(viewModel) {
+            when {
+                number < pulseZone.pausePulse -> {
+                    if (activityState.pulseZone.id != 5) {
+                        activityState.pulseZone = PulseZone.getPulseZone()[5]
+                        updateUI.value = true
+                    }
+                }
 
-        when {
-            number < viewModel.pulseZone.pausePulse -> {
-            }
+                number in viewModel.pulseZone.pausePulse + 1..viewModel.pulseZone.easy -> {
+                    if (activityState.pulseZone.id != 4) {
+                        activityState.pulseZone = PulseZone.getPulseZone()[4]
+                        updateUI.value = true
+                    }
 
-            number in viewModel.pulseZone.pausePulse + 1..viewModel.pulseZone.easy -> {
-                viewModel.activityState.pulseZone = PulseZone.getPulseZone()[4]
-                viewModel.updateUI.value = true
-            }
+                }
 
-            number in viewModel.pulseZone.easy + 1..viewModel.pulseZone.anaerobic -> {
-                viewModel.activityState.pulseZone = PulseZone.getPulseZone()[3]
-                viewModel.updateUI.value = true
-            }
+                number in viewModel.pulseZone.easy + 1..viewModel.pulseZone.anaerobic -> {
+                    if (activityState.pulseZone.id != 3) {
+                        viewModel.activityState.pulseZone = PulseZone.getPulseZone()[3]
+                        updateUI.value = true
+                    }
 
-            number in viewModel.pulseZone.anaerobic + 1..viewModel.pulseZone.aerobic -> {
-                viewModel.activityState.pulseZone = PulseZone.getPulseZone()[2]
-                viewModel.updateUI.value = true
-            }
+                }
 
-            number in viewModel.pulseZone.anaerobic + 1..viewModel.pulseZone.aerobic -> {
-                viewModel.activityState.pulseZone = PulseZone.getPulseZone()[1]
-                viewModel.updateUI.value = true
-            }
+                number in viewModel.pulseZone.anaerobic + 1..viewModel.pulseZone.aerobic -> {
+                    if (activityState.pulseZone.id != 2) {
+                        viewModel.activityState.pulseZone = PulseZone.getPulseZone()[2]
+                        updateUI.value = true
+                    }
 
-            number > viewModel.pulseZone.aerobic -> {
-                viewModel.activityState.pulseZone = PulseZone.getPulseZone()[0]
-                viewModel.updateUI.value = true
+                }
+
+                number in viewModel.pulseZone.anaerobic + 1..viewModel.pulseZone.aerobic -> {
+                    if (activityState.pulseZone.id != 1) {
+                        activityState.pulseZone = PulseZone.getPulseZone()[1]
+                        updateUI.value = true
+                    }
+
+                }
+
+                number > viewModel.pulseZone.aerobic -> {
+                    if (activityState.pulseZone.id != 0) {
+                        activityState.pulseZone = PulseZone.getPulseZone()[0]
+                        updateUI.value = true
+                    }
+
+                }
             }
         }
-
     }
-
 }

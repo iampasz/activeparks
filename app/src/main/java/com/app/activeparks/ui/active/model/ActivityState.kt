@@ -23,8 +23,8 @@ data class ActivityState(
     var aiFirstOutside: ActivityInfoTrainingItem =  ActivityInfoTrainingItem.getActivityInfoItem()[4],
     var aiSecondOutside: ActivityInfoTrainingItem =  ActivityInfoTrainingItem.getActivityInfoItem()[6],
     var aiThirdOutside: ActivityInfoTrainingItem =  ActivityInfoTrainingItem.getActivityInfoItem()[7],
-    var onSelectedTypeFromSetting: Boolean = false,
-    var isPulseGadgetConnected: Boolean = true,
+    var onSelectedTypeFromSetting: Boolean = true,
+    var isPulseGadgetConnected: Boolean = false,
     var isAutoPause: Boolean = false,
     var isAudioHelper: Boolean = false,
     var isLazyStart: Boolean = false,
@@ -40,5 +40,4 @@ data class ActivityState(
     var activityInfoItems: List<ActivityInfoTrainingItem> =
         ActivityInfoTrainingItem.getActivityInfoItem(),
     var activityPulseItems: List<InfoItem> = InfoItem.getPulseInfo(),
-    var pulseZoneBorders: PulseZoneBorders = PulseZoneBorders()
 )
