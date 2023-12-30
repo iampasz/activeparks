@@ -36,6 +36,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
  */
 
 
+@Suppress("DEPRECATION")
 @SuppressLint("MissingPermission")
 class PulseGadgetFragment : Fragment() {
 
@@ -50,6 +51,9 @@ class PulseGadgetFragment : Fragment() {
         bluetoothService?.setDevise(item)
         viewModel.heartRateList.clear()
         viewModel.activityState.isPulseGadgetConnected = true
+
+        (activity as ActivityForActivity?)?.disconnectCurrentPulse()
+        (activity as ActivityForActivity?)?.connectCurrentPulse()
     }
 
     private var requestBluetooth: ActivityResultLauncher<Intent> =

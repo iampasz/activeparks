@@ -68,6 +68,8 @@ class ActivityForActivity : AppCompatActivity() {
     private var bluetoothService: BluetoothService? = null
     private var isServiceBound = false
 
+    private var bluetoothGatt : BluetoothGatt? = null
+
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as BluetoothService.LocalBinder
@@ -78,7 +80,7 @@ class ActivityForActivity : AppCompatActivity() {
             savedActiveState?.let {
                 activeViewModel.activityState = savedActiveState
             }
-            saveCurrentPulse()
+            connectCurrentPulse()
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -96,6 +98,11 @@ class ActivityForActivity : AppCompatActivity() {
             status: Int,
             newState: Int
         ) {
+
+            bluetoothGatt = gatt
+
+
+
             gatt?.discoverServices()
 
             activeViewModel.activityState.isPulseGadgetConnected = true
@@ -149,9 +156,10 @@ class ActivityForActivity : AppCompatActivity() {
                         heartRateValue.toString()
                     activeViewModel.activityState.currentPulse = heartRateValue
                     activeViewModel.updatePulses()
-                        // activeViewModel.updateUI.value = true
+                    activeViewModel.updateUI.value = true
                     activeViewModel.updateActivityInfoTrainingItem.value = true
                     activeViewModel.activityState.isAutoPulseZone = true
+
                 }
             }
         }
@@ -615,17 +623,24 @@ class ActivityForActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveCurrentPulse() {
+    fun connectCurrentPulse() {
+        Log.i("MAIN_ACTIVITY","saveCurrentPulse")
             bluetoothService?.connectToDevice(bluetoothGattCallback)
+
     }
+
+    @SuppressLint("MissingPermission")
+     fun disconnectCurrentPulse() {
+        Log.i("MAIN_ACTIVITY","disconnectCurrentPulse")
+        bluetoothGatt?.disconnect()
+        bluetoothGatt?.close()
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
         bluetoothService?.setActiveState(activeViewModel.activityState)
         unbindBluetoothService()
-
-        val serviceIntent = Intent(this, BluetoothService::class.java)
-        stopService(serviceIntent)
 
         Log.i("MAIN_ACTIVITY", "Destroy ActivityForActivity")
     }
