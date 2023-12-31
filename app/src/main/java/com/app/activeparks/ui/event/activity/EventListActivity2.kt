@@ -24,7 +24,7 @@ import com.app.activeparks.data.model.sportevents.SportEvents
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.ui.event.adapter.EventsListAdapterKT
-import com.app.activeparks.ui.event.adapter.EventTypeAdapter
+//import com.app.activeparks.ui.event.adapter.EventTypeAdapter
 import com.app.activeparks.ui.event.adapter.EventsListAdaper
 import com.app.activeparks.ui.event.fragments.FragmentEventCreate
 import com.app.activeparks.ui.event.interfaces.OnItemClickListener
@@ -290,7 +290,7 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
             }
     }
 
-    private lateinit var evetTypeAdapter: EventTypeAdapter
+   // private lateinit var evetTypeAdapter: EventTypeAdapter
     private fun addEventTitlesList() {
 
         val itemList = listOf(
@@ -305,27 +305,27 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
             ItemEventTitle(4, resources.getString(R.string.public_events))
         )
 
-        evetTypeAdapter = EventTypeAdapter(itemList) { position ->
+//        evetTypeAdapter = EventTypeAdapter(itemList) { position ->
+//
+//            for (i in itemList.indices) {
+//                if (i != position && itemList[i].isSelected) {
+//                    itemList[i].isSelected = false
+//                    itemList[i].backgroundResource = R.drawable.backround_field_item
+//                    evetTypeAdapter.notifyItemChanged(i)
+//                } else {
+//                    itemList[i].isSelected = false
+//                }
+//            }
+//
+//            val selectedItem = itemList[position]
+//            selectedItem.isSelected = !selectedItem.isSelected
+//            selectedItem.backgroundResource = R.drawable.background_green
+//
+//            evetTypeAdapter.notifyItemChanged(position)
+//
+//        }
 
-            for (i in itemList.indices) {
-                if (i != position && itemList[i].isSelected) {
-                    itemList[i].isSelected = false
-                    itemList[i].backgroundResource = R.drawable.backround_field_item
-                    evetTypeAdapter.notifyItemChanged(i)
-                } else {
-                    itemList[i].isSelected = false
-                }
-            }
-
-            val selectedItem = itemList[position]
-            selectedItem.isSelected = !selectedItem.isSelected
-            selectedItem.backgroundResource = R.drawable.background_green
-
-            evetTypeAdapter.notifyItemChanged(position)
-
-        }
-
-        binding.listTitle.adapter = evetTypeAdapter
+     //   binding.listTitle.adapter = evetTypeAdapter
         binding.listTitle.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
     }
