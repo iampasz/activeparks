@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
     private ActivityMainBinding binding;
     private AppUpdateManager appUpdateManager;
 
+    private NavController navControllerHome;
     private NavController navControllerMain;
     private NavController navControllerProfile;
     private Preferences preferences;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
         appUpdateManager = AppUpdateManagerFactory.create(this);
 
-        NavController navControllerHome = Navigation.findNavController(this, R.id.navFragmentsHomeUser);
+        navControllerHome = Navigation.findNavController(this, R.id.navFragmentsHomeUser);
         NavigationUI.setupWithNavController(binding.iHomeUser.navHomeUser, navControllerHome);
 
         navControllerProfile = Navigation.findNavController(this, R.id.navFragmentsUserProfile);

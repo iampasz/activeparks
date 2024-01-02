@@ -133,7 +133,7 @@
                 android:layout_marginTop="16dp"
                 android:drawablePadding="8dp"
                 android:gravity="center"
-                android:text="Грудень, 2023"
+                android:text="Січень, 2024"
                 app:drawableEndCompat="@drawable/ic_caretdown"
                 app:layout_constraintStart_toEndOf="@+id/ivFMonth"
                 app:layout_constraintTop_toBottomOf="@+id/llDate" />
