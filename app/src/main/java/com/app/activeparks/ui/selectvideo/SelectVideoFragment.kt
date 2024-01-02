@@ -8,6 +8,9 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
+import com.app.activeparks.ui.selectvideo.util.VIDEO_ACTIVITY_ID
+import com.app.activeparks.ui.selectvideo.util.VIDEO_CATEGORY_ID
+import com.app.activeparks.ui.selectvideo.util.VIDEO_LEVEL_ID
 import com.app.activeparks.ui.video.VideoActivity
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentSelectVideoBinding
@@ -42,46 +45,51 @@ class SelectVideoFragment : Fragment(), ContentVideoCallback {
         } else {
             val fragment = ContentTypeVideoFragment()
             fragment.callback = this
-            seletcFrament(fragment)
+            selectFragment(fragment)
         }
 
-        mViewModel.showVideo()?.observe(viewLifecycleOwner) { modelSelectCategory: ModelSelectCategory ->
-            val radioButtonID = binding.radioGroup.checkedRadioButtonId
-            val radioButton = binding.radioGroup.findViewById<RadioButton>(radioButtonID)
-            val idx = binding.radioGroup.indexOfChild(radioButton)
-            startActivity(
-                Intent(requireContext(), VideoActivity::class.java)
-                    .putExtra("id", idx)
-                    .putExtra("categoryId", modelSelectCategory.TYPE_CATEGORY_ID)
-                    .putExtra(
-                        "exerciseDifficultyLevelId",
-                        modelSelectCategory.TYPE_DIFFICULTY_LEVEL_ID
-                    )
-            )
-        }
+        mViewModel.showVideo()
+            ?.observe(viewLifecycleOwner) { modelSelectCategory: ModelSelectCategory ->
+
+                val radioButtonID = binding.radioGroup.checkedRadioButtonId
+                val radioButton = binding.radioGroup.findViewById<RadioButton>(radioButtonID)
+                val idx = binding.radioGroup.indexOfChild(radioButton)
+
+                startActivity(
+                    Intent(requireContext(), VideoActivity::class.java)
+                        .putExtra(VIDEO_ACTIVITY_ID, idx)
+                        .putExtra(VIDEO_CATEGORY_ID, modelSelectCategory.TYPE_CATEGORY_ID)
+                        .putExtra(
+                            VIDEO_LEVEL_ID,
+                            modelSelectCategory.TYPE_DIFFICULTY_LEVEL_ID
+                        )
+                )
+            }
 
         initClickListener()
 
     }
 
-    fun initClickListener() {
-        binding.closed.setOnClickListener { onBackPressed() }
-        binding.icBottomOne.setOnClickListener { mViewModel.rozmenka() }
-        binding.icBottomTwo.setOnClickListener { mViewModel.rozmenka() }
-        binding.icBottomThree.setOnClickListener { mViewModel.likar() }
+    private fun initClickListener() {
+        with(binding) {
+            closed.setOnClickListener { onBackPressed() }
+            icBottomOne.setOnClickListener { mViewModel.rozmenka() }
+            icBottomTwo.setOnClickListener { mViewModel.rozmenka() }
+            icBottomThree.setOnClickListener { mViewModel.likar() }
+        }
+
     }
 
     override fun onSelectType(result: Int) {
         if (result == -1) {
             val fragment = ContentTypeVideoFragment()
             fragment.callback = this
-            seletcFrament(fragment)
+            selectFragment(fragment)
         } else {
-            val type: Boolean
-            type = result == 3
+            val type: Boolean = result == 3
             val fragment = LevelVideoFragment(type)
             fragment.callback = this
-            seletcFrament(fragment)
+            selectFragment(fragment)
             mViewModel.selectActivePark(result)
         }
     }
@@ -91,12 +99,12 @@ class SelectVideoFragment : Fragment(), ContentVideoCallback {
     }
 
 
-    private fun onBackPressed(){
-       // requireActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out)
-        (requireActivity() as MainActivity).navControllerMain.navigate(R.id.navigation_scaner)
+    private fun onBackPressed() {
+        // requireActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out)
+        (requireActivity() as? MainActivity)?.navControllerMain?.navigate(R.id.navigation_scaner)
     }
 
-    fun seletcFrament(fragment: Fragment) {
+    private fun selectFragment(fragment: Fragment) {
         parentFragmentManager
             .beginTransaction()
             .replace(R.id.frame_events, fragment)
