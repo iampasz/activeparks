@@ -143,7 +143,8 @@ class StatisticFragment : Fragment(), MonthYearPickerDialog.OnDateSetListener {
             requireContext(),
             this@StatisticFragment,
             currentYear,
-            currentMonth
+            currentMonth,
+            durationPicker
         )
 
         monthYearPickerDialog.show()

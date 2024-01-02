@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.NumberPicker
 import android.widget.TextView
+import com.app.activeparks.ui.userProfile.model.DurationPicker
+import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.R
 import java.util.Calendar
 
@@ -16,7 +19,8 @@ class MonthYearPickerDialog(
     context: Context,
     private val onDateSetListener: OnDateSetListener,
     private val defaultYear: Int,
-    private val defaultMonth: Int
+    private val defaultMonth: Int,
+    private val durationPicker: DurationPicker
 ) {
 
     companion object {
@@ -37,40 +41,107 @@ class MonthYearPickerDialog(
         val inflater = LayoutInflater.from(context)
         val dialogView: View = inflater.inflate(R.layout.dialog_month_year_picker, null)
 
-        val monthPicker = dialogView.findViewById<NumberPicker>(R.id.monthPicker)
+        val weekPicker = dialogView.findViewById<NumberPicker>(R.id.monthPicker)
         val yearPicker = dialogView.findViewById<NumberPicker>(R.id.yearPicker)
         val resultTextView = dialogView.findViewById<TextView>(R.id.resultTextView)
 
-        monthPicker.minValue = 1
-        monthPicker.maxValue = 12
-        monthPicker.displayedValues = arrayOf(
-            "Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень",
-            "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"
-        )
-        monthPicker.value = defaultMonth
+        when(durationPicker) {
+            DurationPicker.WEEK -> {
+                // Приховати yearPicker і відображати weekContainer для вибору тижня
+                yearPicker.gone()
+                weekPicker.visible()
 
-        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-        yearPicker.minValue = currentYear - 1
-        yearPicker.maxValue = currentYear
-        yearPicker.value = defaultYear
+                // Ініціалізувати NumberPicker для вибору тижня
+                val currentCalendar = Calendar.getInstance()
+                val selectedMonth = defaultMonth
+                val selectedYear = defaultYear
 
-        updateResultText(resultTextView, monthPicker.value, yearPicker.value)
+                // Визначити кількість тижнів у вибраному місяці
+                currentCalendar.set(selectedYear, selectedMonth - 1, 1)
+                val weeksInMonth = currentCalendar.getActualMaximum(Calendar.WEEK_OF_MONTH)
 
-        monthPicker.setOnValueChangedListener { _, _, newVal ->
-            updateResultText(resultTextView, newVal, yearPicker.value)
-        }
+                // Визначити поточний тиждень та тижні на місяць назад
+                val currentWeek = 4
+                var startWeek = 1
+//                startWeek = if (startWeek < 0) 52 - startWeek * (-1) else startWeek
 
-        yearPicker.setOnValueChangedListener { _, _, newVal ->
-            updateResultText(resultTextView, monthPicker.value, newVal)
-        }
 
-        builder.setView(dialogView)
-            .setPositiveButton("OK") { _, _ ->
-                val selectedMonth = monthPicker.value
-                val selectedYear = yearPicker.value
-                onDateSetListener.onDateSet(selectedMonth, selectedYear)
+                // Встановити значення для weekPicker та визначити текстові представлення
+                weekPicker.minValue = 1
+                weekPicker.maxValue = 52 // або 53 в залежності від кількості тижнів у році
+
+                val weekLabels = (1..52).map {
+                    val startDate = getStartDateOfWeek(selectedYear, it)
+                    val endDate = startDate.clone() as Calendar
+                    endDate.add(Calendar.DAY_OF_MONTH, 6) // Додати 6 днів для отримання кінця тижня
+
+                    val startMonth = startDate.get(Calendar.MONTH) + 1
+                    val endMonth = endDate.get(Calendar.MONTH) + 1
+
+                    "${String.format("%02d", startDate.get(Calendar.DAY_OF_MONTH))}.$startMonth - ${
+                        String.format("%02d", endDate.get(Calendar.DAY_OF_MONTH))
+                    }.$endMonth"
+                }.toTypedArray()
+
+                weekPicker.displayedValues = weekLabels
+
+                // Змінити слухача для відстеження зміни тижня
+                weekPicker.setOnValueChangedListener { _, _, newVal ->
+                    // Тут ви можете взяти нове значення тижня та обробити його за потребою
+                    // Наприклад, вивести вибраний тиждень у відповідне текстове поле
+//                    updateResultWeekText(resultTextView, selectedMonth, selectedYear, newVal)
+                }
+
+                builder.setView(dialogView)
+                    .setPositiveButton("OK") { _, _ ->
+                        val selectedMonth = weekPicker.value
+                        val selectedYear = yearPicker.value
+                        onDateSetListener.onDateSet(selectedMonth, selectedYear)
+                    }
+                    .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+
             }
-            .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+            DurationPicker.MONTH -> {
+                weekPicker.minValue = 1
+                weekPicker.maxValue = 12
+                weekPicker.displayedValues = arrayOf(
+                    "Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень",
+                    "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"
+                )
+                weekPicker.value = defaultMonth
+
+                val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+                yearPicker.minValue = currentYear - 1
+                yearPicker.maxValue = currentYear
+                yearPicker.value = defaultYear
+
+                updateResultText(resultTextView, weekPicker.value, yearPicker.value)
+
+                weekPicker.setOnValueChangedListener { _, _, newVal ->
+                    updateResultText(resultTextView, newVal, yearPicker.value)
+                }
+
+                yearPicker.setOnValueChangedListener { _, _, newVal ->
+                    updateResultText(resultTextView, weekPicker.value, newVal)
+                }
+
+                builder.setView(dialogView)
+                    .setPositiveButton("OK") { _, _ ->
+                        val selectedMonth = weekPicker.value
+                        val selectedYear = yearPicker.value
+                        onDateSetListener.onDateSet(selectedMonth, selectedYear)
+                    }
+                    .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+
+            }
+            DurationPicker.YEAR -> {
+
+            }
+            DurationPicker.ALL -> {
+
+            }
+        }
+
 
         dialog = builder.create()
     }
@@ -82,6 +153,20 @@ class MonthYearPickerDialog(
     private fun updateResultText(textView: TextView, month: Int, year: Int) {
         val monthName = getMonthName(month)
         textView.text = "$monthName, $year"
+    }
+
+    private fun updateResultWeekText(textView: TextView, month: Int, year: Int, week: Int = 0) {
+        val monthName = getMonthName(month)
+        val weekText = if (week > 0) ", Тиждень $week" else ""
+        textView.text = "$monthName, $year$weekText"
+    }
+    private fun getStartDateOfWeek(year: Int, week: Int): Calendar {
+        val calendar = Calendar.getInstance()
+        calendar.clear()
+        calendar.set(Calendar.YEAR, year)
+        calendar.set(Calendar.WEEK_OF_YEAR, week)
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek) // Встановлення на перший день тижня
+        return calendar
     }
 
     private fun getMonthName(month: Int): String {
