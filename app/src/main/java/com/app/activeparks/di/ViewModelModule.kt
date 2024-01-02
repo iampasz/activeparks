@@ -11,6 +11,7 @@ import com.app.activeparks.ui.homeWithUser.fragments.location.HomeLocationViewMo
 import com.app.activeparks.ui.profile.ProfileViewModel
 import com.app.activeparks.ui.registration.RegistrationViewModel
 import com.app.activeparks.ui.registration.fragments.forgotPassword.ForgotPasswordViewModel
+import com.app.activeparks.ui.selectvideo.SelectVideoViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -21,6 +22,7 @@ val viewModelModule = module {
     viewModel { PulseGadgetViewModel() }
     viewModel { EventRouteViewModel(get()) }
     viewModel { ProfileViewModel(get()) }
+    viewModel { SelectVideoViewModel(get()) }
 
     viewModel { ForgotPasswordViewModel(get()) }
     viewModel { HomeBlogViewModel(get()) }

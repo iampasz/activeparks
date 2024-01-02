@@ -36,4 +36,11 @@
         android:label="@string/title_user"
         tools:layout="@layout/fragment_user"/>
 
+    <fragment
+        android:id="@+id/selectVideoFragment"
+        android:name="com.app.activeparks.ui.selectvideo.SelectVideoFragment"
+        android:label="@string/video"
+        tools:layout="@layout/fragment_select_video">
+    </fragment>
+
 </navigation>
