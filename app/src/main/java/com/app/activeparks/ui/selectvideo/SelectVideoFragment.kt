@@ -43,9 +43,7 @@ class SelectVideoFragment : Fragment(), ContentVideoCallback {
                 onSelectType(0)
             }
         } else {
-            val fragment = ContentTypeVideoFragment()
-            fragment.callback = this
-            selectFragment(fragment)
+            openVideoFragment()
         }
 
         mViewModel.showVideo()
@@ -82,9 +80,8 @@ class SelectVideoFragment : Fragment(), ContentVideoCallback {
 
     override fun onSelectType(result: Int) {
         if (result == -1) {
-            val fragment = ContentTypeVideoFragment()
-            fragment.callback = this
-            selectFragment(fragment)
+            openVideoFragment()
+
         } else {
             val type: Boolean = result == 3
             val fragment = LevelVideoFragment(type)
@@ -109,5 +106,11 @@ class SelectVideoFragment : Fragment(), ContentVideoCallback {
             .beginTransaction()
             .replace(R.id.frame_events, fragment)
             .commit()
+    }
+
+    private fun openVideoFragment(){
+        val fragment = ContentTypeVideoFragment()
+        fragment.callback = this
+        selectFragment(fragment)
     }
 }
