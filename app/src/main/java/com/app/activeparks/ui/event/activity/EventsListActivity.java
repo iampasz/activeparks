@@ -74,7 +74,7 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
 
         listClubOwner = findViewById(R.id.list_events);
         calendarView = findViewById(R.id.calendarView);
-        listStatus = findViewById(R.id.titleText2);
+        listStatus = findViewById(R.id.findEvents);
         ImageView createEventButton = findViewById(R.id.create_event);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TabLayout selectFilter = findViewById(R.id.select_filter);
         selectFilter.setVisibility(View.VISIBLE);

@@ -32,7 +32,7 @@ data class InfoItem(
         )
 
         fun maxPulse(pulse: Int? = null) = InfoItem(
-            11, "${pulse ?: 175}", " уд/хв", "Максимальний", R.drawable.ic_heartbeat_max
+            11, "${pulse ?: 0}", " уд/хв", "Максимальний", R.drawable.ic_heartbeat_max
         )
     }
 }

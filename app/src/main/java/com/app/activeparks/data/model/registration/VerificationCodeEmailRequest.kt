@@ -7,8 +7,8 @@ data class VerificationCodeEmailRequest(
 	val email: String,
 	@SerializedName("code")
 	val code: String,
-	@SerializedName("fName")
+	@SerializedName("firstName")
 	val fName: String,
-	@SerializedName("lName")
+	@SerializedName("lastName")
 	val lName: String
 )

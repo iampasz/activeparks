@@ -1,5 +1,7 @@
 package com.app.activeparks.util
 
+import java.util.UUID
+
 /**
  * Created by O.Dziuba on 23.11.2023.
  */
@@ -10,3 +12,10 @@ const val ANDROID_TYPE_ID = 1
 const val SESSION_REPOSITORY = "com.app.activeparks"
 
 const val URL_INFO_LIST = "https://ap.sportforall.gov.ua/infolist/start"
+
+val HR_MEASUREMENT_UUID: UUID = UUID.fromString("00002a37-0000-1000-8000-00805f9b34fb")
+val HR_SERVICE_UUID: UUID = UUID.fromString("0000180D-0000-1000-8000-00805f9b34fb")
+val CLIENT_CHARACTERISTIC_CONFIG_UUID: UUID =
+    UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
+
+const val DEVICE_IS_DISCONNECTED = 19

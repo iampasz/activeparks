@@ -52,7 +52,7 @@ public class EventsListFragment extends Fragment {
 
         View root = binding.getRoot();
 
-        binding.titleText2.setVisibility(View.GONE);
+        //binding.titleText2.setVisibility(View.GONE);
         mViewModel.calendarEvent(id);
         mViewModel.getEventsList(id);
 
@@ -94,7 +94,7 @@ public class EventsListFragment extends Fragment {
 
     public void setAdapter(SportEvents events) {
         if (events.getItems().size() > 0) {
-            binding.titleText2.setVisibility(View.GONE);
+           // binding.titleText2.setVisibility(View.GONE);
         }
         binding.listEvents.setAdapter(new EventsListAdaper(getActivity(), events.getItems()).setOnEventListener(new EventsListAdaper.EventsListener() {
             @Override

@@ -39,5 +39,5 @@ data class ActivityState(
     var activityTime: ActivityTime = ActivityTime(),
     var activityInfoItems: List<ActivityInfoTrainingItem> =
         ActivityInfoTrainingItem.getActivityInfoItem(),
-    var activityPulseItems: List<InfoItem> = InfoItem.getPulseInfo()
+    var activityPulseItems: List<InfoItem> = InfoItem.getPulseInfo(),
 )

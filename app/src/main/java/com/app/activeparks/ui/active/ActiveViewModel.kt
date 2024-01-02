@@ -215,15 +215,13 @@ class ActiveViewModel(
             activityState.activityPulseItems[2].number = activityState.maxPulse.toString()
         }
         saveAveragePulse()
-
     }
 
      fun saveAveragePulse() {
-
-         activityState.activityPulseItems[1].number = heartRateList.size.toString()
-         activityState.activityInfoItems[6].number = heartRateList.size.toString()
-
-        // Log.i("AVERAGERER", "averagePulse $averagePulse")
-
+         val currentSize = heartRateList.size
+         val sum = heartRateList.sum()
+         val averageValue = sum/currentSize
+         activityState.activityPulseItems[1].number = averageValue.toString()
+         activityState.activityInfoItems[6].number = averageValue.toString()
     }
 }

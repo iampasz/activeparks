@@ -97,6 +97,11 @@ data class UserUseCaseImpl(
     //Dao
     override suspend fun insertUser(user: User) {
         userRepository.insertUser(user)
+        preferences.userName = if (user.firstName.isNullOrEmpty()) {
+            user.nickname ?: ""
+        } else {
+            user.firstName
+        }
     }
 
     override suspend fun updateUser(user: User) {

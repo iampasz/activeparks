@@ -205,7 +205,7 @@ public class FragmentProfileOld extends Fragment implements SwipeRefreshLayout.O
                     case DialogInterface.BUTTON_POSITIVE -> {
                         viewModel.logout();
                         if (requireActivity() instanceof MainActivity) {
-                            ((MainActivity) requireActivity()).getNavController().navigate(R.id.registration_user);
+                            ((MainActivity) requireActivity()).getNavControllerMain().navigate(R.id.registration_user);
                         }
                     }
                     case DialogInterface.BUTTON_NEGATIVE -> dialog.cancel();

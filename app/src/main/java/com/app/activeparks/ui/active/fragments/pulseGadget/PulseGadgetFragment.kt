@@ -14,7 +14,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,22 +41,54 @@ class PulseGadgetFragment : Fragment() {
     lateinit var binding: FragmentPulseGadgetBinding
     private val viewModel: ActiveViewModel by activityViewModel()
     private val TIME_FOR_SEARCH = 20000L
-
     private var bluetoothService: BluetoothService? = null
-
+    private var isServiceBound = false
 
     val adapter = BleDeviceAdapter { item ->
         bluetoothService?.setDevise(item)
         viewModel.heartRateList.clear()
         viewModel.activityState.isPulseGadgetConnected = true
+        (activity as ActivityForActivity?)?.disconnectCurrentPulse()
+        (activity as ActivityForActivity?)?.connectCurrentPulse()
     }
 
+    private val bluetoothDevices = mutableListOf<BluetoothDevice>()
     private var requestBluetooth: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 scanBluetoothDevises(scanCallBack)
             }
         }
+    private val scanCallBack = object : ScanCallback() {
+        @SuppressLint("MissingPermission", "NotifyDataSetChanged")
+        override fun onScanResult(callbackType: Int, result: ScanResult) {
+            super.onScanResult(callbackType, result)
+
+            val device = BluetoothHelper.sortOutDevice(result)
+            if (!bluetoothDevices.contains(device)) {
+                device?.let {
+                    bluetoothDevices.add(device)
+                    adapter.list.submitList(bluetoothDevices)
+                    adapter.notifyDataSetChanged()
+                    viewModel.activityState.minPulse = 300
+                    viewModel.activityState.maxPulse = 0
+                    viewModel.activityState.currentPulse = 0
+                }
+            }
+        }
+    }
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as BluetoothService.LocalBinder
+            bluetoothService = binder.getService()
+            isServiceBound = true
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            isServiceBound = false
+        }
+    }
+
 
     private val requestMultiplePermissions: ActivityResultLauncher<Array<String>> =
         registerForActivityResult(
@@ -78,42 +109,10 @@ class PulseGadgetFragment : Fragment() {
         return binding.root
     }
 
-    private var isServiceBound = false
-
-
-    private val serviceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            val binder = service as BluetoothService.LocalBinder
-            bluetoothService = binder.getService()
-            isServiceBound = true
-
-        }
-
-        override fun onServiceDisconnected(name: ComponentName?) {
-            isServiceBound = false
-        }
-    }
-
-    private fun bindBluetoothService() {
-
-
-        val serviceIntent = Intent(requireContext(), BluetoothService::class.java)
-        requireContext().bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-
-    }
-
-    private fun unbindBluetoothService() {
-        if (isServiceBound) {
-            requireContext().unbindService(serviceConnection)
-            isServiceBound = false
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bindBluetoothService()
-
         initListener()
 
         if (BluetoothHelper.findBLEGadget(
@@ -122,8 +121,7 @@ class PulseGadgetFragment : Fragment() {
                 requestMultiplePermissions
             )
         ) {
-
-             scanBluetoothDevises(scanCallBack)
+            scanBluetoothDevises(scanCallBack)
         } else {
             Toast.makeText(context, "Помилка підключення до блютуз", Toast.LENGTH_SHORT).show()
         }
@@ -134,6 +132,19 @@ class PulseGadgetFragment : Fragment() {
         binding.button5.setOnClickListener {
             val answer = (activity as ActivityForActivity?)?.testDevice()
             binding.button5.text = answer.toString()
+            viewModel.activityState.isPulseGadgetConnected = true
+        }
+    }
+
+    private fun bindBluetoothService() {
+        val serviceIntent = Intent(requireContext(), BluetoothService::class.java)
+        requireContext().bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun unbindBluetoothService() {
+        if (isServiceBound) {
+            requireContext().unbindService(serviceConnection)
+            isServiceBound = false
         }
     }
 
@@ -142,66 +153,13 @@ class PulseGadgetFragment : Fragment() {
         with(binding) {
             ivBack.setOnClickListener { requireActivity().onBackPressed() }
 
-            swPG.apply {
-                //isChecked = viewModel.activityState.isPulseGadgetConnected
-                setOnCheckedChangeListener { _, isChecked ->
-                    //viewModel.activityState.isPulseGadgetConnected = isChecked
-                }
-            }
-
             srUpdate.setOnRefreshListener {
                 tvUpdate.gone()
                 gProgress.visible()
                 adapter.list.submitList(listOf())
                 adapter.notifyDataSetChanged()
                 srUpdate.isRefreshing = false
-
                 scanBluetoothDevises(scanCallBack)
-            }
-        }
-    }
-
-
-    private var bound = false
-
-
-    override fun onDestroy() {
-        super.onDestroy()
-        //bluetoothLeScanner.stopScan(scanCallBack)
-
-        if (bound) {
-            requireActivity().unbindService(serviceConnection)
-            bound = false
-        }
-
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        bluetoothService?.stopScanBluetoothDevises(scanCallBack)
-        unbindBluetoothService()
-    }
-
-    private val bluetoothDevices = mutableListOf<BluetoothDevice>()
-
-    private val scanCallBack = object : ScanCallback() {
-        @SuppressLint("MissingPermission", "NotifyDataSetChanged")
-        override fun onScanResult(callbackType: Int, result: ScanResult) {
-            super.onScanResult(callbackType, result)
-
-            val device = BluetoothHelper.sortOutDevice(result)
-            if (!bluetoothDevices.contains(device)) {
-                device?.let {
-                    bluetoothDevices.add(device)
-
-
-                    adapter.list.submitList(bluetoothDevices)
-                    adapter.notifyDataSetChanged()
-
-                    viewModel.activityState.minPulse = 300
-                    viewModel.activityState.maxPulse = 0
-                    viewModel.activityState.currentPulse = 0
-                }
             }
         }
     }
@@ -217,12 +175,15 @@ class PulseGadgetFragment : Fragment() {
         }, TIME_FOR_SEARCH)
     }
 
-
     private fun scanBluetoothDevises(scanCallBack: ScanCallback) {
-        Log.i("BLUETOOTH_SERVICE", "Scan bluetooth devises")
         bluetoothDevices.clear()
         bluetoothService?.scanBluetoothDevises(scanCallBack)
         showScanningProgress()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        bluetoothService?.stopScanBluetoothDevises(scanCallBack)
+        unbindBluetoothService()
+    }
 }

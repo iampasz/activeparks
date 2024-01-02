@@ -9,12 +9,13 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.activeparks.data.model.calendar.CalendarModel
 import com.app.activeparks.data.model.sportevents.EventList
@@ -23,14 +24,13 @@ import com.app.activeparks.data.model.sportevents.ItemEventTitle
 import com.app.activeparks.data.model.sportevents.SportEvents
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
-import com.app.activeparks.ui.event.adapter.EventsListAdapterKT
 import com.app.activeparks.ui.event.adapter.EventTypeAdapter
 import com.app.activeparks.ui.event.adapter.EventsListAdaper
+import com.app.activeparks.ui.event.adapter.EventsListAdapterKT
 import com.app.activeparks.ui.event.fragments.FragmentEventCreate
 import com.app.activeparks.ui.event.interfaces.OnItemClickListener
 import com.app.activeparks.ui.event.interfaces.ResponseCallBack
 import com.app.activeparks.ui.event.util.EventController
-import com.app.activeparks.ui.event.util.EventModelFactory
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
 import com.app.activeparks.ui.event.viewmodel.EventViewModel
 import com.app.activeparks.util.extention.replaceFragment
@@ -50,17 +50,16 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Objects
 
-
 @Suppress("DEPRECATION")
 class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickListener {
 
     lateinit var binding: FragmentEventsBinding
-    private lateinit var viewModel: EventViewModel
+    private val viewModel: EventViewModel by viewModel()
+    private val eventRouteViewModel: EventRouteViewModel by viewModel()
     private lateinit var disposable: Disposable
     private var locationManager: LocationManager? = null
-
+    private lateinit var evetTypeAdapter: EventTypeAdapter
     var nameList: MutableList<ItemEvent> = mutableListOf()
-
     val eventsListAdapter = EventsListAdapterKT(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +67,6 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
         binding = FragmentEventsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this, EventModelFactory(this))[EventViewModel::class.java]
 
         val setDataResponseSuccessful = object : ResponseCallBack {
             override fun load(responseFromApi: String) {
@@ -80,36 +78,18 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
                         EventList::class.java
                     )
 
-
                 nameList.addAll(eventList.items)
-
                 eventsListAdapter.differ.submitList(nameList)
-
-
-
-
                 binding.listEvents.adapter = eventsListAdapter
             }
-
         }
-
-
 
         EventController(this).getMyEvents(setDataResponseSuccessful)
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
 
-//        binding.selectFilter.visibility = View.VISIBLE
-     //   Objects.requireNonNull(binding.selectFilter.getTabAt(1))?.select()
-
-
-
-
-
 
         viewModel.getEventsList()
         viewModel.calendarEvent()
-        //binding.listTitle.visible()
-        //binding.listTitle.gone()
 
         binding.closed.setOnClickListener { onBackPressed() }
         binding.createEvent.setOnClickListener { updateViewModelData() }
@@ -132,7 +112,6 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
         }
 
 
-
         viewModel.calendar.observe(
             this
         ) { calendarItem: CalendarModel? ->
@@ -140,7 +119,6 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
                 calendarItem!!
             )
         }
-
 
         binding.calendarView.setOnDayClickListener(object : OnDayClickListener {
             override fun onDayClick(eventDay: EventDay) {
@@ -150,13 +128,30 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
                 viewModel.eventsDay(dateFormat.format(cal.time))
                 viewModel.testEventsDay(dateFormat.format(cal.time))
 
-                Log.i("GJHVBDDM","gf ffgfgfg")
+            }
+        })
+        addEventTitlesList()
+        binding.findEvents.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                filterList(s.toString())
             }
         })
 
-        addEventTitlesList()
     }
 
+    fun filterList(query: String) {
+//        val filteredList = originalList.filter { item ->
+//            // Здійснюємо фільтрацію за введеним текстом
+//            item.name.contains(query, ignoreCase = true)
+//        }
+
+        // Оновлюємо список з відфільтрованими даними
+        // adapter.updateList(filteredList)
+    }
 
     private fun openCreateEventFragment() {
         supportFragmentManager
@@ -256,9 +251,6 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
 
     override fun onProviderDisabled(provider: String) {}
 
-
-    private val eventRouteViewModel: EventRouteViewModel by viewModel()
-
     private fun updateViewModelData() {
 
         val repository: Repository
@@ -290,10 +282,9 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
             }
     }
 
-    private lateinit var evetTypeAdapter: EventTypeAdapter
     private fun addEventTitlesList() {
 
-       val listTitle  =  ArrayList<ItemEventTitle>()
+        val listTitle = ArrayList<ItemEventTitle>()
 
         val itemList = listOf(
             ItemEventTitle(
@@ -302,17 +293,15 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
                 true,
                 R.drawable.background_green
             ),
-            ItemEventTitle(2, resources.getString(R.string.my_clubs),false),
-            ItemEventTitle(3, resources.getString(R.string.all_clubs),false),
-            ItemEventTitle(4, resources.getString(R.string.public_events),false)
+            ItemEventTitle(2, resources.getString(R.string.my_clubs), false),
+            ItemEventTitle(3, resources.getString(R.string.all_clubs), false),
+            ItemEventTitle(4, resources.getString(R.string.public_events), false)
         )
 
         listTitle.addAll(itemList)
 
         evetTypeAdapter = EventTypeAdapter(listTitle) { position ->
-            // Зміна фону та оновлення вигляду для вибраного елемента
 
-            // Скасування вибору попереднього вибраного елемента
             for (i in itemList.indices) {
                 if (i != position && itemList[i].isSelected) {
                     itemList[i].isSelected = false
@@ -323,7 +312,8 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
 
             val selectedItem = itemList[position]
             selectedItem.isSelected = !selectedItem.isSelected
-            selectedItem.backgroundResource = if (selectedItem.isSelected) R.drawable.background_green else R.drawable.background_transparent
+            selectedItem.backgroundResource =
+                if (selectedItem.isSelected) R.drawable.background_green else R.drawable.background_transparent
 
             evetTypeAdapter.notifyItemChanged(position)
 

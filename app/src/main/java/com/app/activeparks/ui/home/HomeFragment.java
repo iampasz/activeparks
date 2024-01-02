@@ -178,9 +178,9 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
         binding.panelUser.setOnClickListener(v -> {
             Preferences preferences = new Preferences(requireContext());
             if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
-                ((MainActivity) requireActivity()).getNavController().navigate(R.id.registration_user);
+                ((MainActivity) requireActivity()).getNavControllerMain().navigate(R.id.registration_user);
             } else {
-                ((MainActivity) requireActivity()).getNavController().navigate(R.id.navigation_user);
+                ((MainActivity) requireActivity()).getNavControllerMain().navigate(R.id.navigation_user);
             }
         });
 

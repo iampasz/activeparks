@@ -1,12 +1,17 @@
 package com.app.activeparks;
 
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
+import android.provider.MediaStore;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,15 +39,17 @@ import com.google.android.play.core.review.ReviewManagerFactory;
 import com.technodreams.activeparks.R;
 import com.technodreams.activeparks.databinding.ActivityMainBinding;
 
+import java.io.IOException;
 import java.util.Locale;
-
 
 public class MainActivity extends AppCompatActivity implements FragmentInteface {
 
     private ActivityMainBinding binding;
     private AppUpdateManager appUpdateManager;
-    private NavController navController;
+
+    private NavController navControllerMain;
     private Preferences preferences;
+    private final int PICK_IMAGE_REQUEST = 1;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -52,10 +59,13 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        appUpdateManager =  AppUpdateManagerFactory.create(this);
+        appUpdateManager = AppUpdateManagerFactory.create(this);
 
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+        NavController navControllerHome = Navigation.findNavController(this, R.id.navFragmentsHomeUser);
+        NavigationUI.setupWithNavController(binding.iHomeUser.navHomeUser, navControllerHome);
+
+        navControllerMain = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        NavigationUI.setupWithNavController(binding.navView, navControllerMain);
 
         new Dictionarie().init(this);
         updatePushToken();
@@ -70,22 +80,33 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
         binding.navView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
-                case R.id.navigation_home -> navController.navigate(R.id.navigation_home);
-                case R.id.navigation_maps -> navController.navigate(R.id.navigation_maps);
-                case R.id.navigation_scaner -> navController.navigate(R.id.navigation_scaner);
+                case R.id.navigation_home -> {
+                    navControllerMain.navigate(R.id.navigation_home);
+                    setVisibleHome(VISIBLE, GONE);
+                }
+                case R.id.navigation_maps -> {
+                    navControllerMain.navigate(R.id.navigation_maps);
+                    setVisibleHome(GONE, VISIBLE);
+                }
+                case R.id.navigation_scaner -> {
+                    navControllerMain.navigate(R.id.navigation_scaner);
+                    setVisibleHome(GONE, VISIBLE);
+                }
                 case R.id.navigation_active -> {
                     if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
-                        navController.navigate(R.id.registration_user);
+                        navControllerMain.navigate(R.id.registration_user);
                     } else {
-                        navController.navigate(R.id.navigation_active);
+                        navControllerMain.navigate(R.id.navigation_active);
                     }
+                    setVisibleHome(GONE, VISIBLE);
                 }
                 case R.id.navigation_user -> {
                     if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
-                        navController.navigate(R.id.registration_user);
+                        navControllerMain.navigate(R.id.registration_user);
                     } else {
-                        navController.navigate(R.id.navigation_user);
+                        navControllerMain.navigate(R.id.navigation_user);
                     }
+                    setVisibleHome(GONE, VISIBLE);
                 }
             }
 
@@ -104,10 +125,29 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
                 }
             }
         });
+
+        if (preferences.getToken() != null && !preferences.getToken().isEmpty()) {
+            binding.iHomeUser.tvUserName.setText(preferences.getUserName());
+            binding.iHomeUser.ivUser.setOnClickListener(v -> openGallery());
+        } else {
+            binding.iHomeUser.tvUserTitle.setText("Ласкаво просимо");
+            binding.iHomeUser.ivUser.setVisibility(GONE);
+        }
     }
 
-    public NavController getNavController() {
-        return navController;
+
+    private void openGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
+    }
+
+    private void setVisibleHome(int visibleHome, int visibleMain) {
+        binding.iHomeUser.getRoot().setVisibility(visibleHome);
+        findViewById(R.id.nav_host_fragment_activity_main).setVisibility(visibleMain);
+    }
+
+    public NavController getNavControllerMain() {
+        return navControllerMain;
     }
 
     @Override
@@ -138,6 +178,20 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
         }
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data.getData() != null) {
+            Uri selectedImageUri = data.getData();
+
+            try {
+                // Отримати Bitmap з Uri
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+
+                // Встановити Bitmap в ImageView
+                binding.iHomeUser.ivUser.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -160,10 +214,10 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         }
     }
 
-    public void updatePushToken(){
+    public void updatePushToken() {
         Preferences preferences = new Preferences(this);
         if (preferences.getServer()) {
-            message("Тестовий сервер включений");
+            //message("Тестовий сервер включений");
         }
         if (preferences.getPushToken() != null) {
             new Repository(preferences).setPush(preferences.getPushToken());
@@ -188,4 +242,8 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

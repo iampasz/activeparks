@@ -19,9 +19,15 @@ local.properties
 .idea/kotlinc.xml
 .idea/navEditor.xml
 
-build.gradle
+.idea/.gitignore
+outputFiles.bin
 buildOutputCleanup.lock
 file-system.probe
+
+build.gradle
 .local.properties
-outputFiles.bin
+buildOutputCleanup
+.gitignore
+
+
 
