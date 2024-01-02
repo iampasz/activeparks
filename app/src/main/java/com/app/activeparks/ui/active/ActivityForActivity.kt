@@ -144,14 +144,12 @@ class ActivityForActivity : AppCompatActivity() {
                     characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 1)
                 runOnUiThread {
                     activeViewModel.heartRateList.add(heartRateValue)
-                    activeViewModel.heartRateList.add(heartRateValue)
                     activeViewModel.activityState.activityInfoItems[5].number =
                         heartRateValue.toString()
                     activeViewModel.activityState.currentPulse = heartRateValue
                     activeViewModel.updatePulses()
                     activeViewModel.updateUI.value = true
                     activeViewModel.updateActivityInfoTrainingItem.value = true
-                    activeViewModel.activityState.isAutoPulseZone = true
                 }
             }
         }
