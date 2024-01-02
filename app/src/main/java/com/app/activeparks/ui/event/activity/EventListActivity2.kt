@@ -293,6 +293,8 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
     private lateinit var evetTypeAdapter: EventTypeAdapter
     private fun addEventTitlesList() {
 
+       val listTitle  =  ArrayList<ItemEventTitle>()
+
         val itemList = listOf(
             ItemEventTitle(
                 1,
@@ -300,28 +302,31 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
                 true,
                 R.drawable.background_green
             ),
-            ItemEventTitle(2, resources.getString(R.string.my_clubs)),
-            ItemEventTitle(3, resources.getString(R.string.all_clubs)),
-            ItemEventTitle(4, resources.getString(R.string.public_events))
+            ItemEventTitle(2, resources.getString(R.string.my_clubs),false),
+            ItemEventTitle(3, resources.getString(R.string.all_clubs),false),
+            ItemEventTitle(4, resources.getString(R.string.public_events),false)
         )
 
-        evetTypeAdapter = EventTypeAdapter(itemList) { position ->
+        listTitle.addAll(itemList)
 
+        evetTypeAdapter = EventTypeAdapter(listTitle) { position ->
+            // Зміна фону та оновлення вигляду для вибраного елемента
+
+            // Скасування вибору попереднього вибраного елемента
             for (i in itemList.indices) {
                 if (i != position && itemList[i].isSelected) {
                     itemList[i].isSelected = false
-                    itemList[i].backgroundResource = R.drawable.backround_field_item
+                    itemList[i].backgroundResource = R.drawable.background_transparent
                     evetTypeAdapter.notifyItemChanged(i)
-                } else {
-                    itemList[i].isSelected = false
                 }
             }
 
             val selectedItem = itemList[position]
             selectedItem.isSelected = !selectedItem.isSelected
-            selectedItem.backgroundResource = R.drawable.background_green
+            selectedItem.backgroundResource = if (selectedItem.isSelected) R.drawable.background_green else R.drawable.background_transparent
 
             evetTypeAdapter.notifyItemChanged(position)
+
 
         }
 
