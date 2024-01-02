@@ -235,4 +235,13 @@
     <string name="tv_my_clubs">Мої клуби</string>
     <string name="tv_no_events">Заходи відсутні</string>
 
+    <string name="workout">Розминка</string>
+    <string name="hitch">Заминка</string>
+    <string name="doctor_advice">Поради лікаря</string>
+    <string name="video_official">Офіційні \nвідео</string>
+    <string name="users_video">Відео \nкористувачів</string>
+    <string name="tro_video">Відео ТрО</string>
+
+    <string name="moving_activities">Рухові активності</string>
+
 </resources>
