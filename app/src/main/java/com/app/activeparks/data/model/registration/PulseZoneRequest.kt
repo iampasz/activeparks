@@ -4,17 +4,17 @@ import com.google.gson.annotations.SerializedName
 
 data class PulseZoneRequest(
 	@SerializedName("easy")
-	var easy: Int = 0,
+	var easy: Int = 114,
 	@SerializedName("fatBurning")
-	var fatBurning: Int = 0,
+	var fatBurning: Int = 133,
 	@SerializedName("aerobic")
-	var aerobic: Int = 0,
+	var aerobic: Int = 152,
 	@SerializedName("anaerobic")
-	var anaerobic: Int = 0,
+	var anaerobic: Int = 171,
 	@SerializedName("upperBorder")
-	var upperBorder: Int = 0,
+	var upperBorder: Int = 190,
 	@SerializedName("pausePulse")
-	var pausePulse: Int = 0
+	var pausePulse: Int = 60
 ) {
 	companion object {
 
