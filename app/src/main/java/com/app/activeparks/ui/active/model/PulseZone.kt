@@ -19,6 +19,7 @@ data class PulseZone(
                 PulseZone(2,"Аеробна", R.drawable.view_puls_level_4),
                 PulseZone(3,"Спалювання жиру", R.drawable.view_puls_level_3),
                 PulseZone(4,"Легкий тренінг", R.drawable.view_puls_level_2),
+                PulseZone(5,"Стан спокою", R.drawable.view_puls_level_1)
             )
         }
     }

@@ -32,6 +32,7 @@ class ActiveViewModel(
 
     var activityState = ActivityState()
 
+    var heartRateList = ArrayList<Int>()
     var updateActivityInfoTrainingItem = MutableLiveData(false)
     val updateUI: MutableLiveData<Boolean> = MutableLiveData(false)
     val checkLocation: MutableLiveData<Boolean> = MutableLiveData(true)
@@ -39,6 +40,7 @@ class ActiveViewModel(
     val updateMap: MutableLiveData<Boolean> = MutableLiveData(false)
     val updateWeather: MutableLiveData<Boolean> = MutableLiveData(false)
     val pulseZoneRequest: MutableLiveData<PulseZoneRequest> = MutableLiveData()
+    val currentPulse: MutableLiveData<Boolean> = MutableLiveData(false)
     var pulseZone = PulseZoneRequest()
 
     var isAuth = false
@@ -200,5 +202,28 @@ class ActiveViewModel(
                 }
             }
         }
+    }
+
+    fun updatePulses() {
+        if (activityState.minPulse > activityState.currentPulse) {
+            activityState.minPulse = activityState.currentPulse
+            activityState.activityInfoItems[8].number = activityState.minPulse.toString()
+            activityState.activityPulseItems[0].number = activityState.minPulse.toString()
+        }
+
+        if (activityState.maxPulse < activityState.currentPulse) {
+            activityState.maxPulse = activityState.currentPulse
+            activityState.activityInfoItems[7].number = activityState.maxPulse.toString()
+            activityState.activityPulseItems[2].number = activityState.maxPulse.toString()
+        }
+        saveAveragePulse()
+    }
+
+     fun saveAveragePulse() {
+         val currentSize = heartRateList.size
+         val sum = heartRateList.sum()
+         val averageValue = sum/currentSize
+         activityState.activityPulseItems[1].number = averageValue.toString()
+         activityState.activityInfoItems[6].number = averageValue.toString()
     }
 }

@@ -49,6 +49,7 @@
             android:screenOrientation="portrait"
             android:exported="false"
             android:label="@string/title_activity_for"
+            android:launchMode="singleTop"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name="com.app.activeparks.TestUpdate"
@@ -69,6 +70,7 @@
         <activity
             android:name="com.app.activeparks.MainActivity"
             android:exported="true"
+            android:launchMode="singleTop"
             android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -117,6 +119,8 @@
             </intent-filter>
         </service>
 
+        <service android:name="com.app.activeparks.ui.active.util.BluetoothService" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
 
@@ -135,7 +139,7 @@
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="716615996947732" />
+            android:value="860919992102549" />
     </application>
 
 </manifest>

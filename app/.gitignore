@@ -19,3 +19,13 @@ local.properties
 .idea/kotlinc.xml
 .idea/navEditor.xml
 
+.idea/.gitignore
+outputFiles.bin
+buildOutputCleanup.lock
+file-system.probe
+
+build.gradle
+.local.properties
+buildOutputCleanup
+.gitignore
+

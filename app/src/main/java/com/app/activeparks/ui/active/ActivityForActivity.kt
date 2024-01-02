@@ -1,9 +1,18 @@
 package com.app.activeparks.ui.active
 
+import android.annotation.SuppressLint
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCallback
+import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattDescriptor
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.os.IBinder
 import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.view.MenuItem
@@ -22,7 +31,14 @@ import com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityFragment
 import com.app.activeparks.ui.active.fragments.type.ActivityTypeFragment
 import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
 import com.app.activeparks.ui.active.model.ActivityState
+import com.app.activeparks.ui.active.model.PulseZone
 import com.app.activeparks.ui.active.util.AddressUtil
+import com.app.activeparks.ui.active.util.BluetoothService
+import com.app.activeparks.ui.active.util.PulseSimulator
+import com.app.activeparks.util.CLIENT_CHARACTERISTIC_CONFIG_UUID
+import com.app.activeparks.util.DEVICE_IS_DISCONNECTED
+import com.app.activeparks.util.HR_MEASUREMENT_UUID
+import com.app.activeparks.util.HR_SERVICE_UUID
 import com.app.activeparks.util.extention.disable
 import com.app.activeparks.util.extention.enable
 import com.app.activeparks.util.extention.enableIf
@@ -35,6 +51,7 @@ import com.technodreams.activeparks.databinding.FragmentActiveBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
+@Suppress("DEPRECATION")
 class ActivityForActivity : AppCompatActivity() {
 
     private lateinit var binding: FragmentActiveBinding
@@ -47,8 +64,104 @@ class ActivityForActivity : AppCompatActivity() {
     private var runnable: Runnable? = null
     private lateinit var textToSpeech: TextToSpeech
 
+    private var bluetoothService: BluetoothService? = null
+    private var isServiceBound = false
+    private var bluetoothGatt : BluetoothGatt? = null
+
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as BluetoothService.LocalBinder
+            bluetoothService = binder.getService()
+            isServiceBound = true
+            val savedActiveState = bluetoothService?.getGetActiveState()
+            savedActiveState?.let {
+                activeViewModel.activityState = savedActiveState
+            }
+            connectCurrentPulse()
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            isServiceBound = false
+        }
+    }
+
+    private val bluetoothGattCallback = object : BluetoothGattCallback() {
+
+        private val handler = Handler(Looper.getMainLooper())
+
+        @SuppressLint("MissingPermission")
+        override fun onConnectionStateChange(
+            gatt: BluetoothGatt?,
+            status: Int,
+            newState: Int
+        ) {
+
+            bluetoothGatt = gatt
+            gatt?.discoverServices()
+            activeViewModel.activityState.isPulseGadgetConnected = true
+
+
+            if (status == DEVICE_IS_DISCONNECTED) {
+                handler.post {
+                    Toast.makeText(
+                        this@ActivityForActivity,
+                        "Пристрій від'єднано",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    activeViewModel.activityState.pulseZone = PulseZone.getPulseZone()[5]
+                    activeViewModel.updateUI.value = true
+                    activeViewModel.activityState.isPulseGadgetConnected = false
+                }
+            }
+        }
+
+        @SuppressLint("MissingPermission")
+        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                val heartRateService = gatt?.getService(HR_SERVICE_UUID)
+                val heartRateCharacteristic =
+                    heartRateService?.getCharacteristic(HR_MEASUREMENT_UUID)
+                if (heartRateCharacteristic != null) {
+                    gatt.setCharacteristicNotification(heartRateCharacteristic, true)
+                    val descriptor =
+                        heartRateCharacteristic.getDescriptor(
+                            CLIENT_CHARACTERISTIC_CONFIG_UUID
+                        )
+                    descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                    gatt.writeDescriptor(descriptor)
+                }
+            }
+        }
+
+        @Deprecated("Deprecated in Java")
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt?,
+            characteristic: BluetoothGattCharacteristic?
+        ) {
+            if (HR_MEASUREMENT_UUID == characteristic?.uuid) {
+                val heartRateValue =
+                    characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 1)
+                runOnUiThread {
+                    activeViewModel.heartRateList.add(heartRateValue)
+                    activeViewModel.activityState.activityInfoItems[5].number =
+                        heartRateValue.toString()
+                    activeViewModel.activityState.currentPulse = heartRateValue
+                    activeViewModel.updatePulses()
+                    activeViewModel.updateUI.value = true
+                    activeViewModel.updateActivityInfoTrainingItem.value = true
+                }
+            }
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val serviceIntent = Intent(this, BluetoothService::class.java)
+        startService(serviceIntent)
+        bindBluetoothService()
 
         binding = FragmentActiveBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -322,6 +435,8 @@ class ActivityForActivity : AppCompatActivity() {
         finish()
     }
 
+
+
     private fun startTimer() {
         isTimerRunning = true
         runnable = object : Runnable {
@@ -477,5 +592,55 @@ class ActivityForActivity : AppCompatActivity() {
 
         }
         activeViewModel.navigate.value = null
+    }
+
+    private fun bindBluetoothService() {
+        val serviceIntent = Intent(this, BluetoothService::class.java)
+        bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun unbindBluetoothService() {
+        if (isServiceBound) {
+            this@ActivityForActivity.unbindService(serviceConnection)
+            isServiceBound = false
+        }
+    }
+
+    fun connectCurrentPulse() {
+            bluetoothService?.connectToDevice(bluetoothGattCallback)
+    }
+
+    @SuppressLint("MissingPermission")
+     fun disconnectCurrentPulse() {
+        bluetoothGatt?.disconnect()
+        bluetoothGatt?.close()
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        bluetoothService?.setActiveState(activeViewModel.activityState)
+        unbindBluetoothService()
+    }
+
+    //TODO start test device block
+    private val pulseSimulator = PulseSimulator { pulseValue ->
+        activeViewModel.heartRateList.add(pulseValue)
+        activeViewModel.activityState.activityInfoItems[5].number = pulseValue.toString()
+        activeViewModel.activityState.currentPulse = pulseValue
+        activeViewModel.updatePulses()
+        activeViewModel.updateActivityInfoTrainingItem.value = true
+    }
+    private var buttonClicked = false
+    fun testDevice(): Boolean {
+        if (!buttonClicked) {
+            buttonClicked = true
+            pulseSimulator.startSimulation()
+        } else {
+            buttonClicked = false
+            pulseSimulator.stopSimulation()
+            activeViewModel.activityState.currentPulse = 0
+        }
+        return buttonClicked
     }
 }

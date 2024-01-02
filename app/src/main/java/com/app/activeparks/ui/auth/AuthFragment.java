@@ -25,7 +25,6 @@ public class AuthFragment extends Fragment {
 
     private AuthViewModel viewModel;
 
-    private View binding;
 
     public static AuthFragment newInstance() {
         return new AuthFragment();
@@ -36,7 +35,7 @@ public class AuthFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(this, new AuthModelFactory(getContext())).get(AuthViewModel.class);
-        binding = inflater.inflate(R.layout.fragment_auth, container, false);
+        View binding = inflater.inflate(R.layout.fragment_auth, container, false);
 
         Button autch = binding.findViewById(R.id.aut_action);
         EditText email = binding.findViewById(R.id.email);
@@ -46,25 +45,17 @@ public class AuthFragment extends Fragment {
         TextView directoryAction = binding.findViewById(R.id.directory_action);
         TextView selectServer = binding.findViewById(R.id.select_server);
 
-        autch.setOnClickListener(v-> {
-            viewModel.login(email.getText().toString(), password.getText().toString());
-        });
+        autch.setOnClickListener(v-> viewModel.login(email.getText().toString(), password.getText().toString()));
 
-        regAction.setOnClickListener(v-> {
-            replaceFragment(new RegisterFragment());
-        });
+        regAction.setOnClickListener(v-> replaceFragment(new RegisterFragment()));
 
-        restoreAction.setOnClickListener(v-> {
-            replaceFragment(new RestoreFragment());
-        });
+        restoreAction.setOnClickListener(v-> replaceFragment(new RestoreFragment()));
 
-        directoryAction.setOnClickListener(v-> {
-            startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://ap.sportforall.gov.ua/infolist/start")));
-        });
+        directoryAction.setOnClickListener(v-> startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://ap.sportforall.gov.ua/infolist/start"))));
 
         viewModel.getMessage().observe(getViewLifecycleOwner(), msg -> {
-            if (msg.getMessage() != null && msg.getStatus() == false) {
+            if (msg.getMessage() != null && !msg.getStatus()) {
                 showMessage(msg.getMessage());
             }else {
                 replaceFragment(new UserFragment());
@@ -72,11 +63,11 @@ public class AuthFragment extends Fragment {
         });
 
         selectServer.setOnClickListener(v-> {
-            if (viewModel.getServer() == true) {
-                Toast.makeText(getActivity(),"Тестовий сервер виключений", Toast.LENGTH_SHORT).show();
+            if (viewModel.getServer()) {
+                 Toast.makeText(getActivity(),"Тестовий сервер виключений", Toast.LENGTH_SHORT).show();
                 viewModel.setServer(false);
             }else{
-                Toast.makeText(getActivity(),"Тестовий сервер включений", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(),"Тестовий сервер включений", Toast.LENGTH_SHORT).show();
                 viewModel.setServer(true);
             }
         });
@@ -90,7 +81,7 @@ public class AuthFragment extends Fragment {
     }
 
     void replaceFragment(Fragment fragment){
-        getActivity().getSupportFragmentManager()
+        requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container_user, fragment)
                 .commit();

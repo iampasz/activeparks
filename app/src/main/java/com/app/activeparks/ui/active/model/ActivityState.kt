@@ -15,7 +15,8 @@ data class ActivityState(
     var weatherIcon: Int = -1,
     var currentPulse: Int = 80,
     var pulseOnPause: Int = 75,
-    var maxPulse: Int = 150,
+    var minPulse: Int = 300,
+    var maxPulse: Int = 0,
     var pulseZone: PulseZone = PulseZone.getPulseZone().first(),
     var aiFirst: ActivityInfoTrainingItem =  ActivityInfoTrainingItem.getActivityInfoItem()[0],
     var aiSecond: ActivityInfoTrainingItem =  ActivityInfoTrainingItem.getActivityInfoItem()[1],
@@ -23,8 +24,8 @@ data class ActivityState(
     var aiFirstOutside: ActivityInfoTrainingItem =  ActivityInfoTrainingItem.getActivityInfoItem()[4],
     var aiSecondOutside: ActivityInfoTrainingItem =  ActivityInfoTrainingItem.getActivityInfoItem()[6],
     var aiThirdOutside: ActivityInfoTrainingItem =  ActivityInfoTrainingItem.getActivityInfoItem()[7],
-    var onSelectedTypeFromSetting: Boolean = false,
-    var isPulseGadgetConnected: Boolean = true,
+    var onSelectedTypeFromSetting: Boolean = true,
+    var isPulseGadgetConnected: Boolean = false,
     var isAutoPause: Boolean = false,
     var isAudioHelper: Boolean = false,
     var isLazyStart: Boolean = false,
@@ -39,5 +40,5 @@ data class ActivityState(
     var activityTime: ActivityTime = ActivityTime(),
     var activityInfoItems: List<ActivityInfoTrainingItem> =
         ActivityInfoTrainingItem.getActivityInfoItem(),
-    var activityPulseItems: List<InfoItem> = InfoItem.getPulseInfo()
+    var activityPulseItems: List<InfoItem> = InfoItem.getPulseInfo(),
 )

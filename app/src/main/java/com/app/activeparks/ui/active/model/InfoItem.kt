@@ -16,13 +16,13 @@ data class InfoItem(
         fun getPulseInfo(): List<InfoItem> {
             return listOf(
                 InfoItem(
-                    0, "75", " уд/хв", "Мінімальний", R.drawable.ic_heartbeat_min
+                    0, "0", " уд/хв", "Мінімальний", R.drawable.ic_heartbeat_min
                 ),
                 InfoItem(
-                    1, "75", " уд/хв", "Середній", R.drawable.ic_heartbeat_min
+                    1, "0", " уд/хв", "Середній", R.drawable.ic_heartbeat_min
                 ),
                 InfoItem(
-                    2, "175", " уд/хв", "Максимальний", R.drawable.ic_heartbeat_max
+                    2, "0", " уд/хв", "Максимальний", R.drawable.ic_heartbeat_max
                 )
             )
         }
@@ -32,7 +32,7 @@ data class InfoItem(
         )
 
         fun maxPulse(pulse: Int? = null) = InfoItem(
-            11, "${pulse ?: 175}", " уд/хв", "Максимальний", R.drawable.ic_heartbeat_max
+            11, "${pulse ?: 0}", " уд/хв", "Максимальний", R.drawable.ic_heartbeat_max
         )
     }
 }
