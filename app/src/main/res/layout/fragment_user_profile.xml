@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="com.app.activeparks.ui.home.HomeFragment">
+
+    <View
+        android:id="@+id/vToolBar"
+        android:layout_width="0dp"
+        android:layout_height="58dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/profile"
+        android:textAllCaps="true"
+        android:textColor="@color/purple_500"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/vToolBar"
+        app:layout_constraintEnd_toEndOf="@+id/vToolBar"
+        app:layout_constraintStart_toStartOf="@+id/vToolBar"
+        app:layout_constraintTop_toTopOf="@+id/vToolBar" />
+
+    <ImageView
+        android:id="@+id/inNotification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_menu"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMain"
+        app:layout_constraintEnd_toEndOf="@+id/vToolBar"
+        app:layout_constraintTop_toTopOf="@+id/tvMain" />
+
+    <View
+        android:id="@+id/vBackgroundUser"
+        android:layout_width="match_parent"
+        android:layout_height="171dp"
+        android:background="@color/bg_2"
+        app:layout_constraintTop_toBottomOf="@+id/vToolBar" />
+
+    <ImageView
+        android:id="@+id/ivLogoUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_logo_registration"
+        app:layout_constraintBottom_toBottomOf="@+id/vBackgroundUser"
+        app:layout_constraintEnd_toEndOf="@+id/vBackgroundUser"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vToolBar" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ivUser"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_camera"
+        app:layout_constraintBottom_toBottomOf="@+id/ivLogoUser"
+        app:layout_constraintEnd_toEndOf="@+id/ivLogoUser"
+        app:layout_constraintStart_toStartOf="@+id/ivLogoUser"
+        app:layout_constraintTop_toTopOf="@+id/ivLogoUser" />
+
+    <ImageView
+        android:id="@+id/ivUserCircle"
+        android:layout_width="112dp"
+        android:layout_height="112dp"
+        android:src="@drawable/ic_circle_user"
+        app:layout_constraintBottom_toBottomOf="@+id/ivLogoUser"
+        app:layout_constraintEnd_toEndOf="@+id/ivLogoUser"
+        app:layout_constraintStart_toStartOf="@+id/ivLogoUser"
+        app:layout_constraintTop_toTopOf="@+id/ivLogoUser" />
+
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/purple_500"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vBackgroundUser"
+        android:text="Сидоренко Вадим" />
+
+    <TextView
+        android:id="@+id/tvUserVerifide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/dark_gray_1"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserName"
+        android:text="Верифікований користувач" />
+
+    <android.widget.Button
+        android:id="@+id/btnMoreInfo"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="16dp"
+        android:background="@drawable/backround_field_item"
+        android:drawablePadding="8dp"
+        android:elevation="16dp"
+        android:padding="8dp"
+        android:text="@string/tv_more_info"
+        android:textAllCaps="false"
+        android:textColor="@color/bg_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserVerifide" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navProfileUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:elevation="16dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        app:itemBackground="@drawable/bottom_line_item_selector"
+        app:itemIconTint="@color/bottom_bar_item_selector"
+        app:itemTextColor="@color/bottom_bar_item_selector"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnMoreInfo"
+        app:menu="@menu/bottom_user_profile_menu" />
+
+    <fragment
+        android:id="@+id/navFragmentsUserProfile"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/navProfileUser"
+        app:navGraph="@navigation/graph_profile_user" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

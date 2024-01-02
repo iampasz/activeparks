@@ -12,10 +12,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -26,6 +24,8 @@ import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.storage.Preferences;
 import com.app.activeparks.ui.maps.MapsFragment;
 import com.app.activeparks.ui.profile.EditProfileActivity;
+import com.app.activeparks.ui.profile.FragmentProfileOld;
+import com.app.activeparks.ui.user.UserFragment;
 import com.app.activeparks.util.Dictionarie;
 import com.app.activeparks.util.FragmentInteface;
 import com.app.activeparks.util.cropper.CropImage;
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
     private AppUpdateManager appUpdateManager;
     private NavController navControllerHome;
     private NavController navControllerMain;
+    private NavController navControllerProfile;
     private Preferences preferences;
     private final int PICK_IMAGE_REQUEST = 1;
 
@@ -66,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
         navControllerHome = Navigation.findNavController(this, R.id.navFragmentsHomeUser);
         NavigationUI.setupWithNavController(binding.iHomeUser.navHomeUser, navControllerHome);
+
+        navControllerProfile = Navigation.findNavController(this, R.id.navFragmentsUserProfile);
+        NavigationUI.setupWithNavController(binding.iUserProfile.navProfileUser, navControllerProfile);
 
         navControllerMain = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupWithNavController(binding.navView, navControllerMain);
@@ -85,15 +89,15 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
             switch (item.getItemId()) {
                 case R.id.navigation_home -> {
                     navControllerMain.navigate(R.id.navigation_home);
-                    setVisibleHome(VISIBLE, GONE);
+                    setVisibleHome(VISIBLE, GONE, GONE);
                 }
                 case R.id.navigation_maps -> {
                     navControllerMain.navigate(R.id.navigation_maps);
-                    setVisibleHome(GONE, VISIBLE);
+                    setVisibleHome(GONE, GONE, VISIBLE);
                 }
                 case R.id.navigation_scaner -> {
                     navControllerMain.navigate(R.id.navigation_scaner);
-                    setVisibleHome(GONE, VISIBLE);
+                    setVisibleHome(GONE, GONE, VISIBLE);
                 }
                 case R.id.navigation_active -> {
                     if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
@@ -101,15 +105,16 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
                     } else {
                         navControllerMain.navigate(R.id.navigation_active);
                     }
-                    setVisibleHome(GONE, VISIBLE);
+                    setVisibleHome(GONE, GONE, GONE);
                 }
                 case R.id.navigation_user -> {
                     if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
                         navControllerMain.navigate(R.id.registration_user);
+                        setVisibleHome(GONE, GONE, GONE);
                     } else {
                         navControllerMain.navigate(R.id.navigation_user);
+                        setVisibleHome(GONE, VISIBLE, GONE);
                     }
-                    setVisibleHome(GONE, VISIBLE);
                 }
             }
 
@@ -138,6 +143,10 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
             binding.iHomeUser.tvUserTitle.setText("Ласкаво просимо");
             binding.iHomeUser.ivUser.setVisibility(GONE);
         }
+
+        binding.iUserProfile.btnMoreInfo.setOnClickListener(v -> {
+            setVisibleHome(GONE, GONE, VISIBLE);
+        });
     }
 
 
@@ -146,8 +155,9 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
     }
 
-    private void setVisibleHome(int visibleHome, int visibleMain) {
+    private void setVisibleHome(int visibleHome, int visibleProfile, int visibleMain) {
         binding.iHomeUser.getRoot().setVisibility(visibleHome);
+        binding.iUserProfile.getRoot().setVisibility(visibleProfile);
         findViewById(R.id.nav_host_fragment_activity_main).setVisibility(visibleMain);
     }
 
@@ -157,6 +167,38 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
     public NavController getNavControllerHome() {
         return navControllerHome;
+    }
+
+    public NavController getNavControllerProfile() {
+        return navControllerProfile;
+    }
+
+    public void openFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.navFragment, fragment)
+                .commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getFragments().size() > 2) {
+            if (getSupportFragmentManager()
+                    .getFragments()
+                    .get(getSupportFragmentManager().getFragments().size() - 1) instanceof FragmentProfileOld) {
+                setVisibleHome(GONE, VISIBLE, GONE);
+            } else {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .remove(
+                                getSupportFragmentManager()
+                                        .getFragments()
+                                        .get(getSupportFragmentManager().getFragments().size() - 1))
+                        .commit();
+            }
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -192,10 +234,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
             Uri selectedImageUri = data.getData();
 
             try {
-                // Отримати Bitmap з Uri
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-
-                // Встановити Bitmap в ImageView
                 binding.iHomeUser.ivUser.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();

@@ -1,5 +1,6 @@
 package com.app.activeparks.ui.active.fragments.saveActivity
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.activeparks.data.db.mapper.ActivityStateToActiveEntityMapper
@@ -20,6 +21,7 @@ class SaveActivityViewModel(
 
     var currentActivity = CurrentActivity()
     var startInfo = StartInfo()
+    val saved: MutableLiveData<Boolean> = MutableLiveData(false)
 
 
     fun saveActivity(
@@ -37,6 +39,8 @@ class SaveActivityViewModel(
                     activityTime
                 )
                 saveActivityUseCase.insert(activity)
+            }.onSuccess {
+                saved.value = true
             }
         }
     }

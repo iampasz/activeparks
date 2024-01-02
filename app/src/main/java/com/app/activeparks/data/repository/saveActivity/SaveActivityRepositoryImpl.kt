@@ -2,6 +2,7 @@ package com.app.activeparks.data.repository.saveActivity
 
 import com.app.activeparks.data.db.dao.ActiveDao
 import com.app.activeparks.data.db.entity.ActiveEntity
+import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.network.NetworkManager
 
 /**
@@ -12,7 +13,7 @@ class SaveActivityRepositoryImpl(
     private val dao: ActiveDao
 ) : SaveActivityRepository {
     override suspend fun insert(active: ActiveEntity) {
-        networkManager.createActivity(active)
+        networkManager.createActivity(AddActivityResponse.map(active))
         dao.insert(active)
     }
 

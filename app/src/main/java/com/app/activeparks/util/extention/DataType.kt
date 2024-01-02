@@ -57,11 +57,11 @@ fun List<ActivityInfoTrainingItem>.filterInside() =
 
 fun List<ActivityInfoTrainingItem>.filterOutside(activeTypeId: Int): List<ActivityInfoTrainingItem> {
     return if (activeTypeId == 2) {
-        this.filter { it.isOutside }
+        this
             .filter { !it.isPulseGadget }
             .filter { it.id != 11 }
     } else {
-        this.filter { it.isOutside }
+        this
             .filter { !it.isPulseGadget }
     }
 }

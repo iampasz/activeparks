@@ -2,12 +2,13 @@ package com.app.activeparks.data.network
 
 import android.content.Context
 import android.widget.Toast
-import com.app.activeparks.data.db.entity.ActiveEntity
+import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.registration.AdditionData
 import com.app.activeparks.data.model.registration.ForgotPasswordRequest
 import com.app.activeparks.data.model.registration.LoginRequest
 import com.app.activeparks.data.model.registration.PulseZoneRequest
 import com.app.activeparks.data.model.registration.ResetPasswordResponse
+import com.app.activeparks.data.model.registration.ResponseId
 import com.app.activeparks.data.model.registration.ResponseSuccess
 import com.app.activeparks.data.model.registration.ResponseToken
 import com.app.activeparks.data.model.registration.SendCodeEmailRequest
@@ -17,6 +18,7 @@ import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswordRequest
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
+import com.app.activeparks.data.model.statistic.StatisticResponse
 import com.app.activeparks.data.model.weather.WeatherResponse
 import com.app.activeparks.data.network.baseNew.ApiWithAuthorization
 import com.app.activeparks.data.network.baseNew.ApiWithOutAuthorization
@@ -79,6 +81,7 @@ class NetworkManagerImpl(
 
         return response.body()
     }
+
     override suspend fun forgotPassword(request: ForgotPasswordRequest): ResponseSuccess? {
         val response = apiWithOutAuthorization.forgotPassword(request)
 
@@ -151,8 +154,25 @@ class NetworkManagerImpl(
         return response.body()
     }
 
-    override suspend fun createActivity(request: ActiveEntity): ActiveEntity? {
-        val response = apiWithAuthorization.createActivity(request)
+    override suspend fun createActivity(request: AddActivityResponse): ResponseId? {
+        val response = apiWithAuthorization.createActivity()
+
+        val body = response.body()
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        } else {
+            body?.id?.let {
+
+                request.id = it
+                apiWithAuthorization.createActivity(it, request)
+            }
+        }
+
+        return body
+    }
+
+    override suspend fun getUser(id: String): User? {
+        val response = apiWithAuthorization.getUser(id)
 
         if (!response.isSuccessful) {
             Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
@@ -161,8 +181,9 @@ class NetworkManagerImpl(
         return response.body()
     }
 
-    override suspend fun getUser(id: String): User? {
-        val response = apiWithAuthorization.getUser(id)
+    //Statistics
+    override suspend fun getStatistics(from: String, to: String): StatisticResponse? {
+        val response = apiWithAuthorization.getStatistics(0, 750, from, to)
 
         if (!response.isSuccessful) {
             Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()

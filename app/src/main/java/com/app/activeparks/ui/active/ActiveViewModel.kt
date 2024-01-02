@@ -12,6 +12,7 @@ import com.app.activeparks.data.useCase.pauseActivity.PauseActivityUseCase
 import com.app.activeparks.data.useCase.registration.UserUseCase
 import com.app.activeparks.data.useCase.weatehr.WeatherUseCase
 import com.app.activeparks.ui.active.model.ActivityState
+import com.app.activeparks.util.extention.toInfo
 import com.technodreams.activeparks.R
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
@@ -144,6 +145,7 @@ class ActiveViewModel(
                     weather =
                         "${response.weather.first().description.replaceFirstChar { it.uppercase() }}, ${response.main.temp.toInt()} C"
                     weatherIcon = getWeatherIconResource(response.weather.first().icon)
+                    temperature = response.main.temp.toInfo()
                 }
                 updateWeather.value = true
             }.onFailure {

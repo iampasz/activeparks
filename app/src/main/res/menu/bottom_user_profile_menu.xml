@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navClubUser"
+        android:icon="@drawable/ic_home_clabs"
+        android:title="@string/tv_menu_clubs" />
+
+    <item
+        android:id="@+id/navEventsUser"
+        android:icon="@drawable/ic_home_events"
+        android:title="@string/tv_menu_events" />
+
+    <item
+        android:id="@+id/navStatisticsUser"
+        android:icon="@drawable/ic_step"
+        android:title="@string/tv_statistic" />
+
+    <item
+        android:id="@+id/navVideoUser"
+        android:icon="@drawable/ic_video_camera"
+        android:title="@string/tv_video" />
+
+    <item
+        android:id="@+id/navHealsUser"
+        android:icon="@drawable/ic_heart_user"
+        android:title="@string/tv_heals" />
+
+</menu>

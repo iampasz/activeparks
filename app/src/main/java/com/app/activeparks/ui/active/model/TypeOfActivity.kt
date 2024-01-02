@@ -46,5 +46,41 @@ data class TypeOfActivity(
                 )
             )
         }
+        fun getTypeOfActivityWithAll(): List<TypeOfActivity> {
+            return listOf(
+                TypeOfActivity(
+                    0, "Ходьба", R.drawable.ic_at_walk,
+                    isOutside = true,
+                    isSelected = false
+                ),
+                TypeOfActivity(
+                    1, "Скандинавська ходьба", R.drawable.ic_at_scandinavian_walk,
+                    isOutside = true,
+                    isSelected = false
+                ),
+                TypeOfActivity(
+                    2, "Велоспорт", R.drawable.ic_at_bicycle,
+                    isOutside = true,
+                    isSelected = false
+                ),
+                TypeOfActivity(
+                    3, "Біг", R.drawable.ic_at_run,
+                    isOutside = true,
+                    isSelected = false
+                ),
+                TypeOfActivity(
+                    4, "В приміщенні", R.drawable.ic_at_at_home,
+                    isOutside = false,
+                    isSelected = false,
+                    isInclude = true
+                ),
+                TypeOfActivity(
+                    5, "Всі активності", R.drawable.ic_at_at_home,
+                    isOutside = false,
+                    isSelected = false,
+                    isInclude = true
+                )
+            )
+        }
     }
 }

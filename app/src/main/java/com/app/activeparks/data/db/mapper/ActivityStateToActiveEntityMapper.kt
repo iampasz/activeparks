@@ -38,8 +38,9 @@ class ActivityStateToActiveEntityMapper {
                 activityInfoItems[9].number,
                 activityInfoItems[4].number.toDouble().toLong(),
                 activityState.weatherIcon.toString(),
-                startInfo.weather.unit,
-                activityInfoItems[13].number.toDouble().toInt(),
+                activityState.temperature,
+                activityInfoItems[10].number.toDouble().toInt(),
+                activityInfoItems[12].number.toDouble().toInt(),
                 currentActivity.feeling?.id ?: 0,
                 startInfo.weather.unit,
                 activityState.activeRoad.getListForBack(),
@@ -55,7 +56,7 @@ class ActivityStateToActiveEntityMapper {
                 activityState.activityType.id.toString(),
                 activityState.activityTypeOutside.id,
                 startInfo.startPoint.unit,
-                "",
+                "0",
                 "",
                 activityState.activeRoad.getListForBack()
             )

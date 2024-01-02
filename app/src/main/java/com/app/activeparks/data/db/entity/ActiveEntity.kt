@@ -27,6 +27,7 @@ data class ActiveEntity(
     @ColumnInfo("weatherIcon") val weatherIcon: String,
     @ColumnInfo("temperature") val temperature: String,
     @ColumnInfo("hight") val height: Int,
+    @ColumnInfo("altitudeMin") val altitudeMin: Int,
     @ColumnInfo("feelingId") val feelingId: Int,
     @ColumnInfo("weather") val weather: String,
     @ColumnInfo("routePoints") val routePoints: List<List<Double>>,

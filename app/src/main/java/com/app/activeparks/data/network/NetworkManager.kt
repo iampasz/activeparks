@@ -1,11 +1,12 @@
 package com.app.activeparks.data.network
 
-import com.app.activeparks.data.db.entity.ActiveEntity
+import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.registration.AdditionData
 import com.app.activeparks.data.model.registration.ForgotPasswordRequest
 import com.app.activeparks.data.model.registration.LoginRequest
 import com.app.activeparks.data.model.registration.PulseZoneRequest
 import com.app.activeparks.data.model.registration.ResetPasswordResponse
+import com.app.activeparks.data.model.registration.ResponseId
 import com.app.activeparks.data.model.registration.ResponseSuccess
 import com.app.activeparks.data.model.registration.ResponseToken
 import com.app.activeparks.data.model.registration.SendCodeEmailRequest
@@ -15,6 +16,7 @@ import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswordRequest
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
+import com.app.activeparks.data.model.statistic.StatisticResponse
 import com.app.activeparks.data.model.weather.WeatherResponse
 import retrofit2.Response
 
@@ -43,6 +45,7 @@ interface NetworkManager {
     suspend fun updateData(id: String, request: AdditionData): User?
     suspend fun setHeartRateZones(request: PulseZoneRequest): ResponseSuccess?
     suspend fun getHeartRateZones(): PulseZoneRequest?
-    suspend fun createActivity(request: ActiveEntity): ActiveEntity?
+    suspend fun createActivity(request: AddActivityResponse): ResponseId?
     suspend fun getUser(id: String): User?
+    suspend fun getStatistics(from: String, to: String): StatisticResponse?
 }

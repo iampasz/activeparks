@@ -1,0 +1,261 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.app.activeparks.ui.homeWithUser.fragments.home.HomeEventsFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:background="@color/background"
+            android:orientation="vertical"
+            tools:context="com.app.activeparks.ui.active.fragments.level.LevelActivityFragment">
+
+            <TextView
+                android:id="@+id/tvShow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/tv_show_statistic"
+                android:textAllCaps="true"
+                android:textColor="@color/dark"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvActivity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/left_button_event"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:padding="8dp"
+                android:paddingEnd="16dp"
+                android:text="@string/tv_all_activity"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:drawableStartCompat="@drawable/ic_at_at_home"
+                app:drawableTint="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/tvShow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvShow"
+                tools:ignore="RtlSymmetry" />
+
+            <LinearLayout
+                android:id="@+id/llDate"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/backround_field_date"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvActivity">
+
+                <TextView
+                    android:id="@+id/tvWeek"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/tv_week"
+                    android:textAllCaps="true"
+                    android:textColor="@color/purple_500"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvMonth"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/time_light_green"
+                    android:gravity="center"
+                    android:text="@string/tv_month"
+                    android:textAllCaps="true"
+                    android:textColor="@color/purple_500"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvYear"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/tv_year"
+                    android:textAllCaps="true"
+                    android:textColor="@color/purple_500"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvAllTime"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/tv_all_time"
+                    android:textAllCaps="true"
+                    android:textColor="@color/purple_500"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/ivFMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_compare_first_month"
+                android:paddingEnd="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/tvFirstParametrs"
+                app:layout_constraintStart_toStartOf="@+id/llDate"
+                app:layout_constraintTop_toTopOf="@+id/tvFirstParametrs"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/tvFirstParametrs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:text="Грудень, 2023"
+                app:drawableEndCompat="@drawable/ic_caretdown"
+                app:layout_constraintStart_toEndOf="@+id/ivFMonth"
+                app:layout_constraintTop_toBottomOf="@+id/llDate" />
+
+
+            <ImageView
+                android:id="@+id/ivSMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:paddingEnd="8dp"
+                android:visibility="gone"
+                android:src="@drawable/ic_compare_second_month"
+                app:layout_constraintBottom_toBottomOf="@+id/tvSecondParametrs"
+                app:layout_constraintEnd_toStartOf="@+id/tvSecondParametrs"
+                app:layout_constraintTop_toTopOf="@+id/tvSecondParametrs"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/tvSecondParametrs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:visibility="gone"
+                app:drawableEndCompat="@drawable/ic_caretdown"
+                app:layout_constraintBottom_toBottomOf="@+id/tvFirstParametrs"
+                app:layout_constraintEnd_toEndOf="@+id/llDate"
+                app:layout_constraintTop_toTopOf="@+id/tvFirstParametrs"
+                tools:text="Грудень, 2023" />
+
+            <TextView
+                android:id="@+id/tvCompare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:text="@string/tv_compare"
+                android:textAllCaps="true"
+                android:textColor="@color/accent"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvFirstParametrs"
+                app:layout_constraintEnd_toEndOf="@+id/llDate"
+                app:layout_constraintTop_toTopOf="@+id/tvFirstParametrs"
+                tools:ignore="AllCaps" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/tvCompare">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvTrainingInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:nestedScrollingEnabled="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/item_activity_training" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvAllActivity"
+                        android:layout_width="0dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/title_activity"
+                        android:textAllCaps="true"
+                        android:textColor="@color/dark"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@+id/rvTrainingInfo"
+                        app:layout_constraintTop_toBottomOf="@+id/rvTrainingInfo" />
+
+                    <TextView
+                        android:id="@+id/tvMoreActivity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="8dp"
+                        android:gravity="end"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/tv_more_activity"
+                        android:textAllCaps="true"
+                        android:textColor="@color/accent"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/tvAllActivity"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/tvAllActivity"
+                        tools:ignore="AllCaps" />
+                </LinearLayout>
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvActivity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:nestedScrollingEnabled="false"
+                    app:layout_constraintEnd_toEndOf="@+id/rvTrainingInfo"
+                    app:layout_constraintStart_toStartOf="@+id/rvTrainingInfo"
+                    app:layout_constraintTop_toBottomOf="@+id/tvAllActivity"
+                    tools:itemCount="1"
+                    android:paddingBottom="10dp"
+                    tools:listitem="@layout/item_activity_list" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

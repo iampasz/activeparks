@@ -14,6 +14,8 @@ import com.app.activeparks.data.repository.saveActivity.SaveActivityRepository
 import com.app.activeparks.data.repository.saveActivity.SaveActivityRepositoryImpl
 import com.app.activeparks.data.repository.sesion.MobileApiSessionRepository
 import com.app.activeparks.data.repository.sesion.SharedPreferencesMobileApiSessionRepository
+import com.app.activeparks.data.repository.statistics.StatisticsRepository
+import com.app.activeparks.data.repository.statistics.StatisticsRepositoryImpl
 import com.app.activeparks.data.repository.weather.WeatherRepository
 import com.app.activeparks.data.repository.weather.WeatherRepositoryImpl
 import org.koin.dsl.module
@@ -30,6 +32,7 @@ val repositoryModule = module{
         single<EventStateRepository> { EventStateRepositoryImpl(get()) }
         single<ProfileStateRepository> { ProfileStateRepositoryImpl(get()) }
         single<WeatherRepository> { WeatherRepositoryImpl(get()) }
+        single<StatisticsRepository> { StatisticsRepositoryImpl(get()) }
         single<MobileApiSessionRepository> { SharedPreferencesMobileApiSessionRepository(get()) }
         single<UserRepository> { UserRepositoryImpl(get(), get()) }
 }

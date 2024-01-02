@@ -231,8 +231,36 @@
     <string name="tv_my_events">Мої заходи</string>
     <string name="tv_title_active_parks">Активні парки</string>
     <string name="tv_distance">Дистанція %s</string>
+    <string name="tv_distance_">Дистанція</string>
     <string name="tv_no_clubs">Клуби відсутні</string>
     <string name="tv_my_clubs">Мої клуби</string>
     <string name="tv_no_events">Заходи відсутні</string>
+    <string name="tv_more_info"><u>Показати детальну інформацію</u></string>
+    <string name="tv_statistic">Статистика</string>
+    <string name="tv_video">Відео</string>
+    <string name="tv_heals">Здоров’я</string>
+    <string name="tv_my_video">Мої відео</string>
+    <string name="tv_add_video">Додати відео</string>
+    <string name="tv_show_statistic">Огляд</string>
+    <string name="tv_all_activity">Всі активності</string>
+    <string name="tv_week">Тиждень</string>
+    <string name="tv_month">Місяць</string>
+    <string name="tv_year">Рік</string>
+    <string name="tv_all_time">Весь час</string>
+    <string name="tv_activity_select">Оберіть активність</string>
+    <string name="tv_url_youtube">URL YouTube</string>
+    <string name="tv_add_url_video">Додайте посилання на відео з YouTube</string>
+    <string name="tv_name_and_desc_video">Назва та опис</string>
+    <string name="tv_video_title_hint">Робимо вправи з відомим тренером</string>
+    <string name="tv_short_desc_hint">Короткий опис відео</string>
+    <string name="tv_video_category">Категорія вправ</string>
+    <string name="tv_video_level">Рівень складності</string>
+    <string name="tv_cancel_video"><u>Відмінити</u></string>
+    <string name="tv_to_moderation">На модерацію</string>
+    <string name="tv_compare"><u>Порівняти дані</u></string>
+    <string name="tv_more_activity"><u>Детальніше</u></string>
+    <string name="tv_spent_calories">Витрачено калорій</string>
+    <string name="tv_km">%s км</string>
+    <string name="tv_kKal">%s ккал</string>
 
 </resources>

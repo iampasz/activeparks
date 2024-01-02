@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
 import com.app.activeparks.ui.active.model.getInf
+import com.app.activeparks.ui.userProfile.model.getInf
 import com.app.activeparks.util.extention.setTint
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.ItemActivityInfoBinding

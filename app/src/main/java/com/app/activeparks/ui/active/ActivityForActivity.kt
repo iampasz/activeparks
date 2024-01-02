@@ -184,7 +184,7 @@ class ActivityForActivity : AppCompatActivity() {
                     activityState.isPause = false
                     checkLocation.value = false
                     getWeather()
-                    activityState.activityTime.finishesAt = System.currentTimeMillis()
+                    activityState.activityTime.finishesAt = System.currentTimeMillis()/1000
                     activityState.activityTime.time =
                         activityState.activityTime.finishesAt - activityState.activityTime.startsAt
 
@@ -280,7 +280,7 @@ class ActivityForActivity : AppCompatActivity() {
                 activityState.isTrainingStart = true
                 updateUI.value = true
                 checkLocation.value = true
-                activityState.activityTime.startsAt = System.currentTimeMillis()
+                activityState.activityTime.startsAt = System.currentTimeMillis()/1000
             }
         }
     }

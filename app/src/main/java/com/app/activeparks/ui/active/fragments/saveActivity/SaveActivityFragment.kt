@@ -67,6 +67,18 @@ class SaveActivityFragment : Fragment() {
             setStartValue()
             setListener()
         }
+
+        observe()
+    }
+
+    private fun observe() {
+        with(viewModel) {
+            saved.observe(viewLifecycleOwner) {
+                if (it == true) {
+                    requireActivity().onBackPressed()
+                }
+            }
+        }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -82,6 +94,8 @@ class SaveActivityFragment : Fragment() {
 
         viewModel.startInfo.startPoint.unit =
             activityViewModel.activityState.startPoint.replaceNull()
+        viewModel.startInfo.weather.unit =
+            activityViewModel.activityState.weather
 
         activityViewModel.activityState.apply {
             ivLocation.visibleIf(activityType.isOutside && startPoint.isNotEmpty() && activeRoad.isNotEmpty())
@@ -191,8 +205,6 @@ class SaveActivityFragment : Fragment() {
 
             binding.mapview.overlayManager.clear()
             binding.mapview.invalidate()
-
-            requireActivity().onBackPressed()
         }
 
         addImgActivity.setOnClickListener {
