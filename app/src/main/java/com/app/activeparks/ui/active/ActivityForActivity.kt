@@ -15,7 +15,6 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.speech.tts.TextToSpeech
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -25,6 +24,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.app.activeparks.MainActivity
 import com.app.activeparks.ui.active.fragments.infoItem.ActivityInfoItemFragment
 import com.app.activeparks.ui.active.fragments.map.MapActivityFragment
 import com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityFragment
@@ -35,6 +35,10 @@ import com.app.activeparks.ui.active.model.PulseZone
 import com.app.activeparks.ui.active.util.AddressUtil
 import com.app.activeparks.ui.active.util.BluetoothService
 import com.app.activeparks.ui.active.util.PulseSimulator
+import com.app.activeparks.util.CLIENT_CHARACTERISTIC_CONFIG_UUID
+import com.app.activeparks.util.DEVICE_IS_DISCONNECTED
+import com.app.activeparks.util.HR_MEASUREMENT_UUID
+import com.app.activeparks.util.HR_SERVICE_UUID
 import com.app.activeparks.util.extention.disable
 import com.app.activeparks.util.extention.enable
 import com.app.activeparks.util.extention.enableIf
@@ -46,7 +50,6 @@ import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentActiveBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
-import java.util.UUID
 
 @Suppress("DEPRECATION")
 class ActivityForActivity : AppCompatActivity() {
@@ -60,11 +63,6 @@ class ActivityForActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var runnable: Runnable? = null
     private lateinit var textToSpeech: TextToSpeech
-    private val HR_MEASUREMENT_UUID: UUID =
-        UUID.fromString("00002a37-0000-1000-8000-00805f9b34fb")
-    private val HR_SERVICE_UUID: UUID = UUID.fromString("0000180D-0000-1000-8000-00805f9b34fb")
-    private val CLIENT_CHARACTERISTIC_CONFIG_UUID: UUID =
-        UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
 
     private var bluetoothService: BluetoothService? = null
     private var isServiceBound = false
@@ -102,7 +100,8 @@ class ActivityForActivity : AppCompatActivity() {
             gatt?.discoverServices()
             activeViewModel.activityState.isPulseGadgetConnected = true
 
-            if (status == 19) {
+
+            if (status == DEVICE_IS_DISCONNECTED) {
                 handler.post {
                     Toast.makeText(
                         this@ActivityForActivity,
@@ -425,19 +424,18 @@ class ActivityForActivity : AppCompatActivity() {
         }
 
         if (id != 0) {
-           // startMainActivity(id)
-            finish()
+            startMainActivity(id)
         }
         return true
     }
 
-//    private fun startMainActivity(id: Int? = R.id.navigation_home) {
-//        startActivity(
-//            Intent(this@ActivityForActivity, MainActivity::class.java).apply {
-//                putExtra("ID", id)
-//            })
-//        finish()
-//    }
+    private fun startMainActivity(id: Int? = R.id.navigation_home) {
+        startActivity(
+            Intent(this@ActivityForActivity, MainActivity::class.java).apply {
+                putExtra("ID", id)
+            })
+        finish()
+    }
 
 
 
@@ -633,9 +631,7 @@ class ActivityForActivity : AppCompatActivity() {
         activeViewModel.activityState.activityInfoItems[5].number = pulseValue.toString()
         activeViewModel.activityState.currentPulse = pulseValue
         activeViewModel.updatePulses()
-       // activeViewModel.updateUI.value = true
         activeViewModel.updateActivityInfoTrainingItem.value = true
-        activeViewModel.activityState.isAutoPulseZone = true
     }
     private var buttonClicked = false
     fun testDevice(): Boolean {

@@ -49,6 +49,7 @@
             android:screenOrientation="portrait"
             android:exported="false"
             android:label="@string/title_activity_for"
+            android:launchMode="singleTop"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name="com.app.activeparks.TestUpdate"
@@ -69,6 +70,7 @@
         <activity
             android:name="com.app.activeparks.MainActivity"
             android:exported="true"
+            android:launchMode="singleTop"
             android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

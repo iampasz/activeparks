@@ -2,7 +2,6 @@ package com.app.activeparks.ui.active.fragments.level
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -166,39 +165,34 @@ class LevelActivityFragment : Fragment() {
                         activityState.pulseZone = PulseZone.getPulseZone()[4]
                         updateUI.value = true
                     }
-
                 }
 
-                number in viewModel.pulseZone.easy + 1..viewModel.pulseZone.anaerobic -> {
+                number in viewModel.pulseZone.easy + 1..viewModel.pulseZone.fatBurning -> {
                     if (activityState.pulseZone.id != 3) {
                         viewModel.activityState.pulseZone = PulseZone.getPulseZone()[3]
                         updateUI.value = true
                     }
-
                 }
 
-                number in viewModel.pulseZone.anaerobic + 1..viewModel.pulseZone.aerobic -> {
+                number in viewModel.pulseZone.fatBurning + 1..viewModel.pulseZone.aerobic -> {
                     if (activityState.pulseZone.id != 2) {
                         viewModel.activityState.pulseZone = PulseZone.getPulseZone()[2]
                         updateUI.value = true
                     }
-
                 }
 
-                number in viewModel.pulseZone.anaerobic + 1..viewModel.pulseZone.aerobic -> {
+                number in viewModel.pulseZone.aerobic + 1..viewModel.pulseZone.anaerobic -> {
                     if (activityState.pulseZone.id != 1) {
                         activityState.pulseZone = PulseZone.getPulseZone()[1]
                         updateUI.value = true
                     }
-
                 }
 
-                number > viewModel.pulseZone.aerobic -> {
+                number > viewModel.pulseZone.anaerobic -> {
                     if (activityState.pulseZone.id != 0) {
                         activityState.pulseZone = PulseZone.getPulseZone()[0]
                         updateUI.value = true
                     }
-
                 }
             }
         }

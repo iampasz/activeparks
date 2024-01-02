@@ -12,10 +12,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -24,7 +22,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.ui.active.util.BluetoothService;
 import com.app.activeparks.ui.maps.MapsFragment;
 import com.app.activeparks.ui.profile.EditProfileActivity;
 import com.app.activeparks.util.Dictionarie;
@@ -49,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
     private ActivityMainBinding binding;
     private AppUpdateManager appUpdateManager;
-    private NavController navControllerHome;
+
     private NavController navControllerMain;
     private Preferences preferences;
     private final int PICK_IMAGE_REQUEST = 1;
@@ -59,14 +56,12 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.i("MAIN_ACTIVITY", "MainActivity onCreate");
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         appUpdateManager = AppUpdateManagerFactory.create(this);
 
-        navControllerHome = Navigation.findNavController(this, R.id.navFragmentsHomeUser);
+        NavController navControllerHome = Navigation.findNavController(this, R.id.navFragmentsHomeUser);
         NavigationUI.setupWithNavController(binding.iHomeUser.navHomeUser, navControllerHome);
 
         navControllerMain = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
@@ -133,9 +128,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
         if (preferences.getToken() != null && !preferences.getToken().isEmpty()) {
             binding.iHomeUser.tvUserName.setText(preferences.getUserName());
-            binding.iHomeUser.ivUser.setOnClickListener(v -> {
-                openGallery();
-            });
+            binding.iHomeUser.ivUser.setOnClickListener(v -> openGallery());
         } else {
             binding.iHomeUser.tvUserTitle.setText("Ласкаво просимо");
             binding.iHomeUser.ivUser.setVisibility(GONE);
@@ -155,10 +148,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
     public NavController getNavControllerMain() {
         return navControllerMain;
-    }
-
-    public NavController getNavControllerHome() {
-        return navControllerHome;
     }
 
     @Override
@@ -228,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
     public void updatePushToken() {
         Preferences preferences = new Preferences(this);
         if (preferences.getServer()) {
-            message("Тестовий сервер включений");
+            //message("Тестовий сервер включений");
         }
         if (preferences.getPushToken() != null) {
             new Repository(preferences).setPush(preferences.getPushToken());
@@ -256,10 +245,5 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-
-
-
-        Log.i("MAIN_ACTIVITY", "MainActivity onDestroy");
     }
 }
