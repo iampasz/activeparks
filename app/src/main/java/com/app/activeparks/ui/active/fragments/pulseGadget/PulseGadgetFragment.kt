@@ -10,11 +10,11 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +36,6 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
  */
 
 @Suppress("DEPRECATION")
-@SuppressLint("MissingPermission")
 class PulseGadgetFragment : Fragment() {
 
     lateinit var binding: FragmentPulseGadgetBinding
@@ -61,7 +60,8 @@ class PulseGadgetFragment : Fragment() {
             }
         }
     private val scanCallBack = object : ScanCallback() {
-        @SuppressLint("MissingPermission", "NotifyDataSetChanged")
+
+        @SuppressLint("NotifyDataSetChanged")
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             super.onScanResult(callbackType, result)
 
@@ -114,7 +114,7 @@ class PulseGadgetFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         bindBluetoothService()
-        initListener()
+
 
         if (BluetoothHelper.findBLEGadget(
                 requireActivity(),
@@ -122,6 +122,7 @@ class PulseGadgetFragment : Fragment() {
                 requestMultiplePermissions
             )
         ) {
+            initListener()
             scanBluetoothDevises(scanCallBack)
         } else {
             Toast.makeText(context, "Помилка підключення до блютуз", Toast.LENGTH_SHORT).show()
@@ -149,7 +150,7 @@ class PulseGadgetFragment : Fragment() {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("SuspiciousIndentation", "NotifyDataSetChanged")
     private fun initListener() {
         with(binding) {
             ivBack.setOnClickListener { requireActivity().onBackPressed() }
@@ -160,7 +161,7 @@ class PulseGadgetFragment : Fragment() {
                 adapter.list.submitList(listOf())
                 adapter.notifyDataSetChanged()
                 srUpdate.isRefreshing = false
-                scanBluetoothDevises(scanCallBack)
+                    scanBluetoothDevises(scanCallBack)
             }
         }
     }
@@ -177,9 +178,19 @@ class PulseGadgetFragment : Fragment() {
     }
 
     private fun scanBluetoothDevises(scanCallBack: ScanCallback) {
-        bluetoothDevices.clear()
-        bluetoothService?.scanBluetoothDevises(scanCallBack)
-        showScanningProgress()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            requestMultiplePermissions.launch(
+                arrayOf(
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                )
+            )
+
+            bluetoothDevices.clear()
+            bluetoothService?.scanBluetoothDevises(scanCallBack)
+            showScanningProgress()
+
+        }
     }
 
     override fun onDestroy() {

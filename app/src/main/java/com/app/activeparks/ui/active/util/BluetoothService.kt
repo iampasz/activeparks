@@ -15,7 +15,7 @@ import com.app.activeparks.ui.active.model.ActivityState
 
 class BluetoothService : Service() {
 
-    private lateinit var bluetoothLeScanner: BluetoothLeScanner
+    private  lateinit var bluetoothLeScanner: BluetoothLeScanner
     private lateinit var bluetoothManager: BluetoothManager
     private lateinit var bluetoothAdapter: BluetoothAdapter
     private var device: BluetoothDevice? = null
