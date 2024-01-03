@@ -77,7 +77,7 @@ data class ActivityInfoTrainingItem(
                 ActivityInfoTrainingItem(11,"0","Кроки", " ", R.drawable.ic_steps,
                     isSelected = false,
                     isPulseGadget = false,
-                    isOutside = true
+                    isOutside = false
                 ),
                 ActivityInfoTrainingItem(12,"0","Мінімальна висота", "(м)", R.drawable.ic_hight_up,
                     isSelected = false,

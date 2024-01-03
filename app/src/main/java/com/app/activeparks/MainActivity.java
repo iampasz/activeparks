@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         } else {
             binding.iHomeUser.tvUserTitle.setText("Ласкаво просимо");
             binding.iHomeUser.ivUser.setVisibility(GONE);
+            binding.iHomeUser.inNotification.setVisibility(GONE);
         }
 
         binding.iUserProfile.btnMoreInfo.setOnClickListener(v -> {
