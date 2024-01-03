@@ -142,6 +142,10 @@ class RegistrationFragment : Fragment() {
                     requireActivity(), listOf("public_profile", "email")
                 )
             }
+
+            tvLate.setOnClickListener {
+                requireActivity().finish()
+            }
         }
     }
 
