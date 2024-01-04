@@ -3,6 +3,7 @@ package com.app.activeparks.ui.active.fragments.pulseGadget
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
@@ -56,11 +57,10 @@ class PulseGadgetFragment : Fragment() {
     private var requestBluetooth: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                scanBluetoothDevises(scanCallBack)
+                initListener()
             }
         }
     private val scanCallBack = object : ScanCallback() {
-
         @SuppressLint("NotifyDataSetChanged")
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             super.onScanResult(callbackType, result)
@@ -97,7 +97,7 @@ class PulseGadgetFragment : Fragment() {
         ) { permissions ->
             when {
                 permissions.getOrDefault(Manifest.permission.BLUETOOTH_SCAN, false) -> {
-                    scanBluetoothDevises(scanCallBack)
+                   initListener()
                 }
             }
         }
@@ -115,17 +115,16 @@ class PulseGadgetFragment : Fragment() {
 
         bindBluetoothService()
 
+        val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
-        if (BluetoothHelper.findBLEGadget(
-                requireActivity(),
-                requestBluetooth,
-                requestMultiplePermissions
-            )
-        ) {
-            initListener()
-            scanBluetoothDevises(scanCallBack)
-        } else {
-            Toast.makeText(context, "Помилка підключення до блютуз", Toast.LENGTH_SHORT).show()
+        bluetoothAdapter?.let {
+            if (bluetoothAdapter.isEnabled) {
+                initListener()
+            } else {
+                Toast.makeText(context, "Помилка підключення до блютуз", Toast.LENGTH_SHORT).show()
+                val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                requestBluetooth.launch(enableBtIntent)
+            }
         }
 
         binding.rvPulseGadget.adapter = adapter
@@ -161,7 +160,7 @@ class PulseGadgetFragment : Fragment() {
                 adapter.list.submitList(listOf())
                 adapter.notifyDataSetChanged()
                 srUpdate.isRefreshing = false
-                    scanBluetoothDevises(scanCallBack)
+                scanBluetoothDevises(scanCallBack)
             }
         }
     }
@@ -185,11 +184,9 @@ class PulseGadgetFragment : Fragment() {
                     Manifest.permission.BLUETOOTH_CONNECT
                 )
             )
-
             bluetoothDevices.clear()
             bluetoothService?.scanBluetoothDevises(scanCallBack)
             showScanningProgress()
-
         }
     }
 
