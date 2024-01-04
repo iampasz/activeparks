@@ -33,7 +33,9 @@ import com.app.activeparks.ui.event.interfaces.ResponseCallBack
 import com.app.activeparks.ui.event.util.EventController
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
 import com.app.activeparks.ui.event.viewmodel.EventViewModel
+import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.replaceFragment
+import com.app.activeparks.util.extention.visible
 import com.applandeo.materialcalendarview.CalendarWeekDay
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
@@ -62,11 +64,20 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
     var nameList: MutableList<ItemEvent> = mutableListOf()
     val eventsListAdapter = EventsListAdapterKT(this)
 
+    private  lateinit var preferences:Preferences
+
+    private  lateinit var repository: Repository
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentEventsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        preferences = Preferences(this)
+
+        showCreateEventButton()
 
         val setDataResponseSuccessful = object : ResponseCallBack {
             override fun load(responseFromApi: String) {
@@ -253,9 +264,7 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
 
     private fun updateViewModelData() {
 
-        val repository: Repository
 
-        val preferences = Preferences(this)
 
         preferences.server = true
         repository = Repository(preferences)
@@ -332,5 +341,13 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
                 nameList[position].id
             )
         )
+    }
+
+    private fun showCreateEventButton(){
+        if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
+            binding.createEvent.gone()
+        } else {
+            binding.createEvent.visible()
+        }
     }
 }
