@@ -3,6 +3,7 @@ package com.app.activeparks.ui.active.fragments.pulseGadget
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
@@ -10,11 +11,11 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +37,6 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
  */
 
 @Suppress("DEPRECATION")
-@SuppressLint("MissingPermission")
 class PulseGadgetFragment : Fragment() {
 
     lateinit var binding: FragmentPulseGadgetBinding
@@ -57,11 +57,11 @@ class PulseGadgetFragment : Fragment() {
     private var requestBluetooth: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                scanBluetoothDevises(scanCallBack)
+                initListener()
             }
         }
     private val scanCallBack = object : ScanCallback() {
-        @SuppressLint("MissingPermission", "NotifyDataSetChanged")
+        @SuppressLint("NotifyDataSetChanged")
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             super.onScanResult(callbackType, result)
 
@@ -97,7 +97,7 @@ class PulseGadgetFragment : Fragment() {
         ) { permissions ->
             when {
                 permissions.getOrDefault(Manifest.permission.BLUETOOTH_SCAN, false) -> {
-                    scanBluetoothDevises(scanCallBack)
+                   initListener()
                 }
             }
         }
@@ -114,17 +114,17 @@ class PulseGadgetFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         bindBluetoothService()
-        initListener()
 
-        if (BluetoothHelper.findBLEGadget(
-                requireActivity(),
-                requestBluetooth,
-                requestMultiplePermissions
-            )
-        ) {
-            scanBluetoothDevises(scanCallBack)
-        } else {
-            Toast.makeText(context, "Помилка підключення до блютуз", Toast.LENGTH_SHORT).show()
+        val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+
+        bluetoothAdapter?.let {
+            if (bluetoothAdapter.isEnabled) {
+                initListener()
+            } else {
+                Toast.makeText(context, "Помилка підключення до блютуз", Toast.LENGTH_SHORT).show()
+                val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                requestBluetooth.launch(enableBtIntent)
+            }
         }
 
         binding.rvPulseGadget.adapter = adapter
@@ -149,7 +149,7 @@ class PulseGadgetFragment : Fragment() {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("SuspiciousIndentation", "NotifyDataSetChanged")
     private fun initListener() {
         with(binding) {
             ivBack.setOnClickListener { requireActivity().onBackPressed() }
@@ -177,9 +177,17 @@ class PulseGadgetFragment : Fragment() {
     }
 
     private fun scanBluetoothDevises(scanCallBack: ScanCallback) {
-        bluetoothDevices.clear()
-        bluetoothService?.scanBluetoothDevises(scanCallBack)
-        showScanningProgress()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            requestMultiplePermissions.launch(
+                arrayOf(
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                )
+            )
+            bluetoothDevices.clear()
+            bluetoothService?.scanBluetoothDevises(scanCallBack)
+            showScanningProgress()
+        }
     }
 
     override fun onDestroy() {
