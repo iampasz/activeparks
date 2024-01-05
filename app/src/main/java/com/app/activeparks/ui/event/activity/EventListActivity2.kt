@@ -13,17 +13,23 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.activeparks.data.model.calendar.CalendarModel
+import com.app.activeparks.data.model.clubs.Clubs
+import com.app.activeparks.data.model.clubs.ItemClub
 import com.app.activeparks.data.model.sportevents.EventList
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.sportevents.ItemEventTitle
 import com.app.activeparks.data.model.sportevents.SportEvents
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
+import com.app.activeparks.ui.clubs.ClubActivity
+import com.app.activeparks.ui.clubs.adapter.ClubsAdaper
 import com.app.activeparks.ui.event.adapter.EventTypeAdapter
 import com.app.activeparks.ui.event.adapter.EventsListAdaper
 import com.app.activeparks.ui.event.adapter.EventsListAdapterKT
@@ -39,6 +45,7 @@ import com.app.activeparks.util.extention.visible
 import com.applandeo.materialcalendarview.CalendarWeekDay
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
+import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentEventsBinding
@@ -52,6 +59,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Objects
 
+
 @Suppress("DEPRECATION")
 class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickListener {
 
@@ -63,12 +71,10 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
     private lateinit var evetTypeAdapter: EventTypeAdapter
     var nameList: MutableList<ItemEvent> = mutableListOf()
     val eventsListAdapter = EventsListAdapterKT(this)
+    private lateinit var preferences: Preferences
+    private lateinit var repository: Repository
 
-    private  lateinit var preferences:Preferences
-
-    private  lateinit var repository: Repository
-
-
+    private val clubsList: ArrayList<ItemClub> = java.util.ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -148,13 +154,15 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                filterList(s.toString())
+                //filterList(s.toString())
             }
         })
 
+        setToolBar()
+
     }
 
-    fun filterList(query: String) {
+    fun filterList() {
 //        val filteredList = originalList.filter { item ->
 //            // Здійснюємо фільтрацію за введеним текстом
 //            item.name.contains(query, ignoreCase = true)
@@ -264,8 +272,6 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
 
     private fun updateViewModelData() {
 
-
-
         preferences.server = true
         repository = Repository(preferences)
         disposable = repository.createEmptyEvent()
@@ -343,11 +349,74 @@ class EventListActivity2 : AppCompatActivity(), LocationListener, OnItemClickLis
         )
     }
 
-    private fun showCreateEventButton(){
+    private fun showCreateEventButton() {
         if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
             binding.createEvent.gone()
         } else {
             binding.createEvent.visible()
         }
+    }
+
+    fun setToolBar() {
+
+
+        val myTab = binding.selectFilter.newTab()
+        myTab.setCustomView(R.layout.custom_tab)
+        myTab.customView?.findViewById<TextView>(R.id.tabText)?.text = "ЗА ВІДСТАННЮ"
+
+        val myTab2 = binding.selectFilter.newTab()
+        myTab2.setCustomView(R.layout.custom_tab)
+        myTab2.customView?.findViewById<TextView>(R.id.tabText)?.text = "ЗА ЧАСОМ"
+
+        val myTab3 = binding.selectFilter.newTab()
+        myTab3.setCustomView(R.layout.custom_tab)
+        myTab3.customView?.findViewById<TextView>(R.id.tabText)?.text = "АКСТУАЛЬНЕ"
+
+
+
+        binding.selectFilter.addTab(myTab)
+        binding.selectFilter.addTab(myTab2)
+        binding.selectFilter.addTab(myTab3)
+
+        binding.selectFilter.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                tab?.customView?.findViewById<LinearLayout>(R.id.mybg)
+                    ?.setBackgroundResource(R.drawable.background_green)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                tab?.customView?.findViewById<LinearLayout>(R.id.mybg)
+                    ?.setBackgroundResource(R.drawable.background_gray_w_stroke)
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+
+        })
+    }
+
+
+    fun getAllClubs(limit: Int) {
+        val allClubs = repository.getClubsAll(limit.toString()).subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { result: Clubs ->
+                    clubsList.clear()
+                    clubsList.addAll(result.items)
+                    setClubsAdapter()
+                }
+            ) { error: Throwable? -> }
+    }
+
+    private fun setClubsAdapter() {
+        binding.listEvents.adapter = ClubsAdaper(this, clubsList)
+            .setOnClubsListener { itemClub ->
+                startActivity(
+                    Intent(this@EventListActivity2, ClubActivity::class.java).putExtra(
+                        "id",
+                        itemClub.id
+                    )
+                )
+            }
     }
 }
