@@ -97,7 +97,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.app.activeparks.ui.web.WebActivity" />
-        <activity android:name="com.app.activeparks.ui.event.activity.EventActivity" />
+        <activity android:name="com.app.activeparks.ui.event.activity.EventActivityOld" />
         <activity android:name="com.app.activeparks.ui.park.ParkActivity" />
         <activity android:name="com.app.activeparks.ui.calling.WebViewActivity" />
         <activity android:name="com.app.activeparks.ui.clubs.ClubActivity" />

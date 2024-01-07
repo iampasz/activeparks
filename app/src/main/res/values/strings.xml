@@ -272,4 +272,16 @@
 
     <string name="moving_activities">Рухові активності</string>
 
+
+    <string name="about_event">Про захід</string>
+    <string name="participants">Учасники</string>
+    <string name="gallery">Галерея</string>
+    <string name="join">Приєднатися</string>
+
+    <string name="time_for_start">До початку заходу</string>
+    <string name="day_short">дн</string>
+    <string name="hour_short">год</string>
+    <string name="minute_short">хв</string>
+    <string name="sec_short">сек</string>
+
 </resources>

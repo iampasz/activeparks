@@ -1,9 +1,11 @@
 package com.app.activeparks.di
 
+import androidx.lifecycle.ViewModelProvider
 import com.app.activeparks.ui.active.ActiveViewModel
 import com.app.activeparks.ui.active.fragments.pulseGadget.PulseGadgetViewModel
 import com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityViewModel
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
+import com.app.activeparks.ui.event.viewmodel.EventViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.blog.HomeBlogViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.clubs.HomeClubsViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.home.HomeEventsViewModel
@@ -30,4 +32,6 @@ val viewModelModule = module {
     viewModel { HomeClubsViewModel(get(), get()) }
     viewModel { HomeEventsViewModel(get(), get()) }
     viewModel { RegistrationViewModel(get(), androidContext()) }
+
+    viewModel { EventViewModel(get())}
 }

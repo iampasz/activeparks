@@ -30,7 +30,6 @@ import com.app.activeparks.data.model.sportevents.SportEvents;
 
 import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.storage.Preferences;
-import com.app.activeparks.data.useCase.eventState.EventStateUseCase;
 import com.app.activeparks.ui.event.util.EventModelFactory;
 
 import com.app.activeparks.ui.event.fragments.FragmentEventCreate;
@@ -54,7 +53,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Request;
 
 public class EventsListActivity extends AppCompatActivity implements LocationListener {
 
