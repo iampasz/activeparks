@@ -16,7 +16,7 @@ import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 
-import com.app.activeparks.ui.event.activity.EventActivity;
+import com.app.activeparks.ui.event.activity.EventFragment;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
 import com.app.activeparks.ui.event.util.EventModelFactory;
 import com.app.activeparks.ui.event.viewmodel.EventViewModel;
@@ -99,7 +99,7 @@ public class EventsListFragment extends Fragment {
         binding.listEvents.setAdapter(new EventsListAdaper(getActivity(), events.getItems()).setOnEventListener(new EventsListAdaper.EventsListener() {
             @Override
             public void onInfo(ItemEvent itemClub) {
-                startActivity(new Intent(getActivity(), EventActivity.class).putExtra("id", itemClub.getId()));
+                startActivity(new Intent(getActivity(), EventFragment.class).putExtra("id", itemClub.getId()));
             }
 
             @Override

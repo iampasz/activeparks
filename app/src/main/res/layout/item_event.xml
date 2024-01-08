@@ -2,13 +2,13 @@
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="250dp"
     android:elevation="0dp">
 
     <ImageView
         android:id="@+id/photo"
+        android:contentDescription="@string/icon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
@@ -16,6 +16,7 @@
 
     <ImageView
         android:id="@+id/gradient"
+        android:contentDescription="@string/icon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/shadow_gradient" />
@@ -42,11 +43,12 @@
 
             <ImageView
                 android:id="@+id/image_second"
+                android:contentDescription="@string/icon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/prew_user"></ImageView>
+                android:src="@drawable/prew_user"/>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -68,9 +70,10 @@
                 android:id="@+id/image_first"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:contentDescription="@string/icon"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/prew_user"></ImageView>
+                android:src="@drawable/prew_user"/>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -112,6 +115,7 @@
             android:id="@+id/grean_square"
             android:layout_width="6dp"
             android:layout_height="6dp"
+            android:contentDescription="@string/icon"
             android:src="@drawable/shape_green"
             app:layout_constraintBottom_toTopOf="@+id/name_event"
             app:layout_constraintStart_toStartOf="@+id/name_event"
@@ -143,6 +147,7 @@
             android:layout_width="4dp"
             android:layout_height="4dp"
             android:layout_marginStart="8dp"
+            android:contentDescription="@string/icon"
             android:src="@drawable/shape_circle_blue"
             app:layout_constraintBottom_toBottomOf="@+id/type_event"
             app:layout_constraintStart_toEndOf="@+id/type_event"

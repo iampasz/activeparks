@@ -2,22 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home"
+        android:id="@+id/nav_about_event"
+        android:icon="@drawable/ic_calendar_day"
         android:title="@string/about_event" />
 
     <item
-        android:id="@+id/navigation_maps"
-        android:icon="@drawable/ic_map"
+        android:id="@+id/nav_participant"
+        android:icon="@drawable/ic_ai_duration"
         android:title="@string/participants" />
 
     <item
-        android:id="@+id/navigation_scaner"
-        android:icon="@drawable/ic_scaner"
+        android:id="@+id/nav_gallery"
+        android:icon="@drawable/ic_image"
         android:title="@string/gallery" />
 
     <item
-        android:id="@+id/navigation_active"
-        android:icon="@drawable/ic_activity"
+        android:id="@+id/nav_join"
+        android:icon="@drawable/ic_exit"
         android:title="@string/join" />
 </menu>

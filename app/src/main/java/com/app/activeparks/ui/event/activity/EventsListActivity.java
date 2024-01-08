@@ -60,7 +60,7 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
     Disposable disposable;
 
     private CalendarView calendarView;
-    private TextView listStatus;
+  //  private TextView listStatus;
     private RecyclerView listClubOwner;
 
     private LocationManager locationManager;
@@ -103,7 +103,7 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
 
                 {
                     setAdapter(events);
-                    listStatus.setText("Жодного запланованого заходу");
+                   // listStatus.setText("Жодного запланованого заходу");
                 });
 
         viewModel.getCalendar().
@@ -165,7 +165,7 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
         listClubOwner.setAdapter(new EventsListAdaper(this, events.getItems()).setOnEventListener(new EventsListAdaper.EventsListener() {
             @Override
             public void onInfo(ItemEvent itemClub) {
-                startActivity(new Intent(getBaseContext(), EventActivity.class).putExtra("id", itemClub.getId()));
+                startActivity(new Intent(getBaseContext(), EventFragment.class).putExtra("id", itemClub.getId()));
             }
 
             @Override

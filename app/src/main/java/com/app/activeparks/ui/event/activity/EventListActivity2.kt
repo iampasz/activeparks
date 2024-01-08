@@ -172,7 +172,7 @@ class EventListActivity2 : AppCompatActivity(), LocationListener {
             EventsListAdaper.EventsListener {
             override fun onInfo(itemClub: ItemEvent) {
                 startActivity(
-                    Intent(baseContext, EventActivity::class.java).putExtra(
+                    Intent(baseContext, EventFragment::class.java).putExtra(
                         "id",
                         itemClub.id
                     )

@@ -284,4 +284,12 @@
     <string name="minute_short">хв</string>
     <string name="sec_short">сек</string>
 
+    <string name="place_address">Місце проведення</string>
+
+    <string name="join_to">Приєднатися до конференції</string>
+    <string name="about_event_dots">Про захід:</string>
+    <string name="coordinator">Координатор</string>
+    <string name="coordinators">Координатори</string>
+    <string name="event_participants">Учасники заходу</string>
+
 </resources>

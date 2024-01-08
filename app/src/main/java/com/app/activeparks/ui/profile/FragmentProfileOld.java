@@ -36,7 +36,7 @@ import com.app.activeparks.data.model.uservideo.UserVideoItem;
 import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
-import com.app.activeparks.ui.event.activity.EventActivity;
+import com.app.activeparks.ui.event.activity.EventFragment;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
 import com.app.activeparks.ui.profile.uservideo.UserAddVideoActivity;
 import com.app.activeparks.ui.profile.uservideo.adapter.UserVideoAdapter;
@@ -303,18 +303,10 @@ public class FragmentProfileOld extends Fragment implements SwipeRefreshLayout.O
         super.onResume();
         statusView.setVisibility(View.VISIBLE);
         switch (viewModel.select) {
-            case 0:
-                viewModel.clubs();
-                break;
-            case 1:
-                viewModel.event();
-                break;
-            case 2:
-                viewModel.journal();
-                break;
-            case 3:
-                viewModel.userVideoList();
-                break;
+            case 0 -> viewModel.clubs();
+            case 1 -> viewModel.event();
+            case 2 -> viewModel.journal();
+            case 3 -> viewModel.userVideoList();
         }
     }
 
@@ -326,6 +318,7 @@ public class FragmentProfileOld extends Fragment implements SwipeRefreshLayout.O
         setVersionName(view);
     }
 
+    @SuppressLint("SetTextI18n")
     private static void setVersionName(@NonNull View view) {
         if (BuildConfig.DEBUG) {
             TextView tvVersion = view.findViewById(R.id.tvVersionName);
@@ -354,7 +347,7 @@ public class FragmentProfileOld extends Fragment implements SwipeRefreshLayout.O
             profileList.setAdapter(new EventsListAdaper(getContext(), result).setOnEventListener(new EventsListAdaper.EventsListener() {
                 @Override
                 public void onInfo(ItemEvent itemClub) {
-                    startActivity(new Intent(getContext(), EventActivity.class).putExtra("id", itemClub.getId()));
+                    startActivity(new Intent(getContext(), EventFragment.class).putExtra("id", itemClub.getId()));
                 }
 
                 @Override
@@ -371,7 +364,7 @@ public class FragmentProfileOld extends Fragment implements SwipeRefreshLayout.O
             profileList.setAdapter(new EventsListAdaper(getContext(), result.getItems()).setOnEventListener(new EventsListAdaper.EventsListener() {
                 @Override
                 public void onInfo(ItemEvent itemClub) {
-                    startActivity(new Intent(getContext(), EventActivity.class).putExtra("id", itemClub.getId()));
+                    startActivity(new Intent(getContext(), EventFragment.class).putExtra("id", itemClub.getId()));
                 }
 
                 @Override
@@ -410,7 +403,7 @@ public class FragmentProfileOld extends Fragment implements SwipeRefreshLayout.O
             profileList.setAdapter(adaper.setListener(new JournalListAdaper.JournalListener() {
                 @Override
                 public void onInfo(WorkoutItem workoutItem) {
-                    startActivity(new Intent(getContext(), EventActivity.class).putExtra("id", workoutItem.getId()));
+                    startActivity(new Intent(getContext(), EventFragment.class).putExtra("id", workoutItem.getId()));
                 }
 
                 @Override

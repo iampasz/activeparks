@@ -22,6 +22,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.storage.Preferences;
+import com.app.activeparks.ui.event.activity.EventFragment;
 import com.app.activeparks.ui.maps.MapsFragment;
 import com.app.activeparks.ui.profile.EditProfileActivity;
 import com.app.activeparks.util.Dictionarie;
@@ -133,6 +134,8 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
             binding.iHomeUser.tvUserTitle.setText("Ласкаво просимо");
             binding.iHomeUser.ivUser.setVisibility(GONE);
         }
+
+        getSupportFragmentManager().beginTransaction().add(R.id.container, new EventFragment()).commit();
     }
 
 
@@ -216,9 +219,9 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
 
     public void updatePushToken() {
         Preferences preferences = new Preferences(this);
-        if (preferences.getServer()) {
-            //message("Тестовий сервер включений");
-        }
+//        if (preferences.getServer()) {
+//            //message("Тестовий сервер включений");
+//        }
         if (preferences.getPushToken() != null) {
             new Repository(preferences).setPush(preferences.getPushToken());
         }
