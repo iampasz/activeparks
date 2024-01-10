@@ -21,6 +21,7 @@ import com.app.activeparks.ui.event.interfaces.EventScannerListener
 import com.app.activeparks.ui.event.viewmodel.EventViewModel
 import com.app.activeparks.ui.routepoint.RoutePointFragment
 import com.app.activeparks.util.MapsViewController
+import com.app.activeparks.util.extention.removeFragment
 import com.bumptech.glide.Glide
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentEventBinding
@@ -53,11 +54,15 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter, SwipeR
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-       // viewModel.getEvent(intent.getStringExtra("id"))
+            // viewModel.getEvent(intent.getStringExtra("id"))
 
          navEventContainer = findNavController(requireActivity(), R.id.nav_event_container)
 
         initNavigation()
+
+        binding.close.setOnClickListener{
+            onBackPressed()
+        }
 
         mapsViewController = MapsViewController(binding.eventMap, requireContext())
 
@@ -389,10 +394,9 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter, SwipeR
         viewModel.meetingRecords()
     }
 
-//    override fun onBackPressed() {
-//        super.onBackPressed()
-//        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out)
-//    }
+    private fun onBackPressed() {
+        parentFragmentManager.removeFragment(this@EventFragment)
+    }
 
     override fun onRefresh() {
        // swipeRefreshLayout.setRefreshing(false)

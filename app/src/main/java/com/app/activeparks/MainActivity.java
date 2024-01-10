@@ -1,9 +1,13 @@
 package com.app.activeparks;
 
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import static com.google.gson.internal.$Gson$Types.arrayOf;
+
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -14,7 +18,10 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -135,8 +142,26 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
             binding.iHomeUser.ivUser.setVisibility(GONE);
         }
 
-        getSupportFragmentManager().beginTransaction().add(R.id.container, new EventFragment()).commit();
+
+        requestPermissionLauncher.launch(
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+
+
+        requestPermissions(
+                new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+                1);
+
+       // getSupportFragmentManager().beginTransaction().add(R.id.container, new EventFragment()).commit();
     }
+
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+
+                } else {
+
+                }
+            });
 
 
     private void openGallery() {
@@ -144,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteface 
         startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
     }
 
-    private void setVisibleHome(int visibleHome, int visibleMain) {
+     public void setVisibleHome(int visibleHome, int visibleMain) {
         binding.iHomeUser.getRoot().setVisibility(visibleHome);
         findViewById(R.id.nav_host_fragment_activity_main).setVisibility(visibleMain);
     }

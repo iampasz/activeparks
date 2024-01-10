@@ -166,6 +166,9 @@ class ActivityForActivity : AppCompatActivity() {
         binding = FragmentActiveBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        startService(Intent(this, BluetoothService::class.java))
+
+        bindBluetoothService()
         val navView: BottomNavigationView = binding.topPanel.navActivitySettings
 
         navController = findNavController(R.id.navActivity)

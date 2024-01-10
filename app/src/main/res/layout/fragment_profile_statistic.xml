@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/shape_blue_left_corner"
         android:orientation="horizontal"
-        android:paddingLeft="5dp"
+        android:paddingStart="5dp"
         android:paddingTop="5dp"
         android:paddingEnd="14dp"
         android:paddingBottom="5dp"
@@ -23,15 +23,17 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:paddingEnd="5dp"
+            android:contentDescription="@string/icon"
             app:srcCompat="@drawable/ic_at_at_home"
-            app:tint="@color/white" />
+            app:tint="@color/white"
+            tools:ignore="RtlSymmetry" />
 
         <TextView
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Всі активності"
+            android:text="@string/all_activities"
             android:textAllCaps="true"
             android:textColor="@color/white" />
 
@@ -42,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="14dp"
-        android:text="Огляд"
+        android:text="@string/review"
         android:textAllCaps="true"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
@@ -51,7 +53,6 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/select_filter"
-        style="@style/Base.Widget.Design.TabLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -108,7 +109,7 @@
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Активності"
+        android:text="@string/activities"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvTrainingInfo" />
 
@@ -116,7 +117,7 @@
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/text_counter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

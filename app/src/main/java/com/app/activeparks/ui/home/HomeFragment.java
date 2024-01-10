@@ -25,7 +25,7 @@ import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.ClubsListActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
 import com.app.activeparks.ui.event.activity.EventFragment;
-import com.app.activeparks.ui.event.activity.EventListActivity2;
+import com.app.activeparks.ui.event.activity.EventListFragment;
 import com.app.activeparks.ui.home.adapter.HomeAdaper;
 import com.app.activeparks.ui.home.adapter.HorizontalAdaperEvents;
 import com.app.activeparks.ui.home.adapter.ParkHorizontalAdaper;
@@ -188,7 +188,7 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
 
         binding.allParsk.setOnClickListener(v -> ((FragmentInteface) requireActivity()).navigation(R.id.navigation_maps));
 
-        binding.allActivities.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventListActivity2.class)));
+        binding.allActivities.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventListFragment.class)));
 
         binding.allClubs.setOnClickListener(v -> startActivity(new Intent(getActivity(), ClubsListActivity.class)));
 

@@ -35,7 +35,7 @@ class LevelActivityFragment : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -196,5 +196,13 @@ class LevelActivityFragment : Fragment() {
                 }
             }
         }
+//        val currentDevice = viewModel.activityState.device
+//        currentDevice?.connectGatt(
+//            requireContext(),
+//            false,
+//           // BluetoothHelper.getCallBack(requireActivity(), viewModel)
+//        )
     }
+
+
 }

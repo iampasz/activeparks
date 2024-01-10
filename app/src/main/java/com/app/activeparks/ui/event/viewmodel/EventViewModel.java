@@ -11,6 +11,7 @@ import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.dictionaries.BaseDictionaries;
 import com.app.activeparks.data.model.meetings.MeetingsModel;
 import com.app.activeparks.data.model.points.RoutePoint;
+import com.app.activeparks.data.model.sportevents.EventList;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.data.repository.Repository;
@@ -35,10 +36,12 @@ public class EventViewModel extends ViewModel {
 
     private final MutableLiveData<ItemEvent> mItemEvent;
     private final MutableLiveData<SportEvents> mSportEvents;
+    private final MutableLiveData<EventList> testSportEvents;
     private final MutableLiveData<String> location = new MutableLiveData<>();
     private final MutableLiveData<CalendarModel> calendar = new MutableLiveData<>();
     private final MutableLiveData<List<MeetingsModel.MeetingItem>> mMeeting = new MutableLiveData<>();
     private List<BaseDictionaries> eventHoldingStatuses = new ArrayList<>();
+    private final List<ItemEvent> testSportEvent = new ArrayList<>();
     private final List<ItemEvent> mSportEvent = new ArrayList<>();
     public String mId;
 
@@ -60,6 +63,7 @@ public class EventViewModel extends ViewModel {
         repository = new Repository(preferences);
         mItemEvent = new MutableLiveData<>();
         mSportEvents = new MutableLiveData<>();
+        testSportEvents = new MutableLiveData<>();
 
         try {
             if (preferences.getDictionarie() != null) {
@@ -75,6 +79,10 @@ public class EventViewModel extends ViewModel {
 
     public LiveData<SportEvents> getSportEventsList() {
         return mSportEvents;
+    }
+
+    public LiveData<EventList> getTestSportEventsList() {
+        return testSportEvents;
     }
 
     public LiveData<CalendarModel> getCalendar() {
@@ -125,7 +133,7 @@ public class EventViewModel extends ViewModel {
     }
 
     public void calendarEvent(Date date, String id) {
-        Disposable calendarEventRequest = repository.calendarEventRequest(date, id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        Disposable calendarEvent = repository.calendarEventRequest(date, id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             if (result != null) {
                                 calendar.setValue(result);
@@ -133,7 +141,8 @@ public class EventViewModel extends ViewModel {
                         },
                         error -> {
                         });
-        compositeDisposable.add(calendarEventRequest);
+
+        compositeDisposable.add(calendarEvent);
     }
 
     public void getEventsList() {
@@ -179,6 +188,35 @@ public class EventViewModel extends ViewModel {
                         });
 
         compositeDisposable.add(eventsDay);
+    }
+
+    public void testEventsDay(String date) {
+        eventSelectDay = date;
+
+        Map<String, String> data = new HashMap<>();
+        data.put("offset", "0");
+        data.put("limit", "10");
+        data.put("filters[startsFrom]", date);
+        data.put("filters[startsTo]", date);
+
+        if (eventFilter == 0) {
+            Log.d("test_log", "0" + filterLongitude.toString());
+            data.putAll(filterLongitude);
+        } else if (eventFilter == 1) {
+            data.put("sort[startsAt]", "asc");
+        } else if (eventFilter == 2) {
+            data.put("sort[startsAt]", "asc");
+            data.put("filters[holdingstatus]", "active");
+        }
+        Disposable myEvents = repository
+                .eventsDay(data)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> testStatusMapper(result.getItems()),
+                        error -> {
+                        });
+
+        compositeDisposable.add(myEvents);
     }
 
     public void applyUser() {
@@ -239,7 +277,21 @@ public class EventViewModel extends ViewModel {
             mSportEvent.add(itemEvent1);
         }
         SportEvents sportEvents = new SportEvents().setItems(mSportEvent);
-        mSportEvents.setValue(sportEvents);
+         mSportEvents.setValue(sportEvents);
+    }
+
+    public void testStatusMapper(List<ItemEvent> itemEvent) {
+        testSportEvent.clear();
+        for (ItemEvent itemEvent1 : itemEvent) {
+            for (BaseDictionaries eventHoldingStatuses : eventHoldingStatuses) {
+                if (itemEvent1.getHoldingStatusId().equals(eventHoldingStatuses.getId())) {
+                    itemEvent1.setHoldingStatusText(eventHoldingStatuses.getTitle());
+                }
+            }
+            testSportEvent.add(itemEvent1);
+        }
+        EventList eventLists = new EventList(testSportEvent);
+        testSportEvents.setValue(eventLists);
     }
 
     public String statusMapper(String status) {
@@ -257,7 +309,7 @@ public class EventViewModel extends ViewModel {
     }
 
     public void location(double lat, double lon) {
-        Disposable locationRepo = repository.location("" + lat, "" + lon).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        Disposable locationRepo =   repository.location("" + lat, "" + lon).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             if (result.getAddress() != null) {
                                 String address = "";
@@ -281,6 +333,8 @@ public class EventViewModel extends ViewModel {
 
                                 location.setValue(result.getDisplayName());
                             }
+
+
                         },
                         error -> location.setValue("Київ"));
         compositeDisposable.add(locationRepo);
