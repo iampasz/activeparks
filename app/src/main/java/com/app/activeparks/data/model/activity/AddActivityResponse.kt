@@ -40,7 +40,7 @@ data class AddActivityResponse(
 	val tiltle: String? = null,
 	@SerializedName("id")
 	var id: String? = null,
-	@SerializedName("image")
+	@SerializedName("coverImage")
 	val image: String? = null,
 	@SerializedName("temp")
 	val temp: String? = null,

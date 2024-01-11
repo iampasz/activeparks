@@ -1,4 +1,4 @@
-package com.app.activeparks.ui.homeWithUser.fragments.home
+package com.app.activeparks.ui.homeWithUser.fragments.event
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.app.activeparks.ui.event.activity.EventActivity
 import com.app.activeparks.ui.event.activity.EventListActivity2
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.visible
@@ -15,7 +16,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class HomeEventsFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeEventsBinding
-    val adapter = HomeEventsAdapter()
+    val adapter = HomeEventsAdapter{
+        startActivity(Intent(activity, EventActivity::class.java).putExtra("id", it.id))
+    }
     private val viewModel: HomeEventsViewModel by viewModel()
 
     override fun onCreateView(

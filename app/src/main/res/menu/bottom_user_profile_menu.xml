@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/navClubUser"
-        android:icon="@drawable/ic_home_clabs"
+        android:icon="@drawable/ic_home_clubs"
         android:title="@string/tv_menu_clubs" />
 
     <item
@@ -20,10 +20,5 @@
         android:id="@+id/navVideoUser"
         android:icon="@drawable/ic_video_camera"
         android:title="@string/tv_video" />
-
-    <item
-        android:id="@+id/navHealsUser"
-        android:icon="@drawable/ic_heart_user"
-        android:title="@string/tv_heals" />
 
 </menu>

@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.app.activeparks.ui.homeWithUser.fragments.home.HomeEventsFragment">
+    android:background="@color/white"
+    tools:context="com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsFragment">
 
     <TextView
         android:id="@+id/tvAllClubs"
@@ -76,7 +77,6 @@
         android:id="@+id/pbClubs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/rvClubs"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/rvClubs"
         app:layout_constraintTop_toTopOf="@+id/rvClubs" />

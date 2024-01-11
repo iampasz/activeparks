@@ -287,12 +287,12 @@
                         android:id="@+id/all_parsk"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_medium"
                         android:layout_marginTop="8dp"
+                        android:fontFamily="@font/montserrat_medium"
                         android:gravity="right"
                         android:text="Більше"
-                        android:textSize="14sp"
-                        android:textColor="@color/link_color" />
+                        android:textColor="@color/link_color"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <androidx.viewpager2.widget.ViewPager2

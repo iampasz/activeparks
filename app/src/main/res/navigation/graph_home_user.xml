@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navEventsHomeUser"
-        android:name="com.app.activeparks.ui.homeWithUser.fragments.home.HomeEventsFragment"
+        android:name="com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsFragment"
         android:label="@string/tv_menu_events"
         tools:layout="@layout/fragment_home_events" >
         <action

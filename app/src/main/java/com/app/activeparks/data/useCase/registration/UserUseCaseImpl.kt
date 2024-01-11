@@ -91,16 +91,21 @@ data class UserUseCaseImpl(
             )
         )
         preferences.token = response?.token ?: ""
+        preferences.id = response?.payload?.id ?: ""
+    }
+
+    override suspend fun updateUser(id: String, user: User): User? {
+        return userRepository.updateUser(id, user)
     }
 
 
     //Dao
     override suspend fun insertUser(user: User) {
         userRepository.insertUser(user)
-        preferences.userName = if (user.firstName.isNullOrEmpty()) {
+        preferences.userName = if (user.firstName.isNullOrEmpty() || user.lastName.isNullOrEmpty()) {
             user.nickname ?: ""
         } else {
-            user.firstName
+            "${user.firstName} ${user.lastName}"
         }
     }
 

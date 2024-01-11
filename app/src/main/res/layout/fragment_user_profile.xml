@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
+    android:paddingBottom="8dp"
     tools:context="com.app.activeparks.ui.home.HomeFragment">
 
     <View
@@ -30,21 +31,24 @@
         app:layout_constraintTop_toTopOf="@+id/vToolBar" />
 
     <ImageView
-        android:id="@+id/inNotification"
+        android:id="@+id/ivMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
+        android:padding="8dp"
         android:src="@drawable/ic_menu"
         app:layout_constraintBottom_toBottomOf="@+id/tvMain"
         app:layout_constraintEnd_toEndOf="@+id/vToolBar"
         app:layout_constraintTop_toTopOf="@+id/tvMain" />
 
-    <View
+    <ImageView
         android:id="@+id/vBackgroundUser"
         android:layout_width="match_parent"
         android:layout_height="171dp"
+        android:scaleType="centerCrop"
         android:background="@color/bg_2"
-        app:layout_constraintTop_toBottomOf="@+id/vToolBar" />
+        app:layout_constraintTop_toBottomOf="@+id/vToolBar"
+        tools:layout_editor_absoluteX="0dp" />
 
     <ImageView
         android:id="@+id/ivLogoUser"
@@ -60,11 +64,11 @@
         android:id="@+id/ivUser"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/ic_camera"
         app:layout_constraintBottom_toBottomOf="@+id/ivLogoUser"
         app:layout_constraintEnd_toEndOf="@+id/ivLogoUser"
         app:layout_constraintStart_toStartOf="@+id/ivLogoUser"
         app:layout_constraintTop_toTopOf="@+id/ivLogoUser" />
+
 
     <ImageView
         android:id="@+id/ivUserCircle"
@@ -81,25 +85,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:text="Сидоренко Вадим"
         android:textColor="@color/purple_500"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vBackgroundUser"
-        android:text="Сидоренко Вадим" />
+        app:layout_constraintTop_toBottomOf="@+id/vBackgroundUser" />
 
     <TextView
         android:id="@+id/tvUserVerifide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:text="Верифікований користувач"
         android:textColor="@color/dark_gray_1"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserName"
-        android:text="Верифікований користувач" />
+        app:layout_constraintTop_toBottomOf="@+id/tvUserName" />
 
     <android.widget.Button
         android:id="@+id/btnMoreInfo"
@@ -117,34 +121,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvUserVerifide" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navProfileUser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:elevation="16dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
-        app:itemBackground="@drawable/bottom_line_item_selector"
-        app:itemIconTint="@color/bottom_bar_item_selector"
-        app:itemTextColor="@color/bottom_bar_item_selector"
-        app:labelVisibilityMode="labeled"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnMoreInfo"
-        app:menu="@menu/bottom_user_profile_menu" />
-
-    <fragment
-        android:id="@+id/navFragmentsUserProfile"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/navProfileUser"
-        app:navGraph="@navigation/graph_profile_user" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

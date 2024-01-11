@@ -24,7 +24,7 @@ data class ActivityInfoStatisticTrainingItem(
                     isPulseGadget = false,
                     isOutside = true
                 ),
-                ActivityInfoStatisticTrainingItem(1,"0","Відвідано заходів", "", R.drawable.ic_home_clabs,
+                ActivityInfoStatisticTrainingItem(1,"0","Відвідано заходів", "", R.drawable.ic_home_clubs,
                     isSelected = false,
                     isPulseGadget = false,
                     isOutside = true

@@ -1,5 +1,6 @@
 package com.app.activeparks.data.useCase.eventState
 
+import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import com.app.activeparks.data.repository.eventState.EventStateRepository
 import com.app.activeparks.ui.active.model.EventState
 
@@ -18,5 +19,9 @@ class EventStateUseCaseImpl(
 
     override suspend fun deleteEventState(eventState: EventState) {
         repository.deleteEventState(eventState)
+    }
+
+    override suspend fun getEvents(): ListItemEventResponse? {
+        return repository.getEvents()
     }
 }

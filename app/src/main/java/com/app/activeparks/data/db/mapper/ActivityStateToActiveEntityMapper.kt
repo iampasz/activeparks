@@ -1,5 +1,6 @@
 package com.app.activeparks.data.db.mapper
 
+import android.net.Uri
 import com.app.activeparks.data.db.entity.ActiveEntity
 import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
 import com.app.activeparks.ui.active.model.ActivityState
@@ -20,7 +21,8 @@ class ActivityStateToActiveEntityMapper {
             currentActivity: CurrentActivity,
             activityState: ActivityState,
             activityInfoItems: List<ActivityInfoTrainingItem>,
-            activityTime: ActivityTime
+            activityTime: ActivityTime,
+            uri: String
         ): ActiveEntity {
             return ActiveEntity(
                 UUID.randomUUID().toString(),
@@ -44,7 +46,7 @@ class ActivityStateToActiveEntityMapper {
                 currentActivity.feeling?.id ?: 0,
                 startInfo.weather.unit,
                 activityState.activeRoad.getListForBack(),
-                currentActivity.uri.toString(),
+                uri,
                 listOf(),
                 activityInfoItems[3].number,
                 if (currentActivity.titleActivity.isNullOrEmpty()) {
@@ -58,7 +60,7 @@ class ActivityStateToActiveEntityMapper {
                 startInfo.startPoint.unit,
                 "0",
                 "",
-                activityState.activeRoad.getListForBack()
+                listOf()
             )
         }
     }

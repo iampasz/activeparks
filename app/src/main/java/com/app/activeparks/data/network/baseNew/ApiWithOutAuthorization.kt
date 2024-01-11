@@ -9,8 +9,10 @@ import com.app.activeparks.data.model.registration.SendCodeEmailRequest
 import com.app.activeparks.data.model.registration.SendCodePhoneRequest
 import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswordRequest
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
+import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 /**
@@ -46,4 +48,6 @@ interface ApiWithOutAuthorization {
     suspend fun resetPassword(
         @Body request: ResetPasswordResponse
     ): Response<ResponseToken>
+    @GET("api/v1/sport-events/five-sport-event?&sort[startsAt]=asc")
+    suspend fun getEvents(): Response<ListItemEventResponse>
 }

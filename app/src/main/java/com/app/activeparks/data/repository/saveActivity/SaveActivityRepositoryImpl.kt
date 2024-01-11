@@ -2,6 +2,7 @@ package com.app.activeparks.data.repository.saveActivity
 
 import com.app.activeparks.data.db.dao.ActiveDao
 import com.app.activeparks.data.db.entity.ActiveEntity
+import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.network.NetworkManager
 
@@ -23,5 +24,9 @@ class SaveActivityRepositoryImpl(
 
     override suspend fun getActives(): List<ActiveEntity> {
         return dao.getActives()
+    }
+
+    override suspend fun getWorkoutsActivity(): ActivityResponse? {
+        return networkManager.getWorkoutsActivity()
     }
 }

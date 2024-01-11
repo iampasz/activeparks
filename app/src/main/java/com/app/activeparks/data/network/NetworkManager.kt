@@ -1,5 +1,7 @@
 package com.app.activeparks.data.network
 
+import com.app.activeparks.data.model.Default
+import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.registration.AdditionData
 import com.app.activeparks.data.model.registration.ForgotPasswordRequest
@@ -16,9 +18,11 @@ import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswordRequest
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
+import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import com.app.activeparks.data.model.statistic.StatisticResponse
 import com.app.activeparks.data.model.weather.WeatherResponse
 import retrofit2.Response
+import java.io.File
 
 /**
  * Created by O.Dziuba on 27.11.2023.
@@ -38,6 +42,7 @@ interface NetworkManager {
     suspend fun forgotPassword(request: ForgotPasswordRequest): ResponseSuccess?
     suspend fun verificationCode(request: VerificationCodeForgotPasswordRequest): ResponseSuccess?
     suspend fun resetPassword(request: ResetPasswordResponse): ResponseToken?
+    suspend fun getEvents(): ListItemEventResponse?
 
 
     //With Authorization
@@ -46,6 +51,13 @@ interface NetworkManager {
     suspend fun setHeartRateZones(request: PulseZoneRequest): ResponseSuccess?
     suspend fun getHeartRateZones(): PulseZoneRequest?
     suspend fun createActivity(request: AddActivityResponse): ResponseId?
+    suspend fun getWorkoutsActivity(): ActivityResponse?
     suspend fun getUser(id: String): User?
     suspend fun getStatistics(from: String, to: String): StatisticResponse?
+    suspend fun updateFile(
+        type: String,
+        file: File
+    ): Default?
+
+    suspend fun updateUser(id: String, user: User): User?
 }

@@ -93,5 +93,7 @@
     <color name="registration_main">#31c5ca</color>
     <color name="registration_tint">#FF5100</color>
 
+    <color name="separator_edit_profile">#98E7E8</color>
+
 
 </resources>

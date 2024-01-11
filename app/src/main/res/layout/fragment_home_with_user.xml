@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical"
     tools:context="com.app.activeparks.ui.home.HomeFragment">
 
     <View
@@ -38,11 +37,12 @@
         app:layout_constraintEnd_toEndOf="@+id/vToolBar"
         app:layout_constraintTop_toTopOf="@+id/tvMain" />
 
-    <View
+    <ImageView
         android:id="@+id/vBackgroundUser"
         android:layout_width="match_parent"
         android:layout_height="171dp"
         android:background="@color/bg_2"
+        android:scaleType="centerCrop"
         app:layout_constraintTop_toBottomOf="@+id/vToolBar" />
 
     <ImageView
@@ -85,48 +85,18 @@
         android:id="@+id/ivUser"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/ic_camera"
         app:layout_constraintBottom_toBottomOf="@+id/ivLogoUser"
         app:layout_constraintEnd_toEndOf="@+id/ivLogoUser"
         app:layout_constraintStart_toStartOf="@+id/ivLogoUser"
-        app:layout_constraintTop_toTopOf="@+id/ivLogoUser"  />
+        app:layout_constraintTop_toTopOf="@+id/ivLogoUser" />
 
     <ImageView
         android:id="@+id/ivUserCircle"
         android:layout_width="112dp"
         android:layout_height="112dp"
+        android:src="@drawable/ic_circle_user"
         app:layout_constraintBottom_toBottomOf="@+id/ivLogoUser"
         app:layout_constraintEnd_toEndOf="@+id/ivLogoUser"
         app:layout_constraintStart_toStartOf="@+id/ivLogoUser"
-        app:layout_constraintTop_toTopOf="@+id/ivLogoUser"
-        android:src="@drawable/ic_circle_user" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navHomeUser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="15dp"
-        android:paddingTop="15dp"
-        android:elevation="16dp"
-        app:itemBackground="@drawable/bottom_line_item_selector"
-        app:itemIconTint="@color/bottom_bar_item_selector"
-        app:itemTextColor="@color/bottom_bar_item_selector"
-        app:labelVisibilityMode="labeled"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vBackgroundUser"
-        app:menu="@menu/bottom_home_use_menu" />
-
-    <fragment
-        android:id="@+id/navFragmentsHomeUser"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/navHomeUser"
-        app:navGraph="@navigation/graph_home_user" />
-
+        app:layout_constraintTop_toTopOf="@+id/ivLogoUser" />
 </androidx.constraintlayout.widget.ConstraintLayout>

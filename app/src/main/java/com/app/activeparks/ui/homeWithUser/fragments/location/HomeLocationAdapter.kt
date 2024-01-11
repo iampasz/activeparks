@@ -16,6 +16,7 @@ import com.technodreams.activeparks.databinding.ItemHomeLocationListBinding
  * Created by O.Dziuba on 18.12.2023.
  */
 class HomeLocationAdapter(
+    private val park: (ItemSportsground) -> Unit
 ) : RecyclerView.Adapter<HomeLocationAdapter.LevelOfActivityVH>() {
 
     class LevelOfActivityVH(binding: ItemHomeLocationListBinding) :
@@ -66,6 +67,10 @@ class HomeLocationAdapter(
                 .load(item.photo)
                 .error(R.drawable.ic_prew)
                 .into(ivNews)
+
+            ivNews.setOnClickListener {
+                park(item)
+            }
         }
     }
 }

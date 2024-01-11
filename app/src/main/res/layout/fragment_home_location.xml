@@ -3,13 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.app.activeparks.ui.homeWithUser.fragments.home.HomeEventsFragment">
+    android:background="@color/white"
+    tools:context="com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsFragment">
 
     <TextView
         android:id="@+id/tvAllPArks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
+        android:padding="8dp"
         android:text="@string/tv_all_parks"
         android:textColor="@color/color_park"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +37,6 @@
         android:id="@+id/pbParks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/rvLocations"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/rvLocations"
         app:layout_constraintTop_toTopOf="@+id/rvLocations" />

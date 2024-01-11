@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="com.app.activeparks.ui.home.HomeFragment">
+
+    <ImageView
+        android:id="@+id/ivBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_back_action"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMain"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvMain" />
+
+    <View
+        android:id="@+id/vToolBar"
+        android:layout_width="0dp"
+        android:layout_height="58dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/profile"
+        android:textAllCaps="true"
+        android:textColor="@color/purple_500"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/vToolBar"
+        app:layout_constraintEnd_toEndOf="@+id/vToolBar"
+        app:layout_constraintStart_toStartOf="@+id/vToolBar"
+        app:layout_constraintTop_toTopOf="@+id/vToolBar" />
+
+    <ImageView
+        android:id="@+id/ivEditProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_edit_user_profile"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMain"
+        app:layout_constraintEnd_toEndOf="@+id/vToolBar"
+        app:layout_constraintTop_toTopOf="@+id/tvMain" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vToolBar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/light_gray">
+
+            <ImageView
+                android:id="@+id/vBackgroundUser"
+                android:layout_width="0dp"
+                android:layout_height="171dp"
+                android:scaleType="centerCrop"
+                android:background="@color/bg_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivLogoUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="64dp"
+                android:src="@drawable/ic_logo_registration"
+                app:layout_constraintBottom_toBottomOf="@+id/vBackgroundUser"
+                app:layout_constraintEnd_toEndOf="@+id/vBackgroundUser"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/ivUserCircle"
+                app:layout_constraintTop_toTopOf="@+id/vBackgroundUser" />
+
+            <ImageView
+                android:id="@+id/ivAddUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_camera"
+                app:layout_constraintBottom_toBottomOf="@+id/ivUser"
+                app:layout_constraintEnd_toEndOf="@+id/ivUser"
+                app:layout_constraintStart_toStartOf="@+id/ivUser"
+                app:layout_constraintTop_toTopOf="@+id/ivUser" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ivUser"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/vBackgroundUser"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/vBackgroundUser" />
+
+            <ImageView
+                android:id="@+id/ivAddUserBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/ic_camera_white"
+                app:layout_constraintBottom_toBottomOf="@+id/vBackgroundUser"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivUserCircle"
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:src="@drawable/ic_circle_user"
+                app:layout_constraintBottom_toBottomOf="@+id/ivUser"
+                app:layout_constraintEnd_toEndOf="@+id/ivUser"
+                app:layout_constraintStart_toStartOf="@+id/ivUser"
+                app:layout_constraintTop_toTopOf="@+id/ivUser" />
+
+            <TextView
+                android:id="@+id/tvUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/purple_500"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/vBackgroundUser"
+                tools:text="Сидоренко Вадим" />
+
+            <TextView
+                android:id="@+id/tvUserRole"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_gray_1"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="@+id/tvUserName"
+                app:layout_constraintTop_toBottomOf="@+id/tvUserName"
+                tools:text="Верифікований користувач" />
+
+            <View
+                android:id="@+id/vSeparate"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/dark_gray_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvUserRole" />
+
+            <TextView
+                android:id="@+id/tvContact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/tv_contact"
+                android:textAllCaps="true"
+                android:textColor="@color/purple_500"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/vSeparate" />
+
+            <ImageView
+                android:id="@+id/ivPhoneIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/ic_phone_call"
+                app:layout_constraintStart_toStartOf="@+id/tvContact"
+                app:layout_constraintTop_toBottomOf="@+id/tvContact" />
+
+            <TextView
+                android:id="@+id/tvPhoneNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/ivPhoneIcon"
+                app:layout_constraintTop_toTopOf="@+id/ivPhoneIcon"
+                tools:text="+38 (097) 23 111 43" />
+
+            <TextView
+                android:id="@+id/tvPhoneDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tv_phone"
+                android:textColor="@color/tv_description"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@+id/ivPhoneIcon"
+                app:layout_constraintTop_toBottomOf="@+id/tvPhoneNumber"
+                tools:ignore="SmallSp" />
+
+            <ImageView
+                android:id="@+id/ivEmailIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/ic_email_at"
+                app:layout_constraintStart_toStartOf="@+id/tvContact"
+                app:layout_constraintTop_toBottomOf="@+id/ivPhoneIcon" />
+
+            <TextView
+                android:id="@+id/tvEmailNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/ivEmailIcon"
+                app:layout_constraintTop_toTopOf="@+id/ivEmailIcon"
+                tools:text="United24@gmail.com" />
+
+            <TextView
+                android:id="@+id/tvEmailDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tv_post_desc"
+                android:textColor="@color/tv_description"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@+id/ivEmailIcon"
+                app:layout_constraintTop_toBottomOf="@+id/tvEmailNumber"
+                tools:ignore="SmallSp" />
+
+            <TextView
+                android:id="@+id/tvInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/tv_contact"
+                android:textAllCaps="true"
+                android:textColor="@color/purple_500"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvEmailDesc" />
+
+            <TextView
+                android:id="@+id/tvCityInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/tv_city"
+                android:textColor="@color/accent"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/tvInfo"
+                app:layout_constraintTop_toBottomOf="@+id/tvInfo" />
+
+            <TextView
+                android:id="@+id/tvCity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/tv_description"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvCityInfo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvCityInfo"
+                tools:ignore="SmallSp"
+                tools:text="Івано-Франківськ" />
+
+            <View
+                android:id="@+id/vSeparateCity"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/dark_gray_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvCityInfo" />
+
+            <TextView
+                android:id="@+id/tvBDayInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/tv_b_day"
+                android:textColor="@color/accent"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/tvInfo"
+                app:layout_constraintTop_toBottomOf="@+id/vSeparateCity" />
+
+            <TextView
+                android:id="@+id/tvBDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/tv_description"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvBDayInfo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvBDayInfo"
+                tools:ignore="SmallSp"
+                tools:text="2 липня 2000" />
+
+            <View
+                android:id="@+id/vSeparateBDay"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/dark_gray_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvBDayInfo" />
+
+            <TextView
+                android:id="@+id/tvSexInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/tv_sex"
+                android:textColor="@color/accent"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/tvInfo"
+                app:layout_constraintTop_toBottomOf="@+id/vSeparateBDay" />
+
+            <TextView
+                android:id="@+id/tvSex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/tv_description"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvSexInfo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvSexInfo"
+                tools:ignore="SmallSp"
+                tools:text="Чоловіча" />
+
+            <View
+                android:id="@+id/vSeparateSex"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/dark_gray_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvSexInfo" />
+
+            <TextView
+                android:id="@+id/tvWeightInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/tv_weigh"
+                android:textColor="@color/accent"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/tvInfo"
+                app:layout_constraintTop_toBottomOf="@+id/vSeparateSex" />
+
+            <TextView
+                android:id="@+id/tvWeigh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/tv_description"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvWeightInfo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvWeightInfo"
+                tools:ignore="SmallSp"
+                tools:text="95 кг" />
+
+            <View
+                android:id="@+id/vSeparateWeigh"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/dark_gray_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvWeightInfo" />
+
+            <TextView
+                android:id="@+id/tvHeightInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/tv_height"
+                android:textColor="@color/accent"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/tvInfo"
+                app:layout_constraintTop_toBottomOf="@+id/vSeparateWeigh" />
+
+            <TextView
+                android:id="@+id/tvHeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/tv_description"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvHeightInfo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvHeightInfo"
+                tools:ignore="SmallSp"
+                tools:text="185 см" />
+
+            <View
+                android:id="@+id/vSeparateHeight"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/dark_gray_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvHeightInfo" />
+
+            <TextView
+                android:id="@+id/tvAboutMeInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/tv_about_me"
+                android:textAllCaps="true"
+                android:textColor="@color/purple_500"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/vSeparateHeight" />
+
+            <TextView
+                android:id="@+id/tvAboutMe"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="32dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvAboutMeInfo"
+                tools:text="Я активно займаюсь спортом, знаходячи в ньому свою мотивацію та задоволення. Щодня регулярно тренуюся, комбінуючи кардіо-тренування та силові вправи. Спорт допомагає мені підтримувати форму, зберігати енергію та підвищувати самодисципліну. Це не лише фізична активність, але й спосіб життя, який допомагає мені бути здоровим та емоційно збалансованим." />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

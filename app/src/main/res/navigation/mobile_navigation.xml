@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.app.activeparks.ui.home.HomeFragment"
+        android:name="com.app.activeparks.ui.homeWithUser.fragments.home.MainHomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
     <fragment
@@ -32,7 +32,7 @@
         tools:layout="@layout/fragment_user" />
     <fragment
         android:id="@+id/navigation_user"
-        android:name="com.app.activeparks.ui.user.UserFragment"
+        android:name="com.app.activeparks.ui.userProfile.home.ProfileHomeFragment"
         android:label="@string/title_user"
         tools:layout="@layout/fragment_user"/>
 

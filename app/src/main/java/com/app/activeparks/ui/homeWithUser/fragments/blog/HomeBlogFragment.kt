@@ -1,10 +1,12 @@
 package com.app.activeparks.ui.homeWithUser.fragments.blog
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.app.activeparks.ui.news.NewsActivity
 import com.app.activeparks.util.extention.gone
 import com.technodreams.activeparks.databinding.FragmentHomeBlogBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -12,7 +14,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class HomeBlogFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBlogBinding
-    val adapter = HomeNewsAdapter()
+    val adapter = HomeNewsAdapter {
+        startActivity(Intent(activity, NewsActivity::class.java).putExtra("id", it.id))
+    }
     private val viewModel: HomeBlogViewModel by viewModel()
 
     override fun onCreateView(

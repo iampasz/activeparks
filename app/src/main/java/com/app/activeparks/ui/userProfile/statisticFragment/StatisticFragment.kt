@@ -16,7 +16,9 @@ import com.app.activeparks.util.MonthYearPickerDialog
 import com.app.activeparks.util.MonthYearPickerDialog.Companion.formatSelectedDate
 import com.app.activeparks.util.extention.DataHelper
 import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.invisible
 import com.app.activeparks.util.extention.visible
+import com.app.activeparks.util.extention.visibleIf
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentUserProfileStatisticBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -34,6 +36,29 @@ class StatisticFragment : Fragment(), MonthYearPickerDialog.OnDateSetListener {
     private val adapterActivity = ActivityAdapter {}
     private var monthPicker = MonthPicker.FIRST
     private var durationPicker = DurationPicker.MONTH
+
+    private var isCompareVisible = false
+
+    private var firstWeek = ""
+    private var secondWeek = ""
+    private var firstWeekFrom = ""
+    private var secondWeekFrom = ""
+    private var firstWeekTo = ""
+    private var secondWeekTo = ""
+
+    private var firstMont = ""
+    private var secondMont = ""
+    private var firstMontFrom = ""
+    private var secondMontFrom = ""
+    private var firstMontTo = ""
+    private var secondMontTo = ""
+
+    private var firstYear = ""
+    private var secondYear = ""
+    private var firstYearFrom = ""
+    private var secondYearFrom = ""
+    private var firstYearTo = ""
+    private var secondYearTo = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,7 +87,6 @@ class StatisticFragment : Fragment(), MonthYearPickerDialog.OnDateSetListener {
             activities.observe(viewLifecycleOwner) {
                 it?.let {
                     adapterActivity.list.submitList(it)
-
                 }
             }
             update.observe(viewLifecycleOwner) {
@@ -72,34 +96,122 @@ class StatisticFragment : Fragment(), MonthYearPickerDialog.OnDateSetListener {
     }
 
     private fun initViews() {
-        binding.rvTrainingInfo.apply {
-            adapter = adapterInfoItem
-            layoutManager = GridLayoutManager(requireContext(), 2)
+        with(binding) {
+            tvFirstParametrs.text = DataHelper.getCurrentMontYear()
 
-            setStatisticList()
-        }
-        binding.rvActivity.apply {
-            adapter = adapterActivity
+            rvTrainingInfo.apply {
+                adapter = adapterInfoItem
+                layoutManager = GridLayoutManager(requireContext(), 2)
+
+                setStatisticList()
+            }
+            rvActivity.apply {
+                adapter = adapterActivity
+            }
         }
     }
 
     private fun setListener() {
         with(binding) {
             tvWeek.setOnClickListener {
-                setBackgroundTime(tvWeek, tvMonth, tvYear, tvAllTime)
                 durationPicker = DurationPicker.WEEK
+                setBackgroundTime(tvWeek, tvMonth, tvYear, tvAllTime)
+                indispensabilityParameter()
+
+                if (firstMont.isEmpty()) firstWeek = DataHelper.getCurrentWeek()
+                tvFirstParametrs.text = firstWeek
+
+                val (startDate, endDate) = firstWeek.split(" - ")
+
+                if (firstWeekFrom.isEmpty()) firstWeekFrom = "${DataHelper.getCurrentYear()}.${startDate}"
+                if (firstWeekTo.isEmpty()) firstWeekTo = "${DataHelper.getCurrentYear()}.${endDate}"
+
+                viewModel.getStatistic(
+                    firstWeekFrom,
+                    firstWeekTo
+                )
+
+                if (isCompareVisible) {
+                    if (secondWeekFrom.isNotEmpty()) {
+                        tvSecondParametrs.text = secondWeek
+                        viewModel.getStatistic(secondWeekFrom, secondWeekTo, false)
+                    } else {
+                        tvSecondParametrs.text = firstWeek
+                        viewModel.getStatistic(firstWeekFrom, firstWeekTo, false)
+                    }
+                }
             }
             tvMonth.setOnClickListener {
-                durationPicker = DurationPicker.MONTH
-                setBackgroundTime(tvMonth, tvWeek, tvYear, tvAllTime)
+                if (durationPicker != DurationPicker.MONTH) {
+                    durationPicker = DurationPicker.MONTH
+                    setBackgroundTime(tvMonth, tvWeek, tvYear, tvAllTime)
+                    indispensabilityParameter()
+
+                    if (firstMont.isEmpty()) firstMont = DataHelper.getCurrentMontYear()
+                    tvFirstParametrs.text = firstMont
+
+                    if (firstMontFrom.isEmpty()) firstMontFrom = DataHelper.getFirstDayOfYear()
+                    if (firstMontTo.isEmpty()) firstMontTo = DataHelper.getLastDayOfYear()
+
+                    viewModel.getStatistic(
+                        firstMontFrom,
+                        firstMontTo
+                    )
+
+                    if (isCompareVisible) {
+                        if (secondMontFrom.isNotEmpty()) {
+                            tvSecondParametrs.text = secondMont
+                            viewModel.getStatistic(secondMontFrom, secondMontTo, false)
+                        } else {
+                            tvSecondParametrs.text = firstMont
+                            viewModel.getStatistic(firstMontFrom, firstMontTo, false)
+                        }
+                    }
+                }
             }
             tvYear.setOnClickListener {
-                durationPicker = DurationPicker.YEAR
-                setBackgroundTime(tvYear, tvWeek, tvMonth, tvAllTime)
+                if (durationPicker != DurationPicker.YEAR) {
+                    durationPicker = DurationPicker.YEAR
+                    setBackgroundTime(tvYear, tvWeek, tvMonth, tvAllTime)
+
+                    indispensabilityParameter()
+
+                    if (firstYear.isEmpty()) firstYear = DataHelper.getCurrentYear()
+                    tvFirstParametrs.text = firstYear
+                    if (secondYear.isNotEmpty()) tvSecondParametrs.text = secondYear
+
+                    if (firstYearFrom.isEmpty()) firstYearFrom = DataHelper.getFirstDayOfYear()
+                    if (firstYearTo.isEmpty()) firstYearTo = DataHelper.getLastDayOfYear()
+
+                    viewModel.getStatistic(
+                        firstYearFrom,
+                        firstYearTo
+                    )
+
+                    if (isCompareVisible) {
+                        if (secondYearFrom.isNotEmpty()) {
+                            tvSecondParametrs.text = secondYear
+                            viewModel.getStatistic(secondYearFrom, secondYearTo, false)
+                        } else {
+                            tvSecondParametrs.text = firstYear
+                            viewModel.getStatistic(firstYearFrom, firstYearTo, false)
+                        }
+                    }
+                }
             }
             tvAllTime.setOnClickListener {
                 durationPicker = DurationPicker.ALL
                 setBackgroundTime(tvAllTime, tvWeek, tvMonth, tvYear)
+
+                tvFirstParametrs.invisible()
+                ivFMonth.invisible()
+                tvSecondParametrs.invisible()
+                ivSMonth.invisible()
+                tvCompare.invisible()
+                viewModel.apply {
+                    getStatistic(DataHelper.getAllTime(), DataHelper.getCurrentDate())
+                    secondListStatistic = listOf()
+                }
             }
 
             tvActivity.setOnClickListener {
@@ -123,15 +235,43 @@ class StatisticFragment : Fragment(), MonthYearPickerDialog.OnDateSetListener {
             }
 
             tvCompare.setOnClickListener {
+                isCompareVisible = true
                 tvCompare.gone()
                 tvSecondParametrs.visible()
                 ivFMonth.visible()
                 ivSMonth.visible()
-                tvSecondParametrs.text = tvFirstParametrs.text
-                monthPicker = MonthPicker.SECOND
-                showDatePickerDialog()
+
+                when (durationPicker) {
+                    DurationPicker.WEEK -> {
+                        tvSecondParametrs.text = tvFirstParametrs.text
+                        monthPicker = MonthPicker.SECOND
+                        showDatePickerDialog()
+                    }
+
+                    DurationPicker.MONTH -> {
+                        tvSecondParametrs.text = tvFirstParametrs.text
+                        monthPicker = MonthPicker.SECOND
+                        showDatePickerDialog()
+                    }
+
+                    DurationPicker.YEAR -> {
+                        tvSecondParametrs.text = DataHelper.getCurrentYear()
+                        monthPicker = MonthPicker.SECOND
+                        showDatePickerDialog()
+                    }
+
+                    DurationPicker.ALL -> { }
+                }
             }
         }
+    }
+
+    private fun FragmentUserProfileStatisticBinding.indispensabilityParameter() {
+        tvFirstParametrs.visible()
+        tvSecondParametrs.visibleIf(isCompareVisible)
+        ivSMonth.visibleIf(isCompareVisible)
+        ivFMonth.visibleIf(isCompareVisible)
+        tvCompare.visibleIf(!isCompareVisible)
     }
 
     private fun showDatePickerDialog() {
@@ -151,16 +291,89 @@ class StatisticFragment : Fragment(), MonthYearPickerDialog.OnDateSetListener {
     }
 
     override fun onDateSet(month: Int, year: Int) {
-        val formattedDate = formatSelectedDate(year, month)
+        when (durationPicker) {
+            DurationPicker.WEEK -> { }
+
+            DurationPicker.MONTH -> {
+                val formattedDate = formatSelectedDate(year, month)
+                when (monthPicker) {
+                    MonthPicker.FIRST -> {
+                        firstMont = formattedDate
+                        binding.tvFirstParametrs.text = firstMont
+
+                        firstMontFrom = DataHelper.getMonthFirstDate(month, year)
+                        firstMontTo = DataHelper.getLastDayOfMonth(year, month)
+                        viewModel.getStatistic(
+                            firstMontFrom,
+                            firstMontTo
+                        )
+                    }
+
+                    MonthPicker.SECOND -> {
+                        secondMont = formattedDate
+                        binding.tvSecondParametrs.text = secondMont
+
+                        secondMontFrom = DataHelper.getMonthFirstDate(month, year)
+                        secondMontTo = DataHelper.getLastDayOfMonth(year, month)
+                        viewModel.getStatistic(
+                            secondMontFrom,
+                            secondMontTo,
+                            false
+                        )
+                    }
+                }
+            }
+
+            DurationPicker.YEAR -> {
+                when (monthPicker) {
+                    MonthPicker.FIRST -> {
+                        binding.tvFirstParametrs.text = year.toString()
+
+                        firstYear = year.toString()
+                        firstYearFrom = DataHelper.getFirstDayOfYear(year)
+                        firstYearTo = DataHelper.getLastDayOfYear(year)
+
+                        viewModel.getStatistic(firstYearFrom, firstYearTo)
+                    }
+
+                    MonthPicker.SECOND -> {
+                        binding.tvSecondParametrs.text = year.toString()
+                        secondYear = year.toString()
+
+                        secondYearFrom = DataHelper.getFirstDayOfYear(year)
+                        secondYearTo = DataHelper.getLastDayOfYear(year)
+
+                        viewModel.getStatistic(secondYearFrom, secondYearTo, false)
+                    }
+                }
+            }
+
+            DurationPicker.ALL -> { }
+        }
+    }
+
+    override fun onWeekSet(range: String, year: String) {
+        val (startDate, endDate) = range.split(" - ")
+
         when (monthPicker) {
             MonthPicker.FIRST -> {
-                binding.tvFirstParametrs.text = formattedDate
-                viewModel.getStatistic(DataHelper.getMonthFirstDate(month, year), DataHelper.getCurrentDate())
+                binding.tvFirstParametrs.text = range
+
+                firstWeek = range
+                firstWeekFrom = "$year.${startDate}"
+                firstWeekTo = "$year.${endDate}"
+
+                viewModel.getStatistic(firstWeekFrom, firstWeekTo)
             }
 
             MonthPicker.SECOND -> {
-                binding.tvSecondParametrs.text = formattedDate
-                viewModel.getStatistic(DataHelper.getCurrentMonthFirstDate(), DataHelper.getCurrentDate(), false)
+                binding.tvSecondParametrs.text = range
+                secondWeek = range
+
+                secondWeekFrom = "$year.${startDate}"
+                secondWeekTo = "$year.${endDate}"
+
+                viewModel.getStatistic(secondWeekFrom, secondWeekTo, false)
             }
         }
     }

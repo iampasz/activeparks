@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.activeparks.data.db.entity.ActiveEntity
+import com.app.activeparks.data.model.activity.ActivityItemResponse
 import com.app.activeparks.data.useCase.saveActivity.SaveActivityUseCase
 import com.app.activeparks.data.useCase.statistics.StatisticsUseCase
 import com.app.activeparks.ui.userProfile.model.ActivityInfoStatisticTrainingItem
@@ -18,7 +19,7 @@ class StatisticViewModel(
     private val statisticsUseCase: StatisticsUseCase
 ): ViewModel() {
 
-    val activities: MutableLiveData<List<ActiveEntity>> = MutableLiveData()
+    val activities: MutableLiveData<List<ActivityItemResponse>> = MutableLiveData()
     val update: MutableLiveData<Boolean> = MutableLiveData(false)
     var firstListStatistic = ActivityInfoStatisticTrainingItem.getActivityInfoItem()
     var secondListStatistic: List<ActivityInfoStatisticTrainingItem> = listOf()
@@ -26,9 +27,11 @@ class StatisticViewModel(
     fun getActivities() {
         viewModelScope.launch {
             kotlin.runCatching {
-                saveActivityUseCase.getActives()
+                saveActivityUseCase.getWorkoutsActivity()
             }.onSuccess {
-                activities.value = it
+                it?.let {
+                    activities.value = it.items
+                }
             }
         }
     }

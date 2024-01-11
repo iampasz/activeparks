@@ -21,8 +21,4 @@
         android:icon="@drawable/ic_camera"
         android:title="@string/video" />
 
-    <item
-        android:id="@+id/navigation_user"
-        android:icon="@drawable/ic_heart"
-        android:title="@string/healse" />
 </menu>

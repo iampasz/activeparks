@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navEventsUser"
-        android:name="com.app.activeparks.ui.homeWithUser.fragments.home.HomeEventsFragment"
+        android:name="com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsFragment"
         android:label="@string/tv_menu_events"
         tools:layout="@layout/fragment_home_events">
         <action
@@ -47,12 +47,6 @@
         android:name="com.app.activeparks.ui.userProfile.video.AddVideoUserProfile"
         android:label="AddVideoUserProfile"
         tools:layout="@layout/fragment_user_profile_add_video" />
-
-    <fragment
-        android:id="@+id/navHealsUser"
-        android:name="com.app.activeparks.ui.userProfile.heals.HealsFragmentUserProfile"
-        android:label="HealsFragmentUserProfile"
-        tools:layout="@layout/fragment_user_profile_heals" />
 
 
 </navigation>

@@ -17,6 +17,7 @@ import java.util.Locale
  * Created by O.Dziuba on 18.12.2023.
  */
 class HomeNewsAdapter(
+    private val news: (ItemNews) -> Unit
 ) : RecyclerView.Adapter<HomeNewsAdapter.LevelOfActivityVH>() {
 
     class LevelOfActivityVH(binding: ItemHomeBlogListBinding) :
@@ -61,6 +62,10 @@ class HomeNewsAdapter(
                 .load(item.imageUrl)
                 .error(R.drawable.ic_prew)
                 .into(ivNews)
+
+            ivNews.setOnClickListener {
+                news(item)
+            }
         }
     }
 

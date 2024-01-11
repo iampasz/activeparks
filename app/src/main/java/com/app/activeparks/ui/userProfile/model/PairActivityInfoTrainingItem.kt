@@ -26,7 +26,7 @@ data class PairActivityInfoTrainingItem(
                     isPulseGadget = false,
                     isOutside = true
                 ),
-                PairActivityInfoTrainingItem(1,"0","","Відвідано заходів", "", R.drawable.ic_home_clabs,
+                PairActivityInfoTrainingItem(1,"0","","Відвідано заходів", "", R.drawable.ic_home_clubs,
                     isSelected = false,
                     isPulseGadget = false,
                     isOutside = true

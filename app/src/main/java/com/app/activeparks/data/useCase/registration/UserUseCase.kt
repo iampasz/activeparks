@@ -32,6 +32,7 @@ interface UserUseCase {
     suspend fun resetPassword(request: ResetPasswordResponse): ResponseToken?
     suspend fun setHeartRateZones(request: PulseZoneRequest): ResponseSuccess?
     suspend fun getHeartRateZones(): PulseZoneRequest?
+    suspend fun updateUser(id: String, user: User): User?
 
     //Dao
     suspend fun insertUser(user: User)

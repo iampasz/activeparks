@@ -22,6 +22,7 @@ import com.app.activeparks.ui.active.fragments.level.ActivityInfoTrainingAdapter
 import com.app.activeparks.ui.active.model.Feeling
 import com.app.activeparks.util.EasyTextWatcher
 import com.app.activeparks.util.MapsViewController
+import com.app.activeparks.util.extention.FileHelper
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.invisible
 import com.app.activeparks.util.extention.replaceNull
@@ -30,6 +31,8 @@ import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentSaveActivityBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.osmdroid.views.overlay.Polyline
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -240,8 +243,10 @@ class SaveActivityFragment : Fragment() {
 
     private fun handleSelectedImage(data: Intent?) {
         val selectedImage: Uri? = data?.data
-        binding.icActivity.setImageURI(selectedImage)
-        viewModel.currentActivity.uri = selectedImage
+        if (selectedImage != null) {
+            binding.icActivity.setImageURI(selectedImage)
+            viewModel.currentActivity.file = FileHelper.uriToFile(selectedImage, requireContext())
+        }
     }
 
     private fun openGalleryForImage() {

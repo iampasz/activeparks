@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:background="@color/white"
     android:layout_height="match_parent"
-    tools:context="com.app.activeparks.ui.homeWithUser.fragments.home.HomeEventsFragment">
+    tools:context="com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsFragment">
 
     <TextView
         android:id="@+id/tvAllPArks"
@@ -36,7 +36,6 @@
         android:id="@+id/pbNews"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/rvNews"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/rvNews"
         app:layout_constraintTop_toTopOf="@+id/rvNews" />

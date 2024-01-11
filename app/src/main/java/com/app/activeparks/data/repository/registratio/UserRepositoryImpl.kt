@@ -66,6 +66,14 @@ data class UserRepositoryImpl(
         return networkManager.resetPassword(request)
     }
 
+    override suspend fun updateUser(id: String, user: User): User? {
+        val response = networkManager.updateUser(id, user)
+        response?.let {
+            updateUser(it)
+        }
+        return response
+    }
+
     //Dao
     override suspend fun insertUser(user: User) {
         userDao.insertUser(UserMapper.mapToUserEntity(user))

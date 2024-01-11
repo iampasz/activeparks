@@ -32,7 +32,7 @@ class AdditionalValueFragment : Fragment() {
     lateinit var binding: FragmentAdditionalValueBinding
     private val viewModel: RegistrationViewModel by activityViewModel()
     private val calendar = Calendar.getInstance()
-    private val dateFormatUI = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
+    private val dateFormatUI = SimpleDateFormat("d MMMM yyyy", Locale("uk", "UA"))
     private val dateFormatBack = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
 

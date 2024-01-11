@@ -103,13 +103,6 @@ val networkModule = module {
             androidContext()
         )
     }
-
-
-
-
-
-
-
     single<Interceptor>(named(HTTP_LOGGING_INTERCEPTOR)) {
         HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG)

@@ -18,6 +18,6 @@
 
     <item
         android:id="@+id/navClubHomeUser"
-        android:icon="@drawable/ic_home_clabs"
+        android:icon="@drawable/ic_home_clubs"
         android:title="@string/tv_menu_clubs" />
 </menu>

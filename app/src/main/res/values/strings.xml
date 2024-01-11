@@ -96,12 +96,13 @@
     <string name="tv_late_start">3 сек. відлік старту</string>
     <string name="tv_feel_description">Вкажіть, як ви себе почуваєте після тренування</string>
     <string name="tv_save">Зберегти</string>
+    <string name="tv_save_change">Зберегти зміни</string>
     <string name="tv_delete_training"><u>Видалити тренування</u></string>
     <string name="title_activity_for">ActivityForActivity</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="tv_add_pulse_gadget">Оберіть пульсометр</string>
     <string name="tv_pause">Режим автопаузи</string>
-    <string name="tv_swipe_to_pause">Змахніть для паузи</string>
+    <string name="tv_swipe_to_pause">Натисніть для паузи</string>
     <string name="tv_continue">Продовжити</string>
     <string name="tv_end">Завершити</string>
     <string name="tv_auto_block_screen">Вимкнути автоблокування екрану</string>
@@ -300,5 +301,33 @@
 
     <string name="moving_activities">Рухові активності</string>
     <string name="tv_late"><u>Нагадати пізніше</u></string>
+    <string name="tv_event_new">Захід не розпочався</string>
+    <string name="tv_event_past">Захід розпочався</string>
+    <string name="tv_contact">Контакти:</string>
+    <string name="tv_post_desc">Пошта</string>
+    <string name="tv_city">Місто</string>
+    <string name="tv_b_day">Дата народження</string>
+    <string name="tv_sex">Стать</string>
+    <string name="tv_weigh">Вага</string>
+    <string name="tv_height">Зріст</string>
+    <string name="tv_about_me">Про мене:</string>
+    <string name="tv_about_me_">Про мене</string>
+    <string name="tv_menu_title">Меню</string>
+    <string name="tv_edit_profile_title">Редагування профілю</string>
+    <string name="tv_my_note">Журнал</string>
+    <string name="tv_deactivation_account">Деактивувати аккаунт</string>
+    <string name="tv_support">Підтримка</string>
+    <string name="tv_favorite">Обране</string>
+    <string name="tv_active_routs">Активні маршртути</string>
+    <string name="tv_admin_event">Заходи Адмін</string>
+    <string name="tv_cash_clear">Очищення кешу</string>
+    <string name="tv_acc_bind">Прив’язка акаунту</string>
+    <string name="tv_apk_update">Оновити додаток</string>
+    <string name="tv_name">Ім’я</string>
+    <string name="tv_l_name">Прізвище</string>
+    <string name="tv_open_info">Відкрити інформацію про профіль для інших?</string>
+    <string name="tv_information">Інформація:</string>
+    <string name="tv_status_veteran">Статус Ветерана</string>
+    <string name="tv_status_vpo">Статус ВПО</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.app.activeparks.data.useCase.saveActivity
 
 import com.app.activeparks.data.db.entity.ActiveEntity
+import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.repository.saveActivity.SaveActivityRepository
 
 /**
@@ -19,5 +20,9 @@ class SaveActivityUseCaseImpl(
 
     override suspend fun getActives(): List<ActiveEntity> {
         return repository.getActives()
+    }
+
+    override suspend fun getWorkoutsActivity(): ActivityResponse? {
+        return repository.getWorkoutsActivity()
     }
 }

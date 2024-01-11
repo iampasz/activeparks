@@ -2,6 +2,8 @@ package com.app.activeparks.data.network
 
 import android.content.Context
 import android.widget.Toast
+import com.app.activeparks.data.model.Default
+import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.registration.AdditionData
 import com.app.activeparks.data.model.registration.ForgotPasswordRequest
@@ -18,12 +20,19 @@ import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswordRequest
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
+import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import com.app.activeparks.data.model.statistic.StatisticResponse
 import com.app.activeparks.data.model.weather.WeatherResponse
 import com.app.activeparks.data.network.baseNew.ApiWithAuthorization
 import com.app.activeparks.data.network.baseNew.ApiWithOutAuthorization
 import com.app.activeparks.data.network.response.parseErrorBody
 import com.app.activeparks.data.network.weather.ApiWeather
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 
 /**
  * Created by O.Dziuba on 27.11.2023.
@@ -112,6 +121,16 @@ class NetworkManagerImpl(
         return response.body()
     }
 
+    override suspend fun getEvents(): ListItemEventResponse? {
+        val response = apiWithOutAuthorization.getEvents()
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
 
     //With Authorization
     override suspend fun verificationEmailCode(request: VerificationCodeEmailRequest): UserResponse? {
@@ -171,6 +190,16 @@ class NetworkManagerImpl(
         return body
     }
 
+    override suspend fun getWorkoutsActivity(): ActivityResponse? {
+        val response = apiWithAuthorization.getWorkoutsActivity()
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
     override suspend fun getUser(id: String): User? {
         val response = apiWithAuthorization.getUser(id)
 
@@ -192,5 +221,36 @@ class NetworkManagerImpl(
         return response.body()
     }
 
+    override suspend fun updateFile(
+        type: String,
+        file: File
+    ): Default? {
+        val random = (Math.random() * 200).toInt()
+        val name = "file$random"
 
+        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+
+        val body = MultipartBody.Part.createFormData("file", file.name, requestBody)
+
+        val filename = type.toRequestBody("text/plain".toMediaTypeOrNull())
+
+        val response =
+            apiWithAuthorization.updateFile(name, file.length().toInt(), 1, 1, name, filename, body)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun updateUser(id: String, user: User): User? {
+        val response = apiWithAuthorization.updateUser(id, user)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
 }
