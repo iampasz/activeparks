@@ -19,7 +19,6 @@ import com.app.activeparks.data.model.meetings.MeetingsModel.MeetingItem
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.ui.event.interfaces.EventScannerListener
 import com.app.activeparks.ui.event.viewmodel.EventViewModel
-import com.app.activeparks.ui.routepoint.RoutePointFragment
 import com.app.activeparks.util.MapsViewController
 import com.app.activeparks.util.extention.removeFragment
 import com.bumptech.glide.Glide
@@ -56,7 +55,8 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter, SwipeR
 
             // viewModel.getEvent(intent.getStringExtra("id"))
 
-         navEventContainer = findNavController(requireActivity(), R.id.nav_event_container)
+            navEventContainer = findNavController(requireActivity(), R.id.nav_event_container)
+
 
         initNavigation()
 

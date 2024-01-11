@@ -522,14 +522,6 @@ class FragmentEventCreate : Fragment() {
         dialog.setContentView(R.layout.dialog_gallery)
         val galleryAction = dialog.findViewById<LinearLayout>(R.id.gallery_action)
         galleryAction?.setOnClickListener {
-
-            //etContentLauncher.launch("image/*")
-            dispatchTakePictureIntent()
-
-//            val galleryIntent =
-//                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-//            imageActivityResultLauncher.launch(galleryIntent)
-
             if (ContextCompat.checkSelfPermission(
                     requireActivity(),
                     Manifest.permission.READ_EXTERNAL_STORAGE

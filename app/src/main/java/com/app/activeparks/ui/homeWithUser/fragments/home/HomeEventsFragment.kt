@@ -33,7 +33,7 @@ class HomeEventsFragment : Fragment() {
         initView()
         initListener()
         observe()
-        
+
     }
 
     private fun initListener() {

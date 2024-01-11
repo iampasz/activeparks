@@ -76,7 +76,8 @@
             android:name="com.app.activeparks.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:screenOrientation="fullSensor">
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
