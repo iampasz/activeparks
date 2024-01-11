@@ -416,8 +416,8 @@ class FragmentEventCreate : Fragment() {
             eventData.id?.let {
                 eventController.deleteEvent(eventData.id)
                 viewModelStore.clear()
-                parentFragmentManager.removeFragment(this)
             }
+            parentFragmentManager.removeFragment(this)
         }
 
         val dialog = builder.create()

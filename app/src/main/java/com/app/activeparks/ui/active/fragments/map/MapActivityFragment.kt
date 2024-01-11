@@ -151,7 +151,7 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
     override fun onLocationChanged(location: Location) {
         if (viewModel.activityState.startPoint.isEmpty() && viewModel.activityState.isTrainingStart) {
             viewModel.activityState.startPoint =
-                AddressUtil.getAddressFromLocation(requireContext(), location)
+                 AddressUtil.getAddressFromLocation(requireContext(), location)
             viewModel.activityState.stepCount = 0
 
             mapsViewController?.zoomOnStart()

@@ -45,3 +45,11 @@ Thumbs.db
 outputFiles.bin
 buildOutputCleanup.lock
 file-system.probe
+
+.buildOutputCleanup.lock
+.file-system.probe
+.outputFiles.bin
+
+
+build.gradle
+.local.properties

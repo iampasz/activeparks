@@ -87,7 +87,6 @@ class SettingsActivityFragment : Fragment() {
     private fun FragmentSettingsActivityBinding.setEnableViews() {
         tvTypeActivity.enableIf(!viewModel.activityState.isTrainingStart)
         tvPulseZone.enableIf(!viewModel.activityState.isTrainingStart)
-        tvPulseDevise.enableIf(!viewModel.activityState.isTrainingStart)
         scAutoPause.enableIf(!viewModel.activityState.isTrainingStart)
         scAudio.enableIf(!viewModel.activityState.isTrainingStart)
         scLateStart.enableIf(!viewModel.activityState.isTrainingStart)

@@ -24,9 +24,9 @@ public class Sportsgrounds {
         return items;
     }
 
-    public void setSportsground(List<ItemSportsground> items) {
-        this.items = items;
-    }
+//    public void setSportsground(List<ItemSportsground> items) {
+//        this.items = items;
+//    }
 
     public Integer getTotal() {
         return total;

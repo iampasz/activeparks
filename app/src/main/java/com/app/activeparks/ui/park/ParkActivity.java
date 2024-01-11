@@ -1,5 +1,6 @@
 package com.app.activeparks.ui.park;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,7 +20,7 @@ import com.app.activeparks.data.model.parks.ParksItem;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportsgrounds.ItemSportsground;
 import com.app.activeparks.ui.adapter.PhotosAdaper;
-import com.app.activeparks.ui.event.activity.EventActivity;
+import com.app.activeparks.ui.event.activity.EventFragment;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
 import com.app.activeparks.ui.park.adapter.ParkListAdaper;
 import com.app.activeparks.util.MapsViewController;
@@ -49,6 +50,7 @@ public class ParkActivity extends AppCompatActivity {
     public MapsViewController mapsViewController;
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,9 +67,7 @@ public class ParkActivity extends AppCompatActivity {
 
         viewModel.getPark(getIntent().getStringExtra("id"));
 
-        findViewById(R.id.closed).setOnClickListener((View v) -> {
-            finish();
-        });
+        findViewById(R.id.closed).setOnClickListener((View v) -> finish());
 
         mImageView = findViewById(R.id.image_club);
         mPhotoCordenator = findViewById(R.id.photo_cordenator);
@@ -130,7 +130,7 @@ public class ParkActivity extends AppCompatActivity {
                     parkEvent.setAdapter(new EventsListAdaper(this, park.getSportEvents()).setOnEventListener(new EventsListAdaper.EventsListener() {
                         @Override
                         public void onInfo(ItemEvent itemClub) {
-                            startActivity(new Intent(getBaseContext(), EventActivity.class).putExtra("id", itemClub.getId()));
+                            startActivity(new Intent(getBaseContext(), EventFragment.class).putExtra("id", itemClub.getId()));
                         }
 
                         @Override
@@ -142,7 +142,7 @@ public class ParkActivity extends AppCompatActivity {
                     }));
                 }
 
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         });
     }
@@ -159,7 +159,7 @@ public class ParkActivity extends AppCompatActivity {
         }
 
         if (park.getOnReconstruction() != null){
-            item.add(new ParksItem("Технічний стан", park.getOnReconstruction() == false ? "Відміний" : "Реконсту"));
+            item.add(new ParksItem("Технічний стан", !park.getOnReconstruction() ? "Відміний" : "Реконсту"));
         }
 
         if (park.getAccessTypeId() != null && !park.getAccessTypeId().isEmpty()){
@@ -182,12 +182,7 @@ public class ParkActivity extends AppCompatActivity {
             item.add(new ParksItem("Режим роботи", park.getWorkHours()));
         }
 
-        list.setAdapter(new ParkListAdaper(this, item).setListener(new ParkListAdaper.ParkListListener() {
-            @Override
-            public void onUrl(String url) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-            }
-        }));
+        list.setAdapter(new ParkListAdaper(this, item).setListener(url -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)))));
     }
 
 }

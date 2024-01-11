@@ -330,4 +330,30 @@
     <string name="tv_status_veteran">Статус Ветерана</string>
     <string name="tv_status_vpo">Статус ВПО</string>
 
+
+    <string name="about_event">Про захід</string>
+    <string name="participants">Учасники</string>
+    <string name="gallery">Галерея</string>
+    <string name="join">Приєднатися</string>
+
+    <string name="time_for_start">До початку заходу</string>
+    <string name="day_short">дн</string>
+    <string name="hour_short">год</string>
+    <string name="minute_short">хв</string>
+    <string name="sec_short">сек</string>
+
+    <string name="place_address">Місце проведення</string>
+
+    <string name="join_to">Приєднатися до конференції</string>
+    <string name="about_event_dots">Про захід:</string>
+    <string name="coordinator">Координатор</string>
+    <string name="coordinators">Координатори</string>
+    <string name="event_participants">Учасники заходу</string>
+
+    <string name="search_events">Пошук заходів</string>
+
+
+
+
+
 </resources>

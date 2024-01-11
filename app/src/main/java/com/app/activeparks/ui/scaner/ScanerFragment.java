@@ -18,7 +18,7 @@ import androidx.navigation.NavController;
 
 import com.app.activeparks.MainActivity;
 import com.app.activeparks.ui.clubs.ClubActivity;
-import com.app.activeparks.ui.event.activity.EventActivity;
+import com.app.activeparks.ui.event.activity.EventFragment;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.google.zxing.Result;
@@ -81,7 +81,7 @@ public class ScanerFragment extends Fragment {
 
         mViewModel.getPointQrCode().observe(getViewLifecycleOwner(), result -> {
             if (result != null) {
-                startActivity(new Intent(getContext(), EventActivity.class).putExtra("id", result));
+                startActivity(new Intent(getContext(), EventFragment.class).putExtra("id", result));
             } else {
                 Toast.makeText(getContext(), "QR код для точки не дійсний", Toast.LENGTH_LONG).show();
             }

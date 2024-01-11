@@ -43,7 +43,7 @@ import java.util.Locale;
 
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
-public class EventActivity extends AppCompatActivity implements EventScannerListener, Html.ImageGetter, SwipeRefreshLayout.OnRefreshListener {
+public class EventActivityOld extends AppCompatActivity implements EventScannerListener, Html.ImageGetter, SwipeRefreshLayout.OnRefreshListener {
 
     private EventViewModel viewModel;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -60,7 +60,7 @@ public class EventActivity extends AppCompatActivity implements EventScannerList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event);
+        setContentView(R.layout.activity_event_old);
 
         viewModel = new ViewModelProvider(this, new EventModelFactory(this)).get(EventViewModel.class);
 

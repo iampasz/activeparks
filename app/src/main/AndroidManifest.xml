@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -20,7 +19,13 @@
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
+        tools:ignore="ScopedStorage" />
+
+    <queries>
+        <intent>
+            <action android:name="android.bluetooth.adapter.action.LOCAL_NAME_CHANGED"/>
+        </intent>
+    </queries>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -71,7 +76,8 @@
             android:name="com.app.activeparks.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:screenOrientation="fullSensor">
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -91,7 +97,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.app.activeparks.ui.web.WebActivity" />
-        <activity android:name="com.app.activeparks.ui.event.activity.EventActivity" />
+        <activity android:name="com.app.activeparks.ui.event.activity.EventActivityOld" />
         <activity android:name="com.app.activeparks.ui.park.ParkActivity" />
         <activity android:name="com.app.activeparks.ui.calling.WebViewActivity" />
         <activity android:name="com.app.activeparks.ui.clubs.ClubActivity" />
@@ -101,7 +107,6 @@
         <activity android:name="com.app.activeparks.ui.support.SupportAddActivity" />
         <activity android:name="com.app.activeparks.ui.news.NewsCreateActivity" />
         <activity android:name="com.app.activeparks.ui.event.activity.EventsListActivity" />
-        <activity android:name="com.app.activeparks.ui.event.activity.EventListActivity2" />
         <activity android:name="com.app.activeparks.ui.people.UserActivity" />
         <activity
             android:name="com.app.activeparks.util.cropper.CropImageActivity"

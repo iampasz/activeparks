@@ -20,13 +20,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.app.activeparks.MainActivity;
-import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.storage.Preferences;
 import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.ClubsListActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
-import com.app.activeparks.ui.event.activity.EventActivity;
-import com.app.activeparks.ui.event.activity.EventListActivity2;
+import com.app.activeparks.ui.event.activity.EventFragment;
+import com.app.activeparks.ui.event.fragments.EventListFragment;
 import com.app.activeparks.ui.home.adapter.HomeAdaper;
 import com.app.activeparks.ui.home.adapter.HorizontalAdaperEvents;
 import com.app.activeparks.ui.home.adapter.ParkHorizontalAdaper;
@@ -53,7 +52,7 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
 
 
         binding.swipeRefreshLayout.setOnRefreshListener(this);
@@ -68,12 +67,7 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
                 binding.listNull.setVisibility(View.GONE);
                 binding.listParksTab.setVisibility(View.VISIBLE);
             }
-            ParkHorizontalAdaper adapterEvents = new ParkHorizontalAdaper(getActivity(), events).setOnCliclListener(new ParkHorizontalAdaper.ParksAdaperListener() {
-                @Override
-                public void onInfo(String id) {
-                    startActivity(new Intent(getActivity(), ParkActivity.class).putExtra("id", id));
-                }
-            });
+            ParkHorizontalAdaper adapterEvents = new ParkHorizontalAdaper(getActivity(), events).setOnCliclListener(id -> startActivity(new Intent(getActivity(), ParkActivity.class).putExtra("id", id)));
 
             binding.listParks.setAdapter(adapterEvents);
 
@@ -103,10 +97,8 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
                 binding.listNewsTab.setVisibility(View.VISIBLE);
             }
 
-            HomeAdaper adapterNews = new HomeAdaper(getActivity(), news).setOnCliclListener(itemNews -> {
-                startActivity(new Intent(getActivity(), NewsActivity.class)
-                        .putExtra("id", itemNews.getId()));
-            });
+            HomeAdaper adapterNews = new HomeAdaper(getActivity(), news).setOnCliclListener(itemNews -> startActivity(new Intent(getActivity(), NewsActivity.class)
+                    .putExtra("id", itemNews.getId())));
 
             binding.listNews.setAdapter(adapterNews);
             binding.listNews.setOffscreenPageLimit(3);
@@ -133,12 +125,7 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
                 binding.listNull3.setVisibility(View.GONE);
                 binding.listEventsTab.setVisibility(View.VISIBLE);
             }
-            HorizontalAdaperEvents adapterEvents = new HorizontalAdaperEvents(getActivity(), items).setOnCliclListener(new HorizontalAdaperEvents.ParksAdaperListener() {
-                @Override
-                public void onInfo(String id) {
-                    startActivity(new Intent(getActivity(), EventActivity.class).putExtra("id", id));
-                }
-            });
+            HorizontalAdaperEvents adapterEvents = new HorizontalAdaperEvents(getActivity(), items).setOnCliclListener(id -> startActivity(new Intent(getActivity(), EventFragment.class).putExtra("id", id)));
 
             binding.listActivities.setAdapter(adapterEvents);
             binding.listActivities.setOffscreenPageLimit(3);
@@ -177,13 +164,8 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
             if (clubs.size() > 0) {
                 binding.listNull4.setVisibility(View.GONE);
             }
-            binding.listClub.setAdapter(new ClubsAdaper(getContext(), clubs).setOnClubsListener(new ClubsAdaper.ClubsListener() {
-                @Override
-                public void onInfo(ItemClub itemClub) {
-                    startActivity(new Intent(getContext(), ClubActivity.class)
-                            .putExtra("id", itemClub.getId()));
-                }
-            }));
+            binding.listClub.setAdapter(new ClubsAdaper(getContext(), clubs).setOnClubsListener(itemClub -> startActivity(new Intent(getContext(), ClubActivity.class)
+                    .putExtra("id", itemClub.getId()))));
         });
 
         viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
@@ -191,9 +173,7 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
             Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(binding.imageUser);
         });
 
-        viewModel.getLocation().observe(getViewLifecycleOwner(), location -> {
-            binding.statusLocation.setText(location);
-        });
+        viewModel.getLocation().observe(getViewLifecycleOwner(), location -> binding.statusLocation.setText(location));
 
         binding.panelUser.setOnClickListener(v -> {
             Preferences preferences = new Preferences(requireContext());
@@ -204,21 +184,13 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
             }
         });
 
-        binding.allNews.setOnClickListener(v -> {
-            ((FragmentInteface) getActivity()).show(new NewsFragment());
-        });
+        binding.allNews.setOnClickListener(v -> ((FragmentInteface) requireActivity()).show(new NewsFragment()));
 
-        binding.allParsk.setOnClickListener(v -> {
-            ((FragmentInteface) getActivity()).navigation(R.id.navigation_maps);
-        });
+        binding.allParsk.setOnClickListener(v -> ((FragmentInteface) requireActivity()).navigation(R.id.navigation_maps));
 
-        binding.allActivities.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), EventListActivity2.class));
-        });
+        binding.allActivities.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventListFragment.class)));
 
-        binding.allClubs.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), ClubsListActivity.class));
-        });
+        binding.allClubs.setOnClickListener(v -> startActivity(new Intent(getActivity(), ClubsListActivity.class)));
 
         return root;
     }
@@ -228,8 +200,8 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
         super.onResume();
 
         // Request location updates
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 50, this);
@@ -245,8 +217,8 @@ public class HomeFragment extends Fragment implements LocationListener, SwipeRef
     @Override
     public void onLocationChanged(@NonNull Location location) {
         // Update the location text view with the new location
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
+        //double latitude = location.getLatitude();
+        //double longitude = location.getLongitude();
 //        viewModel.location(latitude, longitude);
 //        viewModel.getParks(latitude, longitude);
     }

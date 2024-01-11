@@ -1,6 +1,6 @@
 package com.app.activeparks.ui.homeWithUser.fragments.event
 
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.ui.event.activity.EventActivity
 import com.app.activeparks.ui.event.activity.EventListActivity2
+import com.app.activeparks.MainActivity
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.databinding.FragmentHomeEventsBinding
@@ -28,6 +29,7 @@ class HomeEventsFragment : Fragment() {
         binding = FragmentHomeEventsBinding.inflate(inflater, container, false)
         return binding.root
     }
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -35,12 +37,13 @@ class HomeEventsFragment : Fragment() {
         initView()
         initListener()
         observe()
+
     }
 
     private fun initListener() {
         with(binding) {
             tvEventsCalendar.setOnClickListener {
-                startActivity(Intent(requireActivity(), EventListActivity2::class.java))
+                (requireActivity() as MainActivity).openEventFragment()
             }
         }
     }

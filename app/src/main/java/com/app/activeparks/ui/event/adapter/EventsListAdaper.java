@@ -1,7 +1,9 @@
 package com.app.activeparks.ui.event.adapter;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +14,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
-import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.bumptech.glide.Glide;
 import com.technodreams.activeparks.R;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -44,11 +43,12 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
         return new ViewHolder(view);
     }
 
+    @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ItemEvent item = list.get(position);
 
-        holder.title.setText(item.getTitle() != null ? item.getTitle() : "Недіомо");
+       // holder.title.setText(item.getTitle() != null ? item.getTitle() : "Невідомо");
 
         if (item.getRoutePoints() != null && item.getRoutePoints().size() > 0) {
             holder.panelLocation.setVisibility(View.VISIBLE);
@@ -67,10 +67,11 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
             holder.time.setText(startsAt + " - " + finishesAt);
         }
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             if (item.getStartsAt().length() > 16) {
                 Date date = format.parse(item.getStartsAt());
+                assert date != null;
                 holder.data.setText(new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
             }
         } catch (Exception e) {
@@ -109,6 +110,7 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
         }
 
         holder.itemView.setOnClickListener(v -> {
+            Log.i("LMLKLK","adapter");
             eventListener.onInfo(item);
         });
     }
@@ -124,6 +126,7 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
         final LinearLayout fon, panelLocation;
         final TextView title, time, city, location, data, status, description;
 
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             fon = itemView.findViewById(R.id.fon);
@@ -137,6 +140,7 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
             data = itemView.findViewById(R.id.data);
             status = itemView.findViewById(R.id.status);
             description = itemView.findViewById(R.id.description);
+
         }
     }
 

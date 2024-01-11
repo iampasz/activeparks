@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_about_event"
+        android:icon="@drawable/ic_calendar_day"
+        android:title="@string/about_event" />
+
+    <item
+        android:id="@+id/nav_participant"
+        android:icon="@drawable/ic_ai_duration"
+        android:title="@string/participants" />
+
+    <item
+        android:id="@+id/nav_gallery"
+        android:icon="@drawable/ic_image"
+        android:title="@string/gallery" />
+
+    <item
+        android:id="@+id/nav_join"
+        android:icon="@drawable/ic_exit"
+        android:title="@string/join" />
+</menu>

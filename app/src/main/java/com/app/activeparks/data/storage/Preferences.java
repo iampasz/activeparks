@@ -1,19 +1,13 @@
 package com.app.activeparks.data.storage;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.app.activeparks.data.model.dictionaries.Dictionaries;
 import com.app.activeparks.data.model.notification.Notifications;
-import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.data.model.user.User;
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -31,7 +25,8 @@ public class Preferences {
         mSettingApp = context.getSharedPreferences("APP_SETTING", Context.MODE_PRIVATE);
     }
 
-    public Preferences Preferences(Context context){
+    @SuppressLint("NotConstructor")
+    public Preferences preferences(Context context){
         mSettings = context.getSharedPreferences("APP_PREFERENCES", Context.MODE_PRIVATE);
         mSettingApp = context.getSharedPreferences("APP_SETTING", Context.MODE_PRIVATE);
         return this;
@@ -46,7 +41,7 @@ public class Preferences {
     }
 
     public void setPushToken(String value){
-        mSettingApp.edit().putString("push_token", value).apply();;
+        mSettingApp.edit().putString("push_token", value).apply();
     }
 
     public String getToken(){
@@ -65,7 +60,7 @@ public class Preferences {
         String data = mSettings.getString("profile", null);
         Gson gson = new Gson();
         User user = gson.fromJson(data, User.class);
-        return user != null ? user : null;
+        return user;
     }
     public String getUserName() {
         String data = mSettings.getString("user_name", "");

@@ -1,30 +1,27 @@
 package com.app.activeparks.ui.people;
 
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
-import com.app.activeparks.ui.event.activity.EventActivity;
+import com.app.activeparks.ui.event.activity.EventFragment;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
 import com.app.activeparks.ui.training.TrainingDialog;
 import com.app.activeparks.ui.workout.adapter.journal.JournalListAdaper;
@@ -36,7 +33,7 @@ import com.technodreams.activeparks.R;
 public class UserActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private PeopleViewModel viewModel;
-    private ImageView photo, closed;
+    private ImageView photo;
 
     private TextView listStatus;
     private RecyclerView profileList;
@@ -45,6 +42,7 @@ public class UserActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +65,7 @@ public class UserActivity extends AppCompatActivity implements SwipeRefreshLayou
         TextView birthday = findViewById(R.id.birthday);
         TextView address = findViewById(R.id.address);
         TextView about = findViewById(R.id.about);
-        TextView healt = findViewById(R.id.healt);
+        //TextView healt = findViewById(R.id.healt);
         TextView height = findViewById(R.id.height);
         TextView weight = findViewById(R.id.weight);
         TextView phone = findViewById(R.id.phone);
@@ -79,7 +77,7 @@ public class UserActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         profileFilling = findViewById(R.id.profileFilling);
 
-        closed = findViewById(R.id.closed);
+        ImageView closed = findViewById(R.id.closed);
 
         clubs = findViewById(R.id.clubs_action);
         clubs.on();
@@ -149,17 +147,15 @@ public class UserActivity extends AppCompatActivity implements SwipeRefreshLayou
                 email.setText(user.getEmail());
                 profileFilling.setProgress(user.getProfileFilling());
 
-                if (user.getPermissionUser() == true) {
+                if (user.getPermissionUser()) {
                     plan.setVisibility(View.VISIBLE);
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         });
 
 
-        closed.setOnClickListener(v -> {
-            finish();
-        });
+        closed.setOnClickListener(v -> finish());
 
         clubs.setOnClickListener(v -> {
             viewModel.clubs();
@@ -193,13 +189,13 @@ public class UserActivity extends AppCompatActivity implements SwipeRefreshLayou
         });
 
 
-        ClickableSpan clickableSpan = new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View view) {
-                startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://ap.sportforall.gov.ua")));
-            }
-        };
+//        ClickableSpan clickableSpan = new ClickableSpan() {
+//            @Override
+//            public void onClick(@NonNull View view) {
+//                startActivity(new Intent(Intent.ACTION_VIEW,
+//                        Uri.parse("https://ap.sportforall.gov.ua")));
+//            }
+//        };
         observeData();
 
         viewModel.user(getIntent().getStringExtra("id"));
@@ -216,13 +212,8 @@ public class UserActivity extends AppCompatActivity implements SwipeRefreshLayou
             } else {
                 listStatus.setText("Користувач не вступив \n у жоден клуб");
             }
-            profileList.setAdapter(new ClubsAdaper(this, clubs).setOnClubsListener(new ClubsAdaper.ClubsListener() {
-                @Override
-                public void onInfo(ItemClub itemClub) {
-                    startActivity(new Intent(getApplicationContext(), ClubActivity.class)
-                            .putExtra("id", itemClub.getId()));
-                }
-            }));
+            profileList.setAdapter(new ClubsAdaper(this, clubs).setOnClubsListener(itemClub -> startActivity(new Intent(getApplicationContext(), ClubActivity.class)
+                    .putExtra("id", itemClub.getId()))));
         });
 
         viewModel.getEvents().observe(this, result -> {
@@ -234,7 +225,7 @@ public class UserActivity extends AppCompatActivity implements SwipeRefreshLayou
             profileList.setAdapter(new EventsListAdaper(this, result).setOnEventListener(new EventsListAdaper.EventsListener() {
                 @Override
                 public void onInfo(ItemEvent itemClub) {
-                    startActivity(new Intent(getApplicationContext(), EventActivity.class).putExtra("id", itemClub.getId()));
+                    startActivity(new Intent(getApplicationContext(), EventFragment.class).putExtra("id", itemClub.getId()));
                 }
 
                 @Override
@@ -251,7 +242,7 @@ public class UserActivity extends AppCompatActivity implements SwipeRefreshLayou
             profileList.setAdapter(new EventsListAdaper(this, result.getItems()).setOnEventListener(new EventsListAdaper.EventsListener() {
                 @Override
                 public void onInfo(ItemEvent itemClub) {
-                    startActivity(new Intent(getApplicationContext(), EventActivity.class).putExtra("id", itemClub.getId()));
+                    startActivity(new Intent(getApplicationContext(), EventFragment.class).putExtra("id", itemClub.getId()));
                 }
 
                 @Override
@@ -291,13 +282,10 @@ public class UserActivity extends AppCompatActivity implements SwipeRefreshLayou
             if (plan.size() > 0) {
                 listStatus.setVisibility(View.GONE);
             }
-            profileList.setAdapter(new PlanListAdaper(this, plan).setListener(new PlanListAdaper.PlanListener() {
-                @Override
-                public void onInfo(String id) {
-                    TrainingDialog dialog = TrainingDialog.newInstance(id, viewModel.mProfile.getId());
-                    dialog.show(getSupportFragmentManager(),
-                            "training_dialog");
-                }
+            profileList.setAdapter(new PlanListAdaper(this, plan).setListener(id -> {
+                TrainingDialog dialog = TrainingDialog.newInstance(id, viewModel.mProfile.getId());
+                dialog.show(getSupportFragmentManager(),
+                        "training_dialog");
             }));
         });
     }

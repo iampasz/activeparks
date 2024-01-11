@@ -29,3 +29,6 @@ build.gradle
 buildOutputCleanup
 .gitignore
 
+.buildOutputCleanup.lock
+.file-system.probe
+.outputFiles.bin

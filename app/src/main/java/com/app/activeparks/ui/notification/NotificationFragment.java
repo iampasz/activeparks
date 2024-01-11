@@ -14,7 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.app.activeparks.ui.clubs.ClubActivity;
-import com.app.activeparks.ui.event.activity.EventActivity;
+import com.app.activeparks.ui.event.activity.EventFragment;
 import com.app.activeparks.ui.notification.adapter.EventsAdaper;
 import com.app.activeparks.ui.notification.adapter.NotificationAdaper;
 import com.app.activeparks.ui.profile.uservideo.UserAddVideoActivity;
@@ -50,12 +50,7 @@ public class NotificationFragment extends Fragment implements SwipeRefreshLayout
                 listNotificationsHorizontal.setVisibility(View.VISIBLE);
             }
 
-            listNotificationsHorizontal.setAdapter(new EventsAdaper(getActivity(), events, false).setOnCliclListener(new EventsAdaper.ParksAdaperListener() {
-                @Override
-                public void onInfo(String id) {
-                    startActivity(new Intent(getActivity(), EventActivity.class).putExtra("id", id));
-                }
-            }));
+            listNotificationsHorizontal.setAdapter(new EventsAdaper(getActivity(), events, false).setOnCliclListener(id -> startActivity(new Intent(getActivity(), EventFragment.class).putExtra("id", id))));
         });
 
         viewModel.getSportRaitingEventsList().observe(getViewLifecycleOwner(), events -> {
@@ -66,12 +61,7 @@ public class NotificationFragment extends Fragment implements SwipeRefreshLayout
                 return;
             }
 
-            listRaiting.setAdapter(new EventsAdaper(getActivity(), events, true).setOnCliclListener(new EventsAdaper.ParksAdaperListener() {
-                @Override
-                public void onInfo(String id) {
-                    startActivity(new Intent(getActivity(), EventActivity.class).putExtra("id", id));
-                }
-            }));
+            listRaiting.setAdapter(new EventsAdaper(getActivity(), events, true).setOnCliclListener(id -> startActivity(new Intent(getActivity(), EventFragment.class).putExtra("id", id))));
         });
 
         viewModel.getNotifications().observe(getViewLifecycleOwner(), notifications -> {
@@ -79,18 +69,15 @@ public class NotificationFragment extends Fragment implements SwipeRefreshLayout
                 binding.listNullTwo.setVisibility(View.GONE);
             }
 
-            listNotifications.setAdapter(new NotificationAdaper(getActivity(), notifications.getItems()).setOnCliclListener(new NotificationAdaper.NotificationListener() {
-                @Override
-                public void onInfo(String url) {
-                    if (url.length() > 36) {
-                        String id = url.substring(url.length() - 36, url.length());
-                        if (url.contains("fc")) {
-                            startActivity(new Intent(getActivity(), ClubActivity.class).putExtra("id", id));
-                        } else if (url.contains("fc-events")) {
-                            startActivity(new Intent(getActivity(), EventActivity.class).putExtra("id", id));
-                        } else if (url.contains("videoUserItem")) {
-                            startActivity(new Intent(getActivity(), UserAddVideoActivity.class).putExtra("id", id));
-                        }
+            listNotifications.setAdapter(new NotificationAdaper(getActivity(), notifications.getItems()).setOnCliclListener(url -> {
+                if (url.length() > 36) {
+                    String id = url.substring(url.length() - 36);
+                    if (url.contains("fc")) {
+                        startActivity(new Intent(getActivity(), ClubActivity.class).putExtra("id", id));
+                    } else if (url.contains("fc-events")) {
+                        startActivity(new Intent(getActivity(), EventFragment.class).putExtra("id", id));
+                    } else if (url.contains("videoUserItem")) {
+                        startActivity(new Intent(getActivity(), UserAddVideoActivity.class).putExtra("id", id));
                     }
                 }
             }));
@@ -106,13 +93,8 @@ public class NotificationFragment extends Fragment implements SwipeRefreshLayout
             Glide.with(this).load(user.getPhoto()).error(R.drawable.ic_prew).into(binding.imageUser);
         });
 
-        binding.panelUser.setOnClickListener(v -> {
-            ((FragmentInteface) getActivity()).navigation(R.id.navigation_user);
-        });
-
-
+        binding.panelUser.setOnClickListener(v -> ((FragmentInteface) requireActivity()).navigation(R.id.navigation_user));
         viewModel.update();
-
         return root;
     }
 

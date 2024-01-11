@@ -32,6 +32,7 @@
         android:layout_height="32dp"
         android:layout_marginEnd="16dp"
         android:src="@drawable/ic_closed"
+        android:contentDescription="@string/icon"
         app:layout_constraintBottom_toBottomOf="@+id/vToolBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/vToolBar" />
@@ -52,6 +53,7 @@
                 android:id="@+id/icActivity"
                 android:layout_width="match_parent"
                 android:layout_height="246dp"
+                android:contentDescription="@string/icon"
                 android:background="@color/button_color_gray"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -64,6 +66,7 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:src="@drawable/ic_camera"
+                android:contentDescription="@string/icon"
                 app:layout_constraintBottom_toBottomOf="@+id/icActivity"
                 app:layout_constraintEnd_toEndOf="@+id/icActivity"
                 app:layout_constraintStart_toStartOf="@+id/icActivity"
@@ -105,7 +108,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ivLocation"
-                tools:ignore="RtlSymmetry" />
+                tools:ignore="Autofill,RtlSymmetry,TextFields" />
 
             <View
                 android:id="@+id/vFeel"
@@ -122,6 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:contentDescription="@string/icon"
                 android:background="@drawable/ic_smile"
                 app:layout_constraintBottom_toBottomOf="@+id/vFeel"
                 app:layout_constraintStart_toStartOf="@+id/vFeel"
@@ -133,10 +137,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="8dp"
-                android:text="Самопочуття"
+                android:text="@string/mood_yourself"
                 android:textColor="@color/tv_description"
                 android:textSize="16sp"
-                app:drawableEndCompat="@drawable/ic_arrow_right"
+                app:drawableEndCompat="@drawable/ic_arrow_right_gray"
                 app:drawableTint="@color/text_color"
                 app:layout_constraintBottom_toBottomOf="@+id/ivFeelIcon"
                 app:layout_constraintEnd_toEndOf="@+id/vFeel"
@@ -202,7 +206,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rvInfoView"
-                tools:text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis," />
+                tools:text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis,"
+                tools:ignore="Autofill,TextFields" />
 
 
             <TextView
@@ -211,7 +216,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:text="255/255"
+                android:text="@string/max_text_count"
                 android:textColor="@color/tv_description"
                 android:textSize="10sp"
                 app:layout_constraintBottom_toBottomOf="@+id/etDescriptionActivity"

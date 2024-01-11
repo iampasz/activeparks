@@ -43,4 +43,23 @@
         tools:layout="@layout/fragment_select_video">
     </fragment>
 
+    <fragment
+        android:id="@+id/selectEventFragment"
+        android:name="com.app.activeparks.ui.event.fragments.EventListFragment"
+        android:label="@string/events"
+        tools:layout="@layout/fragment_events">
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/createEventFragment"
+        android:name="com.app.activeparks.ui.event.fragments.FragmentEventCreate"
+        android:label="@string/create_event"
+        tools:layout="@layout/fragment_event_create">
+    </fragment>
+
+
+
+
 </navigation>
