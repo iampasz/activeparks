@@ -48,7 +48,7 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ItemEvent item = list.get(position);
 
-        holder.title.setText(item.getTitle() != null ? item.getTitle() : "Невідомо");
+       // holder.title.setText(item.getTitle() != null ? item.getTitle() : "Невідомо");
 
         if (item.getRoutePoints() != null && item.getRoutePoints().size() > 0) {
             holder.panelLocation.setVisibility(View.VISIBLE);

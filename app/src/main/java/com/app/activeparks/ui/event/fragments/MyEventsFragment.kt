@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.data.model.sportevents.EventList
 import com.app.activeparks.data.model.sportevents.ItemEvent
-import com.app.activeparks.ui.event.activity.EventListFragment
 import com.app.activeparks.ui.event.adapter.EventsListAdapterKT
 import com.app.activeparks.ui.event.interfaces.OnItemClickListener
 import com.app.activeparks.ui.event.interfaces.ResponseCallBack

@@ -25,7 +25,7 @@ import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.ClubsListActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
 import com.app.activeparks.ui.event.activity.EventFragment;
-import com.app.activeparks.ui.event.activity.EventListFragment;
+import com.app.activeparks.ui.event.fragments.EventListFragment;
 import com.app.activeparks.ui.home.adapter.HomeAdaper;
 import com.app.activeparks.ui.home.adapter.HorizontalAdaperEvents;
 import com.app.activeparks.ui.home.adapter.ParkHorizontalAdaper;

@@ -36,12 +36,12 @@ public class EventViewModel extends ViewModel {
 
     private final MutableLiveData<ItemEvent> mItemEvent;
     private final MutableLiveData<SportEvents> mSportEvents;
-    private final MutableLiveData<EventList> testSportEvents;
+    private final MutableLiveData<EventList> mySportEvents;
     private final MutableLiveData<String> location = new MutableLiveData<>();
     private final MutableLiveData<CalendarModel> calendar = new MutableLiveData<>();
     private final MutableLiveData<List<MeetingsModel.MeetingItem>> mMeeting = new MutableLiveData<>();
     private List<BaseDictionaries> eventHoldingStatuses = new ArrayList<>();
-    private final List<ItemEvent> testSportEvent = new ArrayList<>();
+    private final List<ItemEvent> mySportEvent = new ArrayList<>();
     private final List<ItemEvent> mSportEvent = new ArrayList<>();
     public String mId;
 
@@ -63,7 +63,7 @@ public class EventViewModel extends ViewModel {
         repository = new Repository(preferences);
         mItemEvent = new MutableLiveData<>();
         mSportEvents = new MutableLiveData<>();
-        testSportEvents = new MutableLiveData<>();
+        mySportEvents = new MutableLiveData<>();
 
         try {
             if (preferences.getDictionarie() != null) {
@@ -81,8 +81,8 @@ public class EventViewModel extends ViewModel {
         return mSportEvents;
     }
 
-    public LiveData<EventList> getTestSportEventsList() {
-        return testSportEvents;
+    public LiveData<EventList> getMySportEventsList() {
+        return mySportEvents;
     }
 
     public LiveData<CalendarModel> getCalendar() {
@@ -150,19 +150,19 @@ public class EventViewModel extends ViewModel {
         eventsDay(dateFormat.format(new Date()));
     }
 
-    public void getEventsList(String clubId) {
-        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        getEvents(dateFormat.format(new Date()), clubId);
-    }
+//    public void getEventsList(String clubId) {
+//        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        getEvents(dateFormat.format(new Date()), clubId);
+//    }
 
-    public void getEvents(String date, String clubId) {
-        Disposable events = repository.events(30, date, clubId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> statusMapper(result.getItems()),
-                        error -> {
-                        });
-
-        compositeDisposable.add(events);
-    }
+//    public void getEvents(String date, String clubId) {
+//        Disposable events = repository.events(30, date, clubId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(result -> statusMapper(result.getItems()),
+//                        error -> {
+//                        });
+//
+//        compositeDisposable.add(events);
+//    }
 
     public void eventsDay(String date) {
         eventSelectDay = date;
@@ -190,7 +190,7 @@ public class EventViewModel extends ViewModel {
         compositeDisposable.add(eventsDay);
     }
 
-    public void testEventsDay(String date) {
+    public void getEventsByDay(String date) {
         eventSelectDay = date;
 
         Map<String, String> data = new HashMap<>();
@@ -212,7 +212,7 @@ public class EventViewModel extends ViewModel {
                 .eventsDay(data)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> testStatusMapper(result.getItems()),
+                .subscribe(result -> useStatusMapper(result.getItems()),
                         error -> {
                         });
 
@@ -280,18 +280,18 @@ public class EventViewModel extends ViewModel {
          mSportEvents.setValue(sportEvents);
     }
 
-    public void testStatusMapper(List<ItemEvent> itemEvent) {
-        testSportEvent.clear();
+    public void useStatusMapper(List<ItemEvent> itemEvent) {
+        mySportEvent.clear();
         for (ItemEvent itemEvent1 : itemEvent) {
             for (BaseDictionaries eventHoldingStatuses : eventHoldingStatuses) {
                 if (itemEvent1.getHoldingStatusId().equals(eventHoldingStatuses.getId())) {
                     itemEvent1.setHoldingStatusText(eventHoldingStatuses.getTitle());
                 }
             }
-            testSportEvent.add(itemEvent1);
+            mySportEvent.add(itemEvent1);
         }
-        EventList eventLists = new EventList(testSportEvent);
-        testSportEvents.setValue(eventLists);
+        EventList eventLists = new EventList(mySportEvent);
+        mySportEvents.setValue(eventLists);
     }
 
     public String statusMapper(String status) {

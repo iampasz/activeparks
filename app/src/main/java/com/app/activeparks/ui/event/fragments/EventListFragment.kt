@@ -1,14 +1,12 @@
-package com.app.activeparks.ui.event.activity
+package com.app.activeparks.ui.event.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context.LOCATION_SERVICE
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -22,28 +20,20 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.app.activeparks.MainActivity
 import com.app.activeparks.data.model.calendar.CalendarModel
-import com.app.activeparks.data.model.clubs.Clubs
-import com.app.activeparks.data.model.clubs.ItemClub
 import com.app.activeparks.data.model.sportevents.EventList
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.sportevents.ItemEventTitle
-import com.app.activeparks.data.model.sportevents.SportEvents
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
-import com.app.activeparks.ui.clubs.adapter.ClubsAdaper
+import com.app.activeparks.ui.event.activity.EventFragment
 import com.app.activeparks.ui.event.adapter.EventTypeAdapter
-import com.app.activeparks.ui.event.adapter.EventsListAdaper
 import com.app.activeparks.ui.event.adapter.EventsListAdapterKT
-import com.app.activeparks.ui.event.fragments.FragmentEventCreate
 import com.app.activeparks.ui.event.interfaces.OnItemClickListener
-import com.app.activeparks.ui.event.interfaces.ResponseCallBack
-import com.app.activeparks.ui.event.util.EventController
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
 import com.app.activeparks.ui.event.viewmodel.EventViewModel
 import com.app.activeparks.util.extention.gone
-import com.app.activeparks.util.extention.replaceFragment
+import com.app.activeparks.util.extention.removeFragment
 import com.app.activeparks.util.extention.visible
 import com.applandeo.materialcalendarview.CalendarWeekDay
 import com.applandeo.materialcalendarview.EventDay
@@ -63,7 +53,6 @@ import java.util.Calendar
 import java.util.Objects
 
 
-@Suppress("DEPRECATION")
 class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
 
     lateinit var binding: FragmentEventsBinding
@@ -77,7 +66,7 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
     private lateinit var preferences: Preferences
     private lateinit var repository: Repository
 
-    private val clubsList: ArrayList<ItemClub> = java.util.ArrayList()
+    //private val clubsList: ArrayList<ItemClub> = java.util.ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -97,49 +86,21 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
 
         showCreateEventButton()
 
-        val setDataResponseSuccessful = object : ResponseCallBack {
-            override fun load(responseFromApi: String) {
+        binding.listEvents.adapter = eventsListAdapter
 
-                val gson = Gson()
-                val eventList =
-                    gson.fromJson(
-                        responseFromApi,
-                        EventList::class.java
-                    )
-
-                nameList.addAll(eventList.items)
-                eventsListAdapter.differ.submitList(nameList)
-                binding.listEvents.adapter = eventsListAdapter
-            }
-        }
-
-        EventController(requireContext()).getMyEvents(setDataResponseSuccessful)
         locationManager = requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
-
 
         viewModel.getEventsList()
         viewModel.calendarEvent()
 
         binding.closed.setOnClickListener {
-            (requireActivity() as MainActivity).navControllerMain
-                .navigate(R.id.selectEventFragment)
-            (requireActivity() as MainActivity).setVisibleHome(View.VISIBLE, View.GONE)
+            parentFragmentManager.removeFragment(this)
         }
         binding.createEvent.setOnClickListener { updateViewModelData() }
 
-        viewModel.sportEventsList.observe(viewLifecycleOwner) { result: SportEvents ->
+        viewModel.mySportEventsList.observe(viewLifecycleOwner) { result: EventList ->
             run {
                 setAdapter(result)
-
-                // binding.titleText2.text = "Жодного запланованого заходу"
-            }
-        }
-
-        viewModel.testSportEventsList.observe(viewLifecycleOwner) { result: EventList ->
-            run {
-                testSetAdapter(result)
-
-
                 // binding.titleText2.text = "Жодного запланованого заходу"
             }
         }
@@ -158,8 +119,10 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
                 val cal = eventDay.calendar
                 @SuppressLint("SimpleDateFormat") val dateFormat =
                     SimpleDateFormat("yyyy-MM-dd")
+
+
                 viewModel.eventsDay(dateFormat.format(cal.time))
-                viewModel.testEventsDay(dateFormat.format(cal.time))
+                viewModel.getEventsByDay(dateFormat.format(cal.time))
 
             }
         })
@@ -174,11 +137,12 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
             }
         })
 
-        setToolBar()
+        initToolBar()
+
     }
 
 
-    fun filterList() {
+  //  fun filterList() {
 //        val filteredList = originalList.filter { item ->
 //            // Здійснюємо фільтрацію за введеним текстом
 //            item.name.contains(query, ignoreCase = true)
@@ -186,46 +150,10 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
 
         // Оновлюємо список з відфільтрованими даними
         // adapter.updateList(filteredList)
-    }
-
-    private fun openCreateEventFragment() {
-        getParentFragmentManager()
-            .replaceFragment(R.id.constrain_events_container, FragmentEventCreate())
-    }
-
-    fun setAdapter(events: SportEvents) {
-        if (events.items.size > 0) {
-           // findViewById<View>(R.id.list_null).visibility = View.GONE
-        }
-        binding.listEvents.adapter = EventsListAdaper(
-            requireContext(),
-            events.items
-        ).setOnEventListener(object :
-            EventsListAdaper.EventsListener {
-            override fun onInfo(itemClub: ItemEvent) {
-                Log.i("LMLKLK","click")
-
-
-//                startActivity(
-//                    Intent(requireContext(), EventFragment::class.java).putExtra(
-//                        "id",
-//                        itemClub.id
-//                    )
-
-               // )
-            }
-
-            override fun onOpenMaps(lat: Double, lon: Double) {
-                val uri = "https://www.google.com/maps/search/?api=1&query=$lat,$lon"
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
-                startActivity(intent)
-            }
-        })
-    }
+ //   }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun testSetAdapter(events: EventList) {
-
+    fun setAdapter(events: EventList) {
         nameList = events.items as MutableList<ItemEvent>
         eventsListAdapter.differ.submitList(events.items)
         eventsListAdapter.notifyDataSetChanged()
@@ -250,19 +178,10 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
         binding.calendarView.setEvents(days)
         binding.calendarView.setCalendarDayLayout(R.layout.custom_calendar_day)
         binding.calendarView.setFirstDayOfWeek(CalendarWeekDay.MONDAY)
-        // binding.calendarView.setPreviousButtonImage(resources.getDrawable(R.drawable.ic_arrow_left_gray))
     }
-
-//    @Deprecated("Deprecated in Java")
-//    override fun onBackPressed() {
-//        super.onBackPressed()
-//        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out)
-//    }
 
     override fun onResume() {
         super.onResume()
-
-        // Request location updates
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -310,7 +229,8 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
             }
             ) { error: Throwable ->
                 Log.i("THROWABLE", error.message + " ")
-                Toast.makeText(context, "Виникли проблеми, спробуйте пізніше", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Виникли проблеми, спробуйте пізніше", Toast.LENGTH_SHORT)
+                    .show()
             }
     }
 
@@ -359,28 +279,20 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
 
     @SuppressLint("CommitTransaction")
     override fun onItemClick(position: Int) {
-
-        parentFragmentManager.beginTransaction().add(R.id.constrain_events_container, EventFragment() ).commit()
-         viewModel.getEvent(nameList[position].id)
-
-    //        startActivity(
-//           // supportFragmentManager.beginTransaction().add()
-////            Intent(baseContext, EventFragment::class.java).putExtra(
-////                "id",
-////                nameList[position].id
-////            )
-//        )
+        parentFragmentManager.beginTransaction()
+            .add(R.id.constrain_events_container, EventFragment()).commit()
+        viewModel.getEvent(nameList[position].id)
     }
 
     private fun showCreateEventButton() {
-        if (preferences.getToken() == null || preferences.getToken().isEmpty()) {
+        if (preferences.token == null || preferences.token.isEmpty()) {
             binding.createEvent.gone()
         } else {
             binding.createEvent.visible()
         }
     }
 
-    fun setToolBar() {
+    private fun initToolBar() {
 
         val myTab = binding.selectFilter.newTab()
         myTab.setCustomView(R.layout.custom_tab)
@@ -417,28 +329,34 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
         })
     }
 
+//    fun getAllClubs(limit: Int) {
+//        val allClubs = repository.getClubsAll(limit.toString()).subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe(
+//                { result: Clubs ->
+//                    clubsList.clear()
+//                    clubsList.addAll(result.items)
+//                    setClubsAdapter()
+//                }
+//            ) { error: Throwable? -> }
+//    }
 
-    fun getAllClubs(limit: Int) {
-        val allClubs = repository.getClubsAll(limit.toString()).subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { result: Clubs ->
-                    clubsList.clear()
-                    clubsList.addAll(result.items)
-                    setClubsAdapter()
-                }
-            ) { error: Throwable? -> }
-    }
-
-    private fun setClubsAdapter() {
-        binding.listEvents.adapter = ClubsAdaper(requireContext(), clubsList)
-            .setOnClubsListener { itemClub ->
+   // private fun setClubsAdapter() {
+        // binding.listEvents.adapter = ClubsAdaper(requireContext(), clubsList)
+        //        .setOnClubsListener { itemClub ->
 //                startActivity(
 ////                    Intent(this@EventListActivity2, ClubActivity::class.java).putExtra(
 ////                        "id",
 ////                        itemClub.id
 ////                    )
 //                )
-            }
+        //   }
+  //  }
+
+    private fun openCreateEventFragment() {
+        parentFragmentManager
+            .beginTransaction()
+            .add(R.id.constrain_events_container, FragmentEventCreate())
+            .commit()
     }
 }

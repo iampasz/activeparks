@@ -1,5 +1,6 @@
 package com.app.activeparks.ui.homeWithUser.fragments.home
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,6 @@ import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.visible
-import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentHomeEventsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -25,6 +25,7 @@ class HomeEventsFragment : Fragment() {
         binding = FragmentHomeEventsBinding.inflate(inflater, container, false)
         return binding.root
     }
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -32,22 +33,13 @@ class HomeEventsFragment : Fragment() {
         initView()
         initListener()
         observe()
+        
     }
 
     private fun initListener() {
         with(binding) {
             tvEventsCalendar.setOnClickListener {
-               // startActivity(Intent(requireActivity(), EventListActivity2::class.java))
-//                parentFragmentManager
-//                    .beginTransaction()
-//                    .add(R.id.event_container, EventListFragment())
-//                    .commit()
-
-                (requireActivity() as MainActivity).navControllerMain
-                    .navigate(R.id.selectEventFragment)
-                (requireActivity() as MainActivity).setVisibleHome(View.GONE, View.VISIBLE)
-
-
+                (requireActivity() as MainActivity).openEventFragment()
             }
         }
     }

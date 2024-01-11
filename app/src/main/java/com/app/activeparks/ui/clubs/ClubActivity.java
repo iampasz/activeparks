@@ -1,5 +1,6 @@
 package com.app.activeparks.ui.clubs;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,9 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.app.activeparks.ui.event.fragments.EventsListFragment;
-import com.app.activeparks.ui.qr.QrCodeActivity;
-import com.app.activeparks.ui.event.fragments.EventsListFragment;
+import com.app.activeparks.ui.event.fragments.EventListFragment;
 import com.app.activeparks.ui.news.NewsFragment;
 import com.app.activeparks.ui.participants.ParticipantsFragment;
 import com.app.activeparks.ui.qr.QrCodeActivity;
@@ -35,6 +34,7 @@ public class ClubActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private ImageView mImageView, mHideDescription;
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch permissionUser;
 
     private TextView mTitle, subtitle, mUser, mDescription, mCreateAt, mPhone;
@@ -43,6 +43,7 @@ public class ClubActivity extends AppCompatActivity implements SwipeRefreshLayou
     private SwipeRefreshLayout swipeRefreshLayout;
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,9 +59,7 @@ public class ClubActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        findViewById(R.id.closed).setOnClickListener((View v) -> {
-            onBackPressed();
-        });
+        findViewById(R.id.closed).setOnClickListener((View v) -> onBackPressed());
 
         mImageView = findViewById(R.id.image_club);
         mHideDescription = findViewById(R.id.ic_hide_description);
@@ -88,9 +87,10 @@ public class ClubActivity extends AppCompatActivity implements SwipeRefreshLayou
                 subtitle.setText(clubs.getTagline());
                 mDescription.setText(clubs.getDescription());
 
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
                     Date date = format.parse(clubs.getCreatedAt());
+                    assert date != null;
                     mCreateAt.setText(new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -120,13 +120,11 @@ public class ClubActivity extends AppCompatActivity implements SwipeRefreshLayou
                 }
 
                 if (clubs.getClubUser() != null) {
-                    if (clubs.getClubUser().getIsCoordinator() == true) {
+                    if (clubs.getClubUser().getIsCoordinator()) {
                         qr.setVisibility(View.VISIBLE);
-                        qr.setOnClickListener(v -> {
-                            startActivity(new Intent(this, QrCodeActivity.class)
-                                    .putExtra("club", true)
-                                    .putExtra("clubId", viewModel.mId));
-                        });
+                        qr.setOnClickListener(v -> startActivity(new Intent(this, QrCodeActivity.class)
+                                .putExtra("club", true)
+                                .putExtra("clubId", viewModel.mId)));
                         permissionUser.setVisibility(View.GONE);
                     }else{
                         join.setVisibility(View.VISIBLE);
@@ -137,7 +135,7 @@ public class ClubActivity extends AppCompatActivity implements SwipeRefreshLayou
                         permissionUser.setVisibility(View.VISIBLE);
                     }
 
-                    if (clubs.getClubUser().getIsApproved() == true) {
+                    if (clubs.getClubUser().getIsApproved()) {
                         join.setText("Вийти");
                     } else {
                         join.setText("Відмінити");
@@ -153,7 +151,7 @@ public class ClubActivity extends AppCompatActivity implements SwipeRefreshLayou
 
                 join.setEnabled(true);
 
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         });
 
@@ -166,7 +164,7 @@ public class ClubActivity extends AppCompatActivity implements SwipeRefreshLayou
         });
 
         event.setOnClickListener(v -> {
-            setFragment(new EventsListFragment(viewModel.mId));
+            setFragment(new EventListFragment());
             replaceButton();
             event.on();
         });
@@ -187,9 +185,7 @@ public class ClubActivity extends AppCompatActivity implements SwipeRefreshLayou
             }
         });
 
-        permissionUser.setOnClickListener(v -> {
-            viewModel.setPermissionsRequest(permissionUser.isChecked());
-        });
+        permissionUser.setOnClickListener(v -> viewModel.setPermissionsRequest(permissionUser.isChecked()));
 
         findViewById(R.id.copy_action).setOnClickListener((View v) -> {
             Intent intent = new Intent(android.content.Intent.ACTION_SEND);

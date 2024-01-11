@@ -106,7 +106,6 @@
         <activity android:name="com.app.activeparks.ui.support.SupportAddActivity" />
         <activity android:name="com.app.activeparks.ui.news.NewsCreateActivity" />
         <activity android:name="com.app.activeparks.ui.event.activity.EventsListActivity" />
-        <activity android:name="com.app.activeparks.ui.event.activity.EventListFragment" />
         <activity android:name="com.app.activeparks.ui.people.UserActivity" />
         <activity
             android:name="com.app.activeparks.util.cropper.CropImageActivity"

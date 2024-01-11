@@ -75,9 +75,6 @@ import java.util.Locale
 @Suppress("DEPRECATION")
 class FragmentEventCreate : Fragment() {
 
-
-    private val requestCode = 22
-
     lateinit var binding: FragmentEventCreateBinding
     private lateinit var mapsViewController: MapsViewController
     private val viewModel: EventRouteViewModel by sharedViewModel()
@@ -406,6 +403,7 @@ class FragmentEventCreate : Fragment() {
         builder.setMessage(requireActivity().resources.getString(R.string.save_druft))
         builder.setPositiveButton(requireActivity().resources.getString(R.string.yes)) { _, _ ->
             collectEventData()
+
             val responseSuccessful = object : ResponseCallBack {
                 override fun load(responseFromApi: String) {
                     viewModelStore.clear()
@@ -524,27 +522,33 @@ class FragmentEventCreate : Fragment() {
         dialog.setContentView(R.layout.dialog_gallery)
         val galleryAction = dialog.findViewById<LinearLayout>(R.id.gallery_action)
         galleryAction?.setOnClickListener {
-            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+
+            //etContentLauncher.launch("image/*")
+            dispatchTakePictureIntent()
+
+//            val galleryIntent =
+//                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+//            imageActivityResultLauncher.launch(galleryIntent)
+
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
                 == PackageManager.PERMISSION_GRANTED
             ) {
                 getContentLauncher.launch("image/*")
             } else {
-                Log.i("KNJNJNF", "${ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)}  hh")
                 Toast.makeText(
                     activity,
                     getString(R.string.add_access_to_photo),
                     Toast.LENGTH_SHORT
-                ).show()
-
-
-                requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), requestCode)
-
-//                ActivityCompat.requestPermissions(
-//                    requireActivity(),
-//                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-//                    2
-//                )
-
+                )
+                    .show()
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    1
+                )
             }
             dialog.dismiss()
         }
@@ -744,20 +748,6 @@ class FragmentEventCreate : Fragment() {
             }
         } else {
             Toast.makeText(context, "Не всі поля заповнені", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when (requestCode) {
-            this.requestCode -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Дозвіл надано, виконайте ваші дії зчитування зовнішнього сховища тут
-                } else {
-                    // Дозвіл не надано, ви можете повідомити користувача або спробувати запросити знову
-                }
-            }
-            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 }
