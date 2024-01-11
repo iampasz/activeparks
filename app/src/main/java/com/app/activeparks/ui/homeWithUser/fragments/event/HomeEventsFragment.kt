@@ -6,9 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.app.activeparks.ui.event.activity.EventActivity
-import com.app.activeparks.ui.event.activity.EventListActivity2
 import com.app.activeparks.MainActivity
+import com.app.activeparks.ui.event.fragments.EventListFragment
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.databinding.FragmentHomeEventsBinding
@@ -18,7 +17,6 @@ class HomeEventsFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeEventsBinding
     val adapter = HomeEventsAdapter{
-        startActivity(Intent(activity, EventActivity::class.java).putExtra("id", it.id))
     }
     private val viewModel: HomeEventsViewModel by viewModel()
 
@@ -43,7 +41,7 @@ class HomeEventsFragment : Fragment() {
     private fun initListener() {
         with(binding) {
             tvEventsCalendar.setOnClickListener {
-                (requireActivity() as MainActivity).openEventFragment()
+                (requireActivity() as MainActivity).openFragment(EventListFragment())
             }
         }
     }
