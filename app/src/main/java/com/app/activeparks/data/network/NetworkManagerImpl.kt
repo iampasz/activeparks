@@ -20,6 +20,8 @@ import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswordRequest
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
+import com.app.activeparks.data.model.sportevents.EventResponse
+import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import com.app.activeparks.data.model.statistic.StatisticResponse
 import com.app.activeparks.data.model.weather.WeatherResponse
@@ -29,7 +31,6 @@ import com.app.activeparks.data.network.response.parseErrorBody
 import com.app.activeparks.data.network.weather.ApiWeather
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
@@ -209,6 +210,27 @@ class NetworkManagerImpl(
 
         return response.body()
     }
+
+    override suspend fun getAdminEvents(): EventResponse? {
+
+        val response = apiWithAuthorization.getAdminEvents()
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+        return response.body()
+    }
+
+    override suspend fun createEmptyEvent(): ItemEvent? {
+
+        val response = apiWithAuthorization.createEmptyEvent()
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+        return response.body()
+    }
+
+
 
     //Statistics
     override suspend fun getStatistics(from: String, to: String): StatisticResponse? {

@@ -3,22 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_about_event">
+    app:startDestination="@+id/nav_about_event">
 
     <fragment
-        android:id="@+id/navigation_about_event"
+        android:id="@+id/nav_about_event"
         android:name="com.app.activeparks.ui.event.fragments.AboutEventFragment"
         android:label="@string/about_event"
-        tools:layout="@layout/fragment_about_event" />
+        tools:layout="@layout/fragment_about_event"/>
+
     <fragment
-        android:id="@+id/navigation_participant"
-        android:name="com.app.activeparks.ui.event.fragments.ParticipantEventFragment"
+        android:id="@+id/nav_participant"
+        android:name="com.app.activeparks.ui.participants.ParticipantsFragment"
         android:label="@string/participants"
         tools:layout="@layout/fragment_event_participant" />
     <fragment
-        android:id="@+id/navigation_gallery"
+        android:id="@+id/nav_gallery"
         android:name="com.app.activeparks.ui.event.fragments.GalleryEventFragment"
         android:label="@string/gallery"
         tools:layout="@layout/fragment_gallery" />
+<!--    <fragment-->
+<!--        android:id="@+id/nav_join"-->
+<!--        android:name="com.app.activeparks.ui.event.fragments.GalleryEventFragment"-->
+<!--        android:label="@string/gallery"-->
+<!--        tools:layout="@layout/fragment_gallery" />-->
 
 </navigation>

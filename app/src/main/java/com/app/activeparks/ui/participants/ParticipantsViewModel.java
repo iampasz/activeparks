@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.model.dictionaries.District;
-import com.app.activeparks.data.model.dictionaries.Region;
 import com.app.activeparks.data.model.user.User;
 import com.app.activeparks.data.model.user.UserParticipants;
 import com.app.activeparks.data.storage.Preferences;
@@ -17,19 +16,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 
 public class ParticipantsViewModel extends ViewModel {
 
     private final Preferences sharedPreferences;
-    private Repository repository;
-    private MutableLiveData<UserParticipants> mUserClubsHeads = new MutableLiveData<>();
-    private MutableLiveData<UserParticipants> mUserClubsMembers = new MutableLiveData<>();
-    private MutableLiveData<UserParticipants> mUserApplying = new MutableLiveData<>();
+    private final Repository repository;
+    private final MutableLiveData<UserParticipants> mUserClubsHeads = new MutableLiveData<>();
+    private final MutableLiveData<UserParticipants> mUserClubsMembers = new MutableLiveData<>();
+    private final MutableLiveData<UserParticipants> mUserApplying = new MutableLiveData<>();
 
     public boolean isEvent;
 
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public ParticipantsViewModel(Preferences sharedPreferences)   {
         this.sharedPreferences = sharedPreferences;
@@ -41,10 +43,10 @@ public class ParticipantsViewModel extends ViewModel {
     }
 
     public void getClubsUser(String id, Boolean type){
-        repository.getClubsUser(id, type).subscribeOn(Schedulers.io())
+        Disposable getClubsUser = repository.getClubsUser(id, type).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                            if (type == true) {
+                            if (type) {
                                 mUserClubsHeads.setValue(userMapper(result));
                                 getClubsUser(id, false);
                             }else {
@@ -53,13 +55,20 @@ public class ParticipantsViewModel extends ViewModel {
                         },
                         error -> {
                         });
+
+        compositeDisposable.add(getClubsUser);
     }
 
     public void getEventUser(String id, Boolean type){
-        repository.getEventUser(id, type).subscribeOn(Schedulers.io())
+        Disposable getEventUser = repository.getEventUser(id, type).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                            if (type == true) {
+
+                            Log.i("VIEWMODELINPART", type+"  type");
+
+                            if (type) {
+                                Log.i("VIEWMODELINPART", result+"  result");
+                                Log.i("VIEWMODELINPART", userMapper(result)+"  userMapper(result)");
                                 mUserClubsHeads.setValue(userMapper(result));
                                 getEventUser(id, false);
                             }else {
@@ -68,10 +77,12 @@ public class ParticipantsViewModel extends ViewModel {
                         },
                         error -> {
                         });
+
+        compositeDisposable.add(getEventUser);
     }
 
     public void getClubsUserApplying(String id){
-        repository.getClubsUserApplying(id).subscribeOn(Schedulers.io())
+        Disposable getClubsUserApplying = repository.getClubsUserApplying(id).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             if (result != null){
@@ -80,10 +91,11 @@ public class ParticipantsViewModel extends ViewModel {
                         },
                         error -> {
                         });
+        compositeDisposable.add(getClubsUserApplying);
     }
 
     public void getEventUserApplying(String id){
-        repository.getEventUserApplying(id).subscribeOn(Schedulers.io())
+        Disposable getEventUserApplying = repository.getEventUserApplying(id).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             if (result != null){
@@ -92,6 +104,7 @@ public class ParticipantsViewModel extends ViewModel {
                         },
                         error -> {
                         });
+        compositeDisposable.add(getEventUserApplying);
     }
 
     public void acceptUser(String id, String user){
@@ -177,20 +190,20 @@ public class ParticipantsViewModel extends ViewModel {
     }
 
     public void clubsApplyingRequest(String id, String user, String type){
-        repository.clubsApplyingRequest(id, user, type).subscribeOn(Schedulers.io())
+        Disposable clubsApplyingRequest =  repository.clubsApplyingRequest(id, user, type).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                            Log.d("log_request", "" + result.string());},
-                        error -> {Log.d("log_request", "" + error.getMessage());
-                        });
+                .subscribe(result -> Log.d("log_request", "" + result.string()),
+                        error -> Log.d("log_request", "" + error.getMessage()));
+        compositeDisposable.add(clubsApplyingRequest);
     }
 
     public void eventApplyingRequest(String id, String user, String type){
-        repository.eventApplyingRequest(id, user, type).subscribeOn(Schedulers.io())
+        Disposable eventApplyingRequest = repository.eventApplyingRequest(id, user, type).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {},
                         error -> {
                         });
+        compositeDisposable.add(eventApplyingRequest);
     }
 
 
@@ -199,7 +212,7 @@ public class ParticipantsViewModel extends ViewModel {
     public UserParticipants userMapper(UserParticipants user){
         List<User> mUsertItem = new ArrayList<>();
         List<District> district = sharedPreferences.getDictionarie().getDistricts();
-        List<Region> region = sharedPreferences.getDictionarie().getRegions();
+        //List<Region> region = sharedPreferences.getDictionarie().getRegions();
         for (User u : user.getItems()) {
             for (District d : district) {
                 if (u.getDistrictId() != null && u.getDistrictId().equals(d.getId())) {
@@ -208,8 +221,7 @@ public class ParticipantsViewModel extends ViewModel {
             }
             mUsertItem.add(u);
         }
-        UserParticipants userClubs = new UserParticipants().setItems(mUsertItem);
-        return userClubs;
+        return new UserParticipants().setItems(mUsertItem);
     }
 
     public LiveData<UserParticipants> getUserHeads() {

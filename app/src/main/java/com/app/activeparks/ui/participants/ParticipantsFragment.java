@@ -1,31 +1,25 @@
 package com.app.activeparks.ui.participants;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.app.activeparks.data.model.user.User;
+import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 import com.app.activeparks.ui.participants.adapter.UsersAdaper;
 import com.app.activeparks.ui.people.UserActivity;
-import com.app.activeparks.ui.profile.EditProfileActivity;
-import com.app.activeparks.ui.support.SupportActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.technodreams.activeparks.R;
 import com.technodreams.activeparks.databinding.FragmentUsersBinding;
+
 
 public class ParticipantsFragment extends Fragment {
 
@@ -42,10 +36,17 @@ public class ParticipantsFragment extends Fragment {
     private ParticipantsViewModel viewModel;
     private String id = null;
     private Boolean isAdmin = false;
-    private Boolean isEvent = false;
+    private Boolean isEvent = true;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+
+        EventViewModel eventVM = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+
+        id = eventVM.getCurrentId().getValue();
+
         viewModel =
                 new ViewModelProvider(this, new ParticipantsModelFactory(getContext())).get(ParticipantsViewModel.class);
 
@@ -55,21 +56,22 @@ public class ParticipantsFragment extends Fragment {
         viewModel.setIsEvent(isEvent);
 
         update();
-
         initObserve();
-
         return root;
     }
 
     public void update(){
-        if (isEvent != false) {
+        if (isEvent) {
             viewModel.getEventUser(id, true);
-            if (isAdmin == true) {
+            if (isAdmin) {
                 viewModel.getEventUserApplying(id);
+
             }
         } else {
+
             viewModel.getClubsUser(id);
-            if (isAdmin == true) {
+            if (isAdmin) {
+
                 viewModel.getClubsUserApplying(id);
             }
         }
@@ -146,41 +148,32 @@ public class ParticipantsFragment extends Fragment {
     }
 
     void dialogShow(String userId, boolean type) {
-        BottomSheetDialog dialog = new BottomSheetDialog(getContext(), R.style.CustomBottomSheetDialogTheme);
+        BottomSheetDialog dialog = new BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialogTheme);
         dialog.setContentView(R.layout.dialog_participants);
 
         TextView updateAction = dialog.findViewById(R.id.update_action);
-        updateAction.setText(type == false ? "Зробити організатором" : "Зняти організатора");
+        assert updateAction != null;
+        updateAction.setText(type ? "Зняти організатора" : "Зробити організатором");
         updateAction.setOnClickListener(view -> {
-            if (type == false) {
-                viewModel.setActing(id, userId);
-            }else {
+            if (type) {
                 viewModel.removeActing(id, userId);
+            } else {
+                viewModel.setActing(id, userId);
             }
             dialog.dismiss();
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    update();
-                }
-            }, 500);
+            new Handler(Looper.getMainLooper()).postDelayed(this::update, 500);
         });
         TextView removeAction = dialog.findViewById(R.id.remove_action);
+        assert removeAction != null;
         removeAction.setOnClickListener(view -> {
             viewModel.removeUser(id, userId);
             dialog.dismiss();
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    update();
-                }
-            }, 500);
+            new Handler(Looper.getMainLooper()).postDelayed(this::update, 500);
         });
 
         TextView cancel = dialog.findViewById(R.id.cancel);
-        cancel.setOnClickListener(view -> {
-            dialog.dismiss();
-        });
+        assert cancel != null;
+        cancel.setOnClickListener(view -> dialog.dismiss());
         dialog.show();
     }
 }

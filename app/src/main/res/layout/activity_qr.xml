@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     android:gravity="left"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded">
 
 
     <LinearLayout
@@ -16,6 +17,7 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:contentDescription="@string/icon"
             android:id="@+id/closed"
             android:layout_width="32dp"
             android:layout_height="32dp"
@@ -25,6 +27,7 @@
 
 
         <ImageView
+            android:contentDescription="@string/icon"
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginTop="16dp"
@@ -48,11 +51,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
                 android:gravity="center"
-                android:text="Відскануйте Qr код"
+                android:text="@string/scan_qr"
                 android:textColor="@color/text_color"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
 
 
             <androidx.cardview.widget.CardView
@@ -62,6 +64,7 @@
                 android:elevation="4dp"
                 app:cardCornerRadius="16dp">
             <ImageView
+                android:contentDescription="@string/icon"
                 android:id="@+id/image_qr"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
@@ -81,7 +84,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:drawablePadding="8dp"
-                android:text="Поділитися кодом"
+                android:text="@string/share_qr"
                 android:textStyle="bold"
                 android:textColor="@color/text_color_light" />
 
