@@ -18,10 +18,11 @@ import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswordRequest
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
+import com.app.activeparks.data.model.sportevents.EventResponse
+import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import com.app.activeparks.data.model.statistic.StatisticResponse
 import com.app.activeparks.data.model.weather.WeatherResponse
-import retrofit2.Response
 import java.io.File
 
 /**
@@ -60,4 +61,6 @@ interface NetworkManager {
     ): Default?
 
     suspend fun updateUser(id: String, user: User): User?
+    suspend fun getAdminEvents(): EventResponse?
+    suspend fun createEmptyEvent(): ItemEvent?
 }

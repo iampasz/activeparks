@@ -16,21 +16,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.app.activeparks.MainActivity
 import com.app.activeparks.data.model.calendar.CalendarModel
 import com.app.activeparks.data.model.sportevents.EventList
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.sportevents.ItemEventTitle
-import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.ui.event.activity.EventFragment
 import com.app.activeparks.ui.event.adapter.EventTypeAdapter
 import com.app.activeparks.ui.event.adapter.EventsListAdapterKT
 import com.app.activeparks.ui.event.interfaces.OnItemClickListener
-import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
 import com.app.activeparks.ui.event.viewmodel.EventViewModel
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.removeFragment
@@ -39,14 +37,9 @@ import com.applandeo.materialcalendarview.CalendarWeekDay
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
 import com.google.android.material.tabs.TabLayout
-import com.google.gson.Gson
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentEventsBinding
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
-import okhttp3.ResponseBody
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -56,15 +49,13 @@ import java.util.Objects
 class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
 
     lateinit var binding: FragmentEventsBinding
-    private val viewModel: EventViewModel by viewModel()
-    private val eventRouteViewModel: EventRouteViewModel by viewModel()
-    private lateinit var disposable: Disposable
+    private val viewModel: EventViewModel by activityViewModel()
     private var locationManager: LocationManager? = null
     private lateinit var evetTypeAdapter: EventTypeAdapter
-    var nameList: MutableList<ItemEvent> = mutableListOf()
-    val eventsListAdapter = EventsListAdapterKT(this)
+    private var nameList: MutableList<ItemEvent> = mutableListOf()
+    private val eventsListAdapter = EventsListAdapterKT(this)
     private lateinit var preferences: Preferences
-    private lateinit var repository: Repository
+
 
     //private val clubsList: ArrayList<ItemClub> = java.util.ArrayList()
 
@@ -75,7 +66,6 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
     ): View {
         binding = FragmentEventsBinding
             .inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -83,20 +73,18 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         preferences = Preferences(requireContext())
-
         showCreateEventButton()
-
         binding.listEvents.adapter = eventsListAdapter
-
         locationManager = requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
-
         viewModel.getEventsList()
         viewModel.calendarEvent()
 
         binding.closed.setOnClickListener {
             parentFragmentManager.removeFragment(this)
         }
-        binding.createEvent.setOnClickListener { updateViewModelData() }
+        binding.createEvent.setOnClickListener {
+            (requireActivity() as MainActivity).openFragment(FragmentEventCreate())
+        }
 
         viewModel.mySportEventsList.observe(viewLifecycleOwner) { result: EventList ->
             run {
@@ -105,13 +93,14 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
             }
         }
 
-
         viewModel.calendar.observe(
             viewLifecycleOwner
         ) { calendarItem: CalendarModel? ->
-            this.setMapperAdapter(
-                calendarItem!!
-            )
+            calendarItem?.let {
+                this.setMapperAdapter(
+                    it
+                )
+            }
         }
 
         binding.calendarView.setOnDayClickListener(object : OnDayClickListener {
@@ -120,10 +109,8 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
                 @SuppressLint("SimpleDateFormat") val dateFormat =
                     SimpleDateFormat("yyyy-MM-dd")
 
-
                 viewModel.eventsDay(dateFormat.format(cal.time))
                 viewModel.getEventsByDay(dateFormat.format(cal.time))
-
             }
         })
         addEventTitlesList()
@@ -142,15 +129,15 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
     }
 
 
-  //  fun filterList() {
+    //  fun filterList() {
 //        val filteredList = originalList.filter { item ->
 //            // Здійснюємо фільтрацію за введеним текстом
 //            item.name.contains(query, ignoreCase = true)
 //        }
 
-        // Оновлюємо список з відфільтрованими даними
-        // adapter.updateList(filteredList)
- //   }
+    // Оновлюємо список з відфільтрованими даними
+    // adapter.updateList(filteredList)
+    //   }
 
     @SuppressLint("NotifyDataSetChanged")
     fun setAdapter(events: EventList) {
@@ -207,32 +194,6 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
 
     override fun onProviderDisabled(provider: String) {}
 
-    private fun updateViewModelData() {
-
-        preferences.server = true
-        repository = Repository(preferences)
-        disposable = repository.createEmptyEvent()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ responseBody: ResponseBody ->
-                val jsonResponse = responseBody.string()
-                val gson = Gson()
-                val itemEvent =
-                    gson.fromJson(
-                        jsonResponse,
-                        ItemEvent::class.java
-                    )
-
-
-                eventRouteViewModel.updateItemEventData(itemEvent)
-                openCreateEventFragment()
-            }
-            ) { error: Throwable ->
-                Log.i("THROWABLE", error.message + " ")
-                Toast.makeText(context, "Виникли проблеми, спробуйте пізніше", Toast.LENGTH_SHORT)
-                    .show()
-            }
-    }
 
     private fun addEventTitlesList() {
 
@@ -279,9 +240,16 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
 
     @SuppressLint("CommitTransaction")
     override fun onItemClick(position: Int) {
+
+        Log.i("EventFragmentTag", "${nameList[position].id} ll")
+        //viewModel.updateEventData();
+        viewModel.setCurrentId(nameList[position].id)
+        Log.i("EventFragmentTag", "${viewModel.mId} ll")
+
+        Log.i("EventFragmentTag", "$viewModel VM")
+
         parentFragmentManager.beginTransaction()
             .add(R.id.constrain_events_container, EventFragment()).commit()
-        viewModel.getEvent(nameList[position].id)
     }
 
     private fun showCreateEventButton() {
@@ -341,22 +309,16 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
 //            ) { error: Throwable? -> }
 //    }
 
-   // private fun setClubsAdapter() {
-        // binding.listEvents.adapter = ClubsAdaper(requireContext(), clubsList)
-        //        .setOnClubsListener { itemClub ->
+    // private fun setClubsAdapter() {
+    // binding.listEvents.adapter = ClubsAdaper(requireContext(), clubsList)
+    //        .setOnClubsListener { itemClub ->
 //                startActivity(
 ////                    Intent(this@EventListActivity2, ClubActivity::class.java).putExtra(
 ////                        "id",
 ////                        itemClub.id
 ////                    )
 //                )
-        //   }
-  //  }
+    //   }
+    //  }
 
-    private fun openCreateEventFragment() {
-        parentFragmentManager
-            .beginTransaction()
-            .add(R.id.constrain_events_container, FragmentEventCreate())
-            .commit()
-    }
 }

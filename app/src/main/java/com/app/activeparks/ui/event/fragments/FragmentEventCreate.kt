@@ -34,6 +34,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import com.app.activeparks.MainActivity
 import com.app.activeparks.data.model.points.RoutePoint
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.ui.dialog.BottomSearchDialog
@@ -47,7 +48,6 @@ import com.app.activeparks.util.MapsViewController
 import com.app.activeparks.util.cropper.CropImage
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.removeFragment
-import com.app.activeparks.util.extention.replaceFragment
 import com.app.activeparks.util.extention.visible
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.squareup.picasso.Picasso
@@ -57,7 +57,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.MapEventsOverlay
@@ -72,13 +72,13 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
-@Suppress("DEPRECATION")
-class FragmentEventCreate : Fragment() {
+class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
 
     lateinit var binding: FragmentEventCreateBinding
     private lateinit var mapsViewController: MapsViewController
-    private val viewModel: EventRouteViewModel by sharedViewModel()
-    private var eventData = ItemEvent()
+    private val viewModel: EventRouteViewModel by activityViewModel()
+    lateinit var itemEvent: ItemEvent
+    private var currentPoint = 0
     var currentTrainingType = ""
     var geoPointsList = ArrayList<GeoPoint>()
     var markerList = ArrayList<Marker>()
@@ -87,6 +87,7 @@ class FragmentEventCreate : Fragment() {
     private lateinit var currentPhotoPath: String
     private var photoURI: Uri? = null
     private var formattedDateTime = ""
+
     private val getContentLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             val ratioWidth = 3
@@ -103,16 +104,50 @@ class FragmentEventCreate : Fragment() {
                 data?.let {
                     val resultUri = CropImage.getActivityResult(data).uri
                     val file = EventHelper.saveImageToFile(resultUri, requireActivity())
-                    eventController.loadFileToAPI(file, eventData)
+                    eventController.loadFileToAPI(file, itemEvent)
                     binding.imageCover.setImageURI(resultUri)
 
-                    Log.i("CHECK_IMAGE", "Image was loaded")
-                    Log.i("CHECK_IMAGE", "${checkFieldsAndEnableButton()} result")
                 }
             }
         }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    val publishResponseSuccessful = object : ResponseCallBack {
+        override fun load(responseFromApi: String) {
+            viewModelStore.clear()
+            parentFragmentManager.removeFragment(this@FragmentEventCreate)
+        }
+    }
+
+    private val setDataResponseSuccessful = object : ResponseCallBack {
+        override fun load(responseFromApi: String) {
+            viewModelStore.clear()
+            eventController.publishDataEvent(itemEvent.id, publishResponseSuccessful)
+            parentFragmentManager.removeFragment(FragmentEventCreate())
+
+        }
+    }
+
+    private val takePictureLauncherAgain =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                Activity.RESULT_OK -> {
+                    val imageUri = photoURI
+
+                    val ratioWidth = 3
+                    val ratioHeight = 2
+                    val cropIntent = CropImage.activity(imageUri)
+                        .setAspectRatio(ratioWidth, ratioHeight)
+                        .getIntent(requireContext())
+                    cropActivityResultLauncher.launch(cropIntent)
+                }
+
+                Activity.RESULT_CANCELED -> {
+                }
+
+            }
+        }
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -120,9 +155,6 @@ class FragmentEventCreate : Fragment() {
     ): View {
         binding = FragmentEventCreateBinding
             .inflate(inflater, container, false)
-
-        MapsViewController(binding.eventMap, requireContext())
-        initSpinner()
         return binding.root
     }
 
@@ -130,33 +162,14 @@ class FragmentEventCreate : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        MapsViewController(binding.eventMap, requireContext())
+
         eventController = EventController(requireContext())
         mapsViewController = MapsViewController(binding.eventMap, requireContext())
 
-        var currentPoint = 0
-        val myListener: Marker.OnMarkerDragListener = object : Marker.OnMarkerDragListener {
-            override fun onMarkerDrag(marker: Marker) {
-            }
+        observer()
+        initSpinner()
 
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onMarkerDragEnd(marker: Marker) {
-                geoPointsList[currentPoint].longitude = marker.position.longitude
-                geoPointsList[currentPoint].latitude = marker.position.latitude
-                EventHelper.drawRoute(geoPointsList, binding.eventMap)
-                EventHelper.drawMarkers(binding.eventMap, geoPointsList, this, markerType)
-                getAddress(marker.position)
-            }
-
-            override fun onMarkerDragStart(marker: Marker) {
-                for ((i, position) in geoPointsList.withIndex()) {
-                    if (position == marker.position) {
-                        currentPoint = i
-                    }
-                }
-            }
-        }
-
-        observer(myListener)
         //TODO save scroll to view model
         // val previousScrollPosition = viewModel.getScrollPosition()
         // binding.scroll.post { binding.scroll.scrollTo(0, previousScrollPosition) }
@@ -173,19 +186,9 @@ class FragmentEventCreate : Fragment() {
 
         with(binding) {
 
-            imageCover.setOnClickListener { setCoverImageDialog() }
-            backButton.setOnClickListener {
-                alertBeforeClosing()
-            }
-            startData.setOnClickListener { setDate(startData) }
-            endData.setOnClickListener { setDate(endData) }
             startData.text = formattedDateTime
             endData.text = formattedDateTime
-            openFullMap.setOnClickListener { openFullMap() }
-            eventMap.setOnTouchListener { _, _ ->
-                scroll.requestDisallowInterceptTouchEvent(true)
-                false
-            }
+
             eventMap.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
                 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
                 override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
@@ -201,7 +204,7 @@ class FragmentEventCreate : Fragment() {
                         EventHelper.drawMarkers(
                             binding.eventMap,
                             geoPointsList,
-                            myListener,
+                            this@FragmentEventCreate,
                             markerType
                         )
                         getAddress(it)
@@ -217,23 +220,13 @@ class FragmentEventCreate : Fragment() {
 
             }))
 
-            val publishResponseSuccessful = object : ResponseCallBack {
-                override fun load(responseFromApi: String) {
-                    viewModelStore.clear()
-                    parentFragmentManager.removeFragment(this@FragmentEventCreate)
-                }
 
-            }
-            val setDataResponseSuccessful = object : ResponseCallBack {
-                override fun load(responseFromApi: String) {
-                    viewModelStore.clear()
-                    eventController.publishDataEvent(eventData.id, publishResponseSuccessful)
-                    parentFragmentManager.removeFragment(FragmentEventCreate())
-
-                }
+            eventMap.setOnTouchListener { _, _ ->
+                scroll.requestDisallowInterceptTouchEvent(true)
+                false
             }
 
-            buttonPublish.setOnClickListener { publishFielldEvent(setDataResponseSuccessful) }
+
             editFullDescription.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
@@ -257,9 +250,22 @@ class FragmentEventCreate : Fragment() {
             checkEditTextListener(editNameEvent)
             checkEditTextListener(editDescriptionEvent)
             checkEditTextListener(editFullDescription)
-
-            editAdress.setOnClickListener { setAddressBySearch(myListener) }
         }
+
+        initOnClick()
+
+        viewModel.createEmptyEvent()
+
+        viewModel.newItemEvent.observe(viewLifecycleOwner){
+            response ->
+
+            itemEvent = response
+
+            Log.i("RESGSTHO","${response.id} response.id")
+            Log.i("RESGSTHO","${response.title} title")
+        }
+
+
     }
 
     private fun fetchData(
@@ -368,7 +374,7 @@ class FragmentEventCreate : Fragment() {
     }
 
     private fun collectEventData() {
-        with(eventData) {
+        with(itemEvent) {
             title = binding.editNameEvent.text.toString()
             fullDescription = binding.editFullDescription.text.toString()
             shortDescription = binding.editDescriptionEvent.text.toString()
@@ -386,7 +392,7 @@ class FragmentEventCreate : Fragment() {
             routePoint.pointIndex = i
 
 
-            when (eventData.typeId) {
+            when (itemEvent.typeId) {
                 EventTypes.SIMPLE_TRAINING.type -> routePoint.type = 0
                 EventTypes.ROUTE_TRAINING.type -> routePoint.type = 1
                 EventTypes.ONLINE_TRAINING.type -> routePoint.type = 2
@@ -402,19 +408,21 @@ class FragmentEventCreate : Fragment() {
         builder.setTitle(requireActivity().resources.getString(R.string.event_not_publish))
         builder.setMessage(requireActivity().resources.getString(R.string.save_druft))
         builder.setPositiveButton(requireActivity().resources.getString(R.string.yes)) { _, _ ->
+
             collectEventData()
 
             val responseSuccessful = object : ResponseCallBack {
                 override fun load(responseFromApi: String) {
-                    viewModelStore.clear()
+                    //viewModelStore.clear()
                     parentFragmentManager.removeFragment(this@FragmentEventCreate)
                 }
             }
-            eventController.setDataEvent(responseSuccessful, eventData)
+
+            eventController.setDataEvent(responseSuccessful, itemEvent)
         }
         builder.setNegativeButton(requireActivity().resources.getString(R.string.no)) { _, _ ->
-            eventData.id?.let {
-                eventController.deleteEvent(eventData.id)
+            itemEvent.id?.let {
+                eventController.deleteEvent(itemEvent.id)
                 viewModelStore.clear()
             }
             parentFragmentManager.removeFragment(this)
@@ -424,13 +432,13 @@ class FragmentEventCreate : Fragment() {
         dialog.show()
     }
 
-    private fun observer(myListener: Marker.OnMarkerDragListener) {
+    private fun observer() {
         val lastPoint = viewModel.getLastMapGeoPoint()
         binding.eventMap.controller.setCenter(lastPoint)
 
         viewModel.dataEvent.observe(viewLifecycleOwner) { newData ->
 
-            eventData = newData
+            itemEvent = newData
             with(binding) {
 
                 editNameEvent.setText(newData.title)
@@ -464,7 +472,12 @@ class FragmentEventCreate : Fragment() {
 
                 if (geoPoints.size > 0) {
                     EventHelper.drawRoute(it, binding.eventMap)
-                    EventHelper.drawMarkers(binding.eventMap, it, myListener, markerType)
+                    EventHelper.drawMarkers(
+                        binding.eventMap,
+                        it,
+                        this@FragmentEventCreate,
+                        markerType
+                    )
                     geoPointsList = it
                 }
             }
@@ -521,6 +534,9 @@ class FragmentEventCreate : Fragment() {
         val dialog = BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialogTheme)
         dialog.setContentView(R.layout.dialog_gallery)
         val galleryAction = dialog.findViewById<LinearLayout>(R.id.gallery_action)
+        val cameraAction = dialog.findViewById<LinearLayout>(R.id.camera_action)
+        val cancel = dialog.findViewById<LinearLayout>(R.id.cancel)
+
         galleryAction?.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
                     requireActivity(),
@@ -544,9 +560,7 @@ class FragmentEventCreate : Fragment() {
             }
             dialog.dismiss()
         }
-
-        val cameraAction = dialog.findViewById<LinearLayout>(R.id.camera_action)!!
-        cameraAction.setOnClickListener {
+        cameraAction?.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
                     requireActivity(),
                     Manifest.permission.CAMERA
@@ -569,9 +583,8 @@ class FragmentEventCreate : Fragment() {
             }
             dialog.dismiss()
         }
+        cancel?.setOnClickListener { dialog.dismiss() }
 
-        val cancel = dialog.findViewById<LinearLayout>(R.id.cancel)!!
-        cancel.setOnClickListener { dialog.dismiss() }
         dialog.show()
     }
 
@@ -616,31 +629,7 @@ class FragmentEventCreate : Fragment() {
         }
     }
 
-    private val takePictureLauncherAgain =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            when (result.resultCode) {
-                Activity.RESULT_OK -> {
-                    val imageUri = photoURI
-
-                    val ratioWidth = 3
-                    val ratioHeight = 2
-                    val cropIntent = CropImage.activity(imageUri)
-                        .setAspectRatio(ratioWidth, ratioHeight)
-                        .getIntent(requireContext())
-                    cropActivityResultLauncher.launch(cropIntent)
-
-                }
-
-                Activity.RESULT_CANCELED -> {
-                }
-
-                else -> {
-                }
-            }
-        }
-
-
-    private fun setAddressBySearch(myListener: Marker.OnMarkerDragListener) {
+    private fun setAddressBySearch() {
         val addPhotoBottomDialogFragment =
             BottomSearchDialog.newInstance().setOnCliclListener { lat, lon ->
                 mapsViewController.setPositionMap(lat, lon)
@@ -655,7 +644,7 @@ class FragmentEventCreate : Fragment() {
                 EventHelper.drawMarkers(
                     binding.eventMap,
                     geoPointsList,
-                    myListener,
+                    this@FragmentEventCreate,
                     markerType
                 )
                 getAddress(myPoint)
@@ -668,7 +657,6 @@ class FragmentEventCreate : Fragment() {
             "fragment_search"
         )
     }
-
 
     private fun compareStartEndDate() {
 
@@ -719,22 +707,27 @@ class FragmentEventCreate : Fragment() {
     }
 
     private fun openFullMap() {
+
+        val itemEvvent = viewModel.newItemEvent.value
+        itemEvvent?.title = "Hello world"
+
+        itemEvvent?.let { viewModel.updateItemEvent(it) }
+
         collectEventData()
         viewModel.setGeoPoints(geoPointsList)
         //viewModel.updateItemEventData(eventData)
         viewModel.setLastMapGeoPoint(binding.eventMap.mapCenter)
-        parentFragmentManager.replaceFragment(
-            R.id.constrain_events_container,
-            FragmentChangeRoute()
-        )
+
+        (requireActivity() as MainActivity).openFragment(FragmentChangeRoute())
+
     }
 
     private fun publishFielldEvent(setDataResponseSuccessful: ResponseCallBack) {
         collectEventData()
         if (EventHelper.checkFields(binding)) {
 
-            if (eventData.imageUrl != null) {
-                eventController.setDataEvent(setDataResponseSuccessful, eventData)
+            if (itemEvent.imageUrl != null) {
+                eventController.setDataEvent(setDataResponseSuccessful, itemEvent)
             } else {
                 Toast.makeText(context, "Додайте зображення", Toast.LENGTH_SHORT).show()
             }
@@ -742,5 +735,40 @@ class FragmentEventCreate : Fragment() {
             Toast.makeText(context, "Не всі поля заповнені", Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun initOnClick() {
+        with(binding) {
+            imageCover.setOnClickListener { setCoverImageDialog() }
+            backButton.setOnClickListener {
+                alertBeforeClosing()
+            }
+            startData.setOnClickListener { setDate(startData) }
+            endData.setOnClickListener { setDate(endData) }
+            openFullMap.setOnClickListener { openFullMap() }
+            editAdress.setOnClickListener { setAddressBySearch() }
+            buttonPublish.setOnClickListener { publishFielldEvent(setDataResponseSuccessful) }
+        }
+    }
+
+    override fun onMarkerDrag(marker: Marker) {
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onMarkerDragEnd(marker: Marker) {
+        geoPointsList[currentPoint].longitude = marker.position.longitude
+        geoPointsList[currentPoint].latitude = marker.position.latitude
+        EventHelper.drawRoute(geoPointsList, binding.eventMap)
+        EventHelper.drawMarkers(binding.eventMap, geoPointsList, this, markerType)
+        getAddress(marker.position)
+    }
+
+    override fun onMarkerDragStart(marker: Marker) {
+        for ((i, position) in geoPointsList.withIndex()) {
+            if (position == marker.position) {
+                currentPoint = i
+            }
+        }
+    }
+
 }
 

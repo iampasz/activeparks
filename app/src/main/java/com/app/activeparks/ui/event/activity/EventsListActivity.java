@@ -10,10 +10,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,8 +30,6 @@ import com.app.activeparks.ui.event.util.EventModelFactory;
 
 import com.app.activeparks.ui.event.fragments.FragmentEventCreate;
 import com.app.activeparks.ui.event.adapter.EventsListAdaper;
-import com.app.activeparks.ui.event.fragments.FragmentEventCreate;
-import com.app.activeparks.ui.event.util.EventModelFactory;
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel;
 import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 import com.applandeo.materialcalendarview.CalendarView;
@@ -59,7 +55,6 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
     Disposable disposable;
 
     private CalendarView calendarView;
-    private TextView listStatus;
     private RecyclerView listClubOwner;
 
     private LocationManager locationManager;
@@ -77,28 +72,21 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
 
         listClubOwner = findViewById(R.id.list_events);
         calendarView = findViewById(R.id.calendarView);
-        listStatus = findViewById(R.id.findEvents);
-        ImageView createEventButton = findViewById(R.id.create_event);
+        ImageView createEventButton = findViewById(R.id.createEvent);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TabLayout selectFilter = findViewById(R.id.select_filter);
         selectFilter.setVisibility(View.VISIBLE);
         Objects.requireNonNull(selectFilter.getTabAt(1)).select();
 
         viewModel.getEventsList();
         viewModel.calendarEvent();
-        //findViewById(R.id.panel_top).setVisibility(View.VISIBLE);
-        //findViewById(R.id.titleText2).setVisibility(View.GONE);
         findViewById(R.id.closed).setOnClickListener(v -> onBackPressed());
 
         createEventButton.setOnClickListener(view -> updateViewModelData());
 
+        // listStatus.setText("Жодного запланованого заходу");
         viewModel.getSportEventsList().
 
-                observe(this, events ->
-
-                {
-                    setAdapter(events);
-                   // listStatus.setText("Жодного запланованого заходу");
-                });
+                observe(this, this::setAdapter);
 
         viewModel.getCalendar().observe(this, this::setMapperAdapter);
 
@@ -241,11 +229,7 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
                             eventRouteViewModel.updateItemEventData(itemEvent);
                             openCreateEventFragment();
 
-                        }, error -> {
-
-                            Log.i("THROWABLE", error.getMessage() + " ");
-                            Toast.makeText(this, "Виникли проблеми, спробуйте пізніше", Toast.LENGTH_SHORT).show();
-                        }
+                        }, error -> Toast.makeText(this, "Виникли проблеми, спробуйте пізніше", Toast.LENGTH_SHORT).show()
                 );
     }
 

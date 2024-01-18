@@ -1,43 +1,36 @@
-
-
 package com.app.activeparks.ui.event.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.app.activeparks.MainActivity
 import com.app.activeparks.ui.event.adapter.GeoPointAdapter
 import com.app.activeparks.ui.event.interfaces.RemoveItemPosition
 import com.app.activeparks.ui.event.util.EventHelper
 import com.app.activeparks.ui.event.util.EventTypes
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
 import com.app.activeparks.util.MapsViewController
-import com.app.activeparks.util.extention.replaceFragment
-import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentChangeRouteBinding
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 
-@Suppress("DEPRECATION")
 class FragmentChangeRoute : Fragment() {
 
     lateinit var binding: FragmentChangeRouteBinding
-
     lateinit var adapter: GeoPointAdapter
+
     var geoPointsList = ArrayList<GeoPoint>()
     var currentTrainingType = ""
     var markerType = 1
 
-    // private val viewModel: EventRouteViewModel by activityViewModels()
-    private val viewModel: EventRouteViewModel by sharedViewModel()
-
+    private val viewModel: EventRouteViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -108,13 +101,9 @@ class FragmentChangeRoute : Fragment() {
 
         with(binding) {
             MapsViewController(editRouteMap, requireContext())
-            backButton.setOnClickListener {
-
+            close.setOnClickListener {
                 sendDataToViewModel()
-                parentFragmentManager.replaceFragment(
-                    R.id.constrain_events_container,
-                    FragmentEventCreate()
-                )
+                (requireActivity() as MainActivity).openFragment(FragmentEventCreate())
             }
 
             editRouteMap.controller.setCenter(lastPoint)
@@ -157,14 +146,8 @@ class FragmentChangeRoute : Fragment() {
 
 
     private fun observer(myListener: Marker.OnMarkerDragListener) {
-
-        Log.i("MYVIEWMODEL", "here")
-
-
         viewModel.dataEvent.observe(viewLifecycleOwner) { newData ->
             currentTrainingType = newData.typeId
-
-            Log.i("MYVIEWMODEL", "$currentTrainingType here")
         }
 
         viewModel.getGeoPointsLiveData().observe(viewLifecycleOwner) { geoPoints ->
@@ -178,13 +161,9 @@ class FragmentChangeRoute : Fragment() {
 
                 val layoutManager = LinearLayoutManager(requireContext())
                 binding.recyclerView.layoutManager = layoutManager
-
-
             }
         }
-
     }
-
 }
 
 

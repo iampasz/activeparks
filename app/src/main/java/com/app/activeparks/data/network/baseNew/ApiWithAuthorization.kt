@@ -10,6 +10,8 @@ import com.app.activeparks.data.model.registration.ResponseSuccess
 import com.app.activeparks.data.model.registration.User
 import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
+import com.app.activeparks.data.model.sportevents.EventResponse
+import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.statistic.StatisticResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -91,4 +93,11 @@ interface ApiWithAuthorization {
         @Path("id") id: String,
         @Body user: User
     ): Response<User>
+
+    @GET("/api/v1/sport-events/my?offset=0&limit=10&filters[isClubEvent]=0&sort[createdAt]=desc")
+    suspend fun getAdminEvents(): Response<EventResponse>
+
+    @POST("/api/v1/sport-events/")
+    suspend fun createEmptyEvent(): Response<ItemEvent>
+
 }

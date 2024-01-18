@@ -70,7 +70,7 @@
 
     <string name="material_calendar_today_button">Сьогодні</string>
     <string name="material_calendar_positive_button">ОК</string>
-    <string name="material_calendar_negative_button">Відмінити</string>
+    <string name="cansel">Відмінити</string>
     <string name="tv_start_moving">Почати рух</string>
     <string name="tv_duration">Тривалість</string>
     <string name="tv_reset_time">00:00:00</string>
@@ -351,6 +351,17 @@
     <string name="event_participants">Учасники заходу</string>
 
     <string name="search_events">Пошук заходів</string>
+    <string name="colon">:</string>
+    <string name="day_hour">дн       год       хв       сек</string>
+    <string name="scan_qr">Відскануйте Qr код</string>
+    <string name="share_qr">Поділитися кодом</string>
+    <string name="volunteer_support">Підтримка добровольців</string>
+    <string name="data_time">28/08/22 | 12:00 – 14:00</string>
+    <string name="marathon">Марафон</string>
+    <string name="km">км</string>
+    <string name="route">Маршрут</string>
+    <string name="edit_route">Редагувати маршрут</string>
+    <string name="leave">Покинути</string>
 
 
 

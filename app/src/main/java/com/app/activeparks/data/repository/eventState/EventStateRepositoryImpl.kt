@@ -2,7 +2,8 @@ package com.app.activeparks.data.repository.eventState
 
 import com.app.activeparks.data.db.dao.EventStateDao
 import com.app.activeparks.data.db.mapper.EventStateMapper
-import com.app.activeparks.data.model.sportevents.ItemResponse
+import com.app.activeparks.data.model.sportevents.EventResponse
+import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import com.app.activeparks.data.network.NetworkManager
 import com.app.activeparks.ui.active.model.EventState
@@ -31,4 +32,14 @@ class EventStateRepositoryImpl(
     override suspend fun getEvents(): ListItemEventResponse? {
         return networkManager.getEvents()
     }
+
+    override suspend fun getAdminEvents(): EventResponse? {
+        return networkManager.getAdminEvents()
+    }
+
+    override suspend fun createEmptyEvent(): ItemEvent? {
+        return networkManager.createEmptyEvent()
+    }
+
+
 }

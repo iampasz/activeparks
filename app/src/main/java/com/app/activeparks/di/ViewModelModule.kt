@@ -1,6 +1,5 @@
 package com.app.activeparks.di
 
-import androidx.lifecycle.ViewModelProvider
 import com.app.activeparks.ui.active.ActiveViewModel
 import com.app.activeparks.ui.active.fragments.pulseGadget.PulseGadgetViewModel
 import com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityViewModel
@@ -16,7 +15,9 @@ import com.app.activeparks.ui.registration.fragments.forgotPassword.ForgotPasswo
 import com.app.activeparks.ui.userProfile.statisticFragment.StatisticViewModel
 import com.app.activeparks.ui.selectvideo.SelectVideoViewModel
 import com.app.activeparks.MainViewModel
+import com.app.activeparks.ui.event.fragments.MainEventViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.home.MainHomeViewModel
+import com.app.activeparks.ui.participants.ParticipantsViewModel
 import com.app.activeparks.ui.userProfile.edit.EditProfileViewModel
 import com.app.activeparks.ui.userProfile.home.ProfileHomeViewModel
 import com.app.activeparks.ui.userProfile.menu.MenuProfileViewModel
@@ -48,5 +49,7 @@ val viewModelModule = module {
     viewModel { RegistrationViewModel(get(), androidContext()) }
 
     viewModel { EventViewModel(get()) }
+    viewModel { ParticipantsViewModel(get()) }
+    viewModel { MainEventViewModel(get()) }
 
 }

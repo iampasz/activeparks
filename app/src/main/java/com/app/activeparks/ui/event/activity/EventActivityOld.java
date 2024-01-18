@@ -64,7 +64,7 @@ public class EventActivityOld extends AppCompatActivity implements EventScannerL
 
         viewModel = new ViewModelProvider(this, new EventModelFactory(this)).get(EventViewModel.class);
 
-        viewModel.getEvent(getIntent().getStringExtra("id"));
+        viewModel.updateEventData(getIntent().getStringExtra("id"));
 
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
@@ -328,7 +328,7 @@ public class EventActivityOld extends AppCompatActivity implements EventScannerL
             }
 
             public void onFinish() {
-                viewModel.getEvent(getIntent().getStringExtra("id"));
+                viewModel.updateEventData(getIntent().getStringExtra("id"));
                 cancel();
             }
         }.start();
