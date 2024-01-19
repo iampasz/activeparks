@@ -13,12 +13,14 @@ import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.sportevents.EventResponse
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.statistic.StatisticResponse
+import io.reactivex.Observable
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -106,6 +108,25 @@ interface ApiWithAuthorization {
         @Path("id") id: String?,
         @Body itemEvent: ItemEvent?
     ): Call<String>
+
+    //Upload file
+    @POST("/api/v1/uploads")
+    @Multipart
+    fun updateFile(
+        @Header("Authorization") token: String?,
+
+        @Part("fileName") fileName: String?,
+        @Part("chunkIndex") chunkIndex: Int,
+        @Part("totalChunk") totalChunk: Int,
+        @Part("size") size: Int,
+        @Part file: Part?,
+        @Part("uploadId") uploadId: String?,
+        @Part("uploadType") uploadType: RequestBody?,
+        @Part("videoId") videoId: String?,
+        @Part("resolution") resolution: String?,
+        @Part("sportEventsId") sportEventsId: String?,
+
+    ): Observable<Default?>?
 
 
 }
