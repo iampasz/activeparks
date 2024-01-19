@@ -41,5 +41,8 @@ class EventStateRepositoryImpl(
         return networkManager.createEmptyEvent()
     }
 
+    override suspend fun setDataEvent(id:String, itemEvent: ItemEvent): Boolean? {
+        return networkManager.setDataEvent(id, itemEvent)
+    }
 
 }

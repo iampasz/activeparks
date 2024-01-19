@@ -46,16 +46,16 @@ class EventController(context: Context) {
     fun setDataEvent(responseCallBack: ResponseCallBack, eventData: ItemEvent) {
         val dataSet = repository.setDataEvent(eventData).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({responce ->
-                responseCallBack.load(responce.string())
-            }) { throwable ->
-                Log.e("ERROR", "Error: ${throwable.message}")
+            .subscribe({response ->
+                responseCallBack.load(response.string())
+            }) { _ ->
             }
-
         compositeDisposable.add(dataSet)
     }
 
     fun publishDataEvent(eventToken: String, responseCallBack: ResponseCallBack) {
+
+        Log.i("API SERVICE",  "${eventToken} 3343")
         val publishData = repository.publishDataEvent(eventToken)
             .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
             .subscribe({responce ->

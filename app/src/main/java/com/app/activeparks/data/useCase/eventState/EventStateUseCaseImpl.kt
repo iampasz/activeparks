@@ -35,6 +35,9 @@ class EventStateUseCaseImpl(
         return repository.createEmptyEvent()
     }
 
+    override suspend fun setDataEvent(id:String, itemEvent: ItemEvent): Boolean? {
+        return repository.setDataEvent(id, itemEvent)
+    }
 
 
 

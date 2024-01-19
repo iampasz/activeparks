@@ -217,7 +217,7 @@
     <string name="add_access_to_photo">Додайте доступ до фото</string>
     <string name="add_access_to_camera">Додайте доступ до камери</string>
     <string name="date_later_end">Дата початку не може починатись пізніше ніж дата закінчення</string>
-    <string name="date_before_current">Захід не може починатися раніше поточна дата</string>
+    <string name="date_before_current">Захід не може починатися раніше поточної дати</string>
     <string name="tv_main_title">ГОЛОВНА</string>
     <string name="tv_user_title">Вітаємо тебе,</string>
     <string name="tv_menu_events">Заходи</string>

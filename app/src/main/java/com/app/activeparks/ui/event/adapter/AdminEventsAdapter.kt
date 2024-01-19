@@ -21,6 +21,24 @@ class AdminEventsAdapter(private val context: Context, private val itemList: Lis
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val itemEvent = itemList[position]
         holder.bind(itemEvent)
+
+        // val repository: Repository
+
+//        val preferences = Preferences(context)
+//        preferences.server = true
+//        repository = Repository(preferences)
+//
+//        holder.itemView.setOnClickListener{
+//            Log.i("DDDDSDSDS", "remove ${itemEvent.id}")
+//
+//            repository.deleteEvent(itemEvent.id)
+//                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+//                .subscribe({
+//                    Log.i("DDDDSDSDS", "Data was delete from API")
+//                }
+//                ) { Log.i("DDDDSDSDS", "Data wasn't delete from API") }
+//        }
+
     }
 
     override fun getItemCount(): Int {
