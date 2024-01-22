@@ -33,7 +33,12 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Created by O.Dziuba on 27.11.2023.
@@ -230,7 +235,23 @@ class NetworkManagerImpl(
         return response.body()
     }
 
-
+    override suspend fun setDataEvent(id: String, itemEvent: ItemEvent): Boolean {
+        return suspendCoroutine { continuation ->
+            val call = apiWithAuthorization.setDataEvent(id, itemEvent)
+            call.enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        continuation.resume(true)
+                    } else {
+                        continuation.resume(false)
+                    }
+                }
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    continuation.resume(false)
+                }
+            })
+        }
+    }
 
     //Statistics
     override suspend fun getStatistics(from: String, to: String): StatisticResponse? {

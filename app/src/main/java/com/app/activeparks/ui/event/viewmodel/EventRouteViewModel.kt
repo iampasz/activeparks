@@ -70,6 +70,7 @@ class EventRouteViewModel
 
 
     val newItemEvent = MutableLiveData<ItemEvent>()
+    val dataUpdated = MutableLiveData<Boolean>()
 
     fun createEmptyEvent() {
         viewModelScope.launch {
@@ -93,4 +94,15 @@ class EventRouteViewModel
         }
     }
 
+    fun setDataEvent(id:String, itemEvent: ItemEvent) {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                eventStateUseCase.setDataEvent(id, itemEvent)
+            }.onSuccess { response ->
+                response?.let {
+                    dataUpdated.value = it
+                }
+            }
+        }
+    }
 }

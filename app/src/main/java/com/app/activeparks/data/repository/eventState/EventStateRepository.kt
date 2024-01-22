@@ -14,4 +14,5 @@ interface EventStateRepository {
     suspend fun getEvents(): ListItemEventResponse?
     suspend fun getAdminEvents(): EventResponse?
     suspend fun createEmptyEvent(): ItemEvent?
+    suspend fun setDataEvent(id:String, itemEvent: ItemEvent): Boolean?
 }

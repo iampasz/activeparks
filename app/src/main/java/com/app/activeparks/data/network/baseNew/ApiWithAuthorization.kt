@@ -15,6 +15,7 @@ import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.statistic.StatisticResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -94,10 +95,17 @@ interface ApiWithAuthorization {
         @Body user: User
     ): Response<User>
 
-    @GET("/api/v1/sport-events/my?offset=0&limit=10&filters[isClubEvent]=0&sort[createdAt]=desc")
+    @GET("/api/v1/sport-events/my?offset=0&limit=100&filters[isClubEvent]=0&sort[createdAt]=desc")
     suspend fun getAdminEvents(): Response<EventResponse>
 
     @POST("/api/v1/sport-events/")
     suspend fun createEmptyEvent(): Response<ItemEvent>
+
+    @PUT("/api/v1/sport-events/{id}")
+    fun setDataEvent(
+        @Path("id") id: String?,
+        @Body itemEvent: ItemEvent?
+    ): Call<String>
+
 
 }

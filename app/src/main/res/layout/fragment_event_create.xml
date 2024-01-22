@@ -350,7 +350,7 @@
                 tools:layout_editor_absoluteX="14dp" />
 
             <ImageView
-                android:id="@+id/image_cover"
+                android:id="@+id/imageCover"
                 android:layout_width="match_parent"
                 android:layout_height="230dp"
                 android:layout_marginTop="@dimen/margin_30px"
@@ -367,7 +367,7 @@
                 android:layout_height="@dimen/size_32px"
                 android:layout_gravity="center"
                 android:contentDescription="@string/icon"
-                app:layout_constraintBottom_toBottomOf="@+id/image_cover"
+                app:layout_constraintBottom_toBottomOf="@+id/imageCover"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView21"
@@ -385,7 +385,7 @@
                 android:textAllCaps="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_cover" />
+                app:layout_constraintTop_toBottomOf="@+id/imageCover" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
