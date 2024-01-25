@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.app.activeparks.data.model.activity.ActivityItemResponse
 import com.app.activeparks.ui.active.model.TypeOfActivity
+import com.app.activeparks.util.extention.DataHelper
 import com.app.activeparks.util.extention.toInfo
 import com.bumptech.glide.Glide
 import com.technodreams.activeparks.R
@@ -70,15 +71,17 @@ class ActivityAdapter(
                 R.string.tv_kKal,
                 item.calories.toDouble().toInfo()
             )
-            tvDate.text = formatDateActivity(item.startsAt * 1000)
-            tvTimeValue.text = formatDurationActivity(item.finishesAt - item.startsAt)
+            tvDate.text = DataHelper.formatDateActivity(item.startsAt * 1000)
+            tvTimeValue.text = DataHelper.formatDurationActivity(item.finishesAt - item.startsAt)
 
-            tvActivityTitle.setCompoundDrawablesWithIntrinsicBounds(
-                TypeOfActivity.getTypeOfActivity()[item.activityType.toInt()].img,
-                0,
-                0,
-                0
-            )
+            try {
+                tvActivityTitle.setCompoundDrawablesWithIntrinsicBounds(
+                    TypeOfActivity.getTypeOfActivity()[item.activityType.toInt()].img,
+                    0,
+                    0,
+                    0
+                )
+            } catch (_: Exception) {}
 
 
             if (item.coverImage.isEmpty() || item.coverImage == "null") {
@@ -89,22 +92,5 @@ class ActivityAdapter(
                     .into(ivActivity)
             }
         }
-    }
-
-    private fun formatDurationActivity(durationInMillis: Long): String {
-        val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = durationInMillis
-
-        return dateFormat.format(calendar.time)
-    }
-
-    private fun formatDateActivity(timeInMillis: Long): String {
-        val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = timeInMillis
-        return sdf.format(calendar.time)
     }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navReviewActivity"
+        android:icon="@drawable/ic_home_clubs"
+        android:title="@string/review" />
+
+    <item
+        android:id="@+id/navStatisticsActivity"
+        android:icon="@drawable/ic_step"
+        android:title="@string/tv_statistic" />
+
+    <item
+        android:id="@+id/navGalleryActivity"
+        android:icon="@drawable/ic_video_camera"
+        android:title="@string/gallery" />
+
+</menu>

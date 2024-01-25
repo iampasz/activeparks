@@ -66,10 +66,6 @@ class MainHomeFragment : Fragment() {
                             .load(it.imageBackground)
                             .error(R.drawable.ic_prew)
                             .into(iHomeUser.vBackgroundUser)
-                        FileHelper.changeSize(iHomeUser.vBackgroundUser, resources)
-                        FileHelper.changeSize(iHomeUser.vBackgroundUser, iHomeUser.ivUser)
-                        FileHelper.changeSizeCircle(iHomeUser.ivUser, iHomeUser.ivUserCircle)
-                        FileHelper.changeSizeCircle(iHomeUser.ivUser, iHomeUser.ivLogoUser)
                     }
                 } ?: kotlin.run {
                     binding.iHomeUser.tvUserTitle.text = "Ласкаво просимо"
@@ -80,10 +76,17 @@ class MainHomeFragment : Fragment() {
     }
 
     private fun initView() {
-        val navHostFragment =
-            childFragmentManager.findFragmentById(R.id.navHostActivity) as NavHostFragment
-        val navController = navHostFragment.navController
-        binding.navHomeUser.setupWithNavController(navController)
+        with(binding) {
+            val navHostFragment =
+                childFragmentManager.findFragmentById(R.id.navHostActivity) as NavHostFragment
+            val navController = navHostFragment.navController
+            navHomeUser.setupWithNavController(navController)
+
+            FileHelper.changeSize(iHomeUser.vBackgroundUser, resources)
+            FileHelper.changeSize(iHomeUser.vBackgroundUser, iHomeUser.ivUser)
+            FileHelper.changeSizeCircle(iHomeUser.ivUser, iHomeUser.ivUserCircle)
+            FileHelper.changeSizeCircle(iHomeUser.ivUser, iHomeUser.ivLogoUser)
+        }
     }
 
     private fun openFragment(fragment: Fragment) {

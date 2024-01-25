@@ -8,5 +8,6 @@ import com.technodreams.activeparks.R
 enum class VideoState(val img: Int, val title: String) {
     PUBLISHED(R.drawable.ic_selected, "Опубліковано"),
     MODERATION(R.drawable.ic_loading, "На модерації"),
+    DEACTIVATE(R.drawable.ic_loading, "Деактивований"),
     DRAFT(R.drawable.ic_draft, "Чернетка")
 }

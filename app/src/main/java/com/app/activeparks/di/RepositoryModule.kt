@@ -18,6 +18,8 @@ import com.app.activeparks.data.repository.statistics.StatisticsRepository
 import com.app.activeparks.data.repository.statistics.StatisticsRepositoryImpl
 import com.app.activeparks.data.repository.uploadFile.UploadFileRepository
 import com.app.activeparks.data.repository.uploadFile.UploadFileRepositoryImpl
+import com.app.activeparks.data.repository.video.VideoRepository
+import com.app.activeparks.data.repository.video.VideoRepositoryImpl
 import com.app.activeparks.data.repository.weather.WeatherRepository
 import com.app.activeparks.data.repository.weather.WeatherRepositoryImpl
 import org.koin.dsl.module
@@ -36,6 +38,7 @@ val repositoryModule = module{
         single<WeatherRepository> { WeatherRepositoryImpl(get()) }
         single<StatisticsRepository> { StatisticsRepositoryImpl(get()) }
         single<UploadFileRepository> { UploadFileRepositoryImpl(get()) }
+        single<VideoRepository> { VideoRepositoryImpl(get()) }
         single<MobileApiSessionRepository> { SharedPreferencesMobileApiSessionRepository(get()) }
         single<UserRepository> { UserRepositoryImpl(get(), get()) }
 }

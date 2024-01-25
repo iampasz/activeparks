@@ -6,17 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.app.activeparks.MainActivity
-import com.app.activeparks.ui.userProfile.edit.EditProfileViewModel
+import com.app.activeparks.data.model.user.UserRole
 import com.app.activeparks.ui.userProfile.info.UserInfoFragment
 import com.app.activeparks.ui.userProfile.menu.MenuProfileFragment
 import com.app.activeparks.util.extention.FileHelper
+import com.app.activeparks.util.extention.toBoolean
 import com.bumptech.glide.Glide
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentProfileHomeBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 /**
  * Created by O.Dziuba on 10.01.2024.
@@ -24,7 +26,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ProfileHomeFragment : Fragment() {
 
     private lateinit var binding: FragmentProfileHomeBinding
-    private val viewModel: ProfileHomeViewModel by viewModel()
+    private val viewModel: ProfileHomeViewModel by activityViewModel()
+
+    private var navController: NavController? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
@@ -49,9 +53,6 @@ class ProfileHomeFragment : Fragment() {
         with(viewModel) {
             userDate.observe(viewLifecycleOwner) {
                 it?.let {
-
-                    getRole(it.roleId)
-
                     with(binding) {
                         iProfileUser.tvUserName.text = "${it.firstName} ${it.lastName}"
                         Glide.with(requireContext())
@@ -62,9 +63,25 @@ class ProfileHomeFragment : Fragment() {
                             .load(it.imageBackground)
                             .error(R.drawable.ic_prew)
                             .into(iProfileUser.vBackgroundUser)
+
+                        iProfileUser.tvUserRole.text = if (it.isTrainer.toBoolean()) {
+                            UserRole.TRAINER.role
+                        } else if (it.isCoordinatorReport.toBoolean()) {
+                            UserRole.COORDINATOR.role
+                        } else {
+                            UserRole.USER.role
+                        }
                     }
                 }
             }
+
+            selectedTub.observe(viewLifecycleOwner) {
+                it?.let { id ->
+                    navController?.navigate(id)
+                    selectedTub.value = null
+                }
+            }
+
         }
     }
 
@@ -88,8 +105,8 @@ class ProfileHomeFragment : Fragment() {
     private fun initView() {
         val navHostFragment =
             childFragmentManager.findFragmentById(R.id.navFragmentsUserProfile) as NavHostFragment
-        val navController = navHostFragment.navController
-        binding.navProfileUser.setupWithNavController(navController)
+        navController = navHostFragment.navController
+        navController?.let { binding.navProfileUser.setupWithNavController(it) }
     }
 
     private fun openFragment(fragment: Fragment) {

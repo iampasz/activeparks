@@ -43,12 +43,13 @@
 
     <ImageView
         android:id="@+id/vBackgroundUser"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="171dp"
-        android:scaleType="centerCrop"
         android:background="@color/bg_2"
-        app:layout_constraintTop_toBottomOf="@+id/vToolBar"
-        tools:layout_editor_absoluteX="0dp" />
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vToolBar" />
 
     <ImageView
         android:id="@+id/ivLogoUser"
@@ -85,25 +86,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Сидоренко Вадим"
         android:textColor="@color/purple_500"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vBackgroundUser" />
+        app:layout_constraintTop_toBottomOf="@+id/vBackgroundUser"
+        tools:text="Сидоренко Вадим" />
 
     <TextView
-        android:id="@+id/tvUserVerifide"
+        android:id="@+id/tvUserRole"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Верифікований користувач"
         android:textColor="@color/dark_gray_1"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvUserName"
+        tools:text="Верифікований користувач" />
 
     <android.widget.Button
         android:id="@+id/btnMoreInfo"
@@ -120,6 +121,6 @@
         android:textColor="@color/bg_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserVerifide" />
+        app:layout_constraintTop_toBottomOf="@+id/tvUserRole" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

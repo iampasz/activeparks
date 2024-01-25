@@ -16,12 +16,11 @@ import java.io.File
  */
 class ProfileHomeViewModel(
     private val userUseCase: UserUseCase,
-    private val preferences: Preferences,
-    private val uploadFileUseCase: UploadFileUseCase
+    private val preferences: Preferences
 ) : ViewModel() {
 
     val userDate: MutableLiveData<User> = MutableLiveData()
-    val userRole: MutableLiveData<String> = MutableLiveData()
+    val selectedTub: MutableLiveData<Int> = MutableLiveData()
 
     fun getUser() {
         viewModelScope.launch {
@@ -30,38 +29,10 @@ class ProfileHomeViewModel(
             }.onSuccess {
                 userDate.value = it
             }
-        }
-    }
-
-    fun getRole(id: String?) {
-        if (preferences.dictionarie != null) {
-            for (baseDictionaries in preferences.dictionarie.userRoles) {
-                if (baseDictionaries.id == id) {
-                    userRole.value = baseDictionaries.title
-                }
-            }
-        }
-        userRole.value = "Користувач"
-    }
-
-    fun updateImg(file: File, photoType: PhotoType) {
-        val type = if (photoType == PhotoType.AVATAR) "avatar" else "other_photo"
-        viewModelScope.launch {
             kotlin.runCatching {
-                uploadFileUseCase.updateFile(type, file)
-            }.onSuccess { response ->
-                response?.url?.let { url ->
-                    userDate.value?.let { user ->
-                        when(photoType) {
-                            PhotoType.AVATAR -> {
-                                userUseCase.updateUser(user.id, user.copy(photo = url))
-                            }
-                            PhotoType.BACKGROUND -> {
-                                userUseCase.updateUser(user.id, user.copy(imageBackground = url))
-                            }
-                        }
-                    }
-                }
+                userUseCase.getUser(preferences.id)
+            }.onSuccess {
+                userDate.value = it
             }
         }
     }

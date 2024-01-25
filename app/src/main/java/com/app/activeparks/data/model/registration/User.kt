@@ -92,7 +92,7 @@ data class User(
 	val hideBodyInfo: Int? = null,
 
 	@SerializedName("weight")
-	val weight: Int? = null,
+	val weight: Double? = null,
 
 	@SerializedName("appleToken")
 	val appleToken: String? = null,

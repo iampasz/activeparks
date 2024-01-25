@@ -351,9 +351,10 @@
     <string name="event_participants">Учасники заходу</string>
 
     <string name="search_events">Пошук заходів</string>
-
-
-
+    <string name="tv_routs">Бібліотека Маршрутів</string>
+    <string name="tv_settings">Налаштування</string>
+    <string name="tv_note">Нотатки тренування:</string>
+    <string name="tv_pause_mode">Режим паузи</string>
 
 
 </resources>

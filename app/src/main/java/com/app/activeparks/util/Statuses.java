@@ -1,5 +1,6 @@
 package com.app.activeparks.util;
 
+import com.app.activeparks.ui.userProfile.model.VideoState;
 import com.technodreams.activeparks.R;
 
 public class Statuses {
@@ -12,6 +13,16 @@ public class Statuses {
             case "73f891c0-a79f-4afc-bd79-d529a5eb5774": return "Чернетка";
             default:
                 return "Опублікований";
+        }
+    }
+
+    public static VideoState getStatus(String id) {
+        switch (id){
+            case "f7b77851-1d35-4ab1-9fcd-ef6cd2b88ace": return VideoState.DEACTIVATE;
+            case "def3497e-3498-4a17-a514-e99ec83676b4": return VideoState.MODERATION;
+            case "73f891c0-a79f-4afc-bd79-d529a5eb5774": return VideoState.DRAFT;
+            default:
+                return VideoState.PUBLISHED;
         }
     }
 

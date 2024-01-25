@@ -14,10 +14,14 @@ fun Double.toInfo() = String.format("%.2f", this).replace(",", ".")
 //FLoat
 fun Float.toInfo() = String.format("%.2f", this).replace(",", ".")
 
+//Int
+fun Int?.toBoolean() = this == 1
+
 //String
 fun String.isPhone() = this.contains("+380")
 fun String.setSex() = if (this == "male") "Чоловік" else "Жінка"
 fun String.replaceAddress() = this.replace("вулиця", "вул.")
+fun String.replacePhone() = this.replaceBrackets().replace(" ","")
 fun String.replaceBrackets() = this.replace("(", "").replace(")", "")
 fun String.replaceNull() = this.replace("null", "")
 fun String.timeToSeconds(): Int {
@@ -70,6 +74,17 @@ fun List<ActivityInfoTrainingItem>.filterOutside(activeTypeId: Int): List<Activi
 fun List<GeoPoint>.getListForBack(): List<List<Double>> {
     return this.map { geoPoint ->
         listOf(geoPoint.latitude, geoPoint.longitude)
+    }
+}
+
+
+fun List<List<Double>>.getListForUI(): List<GeoPoint> {
+    return map { coordinates ->
+        if (coordinates.size >= 2) {
+            GeoPoint(coordinates[0], coordinates[1])
+        } else {
+            throw IllegalArgumentException("Invalid coordinates format: $coordinates")
+        }
     }
 }
 

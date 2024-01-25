@@ -33,7 +33,10 @@ class ActivityInfoItemFragment(
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = ActivityInfoItemAdapter(
-        ) { item -> onItemSelected(item) }
+        ) { item ->
+            onItemSelected(item)
+            onBack()
+        }
         binding.rvActivity.adapter = adapter
         val types = viewModel.activityState.activityInfoItems
         types.forEach { it.isSelected = it.id == infoViewId }
@@ -49,7 +52,11 @@ class ActivityInfoItemFragment(
         })
 
         binding.ivBack.setOnClickListener {
-            requireActivity().onBackPressed()
+            onBack()
         }
+    }
+
+    private fun onBack() {
+        requireActivity().onBackPressed()
     }
 }

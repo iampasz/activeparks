@@ -54,6 +54,10 @@ data class UserRepositoryImpl(
         return networkManager.getUser(id)
     }
 
+    override suspend fun removeUser(id: String): User? {
+        return networkManager.removeUser(id)
+    }
+
     override suspend fun forgotPassword(request: ForgotPasswordRequest): ResponseSuccess? {
         return networkManager.forgotPassword(request)
     }

@@ -29,15 +29,20 @@ class ActivityTypeFragment : Fragment() {
 
         val streetAdapter = ActivityTypeAdapter { item ->
             viewModel.activityState.activityType = item
+            onBack()
         }
         binding.rvActivity.adapter = streetAdapter
         binding.ivBack.setOnClickListener {
-            requireActivity().onBackPressed()
+            onBack()
         }
         val list = TypeOfActivity.getTypeOfActivity()
         list.forEach {
             if (it.id == viewModel.activityState.activityType.id) it.isSelected = true
         }
         streetAdapter.list.submitList(list)
+    }
+
+    private fun onBack() {
+        requireActivity().onBackPressed()
     }
 }

@@ -3,6 +3,7 @@ package com.app.activeparks.data.network
 import android.content.Context
 import android.widget.Toast
 import com.app.activeparks.data.model.Default
+import com.app.activeparks.data.model.activity.ActivityItemResponse
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.registration.AdditionData
@@ -22,6 +23,9 @@ import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswor
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
 import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import com.app.activeparks.data.model.statistic.StatisticResponse
+import com.app.activeparks.data.model.uservideo.UserVideo
+import com.app.activeparks.data.model.uservideo.UserVideoItem
+import com.app.activeparks.data.model.uservideo.VideosResponse
 import com.app.activeparks.data.model.weather.WeatherResponse
 import com.app.activeparks.data.network.baseNew.ApiWithAuthorization
 import com.app.activeparks.data.network.baseNew.ApiWithOutAuthorization
@@ -29,9 +33,9 @@ import com.app.activeparks.data.network.response.parseErrorBody
 import com.app.activeparks.data.network.weather.ApiWeather
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
 import java.io.File
 
 /**
@@ -54,7 +58,7 @@ class NetworkManagerImpl(
         val response = apiWithOutAuthorization.sendCodePhone(request)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -65,7 +69,7 @@ class NetworkManagerImpl(
         val response = apiWithOutAuthorization.verificationPhoneCode(request)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -75,7 +79,7 @@ class NetworkManagerImpl(
         val response = apiWithOutAuthorization.sendCodeEmail(request)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -85,7 +89,7 @@ class NetworkManagerImpl(
         val response = apiWithOutAuthorization.login(request)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -95,7 +99,7 @@ class NetworkManagerImpl(
         val response = apiWithOutAuthorization.forgotPassword(request)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -105,7 +109,7 @@ class NetworkManagerImpl(
         val response = apiWithOutAuthorization.verificationCode(request)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -115,7 +119,7 @@ class NetworkManagerImpl(
         val response = apiWithOutAuthorization.resetPassword(request)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -125,7 +129,7 @@ class NetworkManagerImpl(
         val response = apiWithOutAuthorization.getEvents()
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -137,7 +141,7 @@ class NetworkManagerImpl(
         val response = apiWithAuthorization.verificationEmailCode(request)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -147,7 +151,7 @@ class NetworkManagerImpl(
         val response = apiWithAuthorization.updateData(id, request)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -157,7 +161,7 @@ class NetworkManagerImpl(
         val response = apiWithAuthorization.setHeartRateZones(request)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -167,7 +171,7 @@ class NetworkManagerImpl(
         val response = apiWithAuthorization.getHeartRateZones()
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -178,7 +182,7 @@ class NetworkManagerImpl(
 
         val body = response.body()
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         } else {
             body?.id?.let {
 
@@ -194,7 +198,30 @@ class NetworkManagerImpl(
         val response = apiWithAuthorization.getWorkoutsActivity()
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getWorkoutActivity(id: String): ActivityItemResponse? {
+        val response = apiWithAuthorization.getWorkoutActivity(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getWorkoutsActivity(
+        startsFrom: String,
+        startsTo: String
+    ): ActivityResponse? {
+        val response = apiWithAuthorization.getWorkoutsActivity(startsFrom, startsTo)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -204,7 +231,17 @@ class NetworkManagerImpl(
         val response = apiWithAuthorization.getUser(id)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun removeUser(id: String): User? {
+        val response = apiWithAuthorization.removeUser(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -215,7 +252,7 @@ class NetworkManagerImpl(
         val response = apiWithAuthorization.getStatistics(0, 750, from, to)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -238,7 +275,7 @@ class NetworkManagerImpl(
             apiWithAuthorization.updateFile(name, file.length().toInt(), 1, 1, name, filename, body)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -248,7 +285,65 @@ class NetworkManagerImpl(
         val response = apiWithAuthorization.updateUser(id, user)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun createUserVideo(): UserVideoItem? {
+        val response = apiWithAuthorization.createUserVideo()
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getUserVideo(id: String): UserVideoItem? {
+        val response = apiWithAuthorization.getUserVideo(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getUserVideos(): VideosResponse? {
+        val response = apiWithAuthorization.getUserVideos()
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun updateUserVideo(id: String, userVideoItem: UserVideoItem) {
+        val response = apiWithAuthorization.updateUserVideo(id, userVideoItem)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override suspend fun sendUserVideo(id: String): ResponseBody? {
+        val response = apiWithAuthorization.sendUserVideo(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun deleteUserVideo(id: String): ResponseBody? {
+        val response = apiWithAuthorization.deleteUserVideo(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()

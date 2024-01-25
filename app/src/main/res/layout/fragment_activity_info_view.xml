@@ -1,0 +1,93 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/top_panel"
+    tools:context="com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="0dp"
+                android:layout_height="230dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/backround_edit_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <org.osmdroid.views.MapView
+                    android:id="@+id/mapview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </androidx.cardview.widget.CardView>
+
+
+            <com.app.activeparks.ui.view.InfoView
+                android:id="@+id/ivLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toStartOf="@+id/ivWeather"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
+            <com.app.activeparks.ui.view.InfoView
+                android:id="@+id/ivWeather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/ivLocation"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/ivLocation"
+                app:layout_constraintTop_toTopOf="@+id/ivLocation" />
+
+            <TextView
+                android:id="@+id/tvNote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/tv_note"
+                android:textColor="@color/accent"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/ivLocation"
+                app:layout_constraintTop_toBottomOf="@+id/ivLocation" />
+
+            <TextView
+                android:id="@+id/tvDescriptionActivity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:maxLength="255"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvNote"
+                tools:ignore="Autofill,TextFields"
+                tools:text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis," />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

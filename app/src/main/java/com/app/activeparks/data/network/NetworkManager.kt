@@ -1,6 +1,7 @@
 package com.app.activeparks.data.network
 
 import com.app.activeparks.data.model.Default
+import com.app.activeparks.data.model.activity.ActivityItemResponse
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.registration.AdditionData
@@ -20,8 +21,12 @@ import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswor
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
 import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import com.app.activeparks.data.model.statistic.StatisticResponse
+import com.app.activeparks.data.model.uservideo.UserVideo
+import com.app.activeparks.data.model.uservideo.UserVideoItem
+import com.app.activeparks.data.model.uservideo.VideosResponse
 import com.app.activeparks.data.model.weather.WeatherResponse
-import retrofit2.Response
+import okhttp3.ResponseBody
+import retrofit2.http.Query
 import java.io.File
 
 /**
@@ -44,7 +49,6 @@ interface NetworkManager {
     suspend fun resetPassword(request: ResetPasswordResponse): ResponseToken?
     suspend fun getEvents(): ListItemEventResponse?
 
-
     //With Authorization
     suspend fun verificationEmailCode(request: VerificationCodeEmailRequest): UserResponse?
     suspend fun updateData(id: String, request: AdditionData): User?
@@ -52,7 +56,12 @@ interface NetworkManager {
     suspend fun getHeartRateZones(): PulseZoneRequest?
     suspend fun createActivity(request: AddActivityResponse): ResponseId?
     suspend fun getWorkoutsActivity(): ActivityResponse?
+    suspend fun getWorkoutActivity(id: String): ActivityItemResponse?
+    suspend fun getWorkoutsActivity(
+        startsFrom: String,
+        startsTo: String): ActivityResponse?
     suspend fun getUser(id: String): User?
+    suspend fun removeUser(id: String): User?
     suspend fun getStatistics(from: String, to: String): StatisticResponse?
     suspend fun updateFile(
         type: String,
@@ -60,4 +69,11 @@ interface NetworkManager {
     ): Default?
 
     suspend fun updateUser(id: String, user: User): User?
+
+    suspend fun createUserVideo(): UserVideoItem?
+    suspend fun getUserVideo(id: String): UserVideoItem?
+    suspend fun getUserVideos(): VideosResponse?
+    suspend fun updateUserVideo(id: String, userVideoItem: UserVideoItem)
+    suspend fun sendUserVideo(id: String): ResponseBody?
+    suspend fun deleteUserVideo(id: String): ResponseBody?
 }

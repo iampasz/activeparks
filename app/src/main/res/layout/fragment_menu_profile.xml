@@ -163,16 +163,6 @@
                 android:text="@string/tv_my_video"
                 app:drawableStartCompat="@drawable/ic_video_camera" />
 
-            <TextView
-                android:id="@+id/tvMyNote"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:drawablePadding="8dp"
-                android:gravity="center"
-                android:text="@string/tv_my_note"
-                app:drawableStartCompat="@drawable/ic_notebook" />
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
@@ -203,7 +193,7 @@
                 app:drawableStartCompat="@drawable/ic_light_bulb" />
 
             <TextView
-                android:id="@+id/tvActiveRouts"
+                android:id="@+id/tvActiveRoads"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -221,6 +211,16 @@
                 android:gravity="center"
                 android:text="@string/tv_admin_event"
                 app:drawableStartCompat="@drawable/ic_admin_event" />
+
+            <TextView
+                android:id="@+id/tvRoads"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:text="@string/tv_routs"
+                app:drawableStartCompat="@drawable/ic_roads" />
 
             <View
                 android:layout_width="match_parent"
@@ -252,16 +252,6 @@
                 app:drawableStartCompat="@drawable/ic_cash_clear" />
 
             <TextView
-                android:id="@+id/tvAccBind"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:drawablePadding="8dp"
-                android:gravity="center"
-                android:text="@string/tv_acc_bind"
-                app:drawableStartCompat="@drawable/ic_acc_bind" />
-
-            <TextView
                 android:id="@+id/tvApkUpdate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -289,7 +279,6 @@
                 android:gravity="center"
                 android:text="@string/tv_deactivation_account"
                 app:drawableStartCompat="@drawable/ic_deactivation_account" />
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

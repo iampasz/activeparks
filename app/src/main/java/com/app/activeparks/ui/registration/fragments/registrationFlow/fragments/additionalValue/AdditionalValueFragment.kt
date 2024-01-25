@@ -101,18 +101,35 @@ class AdditionalValueFragment : Fragment() {
 
 
     private fun showWeightPicker() {
-        val numberPicker = NumberPicker(requireContext())
-        numberPicker.minValue = 40
-        numberPicker.maxValue = 200
-        numberPicker.value = 90
+        val weightPicker = NumberPicker(requireContext())
+
+        val minValue = 40100
+        val maxValue = 200000
+        val step = 100
+
+        val valueCount = (maxValue - minValue) / step + 1
+        val displayedValues = Array(valueCount) { i ->
+            val weight = minValue + i * step
+            (weight / 1000).toString() + "." + (weight % 1000)
+        }
+
+        weightPicker.minValue = 0
+        weightPicker.maxValue = valueCount - 1
+        weightPicker.displayedValues = displayedValues
+
 
         val dialog = androidx.appcompat.app.AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.tv_select_weight))
-            .setView(numberPicker)
+            .setView(weightPicker)
             .setPositiveButton(getString(R.string.tv_ok)) { _, _ ->
+
+                val selectedWeight = minValue + weightPicker.value * step
+                val formattedWeight =
+                    (selectedWeight / 1000).toString() + "." + (selectedWeight % 1000)
+
                 binding.btnWeight.text =
-                    getString(R.string.tv_weight_picker, numberPicker.value.toString())
-                viewModel.additionData.weight = numberPicker.value
+                    getString(R.string.tv_weight_picker, formattedWeight)
+                viewModel.additionData.weight = formattedWeight.toDouble()
             }
             .create()
 

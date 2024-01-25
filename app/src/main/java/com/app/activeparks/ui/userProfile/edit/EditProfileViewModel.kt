@@ -3,6 +3,7 @@ package com.app.activeparks.ui.userProfile.edit
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.activeparks.data.model.registration.PulseZoneRequest
 import com.app.activeparks.data.model.registration.User
 import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.data.useCase.registration.UserUseCase
@@ -16,17 +17,20 @@ import java.io.File
  */
 class EditProfileViewModel(
 private val userUseCase: UserUseCase,
-private val uploadFileUseCase: UploadFileUseCase
+private val uploadFileUseCase: UploadFileUseCase,
+private val preferences: Preferences
 ) : ViewModel() {
 
     val userDate: MutableLiveData<User> = MutableLiveData()
-    val userRole: MutableLiveData<String> = MutableLiveData()
+    val userSaved: MutableLiveData<Boolean> = MutableLiveData(false)
+    var user: User? = null
 
     fun getUser() {
         viewModelScope.launch {
             kotlin.runCatching {
                 userUseCase.getUser()
             }.onSuccess {
+                user = it
                 userDate.value = it
             }
         }
@@ -49,6 +53,27 @@ private val uploadFileUseCase: UploadFileUseCase
                         }
                     }
                 }
+            }
+        }
+    }
+
+
+    fun calculatePulseZone(age: Int) {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                userUseCase.setHeartRateZones(
+                    PulseZoneRequest.getAutoPulseZone(age, 60)
+                )
+            }.onSuccess { }
+        }
+    }
+
+    fun saveUser() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                user?.let { userUseCase.updateUser(preferences.id, it) }
+            }.onSuccess {
+                userSaved.value = true
             }
         }
     }

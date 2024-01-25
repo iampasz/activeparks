@@ -35,7 +35,7 @@ import com.app.activeparks.data.db.entity.ProfileStateEntity
         EventStateEntity::class,
         ProfileStateEntity::class
     ],
-    version = 9, exportSchema = false
+    version = 13, exportSchema = false
 )
 @TypeConverters(
     GeoPointConverters::class,

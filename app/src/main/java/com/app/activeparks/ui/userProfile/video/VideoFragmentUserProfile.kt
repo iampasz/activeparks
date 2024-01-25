@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
-import com.app.activeparks.ui.userProfile.model.VideoItem
 import com.technodreams.activeparks.databinding.FragmentUserProfileVideoBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * Created by O.Dziuba on 21.12.2023.
@@ -15,7 +15,10 @@ import com.technodreams.activeparks.databinding.FragmentUserProfileVideoBinding
 class VideoFragmentUserProfile : Fragment() {
 
     private lateinit var binding: FragmentUserProfileVideoBinding
-    private val adapter = VideoItemAdapter()
+    private val adapter = VideoItemAdapter {
+        openFragment(AddVideoUserProfile(it))
+    }
+    private val viewModel: VideoUserProfileViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,8 +35,19 @@ class VideoFragmentUserProfile : Fragment() {
 
         initView()
         setListener()
+        observe()
 
-        adapter.list.submitList(VideoItem.getTestVideoItem())
+        viewModel.getUserVideos()
+    }
+
+    private fun observe() {
+        with(viewModel) {
+            userVideos.observe(viewLifecycleOwner) {
+                it?.items?.let { videos ->
+                    adapter.list.submitList(videos)
+                }
+            }
+        }
     }
 
     private fun setListener() {

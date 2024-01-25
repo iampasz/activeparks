@@ -1,0 +1,46 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/top_panel"
+    tools:context="com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/icActivity"
+                android:layout_width="match_parent"
+                android:layout_height="246dp"
+                android:background="@color/button_color_gray"
+                android:contentDescription="@string/icon"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/addImgActivity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/icon"
+                android:padding="16dp"
+                android:src="@drawable/ic_camera"
+                app:layout_constraintBottom_toBottomOf="@+id/icActivity"
+                app:layout_constraintEnd_toEndOf="@+id/icActivity"
+                app:layout_constraintStart_toStartOf="@+id/icActivity"
+                app:layout_constraintTop_toTopOf="@+id/icActivity" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

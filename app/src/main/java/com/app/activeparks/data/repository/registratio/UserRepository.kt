@@ -27,6 +27,7 @@ interface UserRepository {
     suspend fun updateData(id: String, request: AdditionData): User?
     suspend fun login(request: LoginRequest): ResponseToken?
     suspend fun getUser(id: String): User?
+    suspend fun removeUser(id: String): User?
     suspend fun forgotPassword(request: ForgotPasswordRequest): ResponseSuccess?
     suspend fun verificationCode(request: VerificationCodeForgotPasswordRequest): ResponseSuccess?
     suspend fun resetPassword(request: ResetPasswordResponse): ResponseToken?

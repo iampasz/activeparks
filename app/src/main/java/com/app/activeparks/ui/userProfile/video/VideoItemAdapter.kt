@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.app.activeparks.ui.userProfile.model.VideoItem
+import com.app.activeparks.data.model.uservideo.VideoItems
+import com.app.activeparks.util.Statuses
 import com.bumptech.glide.Glide
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.ItemUserProfileVideoBinding
@@ -13,19 +14,21 @@ import com.technodreams.activeparks.databinding.ItemUserProfileVideoBinding
 /**
  * Created by O.Dziuba on 22.12.2023.
  */
-class VideoItemAdapter : RecyclerView.Adapter<VideoItemAdapter.VideoItemVH>() {
+class VideoItemAdapter(
+    private val onClick: (String) -> Unit
+) : RecyclerView.Adapter<VideoItemAdapter.VideoItemVH>() {
 
     class VideoItemVH(binding: ItemUserProfileVideoBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    private val callback = object : DiffUtil.ItemCallback<VideoItem>() {
-        override fun areItemsTheSame(oldItem: VideoItem, newItem: VideoItem): Boolean {
+    private val callback = object : DiffUtil.ItemCallback<VideoItems>() {
+        override fun areItemsTheSame(oldItem: VideoItems, newItem: VideoItems): Boolean {
             return oldItem == newItem
         }
 
         override fun areContentsTheSame(
-            oldItem: VideoItem,
-            newItem: VideoItem
+            oldItem: VideoItems,
+            newItem: VideoItems
         ): Boolean {
             return false
         }
@@ -49,10 +52,13 @@ class VideoItemAdapter : RecyclerView.Adapter<VideoItemAdapter.VideoItemVH>() {
         val item = list.currentList[position]
         ItemUserProfileVideoBinding.bind(holder.itemView).apply {
             tvDescription.text = item.description
-            vState.setState(item.videoState)
-            Glide.with(ivImg.context).load(item.img).error(R.drawable.ic_prew)
+            vState.setState(Statuses.getStatus(item.statusId))
+            Glide.with(ivImg.context).load(item.mainPhoto).error(R.drawable.ic_prew)
                 .into(ivImg)
 
+            root.setOnClickListener {
+                onClick(item.id ?: "")
+            }
         }
     }
 }

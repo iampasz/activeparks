@@ -45,7 +45,6 @@ class ActivityPauseMapper {
                 activityTime = activityState.activityTime,
                 activityInfoItems = activityState.activityInfoItems,
                 activityPulseItems = activityState.activityPulseItems
-
             )
         }
 

@@ -1,52 +1,59 @@
 package com.app.activeparks.ui.active.fragments.saveActivity
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.PopupMenu
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.app.activeparks.ui.active.ActiveViewModel
 import com.app.activeparks.ui.active.fragments.level.ActivityInfoTrainingAdapter
 import com.app.activeparks.ui.active.model.Feeling
+import com.app.activeparks.ui.userProfile.model.PhotoType
 import com.app.activeparks.util.EasyTextWatcher
 import com.app.activeparks.util.MapsViewController
+import com.app.activeparks.util.cropper.CropImage
 import com.app.activeparks.util.extention.FileHelper
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.invisible
 import com.app.activeparks.util.extention.replaceNull
 import com.app.activeparks.util.extention.visibleIf
+import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentSaveActivityBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.osmdroid.views.overlay.Polyline
 import java.io.File
-import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 class SaveActivityFragment : Fragment() {
 
     private lateinit var binding: FragmentSaveActivityBinding
-    private val imageActivityResultLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val selectedImage: Intent? = result.data
-            handleSelectedImage(selectedImage)
-        }
-    }
 
     private val viewModel: SaveActivityViewModel by viewModel()
     private val activityViewModel: ActiveViewModel by activityViewModels()
@@ -54,6 +61,48 @@ class SaveActivityFragment : Fragment() {
     private val maxCount = 255
     private var mapsViewController: MapsViewController? = null
     private var polyLine = Polyline()
+
+
+    private var photoURI: Uri? = null
+    private var currentPhotoPath = ""
+
+    private val getContentLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            val ratioWidth = 3
+            val ratioHeight = 2
+            val cropIntent = CropImage.activity(uri)
+                .setAspectRatio(ratioWidth, ratioHeight)
+                .getIntent(requireContext())
+            cropActivityResultLauncher.launch(cropIntent)
+        }
+    private val takePictureLauncherAgain =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                Activity.RESULT_OK -> {
+                    val imageUri = photoURI
+
+                    val ratioWidth = 3
+                    val ratioHeight = 2
+                    val cropIntent = CropImage.activity(imageUri)
+                        .setAspectRatio(ratioWidth, ratioHeight)
+                        .getIntent(requireContext())
+                    cropActivityResultLauncher.launch(cropIntent)
+                }
+            }
+        }
+    private val cropActivityResultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                data?.let {
+                    val resultUri = CropImage.getActivityResult(data).uri
+                    FileHelper.uriToFile(resultUri, requireContext())?.let {
+                        binding.icActivity.setImageURI(resultUri)
+                        viewModel.currentActivity.file = FileHelper.uriToFile(resultUri, requireContext())
+                    }
+                }
+            }
+        }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
@@ -78,7 +127,7 @@ class SaveActivityFragment : Fragment() {
         with(viewModel) {
             saved.observe(viewLifecycleOwner) {
                 if (it == true) {
-                    requireActivity().onBackPressed()
+                    onBack()
                 }
             }
         }
@@ -111,7 +160,7 @@ class SaveActivityFragment : Fragment() {
         ivWeather.setActivityInfoItem(viewModel.startInfo.weather)
         if (activityViewModel.activityState.weather.isNotEmpty()) {
             ivWeather.setTitle(activityViewModel.activityState.weather)
-            ivWeather.setImg(activityViewModel.activityState.weatherIcon)
+            ivWeather.setImg(FileHelper.getWeatherIconResource(activityViewModel.activityState.weatherIcon))
         } else {
             ivWeather.invisible()
         }
@@ -196,8 +245,8 @@ class SaveActivityFragment : Fragment() {
             }
         })
 
-        ivClose.setOnClickListener { requireActivity().onBackPressed() }
-        tvDeleteTraining.setOnClickListener { requireActivity().onBackPressed() }
+        ivClose.setOnClickListener { onBack() }
+        tvDeleteTraining.setOnClickListener { onBack() }
 
         btnSave.setOnClickListener {
             viewModel.saveActivity(
@@ -211,8 +260,12 @@ class SaveActivityFragment : Fragment() {
         }
 
         addImgActivity.setOnClickListener {
-            openGalleryForImage()
+            setCoverImageDialog()
         }
+    }
+
+    private fun onBack() {
+        requireActivity().onBackPressed()
     }
 
     private fun setCurrentLocation() {
@@ -241,16 +294,104 @@ class SaveActivityFragment : Fragment() {
         }
     }
 
-    private fun handleSelectedImage(data: Intent?) {
-        val selectedImage: Uri? = data?.data
-        if (selectedImage != null) {
-            binding.icActivity.setImageURI(selectedImage)
-            viewModel.currentActivity.file = FileHelper.uriToFile(selectedImage, requireContext())
+
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun setCoverImageDialog() {
+        val dialog = BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialogTheme)
+        dialog.setContentView(R.layout.dialog_gallery)
+        val galleryAction = dialog.findViewById<LinearLayout>(R.id.gallery_action)
+        galleryAction?.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                getContentLauncher.launch("image/*")
+            } else {
+                Toast.makeText(
+                    activity,
+                    getString(R.string.add_access_to_photo),
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    1
+                )
+            }
+            dialog.dismiss()
+        }
+
+        val cameraAction = dialog.findViewById<LinearLayout>(R.id.camera_action)!!
+        cameraAction.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.CAMERA
+                )
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                dispatchTakePictureIntent()
+            } else {
+                Toast.makeText(
+                    activity,
+                    getString(R.string.add_access_to_camera),
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.CAMERA),
+                    5
+                )
+            }
+            dialog.dismiss()
+        }
+
+        val cancel = dialog.findViewById<LinearLayout>(R.id.cancel)!!
+        cancel.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+    }
+
+
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun dispatchTakePictureIntent() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
+                val photoFile: File? = try {
+                    createImageFile()
+                } catch (ex: IOException) {
+                    null
+                }
+                photoFile?.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                        requireContext(),
+                        "com.example.android.fileprovider",
+                        it
+                    )
+
+                    this.photoURI = photoURI
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    takePictureLauncherAgain.launch(takePictureIntent)
+                }
+            }
         }
     }
 
-    private fun openGalleryForImage() {
-        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        imageActivityResultLauncher.launch(galleryIntent)
+    @SuppressLint("SimpleDateFormat")
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File? =
+            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_",
+            ".jpg",
+            storageDir
+        ).apply {
+            currentPhotoPath = absolutePath
+        }
     }
 }

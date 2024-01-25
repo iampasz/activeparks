@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/top_panel">
+
+    <include
+        android:id="@+id/iToolbar"
+        layout="@layout/item_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/iToolbar">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlwaysCollapsed">
+
+                <include
+                    android:id="@+id/iProfileUser"
+                    layout="@layout/item_info_about_activity"
+                    android:keepScreenOn="true"
+                    app:layout_collapseMode="parallax"
+                    app:layout_constraintBottom_toTopOf="@+id/nav_view" />
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/navActivityInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="16dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                app:itemBackground="@drawable/bottom_line_item_selector"
+                app:itemIconTint="@color/bottom_bar_item_selector"
+                app:itemTextColor="@color/bottom_bar_item_selector"
+                app:labelVisibilityMode="labeled"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnMoreInfo"
+                app:menu="@menu/bottom_activity_info_menu" />
+
+            <fragment
+                android:id="@+id/navFragmentsActivityInfo"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:defaultNavHost="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/navActivityInfo"
+                app:navGraph="@navigation/graph_activity_info" />
+        </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

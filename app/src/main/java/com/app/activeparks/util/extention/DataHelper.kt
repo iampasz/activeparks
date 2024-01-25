@@ -7,7 +7,9 @@ import java.time.Year
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 /**
  * Created by O.Dziuba on 29.12.2023.
@@ -20,7 +22,7 @@ class DataHelper {
             val calendar = Calendar.getInstance()
             calendar.set(Calendar.DAY_OF_MONTH, 1)
 
-            val dateFormat = SimpleDateFormat("$year.$month.dd", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("$year.$month.dd", Locale("uk", "UA"))
             return dateFormat.format(calendar.time)
         }
 
@@ -29,6 +31,7 @@ class DataHelper {
             val firstDayOfYear = LocalDate.of(currentYear, 1, 1)
             return firstDayOfYear.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
         }
+
         fun getAllTime(): String {
             val firstDayOfYear = LocalDate.of(2022, 1, 1)
             return firstDayOfYear.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
@@ -61,13 +64,13 @@ class DataHelper {
             val calendar = Calendar.getInstance()
             calendar.set(Calendar.DAY_OF_MONTH, 1)
 
-            val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale("uk", "UA"))
             return dateFormat.format(calendar.time)
         }
 
         fun getCurrentDate(): String {
             val calendar = Calendar.getInstance()
-            val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale("uk", "UA"))
             return dateFormat.format(calendar.time)
         }
 
@@ -77,9 +80,10 @@ class DataHelper {
             val month = currentYearMonth.monthValue
             return "${getMonthName(month)}, $year"
         }
+
         fun getCurrentWeek(): String {
             val calendar = Calendar.getInstance()
-            val dateFormat = SimpleDateFormat("MM.dd", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("MM.dd", Locale("uk", "UA"))
 
             calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
             val startOfWeek = calendar.time
@@ -149,6 +153,29 @@ class DataHelper {
             }
 
             return ""
+        }
+
+        fun formatActivityInfoStartDate(longDate: Long): String {
+            val date = Date(longDate)
+            val format = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("uk", "UA"))
+            return format.format(date)
+        }
+
+        fun formatDurationActivity(durationInMillis: Long): String {
+            val dateFormat = SimpleDateFormat("HH:mm:ss", Locale("uk", "UA"))
+            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = durationInMillis
+
+            return dateFormat.format(calendar.time)
+        }
+
+        fun formatDateActivity(timeInMillis: Long): String {
+            val sdf = SimpleDateFormat("dd.MM.yyyy", Locale("uk", "UA"))
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = timeInMillis
+            return sdf.format(calendar.time)
         }
 
 

@@ -17,8 +17,8 @@ data class ActivityInfoTrainingItem(
     val isOutside: Boolean
 ) {
     companion object {
-        fun getActivityInfoItem(): List<ActivityInfoTrainingItem> {
-            return listOf(
+        fun getActivityInfoItem(): MutableList<ActivityInfoTrainingItem> {
+            return mutableListOf(
                 ActivityInfoTrainingItem(0,"0","Швидкість", "(км/год)", R.drawable.ic_speed,
                     isSelected = false,
                     isPulseGadget = false,

@@ -16,6 +16,8 @@ import com.app.activeparks.data.useCase.statistics.StatisticsUseCase
 import com.app.activeparks.data.useCase.statistics.StatisticsUseCaseImpl
 import com.app.activeparks.data.useCase.uploadFile.UploadFileUseCase
 import com.app.activeparks.data.useCase.uploadFile.UploadFileUseCaseImpl
+import com.app.activeparks.data.useCase.video.VideoUseCase
+import com.app.activeparks.data.useCase.video.VideoUseCaseImpl
 import com.app.activeparks.data.useCase.weatehr.WeatherUseCase
 import com.app.activeparks.data.useCase.weatehr.WeatherUseCaseImpl
 import org.koin.dsl.module
@@ -32,6 +34,7 @@ val useCaseModule = module {
     single<ProfileStateUseCase> { ProfileStateUseCaseImpl(get()) }
 
     single<WeatherUseCase> { WeatherUseCaseImpl(get()) }
+    single<VideoUseCase> { VideoUseCaseImpl(get()) }
     single<StatisticsUseCase> { StatisticsUseCaseImpl(get()) }
     single<UploadFileUseCase> { UploadFileUseCaseImpl(get()) }
     single<UserUseCase> { UserUseCaseImpl(get(), get(), get()) }

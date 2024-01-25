@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import com.app.activeparks.MainActivity
+import com.app.activeparks.ui.userProfile.activities.AllActivitiesFragment
+import com.app.activeparks.ui.userProfile.activityInfo.ActivityInfoFragment
 import com.app.activeparks.ui.userProfile.model.DurationPicker
 import com.app.activeparks.ui.userProfile.model.MonthPicker
 import com.app.activeparks.ui.userProfile.model.PairActivityInfoTrainingMapper
@@ -33,7 +36,9 @@ class StatisticFragment : Fragment(), MonthYearPickerDialog.OnDateSetListener {
     private lateinit var binding: FragmentUserProfileStatisticBinding
     private val viewModel: StatisticViewModel by viewModel()
     private val adapterInfoItem = PairActivityInfoTrainingAdapter()
-    private val adapterActivity = ActivityAdapter {}
+    private val adapterActivity = ActivityAdapter {
+        openFragment(ActivityInfoFragment(it.id ?: "0"))
+    }
     private var monthPicker = MonthPicker.FIRST
     private var durationPicker = DurationPicker.MONTH
 
@@ -118,7 +123,7 @@ class StatisticFragment : Fragment(), MonthYearPickerDialog.OnDateSetListener {
                 setBackgroundTime(tvWeek, tvMonth, tvYear, tvAllTime)
                 indispensabilityParameter()
 
-                if (firstMont.isEmpty()) firstWeek = DataHelper.getCurrentWeek()
+                if (firstWeek.isEmpty()) firstWeek = DataHelper.getCurrentWeek()
                 tvFirstParametrs.text = firstWeek
 
                 val (startDate, endDate) = firstWeek.split(" - ")
@@ -263,7 +268,15 @@ class StatisticFragment : Fragment(), MonthYearPickerDialog.OnDateSetListener {
                     DurationPicker.ALL -> { }
                 }
             }
+
+            tvMoreActivity.setOnClickListener {
+                openFragment(AllActivitiesFragment())
+            }
         }
+    }
+
+    private fun openFragment(fragment: Fragment) {
+        (requireActivity() as? MainActivity)?.openFragment(fragment)
     }
 
     private fun FragmentUserProfileStatisticBinding.indispensabilityParameter() {

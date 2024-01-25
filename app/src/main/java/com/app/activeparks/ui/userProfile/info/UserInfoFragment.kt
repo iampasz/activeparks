@@ -12,7 +12,6 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -22,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
+import com.app.activeparks.data.model.user.UserRole
 import com.app.activeparks.ui.userProfile.edit.EditProfileFragment
 import com.app.activeparks.ui.userProfile.model.PhotoType
 import com.app.activeparks.util.cropper.CropImage
@@ -29,6 +29,7 @@ import com.app.activeparks.util.extention.DataHelper
 import com.app.activeparks.util.extention.FileHelper
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.setSex
+import com.app.activeparks.util.extention.toBoolean
 import com.app.activeparks.util.extention.visible
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -125,9 +126,6 @@ class UserInfoFragment : Fragment() {
         with(viewModel) {
             userDate.observe(viewLifecycleOwner) {
                 it?.let {
-
-                    getRole(it.roleId)
-
                     with(binding) {
                         Glide.with(requireContext())
                             .load(it.photo)
@@ -167,14 +165,19 @@ class UserInfoFragment : Fragment() {
                         }
 
                         tvSex.text = it.sex?.setSex()
+                        tvCity.text = it.city
 
                         tvUserName.text = "${it.firstName} ${it.lastName}"
+
+                        tvUserRole.text = if (it.isTrainer.toBoolean()) {
+                            UserRole.TRAINER.role
+                        } else if (it.isCoordinatorReport.toBoolean()) {
+                            UserRole.COORDINATOR.role
+                        } else {
+                            UserRole.USER.role
+                        }
                     }
                 }
-            }
-
-            userRole.observe(viewLifecycleOwner) {
-                it?.let { binding.tvUserRole.text = it }
             }
         }
     }

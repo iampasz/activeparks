@@ -16,12 +16,10 @@ import java.io.File
  */
 class UserInfoViewModel(
     private val userUseCase: UserUseCase,
-    private val preferences: Preferences,
     private val uploadFileUseCase: UploadFileUseCase
 ) : ViewModel() {
 
     val userDate: MutableLiveData<User> = MutableLiveData()
-    val userRole: MutableLiveData<String> = MutableLiveData()
 
     fun getUser() {
         viewModelScope.launch {
@@ -31,17 +29,6 @@ class UserInfoViewModel(
                 userDate.value = it
             }
         }
-    }
-
-    fun getRole(id: String?) {
-        if (preferences.dictionarie != null) {
-            for (baseDictionaries in preferences.dictionarie.userRoles) {
-                if (baseDictionaries.id == id) {
-                    userRole.value = baseDictionaries.title
-                }
-            }
-        }
-        userRole.value = "Користувач"
     }
 
     fun updateImg(file: File, photoType: PhotoType) {

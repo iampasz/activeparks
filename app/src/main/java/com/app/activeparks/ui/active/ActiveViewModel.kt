@@ -13,7 +13,6 @@ import com.app.activeparks.data.useCase.registration.UserUseCase
 import com.app.activeparks.data.useCase.weatehr.WeatherUseCase
 import com.app.activeparks.ui.active.model.ActivityState
 import com.app.activeparks.util.extention.toInfo
-import com.technodreams.activeparks.R
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import java.time.LocalDate
@@ -66,11 +65,13 @@ class ActiveViewModel(
             }
         }
     }
+
     fun pauseActivity() {
         viewModelScope.launch {
             pauseActivityUseCase.insert(activityState)
         }
     }
+
     fun deletePauseActivity() {
         viewModelScope.launch {
             pauseActivityUseCase.delete()
@@ -83,7 +84,7 @@ class ActiveViewModel(
                 userUseCase.getUser()
             }.onSuccess {
                 it?.let {
-                    activityState.weight = it.weight ?: 90
+                    activityState.weight = it.weight ?: 90.100
                     it.birthday?.let { bDay -> activityState.age = calculateAge(bDay) }
                 }
             }
@@ -146,7 +147,7 @@ class ActiveViewModel(
                 with(activityState) {
                     weather =
                         "${response.weather.first().description.replaceFirstChar { it.uppercase() }}, ${response.main.temp.toInt()} C"
-                    weatherIcon = getWeatherIconResource(response.weather.first().icon)
+                    weatherIcon = response.weather.first().icon
                     temperature = response.main.temp.toInfo()
                 }
                 updateWeather.value = true
@@ -154,22 +155,6 @@ class ActiveViewModel(
                 updateWeather.value = true
             }
         }
-    }
-
-    private fun getWeatherIconResource(iconName: String): Int {
-        val resourceId = when (iconName.substring(0, 2)) {
-            "01" -> R.drawable.ic_01
-            "02" -> R.drawable.ic_02
-            "03" -> R.drawable.ic_03
-            "04" -> R.drawable.ic_03
-            "09" -> R.drawable.ic_09
-            "10" -> R.drawable.ic_10
-            "11" -> R.drawable.ic_11
-            "13" -> R.drawable.ic_13
-            "50" -> R.drawable.ic_50
-            else -> R.drawable.default_weather_icon
-        }
-        return resourceId
     }
 
     fun getPulseZone() {
@@ -219,11 +204,11 @@ class ActiveViewModel(
         saveAveragePulse()
     }
 
-     fun saveAveragePulse() {
-         val currentSize = heartRateList.size
-         val sum = heartRateList.sum()
-         val averageValue = sum/currentSize
-         activityState.activityPulseItems[1].number = averageValue.toString()
-         activityState.activityInfoItems[6].number = averageValue.toString()
+    private fun saveAveragePulse() {
+        val currentSize = heartRateList.size
+        val sum = heartRateList.sum()
+        val averageValue = sum / currentSize
+        activityState.activityPulseItems[1].number = averageValue.toString()
+        activityState.activityInfoItems[6].number = averageValue.toString()
     }
 }

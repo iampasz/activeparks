@@ -31,7 +31,7 @@ data class ActivityPauseEntity(
     @ColumnInfo(name = "weather")
     var weather: String,
     @ColumnInfo(name = "weather_icon")
-    var weatherIcon: Int,
+    var weatherIcon: String,
     @ColumnInfo(name = "current_pulse")
     var currentPulse: Int,
     @ColumnInfo(name = "pulse_on_pause")
@@ -71,7 +71,7 @@ data class ActivityPauseEntity(
     @ColumnInfo(name = "is_auto_block_screen")
     var isAutoBlockScreen: Boolean,
     @ColumnInfo(name = "weight")
-    var weight: Int,
+    var weight: Double,
     @ColumnInfo(name = "step_count")
     var stepCount: Int,
     @ColumnInfo(name = "activity_duration")

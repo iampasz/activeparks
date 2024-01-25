@@ -7,7 +7,7 @@ class CalorieCalculator {
     companion object {
         private fun metForWalk(
             speedKmpH: Double,
-            weightKg: Int
+            weightKg: Double
         ) = speedKmpH / (3.5 * weightKg / 200)
 
         private fun metForScandinavianWalk(speedKmpH: Double) = when {
@@ -33,34 +33,34 @@ class CalorieCalculator {
 
         fun calculateCaloriesForWalk(
             durationHours: Int,
-            weightKg: Int,
+            weightKg: Double,
             speedKmpH: Double
-        ): Double {
-            return metForWalk(speedKmpH, weightKg) * secondsToHours(durationHours) * weightKg
+        ): Int {
+            return (metForWalk(speedKmpH, weightKg) * secondsToHours(durationHours) * weightKg).toInt()
         }
 
         fun calculateCaloriesForScandinavianWalk(
             durationHours: Int,
-            weightKg: Int,
+            weightKg: Double,
             speedKmpH: Double
-        ): Double {
-            return metForScandinavianWalk(speedKmpH) * secondsToHours(durationHours) * speedKmpH * weightKg
+        ): Int {
+            return (metForScandinavianWalk(speedKmpH) * secondsToHours(durationHours) * speedKmpH * weightKg).toInt()
         }
 
         fun calculateCaloriesForBicycle(
             durationHours: Int,
-            weightKg: Int,
+            weightKg: Double,
             speedKmpH: Double
-        ): Double {
-            return metForBicycle(speedKmpH) * secondsToHours(durationHours) * weightKg
+        ): Int {
+            return (metForBicycle(speedKmpH) * secondsToHours(durationHours) * weightKg).toInt()
         }
 
         fun calculateCaloriesForRun(
             durationHours: Int,
-            weightKg: Int,
+            weightKg: Double,
             speedKmpH: Double
-        ): Double {
-            return metForRun(speedKmpH) * secondsToHours(durationHours) * weightKg
+        ): Int {
+            return (metForRun(speedKmpH) * secondsToHours(durationHours) * weightKg).toInt()
         }
 
         private fun secondsToHours(seconds: Int) = seconds / 3600.0

@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.net.Uri
+import android.view.View
 import android.widget.ImageView
+import com.technodreams.activeparks.R
 import java.io.File
 import java.io.FileOutputStream
 
@@ -36,7 +38,7 @@ class FileHelper {
         }
 
 
-        fun changeSize(view: ImageView, resources: Resources) {
+        fun changeSize(view: View, resources: Resources) {
             val ratioWidth = 16
             val ratioHeight = 10
 
@@ -70,6 +72,22 @@ class FileHelper {
             secondImageLayoutParams.width = (firstImageHeight * increaseFactor).toInt()
             secondImageLayoutParams.height = (firstImageHeight * increaseFactor).toInt()
             secondImageView.layoutParams = secondImageLayoutParams
+        }
+
+        fun getWeatherIconResource(iconName: String): Int {
+            val resourceId = when (iconName.substring(0, 2)) {
+                "01" -> R.drawable.ic_01
+                "02" -> R.drawable.ic_02
+                "03" -> R.drawable.ic_03
+                "04" -> R.drawable.ic_03
+                "09" -> R.drawable.ic_09
+                "10" -> R.drawable.ic_10
+                "11" -> R.drawable.ic_11
+                "13" -> R.drawable.ic_13
+                "50" -> R.drawable.ic_50
+                else -> R.drawable.default_weather_icon
+            }
+            return resourceId
         }
     }
 }

@@ -44,7 +44,7 @@ data class ActivityItemResponse(
 	val title: String? = null,
 
 	@field:SerializedName("photos")
-	val photos: List<Any?>? = null,
+	val photos: List<String>? = null,
 
 	@field:SerializedName("speed")
 	val speed: Int? = null,
@@ -83,7 +83,7 @@ data class ActivityItemResponse(
 	val bpm: Int? = null,
 
 	@field:SerializedName("temp")
-	val temp: Int? = null,
+	val temp: Double? = null,
 
 	@field:SerializedName("address")
 	val address: String? = null,
@@ -95,7 +95,7 @@ data class ActivityItemResponse(
 	val speedMax: Int? = null,
 
 	@field:SerializedName("routePoints")
-	val routePoints: List<List<Any?>?>? = null,
+	val routePoints: List<List<Double>>? = null,
 
 	@field:SerializedName("calories")
 	val calories: Int,

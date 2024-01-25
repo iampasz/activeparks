@@ -10,10 +10,13 @@ import androidx.navigation.fragment.findNavController
 import com.app.activeparks.ui.registration.RegistrationViewModel
 import com.app.activeparks.util.EasyTextWatcher
 import com.app.activeparks.util.MIN_PASSWORD_LENGTH
+import com.app.activeparks.util.PhoneNumberMaskWatcher
 import com.app.activeparks.util.extention.disable
 import com.app.activeparks.util.extention.enableIf
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.isNotEmpty
+import com.app.activeparks.util.extention.replaceAddress
+import com.app.activeparks.util.extention.replacePhone
 import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentRegistrationUserDataBinding
@@ -60,11 +63,10 @@ class RegistrationUserDataFragment : Fragment() {
 
     private fun initListener() {
         with(binding) {
-            phoneEditText.addTextChangedListener(object : EasyTextWatcher() {
-                override fun afterTextChanged(s: Editable?) {
-                    btnNext.enableIf(isDataValid())
-                    viewModel.sendCodePhoneRequest.phone = s.toString()
-                }
+
+            phoneEditText.addTextChangedListener(PhoneNumberMaskWatcher(phoneEditText) {
+                btnNext.enableIf(isDataValid())
+                viewModel.sendCodePhoneRequest.phone = phoneEditText.text?.toString()?.replacePhone() ?: ""
             })
             nickEditText.addTextChangedListener(object : EasyTextWatcher() {
                 override fun afterTextChanged(s: Editable?) {

@@ -41,7 +41,7 @@
         app:layout_constraintTop_toTopOf="@+id/vToolBar" />
 
     <ImageView
-        android:id="@+id/inNotification"
+        android:id="@+id/ivSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -233,7 +233,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/etCity"
                 tools:ignore="SmallSp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/etBDay"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
@@ -241,6 +241,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/background_notification"
+                android:gravity="center|start"
                 android:hint="@string/tv_b_day"
                 android:paddingStart="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -260,7 +261,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/etBDay"
                 tools:ignore="SmallSp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/etSex"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
@@ -268,6 +269,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/background_notification"
+                android:gravity="center|start"
                 android:hint="@string/tv_sex"
                 android:paddingStart="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -287,7 +289,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/etSex"
                 tools:ignore="SmallSp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/etWeight"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
@@ -295,6 +297,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/background_notification"
+                android:gravity="center|start"
                 android:hint="@string/tv_weigh"
                 android:paddingStart="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -314,7 +317,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/etWeight"
                 tools:ignore="SmallSp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/etHeight"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
@@ -322,6 +325,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/background_notification"
+                android:gravity="center|start"
                 android:hint="@string/tv_height"
                 android:paddingStart="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -333,6 +337,7 @@
                 android:id="@+id/tvHeight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="@string/tv_height"
                 android:textColor="@color/black"
                 android:textSize="10sp"

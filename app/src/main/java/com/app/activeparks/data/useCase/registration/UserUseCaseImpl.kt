@@ -66,7 +66,15 @@ data class UserUseCaseImpl(
     }
 
     override suspend fun getUser(id: String): User? {
-        return userRepository.getUser(id)
+        val response = userRepository.getUser(id)
+        response?.let {
+            insertUser(it)
+        }
+        return response
+    }
+
+    override suspend fun removeUser(id: String): User? {
+        return userRepository.removeUser(id)
     }
 
     override suspend fun forgotPassword(request: ForgotPasswordRequest): ResponseSuccess? {

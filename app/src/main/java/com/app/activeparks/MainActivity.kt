@@ -13,10 +13,15 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
+import com.app.activeparks.ui.userProfile.activities.AllActivitiesFragment
+import com.app.activeparks.ui.userProfile.activityInfo.ActivityInfoFragment
+import com.app.activeparks.ui.userProfile.activityInfo.ActivityInfoViewModel
 import com.app.activeparks.ui.userProfile.edit.EditProfileFragment
 import com.app.activeparks.ui.userProfile.home.ProfileHomeFragment
+import com.app.activeparks.ui.userProfile.home.ProfileHomeViewModel
 import com.app.activeparks.ui.userProfile.info.UserInfoFragment
 import com.app.activeparks.ui.userProfile.menu.MenuProfileFragment
+import com.app.activeparks.ui.userProfile.video.AddVideoUserProfile
 import com.app.activeparks.util.Dictionarie
 import com.app.activeparks.util.FragmentInteface
 import com.google.android.gms.tasks.Task
@@ -29,6 +34,7 @@ import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.ActivityMainBinding
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
@@ -36,6 +42,8 @@ class MainActivity : AppCompatActivity(), FragmentInteface {
     private var binding: ActivityMainBinding? = null
     private var appUpdateManager: AppUpdateManager? = null
     private val viewModel: MainViewModel by viewModel()
+    private val profileViewModel: ProfileHomeViewModel by viewModel()
+    private val activityInfoViewModel: ActivityInfoViewModel by viewModel()
     var navControllerMain: NavController? = null
         private set
     private var preferences: Preferences? = null
@@ -114,7 +122,7 @@ class MainActivity : AppCompatActivity(), FragmentInteface {
     fun openFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.navFragment, fragment)
+            .add(R.id.navFragment, fragment)
             .commit()
     }
 
@@ -126,6 +134,9 @@ class MainActivity : AppCompatActivity(), FragmentInteface {
             if (fragment is UserInfoFragment ||
                 fragment is MenuProfileFragment ||
                 fragment is ProfileHomeFragment ||
+                fragment is AddVideoUserProfile ||
+                fragment is ActivityInfoFragment ||
+                fragment is AllActivitiesFragment ||
                 fragment is EditProfileFragment
             ) {
                 supportFragmentManager
@@ -135,8 +146,6 @@ class MainActivity : AppCompatActivity(), FragmentInteface {
                             .fragments[supportFragmentManager.fragments.size - 1]
                     )
                     .commit()
-
-                onResume()
             }
         } else {
             super.onBackPressed()

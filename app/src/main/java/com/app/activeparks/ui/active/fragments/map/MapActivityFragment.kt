@@ -42,7 +42,7 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
     private var maxHeight = 0.0
     private var minHeight = 10000.0
     private var maxSpeed = 0.0
-    private var kKal = 0.0
+    private var kKal = 0
     private var previousAltitude = 0.0
     private var totalAscent = 0.0
     private var totalDescent = 0.0
@@ -114,7 +114,7 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
         maxHeight = 0.0
         minHeight = 0.0
         maxSpeed = 0.0
-        kKal = 0.0
+        kKal = 0
         previousAltitude = 0.0
         totalAscent = 0.0
         totalDescent = 0.0
@@ -282,7 +282,7 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
                     averageSpeed
                 )
             }
-            it[4].number = kKal.toInfo()
+            it[4].number = kKal.toString()
             it[9].number = averagePace
             it[10].number = maxHeight.toInfo()
             it[11].number = (viewModel.activityState.stepCount / 2).toString()

@@ -370,6 +370,7 @@ class ActivityForActivity : AppCompatActivity() {
     }
 
     private fun FragmentActiveBinding.onPause() {
+        tvPause.text = getString(R.string.tv_pause_mode)
         visible(btnEnd, btnContinue, gPause)
         pauseTimer()
         btnPause.gone()
@@ -491,6 +492,7 @@ class ActivityForActivity : AppCompatActivity() {
                     updateInfoItem(activityState)
 
                     if (activityState.pulseOnPause >= activityState.currentPulse && activityState.isAutoPause) {
+                        binding.tvPause.text = getString(R.string.tv_pause)
                         binding.onPause()
                     }
                 }

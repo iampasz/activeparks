@@ -32,6 +32,8 @@ class StatisticViewModel(
                 it?.let {
                     activities.value = it.items
                 }
+            }.onFailure {
+                val s = it
             }
         }
     }
@@ -52,6 +54,8 @@ class StatisticViewModel(
 
                 }
                 update.value = true
+            }.onFailure {
+                val s = it
             }
         }
     }

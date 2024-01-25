@@ -1,6 +1,7 @@
 package com.app.activeparks.data.repository.saveActivity
 
 import com.app.activeparks.data.db.entity.ActiveEntity
+import com.app.activeparks.data.model.activity.ActivityItemResponse
 import com.app.activeparks.data.model.activity.ActivityResponse
 
 /**
@@ -11,4 +12,8 @@ interface SaveActivityRepository {
     suspend fun getActive(keyId: Long): ActiveEntity
     suspend fun getActives(): List<ActiveEntity>
     suspend fun getWorkoutsActivity(): ActivityResponse?
+    suspend fun getWorkoutActivity(id: String): ActivityItemResponse?
+    suspend fun getWorkoutsActivity(
+        startsFrom: String,
+        startsTo: String): ActivityResponse?
 }

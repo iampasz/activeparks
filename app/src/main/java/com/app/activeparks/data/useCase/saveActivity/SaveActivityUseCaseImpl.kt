@@ -1,6 +1,7 @@
 package com.app.activeparks.data.useCase.saveActivity
 
 import com.app.activeparks.data.db.entity.ActiveEntity
+import com.app.activeparks.data.model.activity.ActivityItemResponse
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.repository.saveActivity.SaveActivityRepository
 
@@ -24,5 +25,16 @@ class SaveActivityUseCaseImpl(
 
     override suspend fun getWorkoutsActivity(): ActivityResponse? {
         return repository.getWorkoutsActivity()
+    }
+
+    override suspend fun getWorkoutActivity(id: String): ActivityItemResponse? {
+        return repository.getWorkoutActivity(id)
+    }
+
+    override suspend fun getWorkoutsActivity(
+        startsFrom: String,
+        startsTo: String
+    ): ActivityResponse? {
+        return repository.getWorkoutsActivity(startsFrom, startsTo)
     }
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/navReviewActivity">
+
+
+    <fragment
+        android:id="@+id/navReviewActivity"
+        tools:layout="@layout/fragment_activity_info_view"
+        android:name="com.app.activeparks.ui.userProfile.activityInfo.info.ActivityInfoViewFragment"
+        android:label="ActivityInfoViewFragment" />
+    <fragment
+        android:id="@+id/navStatisticsActivity"
+        tools:layout="@layout/fragment_activity_info_statistic"
+        android:name="com.app.activeparks.ui.userProfile.activityInfo.statistic.ActivityInfoStatisticFragment"
+        android:label="ActivityInfoStatisticFragment" />
+    <fragment
+        android:id="@+id/navGalleryActivity"
+        tools:layout="@layout/fragment_activity_info_gallery"
+        android:name="com.app.activeparks.ui.userProfile.activityInfo.gallery.ActivityInfoGalleryFragment"
+        android:label="ActivityInfoGalleryFragment" />
+
+
+</navigation>
+

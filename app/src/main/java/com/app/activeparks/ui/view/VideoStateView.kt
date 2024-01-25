@@ -35,7 +35,7 @@ class VideoStateView constructor(
                     }
                 }
 
-                VideoState.MODERATION -> {
+                VideoState.MODERATION, VideoState.DEACTIVATE -> {
                     tvState.apply {
                         setBackgroundResource(R.drawable.button_black)
                         setTextColor(ContextCompat.getColor(this.context, R.color.white))

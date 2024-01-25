@@ -59,22 +59,22 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
+                    android:id="@+id/ivAddPhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:src="@drawable/ic_camera"
+                    app:layout_constraintBottom_toBottomOf="@+id/cvImg"
+                    app:layout_constraintEnd_toEndOf="@+id/cvImg"
+                    app:layout_constraintStart_toStartOf="@+id/cvImg"
+                    app:layout_constraintTop_toTopOf="@+id/cvImg" />
+
+                <ImageView
                     android:id="@+id/ivImg"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop" />
             </androidx.cardview.widget.CardView>
-
-            <ImageView
-                android:id="@+id/ivAddVideo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:elevation="10dp"
-                android:src="@drawable/ic_camera"
-                app:layout_constraintBottom_toBottomOf="@+id/cvImg"
-                app:layout_constraintEnd_toEndOf="@+id/cvImg"
-                app:layout_constraintStart_toStartOf="@+id/cvImg"
-                app:layout_constraintTop_toTopOf="@+id/cvImg" />
 
             <EditText
                 android:id="@+id/etUrlVideo"
@@ -133,7 +133,7 @@
                 tools:ignore="RtlSymmetry" />
 
             <EditText
-                android:id="@+id/etDescriptionActivity"
+                android:id="@+id/etVideoDescription"
                 android:layout_width="0dp"
                 android:layout_height="170dp"
                 android:layout_marginTop="16dp"
@@ -154,13 +154,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/tv_name_and_desc_video"
+                android:text="@string/tv_settings"
                 android:textAllCaps="true"
                 android:textColor="@color/purple_500"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/etDescriptionActivity"
-                app:layout_constraintTop_toBottomOf="@+id/etDescriptionActivity" />
+                app:layout_constraintStart_toStartOf="@+id/etVideoDescription"
+                app:layout_constraintTop_toBottomOf="@+id/etVideoDescription" />
 
             <View
                 android:id="@+id/vVideoCategory"
@@ -231,7 +231,8 @@
                 android:layout_height="40dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="32dp"
-                android:background="@drawable/button_light_green"
+                android:enabled="false"
+                android:background="@drawable/selector_button_light_green"
                 android:text="@string/tv_to_moderation"
                 android:textAllCaps="false"
                 android:textColor="@color/white"

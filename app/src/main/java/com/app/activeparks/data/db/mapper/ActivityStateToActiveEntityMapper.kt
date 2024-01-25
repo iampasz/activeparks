@@ -1,6 +1,5 @@
 package com.app.activeparks.data.db.mapper
 
-import android.net.Uri
 import com.app.activeparks.data.db.entity.ActiveEntity
 import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
 import com.app.activeparks.ui.active.model.ActivityState
@@ -39,7 +38,7 @@ class ActivityStateToActiveEntityMapper {
                 activityInfoItems[9].number.timeToSeconds(),
                 activityInfoItems[9].number,
                 activityInfoItems[4].number.toDouble().toLong(),
-                activityState.weatherIcon.toString(),
+                activityState.weatherIcon,
                 activityState.temperature,
                 activityInfoItems[10].number.toDouble().toInt(),
                 activityInfoItems[12].number.toDouble().toInt(),

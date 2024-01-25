@@ -3,21 +3,26 @@ package com.app.activeparks.ui.userProfile.menu
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
-import com.app.activeparks.ui.homeWithUser.fragments.clubs.HomeClubsFragment
-import com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsFragment
-import com.app.activeparks.ui.userProfile.statisticFragment.StatisticFragment
-import com.app.activeparks.ui.userProfile.video.VideoFragmentUserProfile
+import com.app.activeparks.data.model.user.UserRole
+import com.app.activeparks.ui.support.SupportActivity
+import com.app.activeparks.ui.userProfile.home.ProfileHomeViewModel
+import com.app.activeparks.util.URL_INFO_LIST
+import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.toBoolean
 import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentMenuProfileBinding
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -27,6 +32,7 @@ class MenuProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentMenuProfileBinding
     private val viewModel: MenuProfileViewModel by viewModel()
+    private val profileViewModel: ProfileHomeViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,23 +57,32 @@ class MenuProfileFragment : Fragment() {
         with(viewModel) {
             userDate.observe(viewLifecycleOwner) {
                 it?.let {
-
-                    getRole(it.roleId)
-
                     with(binding) {
                         Glide.with(requireContext())
                             .load(it.photo)
                             .error(R.drawable.ic_prew)
                             .into(ivUser)
 
-
                         tvUserName.text = "${it.firstName} ${it.lastName}"
+
+                        tvUserRole.text = if (it.isTrainer.toBoolean()) {
+                            tvFavorite.gone()
+                            tvKnowledgeBase.gone()
+                            tvAdminEvent.gone()
+                            UserRole.TRAINER.role
+                        } else if (it.isCoordinatorReport.toBoolean()) {
+                            tvFavorite.gone()
+                            tvKnowledgeBase.gone()
+                            tvRoads.gone()
+                            UserRole.COORDINATOR.role
+                        } else {
+                            tvActiveRoads.gone()
+                            tvRoads.gone()
+                            tvAdminEvent.gone()
+                            UserRole.USER.role
+                        }
                     }
                 }
-            }
-
-            userRole.observe(viewLifecycleOwner) {
-                it?.let { binding.tvUserRole.text = it }
             }
 
             logOut.observe(viewLifecycleOwner) {
@@ -86,36 +101,61 @@ class MenuProfileFragment : Fragment() {
     private fun setListener() {
         with(binding) {
             ivLogOut.setOnClickListener {
-                showDialog()
+                showLogOutDialog()
             }
             ivBack.setOnClickListener {
                 onBack()
             }
             tvMyClubs.setOnClickListener {
-                openFragment(HomeClubsFragment())
+                profileViewModel.selectedTub.value = R.id.navClubUser
+                onBack()
             }
             tvMyEvents.setOnClickListener {
-                openFragment(HomeEventsFragment())
+                profileViewModel.selectedTub.value = R.id.navEventsUser
+                onBack()
             }
             tvStatistic.setOnClickListener {
-                openFragment(StatisticFragment())
+                profileViewModel.selectedTub.value = R.id.navStatisticsUser
+                onBack()
             }
             tvMyVideo.setOnClickListener {
-                openFragment(VideoFragmentUserProfile())
+                profileViewModel.selectedTub.value = R.id.navVideoUser
+                onBack()
+            }
+            tvKnowledgeBase.setOnClickListener {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(URL_INFO_LIST))
+                startActivity(intent)
+            }
+            tvApkUpdate.setOnClickListener {
+                updateApk()
+            }
+            tvDeactivationAccount.setOnClickListener {
+                showDeleteUserDialog()
+            }
+            tvSupport.setOnClickListener {
+                startActivity(Intent(requireActivity(), SupportActivity::class.java))
             }
         }
     }
 
-    private fun showDialog() {
+    private fun showLogOutDialog() {
+        shodDialog("Ви дійсно бажаєте вийти?") { viewModel.logout() }
+    }
+
+    private fun showDeleteUserDialog() {
+        shodDialog("Ви дійсно бажаєте видалити аккаунт?") { viewModel.removeUser() }
+    }
+
+    private fun shodDialog(title: String, job: () -> Unit) {
         val builder = AlertDialog.Builder(context)
 
         val dialogClickListener =
             DialogInterface.OnClickListener { dialog: DialogInterface, which: Int ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
-                        viewModel.logout()
+                        job()
                         if (requireActivity() is MainActivity) {
-                            (requireActivity() as MainActivity).navControllerMain!!.navigate(R.id.registration_user)
+                            (requireActivity() as MainActivity).navControllerMain?.navigate(R.id.registration_user)
                         }
                     }
 
@@ -123,12 +163,28 @@ class MenuProfileFragment : Fragment() {
                 }
             }
 
-        builder.setMessage("Ви дійсно бажаєте вийти?").setPositiveButton("Так", dialogClickListener)
+        builder.setMessage(title).setPositiveButton("Так", dialogClickListener)
             .setNegativeButton("Ні", dialogClickListener).show()
     }
 
-    private fun openFragment(fragment: Fragment) {
-        (requireActivity() as? MainActivity)?.openFragment(fragment)
+    private fun updateApk() {
+        val appPackageName: String = requireContext().packageName
+
+        try {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("market://details?id=$appPackageName")
+                )
+            )
+        } catch (e: android.content.ActivityNotFoundException) {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
+                )
+            )
+        }
     }
 
     private fun onBack() {

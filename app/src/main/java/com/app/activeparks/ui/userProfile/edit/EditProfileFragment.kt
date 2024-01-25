@@ -3,16 +3,20 @@ package com.app.activeparks.ui.userProfile.edit
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.NumberPicker
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,9 +24,16 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import com.app.activeparks.ui.registration.fragments.registrationFlow.fragments.additionalValue.Gender
 import com.app.activeparks.ui.userProfile.model.PhotoType
+import com.app.activeparks.util.EasyTextWatcher
+import com.app.activeparks.util.PhoneNumberMaskWatcher
 import com.app.activeparks.util.cropper.CropImage
+import com.app.activeparks.util.extention.DataHelper
 import com.app.activeparks.util.extention.FileHelper
+import com.app.activeparks.util.extention.replacePhone
+import com.app.activeparks.util.extention.setSex
+import com.app.activeparks.util.extention.toBoolean
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.technodreams.activeparks.R
@@ -31,7 +42,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 /**
  * Created by O.Dziuba on 09.01.2024.
@@ -44,6 +57,9 @@ class EditProfileFragment : Fragment() {
     private var photoURI: Uri? = null
     private var currentPhotoPath = ""
     private var photoType = PhotoType.AVATAR
+    private val calendar = Calendar.getInstance()
+    private val dateFormatUI = SimpleDateFormat("d MMMM yyyy", Locale("uk", "UA"))
+    private val dateFormatBack = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     private val getContentLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -125,7 +141,31 @@ class EditProfileFragment : Fragment() {
                             .load(it.imageBackground)
                             .error(R.drawable.ic_prew)
                             .into(vBackgroundUser)
+
+                        etFName.setText(it.firstName)
+                        etLName.setText(it.lastName)
+                        etAboutMe.setText(it.aboutMe)
+
+                        etCity.setText(it.city)
+                        etBDay.text = DataHelper.formatBDay(it.birthday ?: "")
+                        etSex.text = it.sex?.setSex()
+
+                        etWeight.text = getString(R.string.tv_weight_picker, it.weight.toString())
+                        etHeight.text = getString(R.string.tv_height_picker, it.height.toString())
+
+                        scVeteran.isChecked = it.isVeteran.toBoolean()
+                        scVPO.isChecked = it.isVpo.toBoolean()
+                        scOpenInfo.isChecked = it.hideBodyInfo.toBoolean()
+
+                        etPhone.setText(it.phone)
+                        etEmail.setText(it.email)
                     }
+                }
+            }
+
+            userSaved.observe(viewLifecycleOwner) {
+                if (it == true) {
+                    onBackPressed()
                 }
             }
         }
@@ -133,8 +173,10 @@ class EditProfileFragment : Fragment() {
 
     private fun setListener() {
         with(binding) {
+            changeSize()
+
             ivBack.setOnClickListener {
-                requireActivity().onBackPressed()
+                onBackPressed()
             }
             ivAddUser.setOnClickListener {
                 photoType = PhotoType.AVATAR
@@ -148,10 +190,192 @@ class EditProfileFragment : Fragment() {
                 photoType = PhotoType.BACKGROUND
                 setCoverImageDialog()
             }
-            FileHelper.changeSize(vBackgroundUser, resources)
-            FileHelper.changeSize(vBackgroundUser, ivUser)
-            FileHelper.changeSizeCircle(ivUser, ivUserCircle)
+
+            etWeight.setOnClickListener {
+                showWeightPicker()
+            }
+            etHeight.setOnClickListener {
+                showHeightPicker()
+            }
+            etBDay.setOnClickListener {
+                showDatePicker()
+            }
+            etSex.setOnClickListener {
+                showGenderOptions()
+            }
+
+            etFName.addTextChangedListener(object : EasyTextWatcher() {
+                override fun afterTextChanged(s: Editable?) {
+                    viewModel.user = viewModel.user?.copy(firstName = s?.toString())
+                }
+            })
+
+            etLName.addTextChangedListener(object : EasyTextWatcher() {
+                override fun afterTextChanged(s: Editable?) {
+                    viewModel.user = viewModel.user?.copy(lastName = s?.toString())
+                }
+            })
+
+            etAboutMe.addTextChangedListener(object : EasyTextWatcher() {
+                override fun afterTextChanged(s: Editable?) {
+                    viewModel.user = viewModel.user?.copy(aboutMe = s?.toString())
+                }
+            })
+
+            etCity.addTextChangedListener(object : EasyTextWatcher() {
+                override fun afterTextChanged(s: Editable?) {
+                    viewModel.user = viewModel.user?.copy(city = s?.toString())
+                }
+            })
+
+            etPhone.addTextChangedListener(PhoneNumberMaskWatcher(etPhone) {
+                viewModel.user = viewModel.user?.copy(phone = etPhone.text?.toString()?.replacePhone())
+            })
+
+            etEmail.addTextChangedListener(object : EasyTextWatcher() {
+                override fun afterTextChanged(s: Editable?) {
+                    viewModel.user = viewModel.user?.copy(email = s?.toString())
+                }
+            })
+
+            btnSave.setOnClickListener {
+                viewModel.saveUser()
+            }
+
+            ivSave.setOnClickListener {
+                viewModel.saveUser()
+            }
+
+            scVPO.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.user = viewModel.user?.copy(isVpo = if (isChecked) 1 else 0)
+            }
+
+            scVeteran.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.user = viewModel.user?.copy(isVeteran = if (isChecked) 1 else 0)
+            }
+
+            scOpenInfo.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.user = viewModel.user?.copy(hideBodyInfo = if (isChecked) 1 else 0)
+            }
         }
+    }
+
+    private fun onBackPressed() {
+        requireActivity().onBackPressed()
+    }
+
+    private fun showWeightPicker() {
+        val weightPicker = NumberPicker(requireContext())
+
+        val minValue = 40100
+        val maxValue = 200000
+        val step = 100
+
+        val valueCount = (maxValue - minValue) / step + 1
+        val displayedValues = Array(valueCount) { i ->
+            val weight = minValue + i * step
+            (weight / 1000).toString() + "." + (weight % 1000)
+        }
+
+        weightPicker.minValue = 0
+        weightPicker.maxValue = valueCount - 1
+        weightPicker.displayedValues = displayedValues
+
+
+        val dialog = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.tv_select_weight))
+            .setView(weightPicker)
+            .setPositiveButton(getString(R.string.tv_ok)) { _, _ ->
+
+                val selectedWeight = minValue + weightPicker.value * step
+                val formattedWeight =
+                    (selectedWeight / 1000).toString() + "." + (selectedWeight % 1000)
+
+                binding.etWeight.text =
+                    getString(R.string.tv_weight_picker, formattedWeight)
+
+                viewModel.user = viewModel.user?.copy(weight = formattedWeight.toDouble())
+            }
+            .create()
+
+        dialog.show()
+    }
+
+    private fun showHeightPicker() {
+        val numberPicker = NumberPicker(requireContext())
+        numberPicker.minValue = 100
+        numberPicker.maxValue = 250
+        numberPicker.value = 175
+
+        val dialog = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.tv_select_height_picker))
+            .setView(numberPicker)
+            .setPositiveButton(getString(R.string.tv_ok)) { _, _ ->
+                binding.etHeight.text =
+                    getString(R.string.tv_height_picker, numberPicker.value.toString())
+                viewModel.user = viewModel.user?.copy(height = numberPicker.value)
+            }
+            .create()
+
+        dialog.show()
+    }
+
+    private fun showDatePicker() {
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            { _, year, month, dayOfMonth ->
+                val selectedDate = calendar.apply {
+                    set(Calendar.YEAR, year)
+                    set(Calendar.MONTH, month)
+                    set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                }.time
+
+                val formattedDateUI = dateFormatUI.format(selectedDate)
+                val formattedDateBack = dateFormatBack.format(selectedDate)
+                binding.etBDay.text = formattedDateUI
+                with(viewModel) {
+                    viewModel.user = viewModel.user?.copy(birthday = formattedDateBack)
+                    calculatePulseZone(calculateFullYears(year))
+                }
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+
+        datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+        datePickerDialog.show()
+    }
+
+    private fun showGenderOptions() {
+        val popupMenu = PopupMenu(requireContext(), binding.etSex)
+
+        val genders = Gender.getGenders()
+        genders.forEach { gender ->
+            popupMenu.menu.add(gender).setOnMenuItemClickListener {
+                binding.etSex.text = gender
+                val sex = when (gender) {
+                    genders.first() -> Gender.MALE
+                    else -> Gender.FEMALE
+                }
+
+
+                viewModel.user = viewModel.user?.copy(sex = sex)
+                true
+            }
+        }
+
+        popupMenu.show()
+    }
+
+    private fun calculateFullYears(birthDate: Int): Int {
+        return Calendar.getInstance().get(Calendar.YEAR) - birthDate
+    }
+
+    private fun FragmentEditProfileBinding.changeSize() {
+        FileHelper.changeSize(vBackgroundUser, resources)
+        FileHelper.changeSize(vBackgroundUser, ivUser)
+        FileHelper.changeSizeCircle(ivUser, ivUserCircle)
     }
 
 

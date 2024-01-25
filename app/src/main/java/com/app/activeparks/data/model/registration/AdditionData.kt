@@ -1,7 +1,7 @@
 package com.app.activeparks.data.model.registration
 
 data class AdditionData(
-	var weight: Int = 80,
+	var weight: Double = 80.0,
 	var height: Int = 175,
 	var sex: String = "male",
 	var fName: String = "",

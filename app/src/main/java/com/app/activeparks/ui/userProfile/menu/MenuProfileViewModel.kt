@@ -21,7 +21,6 @@ class MenuProfileViewModel(
 ) : ViewModel() {
 
     val userDate: MutableLiveData<User> = MutableLiveData()
-    val userRole: MutableLiveData<String> = MutableLiveData()
     val logOut: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun getUser() {
@@ -34,15 +33,14 @@ class MenuProfileViewModel(
         }
     }
 
-    fun getRole(id: String?) {
-        if (preferences.dictionarie != null) {
-            for (baseDictionaries in preferences.dictionarie.userRoles) {
-                if (baseDictionaries.id == id) {
-                    userRole.value = baseDictionaries.title
-                }
+    fun removeUser() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                userUseCase.removeUser(preferences.id)
+            }.onSuccess {
+                logout()
             }
         }
-        userRole.value = "Користувач"
     }
 
     fun logout() {

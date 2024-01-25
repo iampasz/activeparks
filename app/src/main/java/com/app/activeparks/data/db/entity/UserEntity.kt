@@ -44,6 +44,10 @@ data class UserEntity(
     val email: String? = null,
     @ColumnInfo(name = "height")
     val height: Int? = null,
+    @ColumnInfo(name = "isVpo")
+    val isVpo: Int? = null,
+    @ColumnInfo(name = "isVeteran")
+    val isVeteran: Int? = null,
     @ColumnInfo(name = "health_state")
     val healthState: String? = null,
     @ColumnInfo(name = "is_active")
@@ -55,13 +59,15 @@ data class UserEntity(
     @ColumnInfo(name = "last_name")
     val lastName: String? = null,
     @ColumnInfo(name = "weight")
-    val weight: Int? = null,
+    val weight: Double? = null,
     @ColumnInfo(name = "photo")
     val photo: String? = null,
     @SerializedName("imageBackground")
     val imageBackground: String? = null,
     @ColumnInfo(name = "is_trainer")
     val isTrainer: Int? = null,
+    @ColumnInfo(name = "isCoordinatorReport")
+    val isCoordinatorReport: Int? = null,
     @ColumnInfo(name = "build_id")
     val buildId: String? = null,
     @ColumnInfo(name = "phone")

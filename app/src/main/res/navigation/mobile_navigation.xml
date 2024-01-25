@@ -5,6 +5,11 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_home">
 
+<!--    <fragment-->
+<!--        android:id="@+id/navigation_home"-->
+<!--        android:name="com.app.activeparks.ui.userProfile.activityInfo.ActivityInfoFragment"-->
+<!--        android:label="@string/title_home"-->
+<!--        tools:layout="@layout/fragment_home" />-->
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.app.activeparks.ui.homeWithUser.fragments.home.MainHomeFragment"
