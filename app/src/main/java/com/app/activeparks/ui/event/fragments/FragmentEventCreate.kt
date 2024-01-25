@@ -102,7 +102,6 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
                 data?.let {
                     val resultUri = CropImage.getActivityResult(data).uri
                     val file = EventHelper.saveImageToFile(resultUri, requireActivity())
-
                     viewModel.uploadFile(file, ImageTypes.TYPE_OTHER_PHOTO.type)
                     binding.imageCover.setImageURI(resultUri)
                 }
@@ -119,7 +118,7 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
     private val setDataResponseSuccessful = object : ResponseCallBack {
         override fun load(responseFromApi: String) {
             viewModelStore.clear()
-            eventController.publishDataEvent(itemEvent.id, publishResponseSuccessful)
+            itemEvent.let {eventController.publishDataEvent(itemEvent.id, publishResponseSuccessful) }
         }
     }
 
@@ -362,6 +361,7 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
             startsAt = ChangeDateType.formatDateTimeReverse(binding.startData.text.toString())
             finishesAt = ChangeDateType.formatDateTimeReverse(binding.endData.text.toString())
         }
+
     }
 
     private fun getRoutePointFromGeoPointList(): List<RoutePoint> {
@@ -392,7 +392,9 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
 
             collectEventData()
 
-            viewModel.setDataEvent(itemEvent.id, itemEvent)
+            itemEvent.let{
+                viewModel.setDataEvent(itemEvent.id, itemEvent)
+            }
         }
         builder.setNegativeButton(requireActivity().resources.getString(R.string.no)) { _, _ ->
             itemEvent.id?.let {
