@@ -1,6 +1,7 @@
 package com.app.activeparks.ui.routepoint.adapter;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,7 @@ public class PointListAdaper extends RecyclerView.Adapter<PointListAdaper.ViewHo
     private final LayoutInflater inflater;
     private EventsListener eventListener;
 
-    public Boolean isCoordinator = false;
+    public Boolean isCoordinator;
 
     public PointListAdaper(Context context, List<RoutePoint> list, Boolean coordinator){
         this.inflater = LayoutInflater.from(context);
@@ -38,6 +39,7 @@ public class PointListAdaper extends RecyclerView.Adapter<PointListAdaper.ViewHo
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         RoutePoint point = list.get(position);
@@ -50,21 +52,17 @@ public class PointListAdaper extends RecyclerView.Adapter<PointListAdaper.ViewHo
             holder.point.setText("" + (position + 1));
         }
 
-        holder.itemView.setOnClickListener(v -> {
-            eventListener.onInfo(point);
-        });
+        holder.itemView.setOnClickListener(v -> eventListener.onInfo(point));
 
-        holder.qrCode.setOnClickListener(v -> {
-            eventListener.onShowQrCode(point.getEventId(), point.getQrCode());
-        });
+        holder.qrCode.setOnClickListener(v -> eventListener.onShowQrCode(point.getEventId(), point.getQrCode()));
 
-        if (point.getPassedPoints() == true){
+        if (point.getPassedPoints()){
             holder.pointStatus.setVisibility(View.VISIBLE);
         }else {
             holder.pointStatus.setVisibility(View.INVISIBLE);
         }
 
-        if (isCoordinator == true){
+        if (isCoordinator){
             holder.qrCode.setVisibility(View.VISIBLE);
             holder.pointStatus.setVisibility(View.GONE);
         }

@@ -4,6 +4,7 @@ import com.app.activeparks.MainViewModel
 import com.app.activeparks.ui.active.ActiveViewModel
 import com.app.activeparks.ui.active.fragments.pulseGadget.PulseGadgetViewModel
 import com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityViewModel
+import com.app.activeparks.ui.event.fragments.MainEventViewModel
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
 import com.app.activeparks.ui.event.viewmodel.EventViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.blog.HomeBlogViewModel
@@ -11,6 +12,7 @@ import com.app.activeparks.ui.homeWithUser.fragments.clubs.HomeClubsViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.home.MainHomeViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.location.HomeLocationViewModel
+import com.app.activeparks.ui.participants.ParticipantsViewModel
 import com.app.activeparks.ui.profile.ProfileViewModel
 import com.app.activeparks.ui.registration.RegistrationViewModel
 import com.app.activeparks.ui.registration.fragments.forgotPassword.ForgotPasswordViewModel
@@ -53,5 +55,7 @@ val viewModelModule = module {
     viewModel { RegistrationViewModel(get(), androidContext()) }
 
     viewModel { EventViewModel(get()) }
+    viewModel { ParticipantsViewModel(get()) }
+    viewModel { MainEventViewModel(get()) }
 
 }

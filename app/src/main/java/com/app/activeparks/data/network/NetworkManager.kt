@@ -19,14 +19,14 @@ import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswordRequest
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
+import com.app.activeparks.data.model.sportevents.EventResponse
+import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import com.app.activeparks.data.model.statistic.StatisticResponse
-import com.app.activeparks.data.model.uservideo.UserVideo
 import com.app.activeparks.data.model.uservideo.UserVideoItem
 import com.app.activeparks.data.model.uservideo.VideosResponse
 import com.app.activeparks.data.model.weather.WeatherResponse
 import okhttp3.ResponseBody
-import retrofit2.http.Query
 import java.io.File
 
 /**
@@ -59,7 +59,9 @@ interface NetworkManager {
     suspend fun getWorkoutActivity(id: String): ActivityItemResponse?
     suspend fun getWorkoutsActivity(
         startsFrom: String,
-        startsTo: String): ActivityResponse?
+        startsTo: String
+    ): ActivityResponse?
+
     suspend fun getUser(id: String): User?
     suspend fun removeUser(id: String): User?
     suspend fun getStatistics(from: String, to: String): StatisticResponse?
@@ -69,6 +71,9 @@ interface NetworkManager {
     ): Default?
 
     suspend fun updateUser(id: String, user: User): User?
+    suspend fun getAdminEvents(): EventResponse?
+    suspend fun createEmptyEvent(): ItemEvent?
+    suspend fun setDataEvent(id: String, itemEvent: ItemEvent): Boolean?
 
     suspend fun createUserVideo(): UserVideoItem?
     suspend fun getUserVideo(id: String): UserVideoItem?

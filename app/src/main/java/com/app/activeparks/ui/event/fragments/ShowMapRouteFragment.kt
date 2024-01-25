@@ -6,40 +6,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.activeparks.MainActivity
+import com.app.activeparks.ui.event.activity.EventFragment
 import com.app.activeparks.ui.event.adapter.GeoPointAdapter
 import com.app.activeparks.ui.event.interfaces.RemoveItemPosition
 import com.app.activeparks.ui.event.util.EventHelper
 import com.app.activeparks.ui.event.util.EventTypes
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
 import com.app.activeparks.util.MapsViewController
-import com.technodreams.activeparks.databinding.FragmentChangeRouteBinding
+import com.technodreams.activeparks.databinding.ShowMapRouteFragmentBinding
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 
-class FragmentChangeRoute : Fragment() {
+class ShowMapRouteFragment : Fragment() {
 
-    lateinit var binding: FragmentChangeRouteBinding
+    lateinit var binding: ShowMapRouteFragmentBinding
     lateinit var adapter: GeoPointAdapter
-
     var geoPointsList = ArrayList<GeoPoint>()
     var currentTrainingType = ""
     var markerType = 1
 
-    private val viewModel: EventRouteViewModel by activityViewModels()
+     private val viewModel: EventRouteViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentChangeRouteBinding
+        binding = ShowMapRouteFragmentBinding
             .inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -48,7 +47,6 @@ class FragmentChangeRoute : Fragment() {
 
         var currentPoint = 0
         val myListener: Marker.OnMarkerDragListener = object : Marker.OnMarkerDragListener {
-
 
             override fun onMarkerDrag(marker: Marker) {
             }
@@ -103,7 +101,7 @@ class FragmentChangeRoute : Fragment() {
             MapsViewController(editRouteMap, requireContext())
             close.setOnClickListener {
                 sendDataToViewModel()
-                (requireActivity() as MainActivity).openFragment(FragmentEventCreate())
+                (requireActivity() as MainActivity).openFragment(EventFragment())
             }
 
             editRouteMap.controller.setCenter(lastPoint)

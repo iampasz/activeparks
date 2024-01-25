@@ -21,6 +21,8 @@ import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswordRequest
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
+import com.app.activeparks.data.model.sportevents.EventResponse
+import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import com.app.activeparks.data.model.statistic.StatisticResponse
 import com.app.activeparks.data.model.uservideo.UserVideo
@@ -36,7 +38,12 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Created by O.Dziuba on 27.11.2023.
@@ -245,6 +252,43 @@ class NetworkManagerImpl(
         }
 
         return response.body()
+    }
+
+    override suspend fun getAdminEvents(): EventResponse? {
+
+        val response = apiWithAuthorization.getAdminEvents()
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+        return response.body()
+    }
+
+    override suspend fun createEmptyEvent(): ItemEvent? {
+
+        val response = apiWithAuthorization.createEmptyEvent()
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+        return response.body()
+    }
+
+    override suspend fun setDataEvent(id: String, itemEvent: ItemEvent): Boolean {
+        return suspendCoroutine { continuation ->
+            val call = apiWithAuthorization.setDataEvent(id, itemEvent)
+            call.enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        continuation.resume(true)
+                    } else {
+                        continuation.resume(false)
+                    }
+                }
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    continuation.resume(false)
+                }
+            })
+        }
     }
 
     //Statistics

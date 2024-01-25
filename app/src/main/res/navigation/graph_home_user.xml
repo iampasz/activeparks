@@ -15,18 +15,13 @@
             app:destination="@id/eventsListFragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/eventsListFragment"
-        android:name="com.app.activeparks.ui.event.fragments.EventsListFragment"
-        tools:layout="@layout/fragment_events"
-        android:label="EventsListFragment" />
-
 
     <fragment
         android:id="@+id/navLocationHomeUser"
         android:name="com.app.activeparks.ui.homeWithUser.fragments.location.HomeLocationFragment"
         android:label="fragment_home_events"
         tools:layout="@layout/fragment_home_location" />
+
     <fragment
         android:id="@+id/navBlogHomeUser"
         android:name="com.app.activeparks.ui.homeWithUser.fragments.blog.HomeBlogFragment"

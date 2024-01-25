@@ -1,24 +1,17 @@
 package com.app.activeparks.ui.event.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.useCase.eventState.EventStateUseCase
+import kotlinx.coroutines.launch
 import org.osmdroid.api.IGeoPoint
 import org.osmdroid.util.GeoPoint
 
 class EventRouteViewModel
-    (eventStateUseCase: EventStateUseCase) : ViewModel() {
-
-   // private val savedStateHandle: SavedStateHandle,
-
-    init {
-        Log.i("EventRouteViewModel", "Initialized with $eventStateUseCase")
-    }
-
-
+    (private val eventStateUseCase: EventStateUseCase) : ViewModel() {
 
     //private val scrollState = "scroll"
     private var mapState: IGeoPoint? = null
@@ -75,4 +68,41 @@ class EventRouteViewModel
         return geoPointsLiveData
     }
 
+
+    val newItemEvent = MutableLiveData<ItemEvent>()
+    val dataUpdated = MutableLiveData<Boolean>()
+
+    fun createEmptyEvent() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                eventStateUseCase.createEmptyEvent()
+            }.onSuccess { response ->
+                response?.let {
+                    newItemEvent.value = it
+                }
+            }
+        }
+    }
+
+    fun updateItemEvent(itemEvent: ItemEvent) {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                    newItemEvent.value = itemEvent
+            }.onFailure { throwable ->
+
+            }
+        }
+    }
+
+    fun setDataEvent(id:String, itemEvent: ItemEvent) {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                eventStateUseCase.setDataEvent(id, itemEvent)
+            }.onSuccess { response ->
+                response?.let {
+                    dataUpdated.value = it
+                }
+            }
+        }
+    }
 }

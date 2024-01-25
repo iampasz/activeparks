@@ -11,19 +11,19 @@ import com.app.activeparks.data.model.registration.ResponseSuccess
 import com.app.activeparks.data.model.registration.User
 import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
+import com.app.activeparks.data.model.sportevents.EventResponse
+import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.statistic.StatisticResponse
-import com.app.activeparks.data.model.uservideo.UserVideo
 import com.app.activeparks.data.model.uservideo.UserVideoItem
 import com.app.activeparks.data.model.uservideo.VideosResponse
-import io.reactivex.Observable
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -115,6 +115,17 @@ interface ApiWithAuthorization {
         @Body user: User
     ): Response<User>
 
+    @GET("/api/v1/sport-events/my?offset=0&limit=100&filters[isClubEvent]=0&sort[createdAt]=desc")
+    suspend fun getAdminEvents(): Response<EventResponse>
+
+    @POST("/api/v1/sport-events/")
+    suspend fun createEmptyEvent(): Response<ItemEvent>
+
+    @PUT("/api/v1/sport-events/{id}")
+    fun setDataEvent(
+        @Path("id") id: String?,
+        @Body itemEvent: ItemEvent?
+    ): Call<String>
 
     @POST("/api/v1/user-videos")
     suspend fun createUserVideo(): Response<UserVideoItem>
@@ -132,7 +143,7 @@ interface ApiWithAuthorization {
         @Path("id") id: String,
         @Body saveBill: UserVideoItem
     ): Response<Any>
-    
+
     @POST("/api/v1/user-videos/{id}/send")
     suspend fun sendUserVideo(
         @Path("id") id: String

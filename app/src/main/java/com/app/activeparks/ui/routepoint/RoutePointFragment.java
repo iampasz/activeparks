@@ -35,7 +35,6 @@ import org.osmdroid.views.MapView;
 
 public class RoutePointFragment extends DialogFragment implements LocationListener {
 
-    private FragmentRoutePointBinding binding;
     private RoutePointViewModel viewModel;
     private LocationManager locationManager;
     public MapsViewController mapsViewController;
@@ -59,10 +58,10 @@ public class RoutePointFragment extends DialogFragment implements LocationListen
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentRoutePointBinding.inflate(inflater, container, false);
+        com.technodreams.activeparks.databinding.FragmentRoutePointBinding binding = FragmentRoutePointBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
 
         mapView = binding.mapview;
         status = binding.status;
@@ -71,27 +70,20 @@ public class RoutePointFragment extends DialogFragment implements LocationListen
 
         RecyclerView listPoint = binding.listPoint;
 
-        binding.closed.setOnClickListener(v -> {
-            dismiss();
-        });
+        binding.closed.setOnClickListener(v -> dismiss());
 
         viewModel.getRoutePoint(id);
 
         binding.qrAction.setOnClickListener(v -> {
 
             ScanerBottomFragment dialog = new ScanerBottomFragment();
-            dialog.onListener(new ScanerBottomFragment.OnScanerBottomlListener() {
-                @Override
-                public void update() {
-                    viewModel.getUpdate();
-                }
-            });
-            dialog.show(getActivity().getSupportFragmentManager(),
+            dialog.onListener(() -> viewModel.getUpdate());
+            dialog.show(requireActivity().getSupportFragmentManager(),
                     "scaner");
         });
 
         viewModel.getRoutePoint().observe(getViewLifecycleOwner(), routePoint -> {
-            if (viewModel.updateMap == false) {
+            if (!viewModel.updateMap) {
                 mapsViewController.setRoutePint(viewModel.routePointsMap);
                 viewModel.updateMap = true;
             }
@@ -109,9 +101,7 @@ public class RoutePointFragment extends DialogFragment implements LocationListen
             }));
         });
 
-        viewModel.getNotification().observe(getViewLifecycleOwner(), msg -> {
-            LocalNotificationHelper.showNotification(getActivity(), "Активні парки", msg);
-        });
+        viewModel.getNotification().observe(getViewLifecycleOwner(), msg -> LocalNotificationHelper.showNotification(getActivity(), "Активні парки", msg));
 
         return root;
     }
@@ -130,9 +120,9 @@ public class RoutePointFragment extends DialogFragment implements LocationListen
     }
 
     public void onStartLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 1, this);

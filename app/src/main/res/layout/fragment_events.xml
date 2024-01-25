@@ -5,8 +5,7 @@
     android:id="@+id/constrain_events_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    android:elevation="20dp">
+    android:background="@color/background">
 
     <TextView
         android:id="@+id/titleText2"
@@ -42,7 +41,7 @@
         app:srcCompat="@drawable/ic_back_circle" />
 
     <ImageView
-        android:id="@+id/create_event"
+        android:id="@+id/createEvent"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginTop="14dp"

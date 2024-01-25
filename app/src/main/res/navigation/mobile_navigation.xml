@@ -54,7 +54,6 @@
         android:label="@string/events"
         tools:layout="@layout/fragment_events">
 
-
     </fragment>
 
     <fragment
@@ -63,8 +62,5 @@
         android:label="@string/create_event"
         tools:layout="@layout/fragment_event_create">
     </fragment>
-
-
-
 
 </navigation>

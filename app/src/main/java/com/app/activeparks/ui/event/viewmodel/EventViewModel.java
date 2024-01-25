@@ -44,6 +44,7 @@ public class EventViewModel extends ViewModel {
     private final List<ItemEvent> mySportEvent = new ArrayList<>();
     private final List<ItemEvent> mSportEvent = new ArrayList<>();
     public String mId;
+    private final MutableLiveData<String> currentId = new MutableLiveData<>();
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -97,7 +98,7 @@ public class EventViewModel extends ViewModel {
         return mMeeting;
     }
 
-    public void getEvent(String id) {
+    public void updateEventData(String id) {
         mId = id;
         Disposable eventDetails = repository.getEventDetails(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -120,7 +121,7 @@ public class EventViewModel extends ViewModel {
 
     public void getUpdateEvent() {
         if (mId != null) {
-            getEvent(mId);
+            updateEventData(mId);
         }
     }
 
@@ -154,15 +155,13 @@ public class EventViewModel extends ViewModel {
 //        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 //        getEvents(dateFormat.format(new Date()), clubId);
 //    }
-
-//    public void getEvents(String date, String clubId) {
-//        Disposable events = repository.events(30, date, clubId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(result -> statusMapper(result.getItems()),
-//                        error -> {
-//                        });
-//
-//        compositeDisposable.add(events);
-//    }
+    public void getEvents(String date, String clubId) {
+        Disposable events = repository.events(30, date, clubId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> statusMapper(result.getItems()),
+                        error -> {
+                        });
+        compositeDisposable.add(events);
+    }
 
     public void eventsDay(String date) {
         eventSelectDay = date;
@@ -221,17 +220,19 @@ public class EventViewModel extends ViewModel {
 
     public void applyUser() {
         if (Objects.requireNonNull(mItemEvent.getValue()).getEventUser() == null) {
-            Disposable jointEvent = repository.jointEvent(mId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> getEvent(mId),
+            Disposable jointEvent = repository.jointEvent(mId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> updateEventData(mId),
                     error -> {
                     });
             compositeDisposable.add(jointEvent);
         } else {
             if (mItemEvent.getValue().getEventUser().getIsApproved()) {
                 Disposable jointLeave = repository.jointLeave(mId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(result -> getEvent(mId),
+                        .subscribe(result -> updateEventData(mId),
                                 error -> {
+                                    //TODO get message HTTP 404
                                 });
                 compositeDisposable.add(jointLeave);
+
             }
         }
     }
@@ -354,4 +355,15 @@ public class EventViewModel extends ViewModel {
     public boolean getUserAuth() {
         return !repository.sharedPreferences.getToken().isEmpty();
     }
+
+    public void setCurrentId(String id) {
+        currentId.setValue(id);
+    }
+
+    public LiveData<String> getCurrentId() {
+        return currentId;
+    }
+
+
+
 }

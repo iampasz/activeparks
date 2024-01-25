@@ -2,7 +2,6 @@
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:layout_marginStart="15dp"
@@ -12,6 +11,7 @@
     app:cardCornerRadius="8dp">
 
     <ImageView
+        android:contentDescription="@string/icon"
         android:id="@+id/photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,6 +19,7 @@
         android:src="@drawable/preview_one" />
 
     <ImageView
+        android:contentDescription="@string/icon"
         android:id="@+id/gradient"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -32,9 +33,9 @@
         <androidx.constraintlayout.widget.Group
             android:id="@+id/gCounter"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="circle_image_first, circle_counter"
-            android:layout_height="wrap_content"/>
+            app:constraint_referenced_ids="circle_image_first, circle_counter" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/circleAuthor"
@@ -50,6 +51,7 @@
             app:layout_constraintEnd_toStartOf="@+id/circle_counter">
 
             <ImageView
+                android:contentDescription="@string/icon"
                 android:id="@+id/imageAuthor"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -72,6 +74,7 @@
             app:layout_constraintEnd_toStartOf="@+id/circle_counter">
 
             <ImageView
+                android:contentDescription="@string/icon"
                 android:id="@+id/image_first"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -101,7 +104,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="+21"
+                android:text="@string/zero"
                 android:textColor="@color/white" />
 
         </androidx.cardview.widget.CardView>
@@ -118,6 +121,7 @@
             app:layout_constraintStart_toEndOf="@+id/grean_square" />
 
         <ImageView
+            android:contentDescription="@string/icon"
             android:id="@+id/grean_square"
             android:layout_width="6dp"
             android:layout_height="6dp"
@@ -131,7 +135,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
-            android:text="Підтримка добровольців"
+            android:text="@string/volunteer_support"
             android:textColor="@color/white"
             app:layout_constraintBottom_toTopOf="@+id/tvDescription"
             app:layout_constraintStart_toStartOf="@+id/tvDescription" />
@@ -141,13 +145,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="28/08/22 | 12:00 - 14:00"
+            android:text="@string/data_time"
             android:textColor="@color/tv_description"
             app:layout_constraintBottom_toBottomOf="@+id/tvDescription"
             app:layout_constraintStart_toEndOf="@+id/blue_dot"
             app:layout_constraintTop_toTopOf="@+id/tvDescription" />
 
         <ImageView
+            android:contentDescription="@string/icon"
             android:id="@+id/blue_dot"
             android:layout_width="4dp"
             android:layout_height="4dp"
@@ -161,7 +166,7 @@
             android:id="@+id/tvDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Марафон"
+            android:text="@string/marathon"
             android:textColor="@color/tv_description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
