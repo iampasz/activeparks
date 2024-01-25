@@ -33,7 +33,7 @@
 
     <dimen name="text_10px">13sp</dimen>
     <dimen name="text_14px">19sp</dimen>
-    <dimen name="text_16px">21sp</dimen>
+    <dimen name="text_16px">16sp</dimen>
     <dimen name="text_20px">21sp</dimen>
     <dimen name="text_24px">32sp</dimen>
     <dimen name="text_40px">53sp</dimen>

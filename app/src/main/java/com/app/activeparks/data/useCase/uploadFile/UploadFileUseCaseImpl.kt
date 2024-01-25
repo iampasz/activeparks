@@ -1,6 +1,7 @@
 package com.app.activeparks.data.useCase.uploadFile
 
 import com.app.activeparks.data.model.Default
+import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.repository.uploadFile.UploadFileRepository
 import java.io.File
 
@@ -12,5 +13,17 @@ class UploadFileUseCaseImpl(
 ) : UploadFileUseCase {
     override suspend fun updateFile(type: String, file: File): Default? {
         return uploadFileRepository.updateFile(type, file)
+    }
+
+    override suspend fun uploadFile(
+        type: String,
+        file: File,
+        itemCurrentId: String?
+    ): ImageLinkResponse? {
+        return uploadFileRepository.uploadFile(
+            type,
+            file,
+            itemCurrentId
+        )
     }
 }

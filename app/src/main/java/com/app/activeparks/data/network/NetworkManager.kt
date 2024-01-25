@@ -3,6 +3,8 @@ package com.app.activeparks.data.network
 import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
+import com.app.activeparks.data.model.events.ImageLinkResponse
+import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.registration.AdditionData
 import com.app.activeparks.data.model.registration.ForgotPasswordRequest
 import com.app.activeparks.data.model.registration.LoginRequest
@@ -59,6 +61,16 @@ interface NetworkManager {
         type: String,
         file: File
     ): Default?
+
+    suspend fun getPhotoGalleryOfficial(id: String): PhotoGalleryResponse?
+    suspend fun getPhotoGalleryUser(id: String): PhotoGalleryResponse?
+
+
+    suspend fun uploadFile(
+        type: String,
+        file: File,
+        itemCurrentId: String?
+    ): ImageLinkResponse?
 
     suspend fun updateUser(id: String, user: User): User?
     suspend fun getAdminEvents(): EventResponse?

@@ -3,6 +3,8 @@ package com.app.activeparks.data.network.baseNew
 import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
+import com.app.activeparks.data.model.events.ImageLinkResponse
+import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.registration.AdditionData
 import com.app.activeparks.data.model.registration.PulseZoneRequest
 import com.app.activeparks.data.model.registration.ResponseId
@@ -13,14 +15,12 @@ import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.sportevents.EventResponse
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.statistic.StatisticResponse
-import io.reactivex.Observable
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -91,6 +91,7 @@ interface ApiWithAuthorization {
         @Part("uploadType") uploadType: RequestBody?,
         @Part file: MultipartBody.Part,
     ): Response<Default>
+
     @PUT("/api/v1/users/{id}")
     suspend fun updateUser(
         @Path("id") id: String,
@@ -112,21 +113,56 @@ interface ApiWithAuthorization {
     //Upload file
     @POST("/api/v1/uploads")
     @Multipart
-    fun updateFile(
-        @Header("Authorization") token: String?,
+    suspend fun uploadFile(
 
         @Part("fileName") fileName: String?,
         @Part("chunkIndex") chunkIndex: Int,
         @Part("totalChunk") totalChunk: Int,
         @Part("size") size: Int,
-        @Part file: Part?,
+        @Part file: MultipartBody.Part,
         @Part("uploadId") uploadId: String?,
-        @Part("uploadType") uploadType: RequestBody?,
         @Part("videoId") videoId: String?,
         @Part("resolution") resolution: String?,
-        @Part("sportEventsId") sportEventsId: String?,
+        @Part("uploadType") uploadType: RequestBody?,
+        @Part("sportEventsId") sportEventsId: RequestBody?
 
-    ): Observable<Default?>?
+    ): Response<ImageLinkResponse>
 
+
+    @GET("/api/v1/gallery/{id}/official?")
+    suspend fun getPhotoGalleryOfficial(
+        @Path("id") id: String
+    ): Response<PhotoGalleryResponse>
+
+    //my user, token for test
+    //1f17d9c3-0bd1-4423-8731-5df8c8f978fa
+    @GET("/api/v1/gallery/{id}/user?")
+    suspend fun getPhotoGalleryUser(
+        @Path("id") id: String
+    ): Response<PhotoGalleryResponse>
+
+
+//    @DELETE("/api/v1/gallery-user/{id}")
+//    suspend fun deleteOnePhotoGalleryUser(
+//        @Path("id") id: String
+//    ): Response<ResponseSuccess>
+//
+//
+//    @DELETE("/api/v1/gallery-official/{id}")
+//    suspend fun deleteOnePhotoGalleryOfficial(
+//        @Path("id") id: String
+//    ): Response<ResponseSuccess>
+
+
+//    @POST("/api/v1/gallery-user/apply")
+//    suspend fun applyAllGalleryUserInOfficial(
+//        @Path("id") id: String
+//    ): Response<ResponseSuccess>
+//
+//
+//    @POST("/api/v1/gallery-user/{id}/approve")
+//    suspend fun applyOnePhotoUserInOfficial(
+//        @Path("id") id: String
+//    ): Response<ResponseSuccess>
 
 }

@@ -10,7 +10,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -240,16 +239,10 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
 
     @SuppressLint("CommitTransaction")
     override fun onItemClick(position: Int) {
-
-        Log.i("EventFragmentTag", "${nameList[position].id} ll")
         //viewModel.updateEventData();
         viewModel.setCurrentId(nameList[position].id)
-        Log.i("EventFragmentTag", "${viewModel.mId} ll")
-
-        Log.i("EventFragmentTag", "$viewModel VM")
-
         parentFragmentManager.beginTransaction()
-            .add(R.id.constrain_events_container, EventFragment()).commit()
+            .add(R.id.constrain_events_container, EventFragment(), "EVENT_FRAGMENT").commit()
     }
 
     private fun showCreateEventButton() {

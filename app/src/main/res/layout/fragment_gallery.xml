@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingStart="20dp"
-    android:paddingEnd="20dp"
     android:paddingBottom="200dp">
 
     <TextView
@@ -13,7 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:text="Додати фото"
+        android:text="@string/add_photo"
         android:textAllCaps="true"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -22,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageCover2"
+        android:id="@+id/imageCover"
         android:layout_width="match_parent"
         android:layout_height="230dp"
         android:layout_marginTop="30dp"
@@ -40,31 +37,80 @@
         android:layout_height="@dimen/size_32px"
         android:layout_gravity="center"
         android:contentDescription="@string/icon"
-        app:layout_constraintBottom_toBottomOf="@+id/imageCover2"
-        app:layout_constraintEnd_toEndOf="@+id/imageCover2"
-        app:layout_constraintStart_toStartOf="@+id/imageCover2"
-        app:layout_constraintTop_toTopOf="@+id/imageCover2"
+        app:layout_constraintBottom_toBottomOf="@+id/imageCover"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageCover"
         app:srcCompat="@drawable/ic_camera" />
 
     <TextView
         android:id="@+id/textView28"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Оберіть фото, які будуть відображатись в галереї заходу"
-        app:layout_constraintEnd_toEndOf="@+id/imageCover2"
-        app:layout_constraintStart_toStartOf="@+id/imageCover2"
-        app:layout_constraintTop_toBottomOf="@+id/imageCover2" />
+        android:text="@string/choose_photo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageCover" />
 
     <TextView
         android:id="@+id/textView36"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:text="Галерея"
+        android:text="@string/gallery"
         android:textAllCaps="true"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView28" />
+
+    <TextView
+        android:id="@+id/textView37"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/users_photos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView36" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvGallery"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:nestedScrollingEnabled="false"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView37" />
+
+    <TextView
+        android:id="@+id/textView38"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/official_photo"
+        android:textColor="#000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvGallery" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvGalleryOfficial"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:nestedScrollingEnabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView38" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

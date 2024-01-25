@@ -362,9 +362,9 @@
     <string name="route">Маршрут</string>
     <string name="edit_route">Редагувати маршрут</string>
     <string name="leave">Покинути</string>
-
-
-
-
+    <string name="add_photo">Додати фото</string>
+    <string name="choose_photo">Оберіть фото, які будуть відображатись в галереї заходу</string>
+    <string name="users_photos">Фотографії користувачів</string>
+    <string name="official_photo">Офіційна галерея</string>
 
 </resources>

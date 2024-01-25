@@ -45,6 +45,7 @@ import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
 import com.app.activeparks.util.ChangeDateType
 import com.app.activeparks.util.MapsViewController
 import com.app.activeparks.util.cropper.CropImage
+import com.app.activeparks.util.extention.ImageTypes
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.removeFragment
 import com.app.activeparks.util.extention.toast
@@ -101,7 +102,8 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
                 data?.let {
                     val resultUri = CropImage.getActivityResult(data).uri
                     val file = EventHelper.saveImageToFile(resultUri, requireActivity())
-                    eventController.loadFileToAPI(file, itemEvent)
+
+                    viewModel.uploadFile(file, ImageTypes.TYPE_OTHER_PHOTO.type)
                     binding.imageCover.setImageURI(resultUri)
                 }
             }
@@ -120,7 +122,6 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
             eventController.publishDataEvent(itemEvent.id, publishResponseSuccessful)
         }
     }
-
 
     private val takePictureLauncherAgain =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -158,17 +159,6 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
         MapsViewController(binding.eventMap, requireContext())
         eventController = EventController(requireContext())
         mapsViewController = MapsViewController(binding.eventMap, requireContext())
-
-        //TODO save scroll to view model
-        // val previousScrollPosition = viewModel.getScrollPosition()
-        // binding.scroll.post { binding.scroll.scrollTo(0, previousScrollPosition) }
-
-        binding.scroll.viewTreeObserver.addOnScrollChangedListener {
-            //TODO save scroll to view model
-            // val currentScrollPosition = binding.scroll.scrollY
-            // viewModel.saveScrollPosition(currentScrollPosition)
-        }
-
         val formatCurrentData = ChangeDateType.formatCurrentDate()
 
         with(binding) {
@@ -235,6 +225,10 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
         viewModel.createEmptyEvent()
         viewModel.newItemEvent.observe(viewLifecycleOwner) { response ->
             itemEvent = response
+        }
+
+        viewModel.imageLink.observe(viewLifecycleOwner) { url ->
+            itemEvent.let { itemEvent.imageUrl = url }
         }
 
         viewModel.dataUpdated.observe(viewLifecycleOwner) { response ->
