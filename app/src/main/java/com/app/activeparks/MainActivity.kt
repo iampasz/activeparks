@@ -32,6 +32,7 @@ import com.technodreams.activeparks.databinding.ActivityMainBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity(), FragmentInteface {
     private var binding: ActivityMainBinding? = null
     private var appUpdateManager: AppUpdateManager? = null
@@ -115,6 +116,13 @@ class MainActivity : AppCompatActivity(), FragmentInteface {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.navFragment, fragment)
+            .commit()
+    }
+
+    fun addFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.navFragment, fragment)
             .commit()
     }
 

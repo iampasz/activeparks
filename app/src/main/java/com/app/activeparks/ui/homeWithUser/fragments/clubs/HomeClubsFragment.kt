@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.app.activeparks.MainActivity
+import com.app.activeparks.ui.clubs.fragments.ClubsListFragment
 import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.mainReplaceFragment
 import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.databinding.FragmentHomeClubsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -13,7 +16,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class HomeClubsFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeClubsBinding
-    val adapter = HomeClubsAdapter()
+    val adapter = HomeClubsAdapter{}
     private val viewModel: HomeClubsViewModel by viewModel()
 
     override fun onCreateView(
@@ -27,6 +30,7 @@ class HomeClubsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        onClick()
         viewModel.getClubs()
         initView()
         observe()
@@ -51,6 +55,12 @@ class HomeClubsFragment : Fragment() {
 
     private fun initView() {
         binding.rvClubs.adapter = adapter
+    }
+
+    private fun onClick(){
+        binding.tvAllClubs.setOnClickListener{
+            mainReplaceFragment((requireActivity() as MainActivity) , ClubsListFragment())
+        }
     }
 
 }

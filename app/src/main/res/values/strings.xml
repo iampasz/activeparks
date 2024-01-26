@@ -363,8 +363,13 @@
     <string name="edit_route">Редагувати маршрут</string>
     <string name="leave">Покинути</string>
 
+    <string name="about_club">Про клуб</string>
+    <string name="participant_colon">Учасники:</string>
+    <string name="date_of_creation_colon">Дата створення:</string>
+    <string name="social_media_colon">Соціальні мережі:</string>
+    <string name="search_by_clubs">Пошук за Клубами</string>
 
-
-
+    <string name="last_posts">Останні пости</string>
+    <string name="search_by_posts">Пошук за Постами</string>
 
 </resources>

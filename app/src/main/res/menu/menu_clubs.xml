@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_club_event"
+        android:icon="@drawable/ic_calendar_day"
+        android:title="@string/events" />
+
+    <item
+        android:id="@+id/nav_club_participant"
+        android:icon="@drawable/ic_ai_duration"
+        android:title="@string/participants" />
+
+    <item
+        android:id="@+id/nav_club_blog"
+        android:icon="@drawable/ic_file_filled"
+        android:title="@string/tv_menu_blog" />
+
+    <item
+        android:id="@+id/nav_club_join"
+        android:icon="@drawable/ic_exit"
+        android:title="@string/join" />
+</menu>
