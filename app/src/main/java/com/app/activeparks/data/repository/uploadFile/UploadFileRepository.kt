@@ -1,6 +1,7 @@
 package com.app.activeparks.data.repository.uploadFile
 
 import com.app.activeparks.data.model.Default
+import com.app.activeparks.data.model.events.ImageLinkResponse
 import java.io.File
 
 /**
@@ -11,4 +12,10 @@ interface UploadFileRepository {
         type: String,
         file: File
     ): Default?
+
+    suspend fun uploadFile(
+        type: String,
+        file: File,
+        itemCurrentId: String?
+    ): ImageLinkResponse?
 }

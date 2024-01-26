@@ -16,6 +16,7 @@ import com.app.activeparks.ui.userProfile.statisticFragment.StatisticViewModel
 import com.app.activeparks.ui.selectvideo.SelectVideoViewModel
 import com.app.activeparks.MainViewModel
 import com.app.activeparks.ui.event.fragments.MainEventViewModel
+import com.app.activeparks.ui.gallery.GalleryViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.home.MainHomeViewModel
 import com.app.activeparks.ui.participants.ParticipantsViewModel
 import com.app.activeparks.ui.userProfile.edit.EditProfileViewModel
@@ -37,7 +38,7 @@ val viewModelModule = module {
     viewModel { EditProfileViewModel(get(), get()) }
     viewModel { MainHomeViewModel(get()) }
     viewModel { MainViewModel(get(), get()) }
-    viewModel { EventRouteViewModel(get()) }
+    viewModel { EventRouteViewModel(get(), get()) }
     viewModel { ProfileViewModel(get()) }
     viewModel { SelectVideoViewModel(get()) }
 
@@ -50,6 +51,7 @@ val viewModelModule = module {
 
     viewModel { EventViewModel(get()) }
     viewModel { ParticipantsViewModel(get()) }
-    viewModel { MainEventViewModel(get()) }
+    viewModel { MainEventViewModel(get(), get(), get()) }
+    viewModel { GalleryViewModel() }
 
 }
