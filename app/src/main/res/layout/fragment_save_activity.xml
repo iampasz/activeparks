@@ -38,6 +38,7 @@
         app:layout_constraintTop_toTopOf="@+id/vToolBar" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -162,21 +163,29 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="230dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/backround_edit_text"
-                app:layout_constraintEnd_toEndOf="@+id/tvFeelDescription"
-                app:layout_constraintStart_toStartOf="@+id/tvFeelDescription"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_20px"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvFeelDescription">
 
                 <org.osmdroid.views.MapView
                     android:id="@+id/mapview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@+id/startMoving"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/constraintLayout">
+
+                </org.osmdroid.views.MapView>
+
             </androidx.cardview.widget.CardView>
 
             <androidx.recyclerview.widget.RecyclerView

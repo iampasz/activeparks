@@ -230,6 +230,7 @@ class SaveActivityFragment : Fragment() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun FragmentSaveActivityBinding.setListener() {
         etDescriptionActivity.addTextChangedListener(object : EasyTextWatcher() {
             @SuppressLint("SetTextI18n")
@@ -261,6 +262,10 @@ class SaveActivityFragment : Fragment() {
 
         addImgActivity.setOnClickListener {
             setCoverImageDialog()
+        }
+        mapview.setOnTouchListener { _, _ ->
+            scroll.requestDisallowInterceptTouchEvent(true)
+            false
         }
     }
 
