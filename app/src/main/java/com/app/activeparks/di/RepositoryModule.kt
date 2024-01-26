@@ -1,5 +1,7 @@
 package com.app.activeparks.di
 
+import com.app.activeparks.data.repository.gallery.GalleryStateRepository
+import com.app.activeparks.data.repository.gallery.GalleryStateRepositoryImpl
 import com.app.activeparks.data.repository.ctiveState.ActivityStateRepository
 import com.app.activeparks.data.repository.ctiveState.ActivityStateRepositoryImpl
 import com.app.activeparks.data.repository.eventState.EventStateRepository
@@ -41,4 +43,5 @@ val repositoryModule = module{
         single<VideoRepository> { VideoRepositoryImpl(get()) }
         single<MobileApiSessionRepository> { SharedPreferencesMobileApiSessionRepository(get()) }
         single<UserRepository> { UserRepositoryImpl(get(), get()) }
+        single<GalleryStateRepository> { GalleryStateRepositoryImpl(get()) }
 }

@@ -4,6 +4,8 @@ import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityItemResponse
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
+import com.app.activeparks.data.model.events.ImageLinkResponse
+import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.registration.AdditionData
 import com.app.activeparks.data.model.registration.PulseZoneRequest
 import com.app.activeparks.data.model.registration.ResponseId
@@ -109,6 +111,7 @@ interface ApiWithAuthorization {
         @Part("uploadType") uploadType: RequestBody?,
         @Part file: MultipartBody.Part,
     ): Response<Default>
+
     @PUT("/api/v1/users/{id}")
     suspend fun updateUser(
         @Path("id") id: String,
@@ -126,6 +129,37 @@ interface ApiWithAuthorization {
         @Path("id") id: String?,
         @Body itemEvent: ItemEvent?
     ): Call<String>
+
+    //Upload file
+    @POST("/api/v1/uploads")
+    @Multipart
+    suspend fun uploadFile(
+
+        @Part("fileName") fileName: String?,
+        @Part("chunkIndex") chunkIndex: Int,
+        @Part("totalChunk") totalChunk: Int,
+        @Part("size") size: Int,
+        @Part file: MultipartBody.Part,
+        @Part("uploadId") uploadId: String?,
+        @Part("videoId") videoId: String?,
+        @Part("resolution") resolution: String?,
+        @Part("uploadType") uploadType: RequestBody?,
+        @Part("sportEventsId") sportEventsId: RequestBody?
+
+    ): Response<ImageLinkResponse>
+
+
+    @GET("/api/v1/gallery/{id}/official?")
+    suspend fun getPhotoGalleryOfficial(
+        @Path("id") id: String
+    ): Response<PhotoGalleryResponse>
+
+    //my user, token for test
+    //1f17d9c3-0bd1-4423-8731-5df8c8f978fa
+    @GET("/api/v1/gallery/{id}/user?")
+    suspend fun getPhotoGalleryUser(
+        @Path("id") id: String
+    ): Response<PhotoGalleryResponse>
 
     @POST("/api/v1/user-videos")
     suspend fun createUserVideo(): Response<UserVideoItem>

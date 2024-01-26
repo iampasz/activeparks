@@ -6,6 +6,8 @@ import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityItemResponse
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
+import com.app.activeparks.data.model.events.ImageLinkResponse
+import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.registration.AdditionData
 import com.app.activeparks.data.model.registration.ForgotPasswordRequest
 import com.app.activeparks.data.model.registration.LoginRequest
@@ -33,6 +35,7 @@ import com.app.activeparks.data.network.baseNew.ApiWithAuthorization
 import com.app.activeparks.data.network.baseNew.ApiWithOutAuthorization
 import com.app.activeparks.data.network.response.parseErrorBody
 import com.app.activeparks.data.network.weather.ApiWeather
+import com.app.activeparks.util.extention.toast
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -44,6 +47,7 @@ import retrofit2.Response
 import java.io.File
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+
 
 /**
  * Created by O.Dziuba on 27.11.2023.
@@ -290,7 +294,6 @@ class NetworkManagerImpl(
             })
         }
     }
-
     //Statistics
     override suspend fun getStatistics(from: String, to: String): StatisticResponse? {
         val response = apiWithAuthorization.getStatistics(0, 750, from, to)
@@ -320,6 +323,26 @@ class NetworkManagerImpl(
 
         if (!response.isSuccessful) {
             Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getPhotoGalleryOfficial(id: String): PhotoGalleryResponse? {
+        val response = apiWithAuthorization.getPhotoGalleryOfficial(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getPhotoGalleryUser(id: String): PhotoGalleryResponse? {
+        val response = apiWithAuthorization.getPhotoGalleryUser(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -391,5 +414,41 @@ class NetworkManagerImpl(
         }
 
         return response.body()
+    }
+
+    //Load file
+    override suspend fun uploadFile(
+        type: String,
+        file: File,
+        itemCurrentId: String?
+    ): ImageLinkResponse? {
+
+        val random = (Math.random() * 200).toInt()
+        val name = "file$random"
+
+        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+        val body = MultipartBody.Part.createFormData("file", file.name, requestBody)
+        val fileType = type.toRequestBody("text/plain".toMediaTypeOrNull())
+        val itemCurrentId2 = itemCurrentId?.toRequestBody("text/plain".toMediaTypeOrNull())
+
+        val response =
+            apiWithAuthorization.uploadFile(
+                name,
+                1,
+                1,
+                file.length().toInt(),
+                body,
+                name,
+                null,
+                null,
+                fileType,
+                itemCurrentId2
+            )
+
+        if (!response.isSuccessful) {
+            toast(context, response.parseErrorBody().error.toString())
+        }
+
+        return  response.body()
     }
 }

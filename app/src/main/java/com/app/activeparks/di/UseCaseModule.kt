@@ -2,6 +2,8 @@ package com.app.activeparks.di
 
 import com.app.activeparks.data.useCase.activeState.ActivityStateUseCase
 import com.app.activeparks.data.useCase.activeState.ActivityStateUseCaseImpl
+import com.app.activeparks.data.useCase.photoGallery.PhotoGalleryUseCase
+import com.app.activeparks.data.useCase.photoGallery.PhotoGalleryUseCaseImpl
 import com.app.activeparks.data.useCase.registration.UserUseCase
 import com.app.activeparks.data.useCase.registration.UserUseCaseImpl
 import com.app.activeparks.data.useCase.saveActivity.SaveActivityUseCase
@@ -38,4 +40,5 @@ val useCaseModule = module {
     single<StatisticsUseCase> { StatisticsUseCaseImpl(get()) }
     single<UploadFileUseCase> { UploadFileUseCaseImpl(get()) }
     single<UserUseCase> { UserUseCaseImpl(get(), get(), get()) }
+    single<PhotoGalleryUseCase> { PhotoGalleryUseCaseImpl(get()) }
 }

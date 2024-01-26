@@ -7,6 +7,7 @@ import com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityViewMode
 import com.app.activeparks.ui.event.fragments.MainEventViewModel
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
 import com.app.activeparks.ui.event.viewmodel.EventViewModel
+import com.app.activeparks.ui.gallery.GalleryViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.blog.HomeBlogViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.clubs.HomeClubsViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsViewModel
@@ -39,6 +40,8 @@ val viewModelModule = module {
     viewModel { ProfileHomeViewModel(get(), get()) }
     viewModel { EditProfileViewModel(get(), get(), get()) }
     viewModel { MainHomeViewModel(get()) }
+    viewModel { MainViewModel(get(), get()) }
+    viewModel { EventRouteViewModel(get(), get()) }
     viewModel { AllActivitiesViewModel(get()) }
     viewModel { ActivityInfoViewModel(get()) }
     viewModel { VideoUserProfileViewModel(get(), get(), get()) }
@@ -56,6 +59,7 @@ val viewModelModule = module {
 
     viewModel { EventViewModel(get()) }
     viewModel { ParticipantsViewModel(get()) }
-    viewModel { MainEventViewModel(get()) }
+    viewModel { MainEventViewModel(get(), get(), get()) }
+    viewModel { GalleryViewModel() }
 
 }
