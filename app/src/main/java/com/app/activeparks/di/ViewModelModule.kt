@@ -40,13 +40,13 @@ val viewModelModule = module {
     viewModel { ProfileHomeViewModel(get(), get()) }
     viewModel { EditProfileViewModel(get(), get(), get()) }
     viewModel { MainHomeViewModel(get()) }
-    viewModel { MainViewModel(get(), get()) }
+    viewModel { MainViewModel(get()) }
     viewModel { EventRouteViewModel(get(), get()) }
     viewModel { AllActivitiesViewModel(get()) }
     viewModel { ActivityInfoViewModel(get()) }
     viewModel { VideoUserProfileViewModel(get(), get(), get()) }
     viewModel { MainViewModel(get()) }
-    viewModel { EventRouteViewModel(get()) }
+    viewModel { EventRouteViewModel(get(), get()) }
     viewModel { ProfileViewModel(get()) }
     viewModel { SelectVideoViewModel(get()) }
 
