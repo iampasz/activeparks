@@ -40,7 +40,7 @@ val viewModelModule = module {
     viewModel { EditProfileViewModel(get(), get()) }
     viewModel { MainHomeViewModel(get()) }
     viewModel { MainViewModel(get(), get()) }
-    viewModel { EventRouteViewModel(get()) }
+    viewModel { EventRouteViewModel(get(),get()) }
     viewModel { ProfileViewModel(get()) }
     viewModel { SelectVideoViewModel(get()) }
 
@@ -53,7 +53,7 @@ val viewModelModule = module {
 
     viewModel { EventViewModel(get()) }
     viewModel { ParticipantsViewModel(get()) }
-    viewModel { MainEventViewModel(get()) }
+    viewModel { MainEventViewModel(get(),get(),get()) }
     viewModel { ClubsViewModelKT(get(), get()) }
     viewModel { ClubsViewModel(get()) }
     viewModel { MainEventViewModel(get(), get(), get()) }
