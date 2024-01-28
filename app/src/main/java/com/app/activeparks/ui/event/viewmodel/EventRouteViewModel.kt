@@ -6,12 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.useCase.eventState.EventStateUseCase
+import com.app.activeparks.data.useCase.uploadFile.UploadFileUseCase
 import kotlinx.coroutines.launch
 import org.osmdroid.api.IGeoPoint
 import org.osmdroid.util.GeoPoint
+import java.io.File
 
 class EventRouteViewModel
-    (private val eventStateUseCase: EventStateUseCase) : ViewModel() {
+    (
+    private val eventStateUseCase: EventStateUseCase,
+    private val uploadFileUseCase: UploadFileUseCase
+) : ViewModel() {
 
     //private val scrollState = "scroll"
     private var mapState: IGeoPoint? = null
@@ -22,35 +27,10 @@ class EventRouteViewModel
     private val itemEvent = MutableLiveData<ItemEvent>()
     val dataEvent: LiveData<ItemEvent> get() = itemEvent
 
-
-//    init {
-//       // loadActiveState()
-//    }
-
-
-//    fun loadActiveState() {
-//        viewModelScope.launch {
-//            kotlin.runCatching {
-//                eventStateUseCase.getEventState()
-//            }.onSuccess {
-//                it?.let { eventState = it }
-//                updateUI.value = true
-//            }
-//        }
-//    }
-
-
     fun setGeoPoints(geoPoints: ArrayList<GeoPoint>) {
         geoPointsLiveData.value = geoPoints
     }
 
-//    fun saveScrollPosition(scrollY: Int) {
-//       // savedStateHandle[scrollState] = scrollY
-//    }
-
-  //  fun getScrollPosition(): Int {
-       // return savedStateHandle.get<Int>(scrollState) ?: 0
-  //  }
 
     fun setLastMapGeoPoint(geoPoint: IGeoPoint) {
         mapState = geoPoint
@@ -71,6 +51,7 @@ class EventRouteViewModel
 
     val newItemEvent = MutableLiveData<ItemEvent>()
     val dataUpdated = MutableLiveData<Boolean>()
+    val imageLink = MutableLiveData<String>()
 
     fun createEmptyEvent() {
         viewModelScope.launch {
@@ -101,6 +82,22 @@ class EventRouteViewModel
             }.onSuccess { response ->
                 response?.let {
                     dataUpdated.value = it
+                }
+            }
+        }
+    }
+
+    fun uploadFile(file: File, type: String) {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                uploadFileUseCase.uploadFile(
+                    type,
+                    file,
+                    null
+                )
+            }.onSuccess { response ->
+                response?.let {
+                    imageLink.value = it.url
                 }
             }
         }

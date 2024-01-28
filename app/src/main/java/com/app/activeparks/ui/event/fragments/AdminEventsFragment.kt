@@ -6,16 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.ui.event.adapter.AdminEventsAdapter
 import com.technodreams.activeparks.databinding.FragmentAdminEventsBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AdminEventsFragment : Fragment() {
 
     lateinit var binding: FragmentAdminEventsBinding
-    private val viewModel: MainEventViewModel by viewModel()
+    private val viewModel: MainEventViewModel by activityViewModels()
 
 
     var adminEventsAdapter: AdminEventsAdapter? = null

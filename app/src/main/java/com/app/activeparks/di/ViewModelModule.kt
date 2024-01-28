@@ -18,6 +18,7 @@ import com.app.activeparks.MainViewModel
 import com.app.activeparks.ui.clubs.ClubsViewModel
 import com.app.activeparks.ui.clubs.ClubsViewModelKT
 import com.app.activeparks.ui.event.fragments.MainEventViewModel
+import com.app.activeparks.ui.gallery.GalleryViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.home.MainHomeViewModel
 import com.app.activeparks.ui.participants.ParticipantsViewModel
 import com.app.activeparks.ui.userProfile.edit.EditProfileViewModel
@@ -55,5 +56,7 @@ val viewModelModule = module {
     viewModel { MainEventViewModel(get()) }
     viewModel { ClubsViewModelKT(get(), get()) }
     viewModel { ClubsViewModel(get()) }
+    viewModel { MainEventViewModel(get(), get(), get()) }
+    viewModel { GalleryViewModel() }
 
 }
