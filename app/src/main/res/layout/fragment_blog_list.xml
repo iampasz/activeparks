@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <TextView
+        android:id="@+id/titleText4"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:gravity="center"
+        android:paddingStart="@dimen/padding_14px"
+        android:paddingTop="@dimen/padding_10px"
+        android:paddingEnd="@dimen/padding_14px"
+        android:paddingBottom="@dimen/padding_10px"
+        android:text="@string/tv_menu_blog"
+        android:textAlignment="gravity"
+        android:textAllCaps="true"
+        android:textSize="@dimen/text_16px"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/create"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="14dp"
+        android:contentDescription="@string/icon"
+        app:layout_constraintBottom_toTopOf="@+id/vFirstSeparator8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_pluscircle" />
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="14dp"
+        android:contentDescription="@string/icon"
+        android:padding="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/vFirstSeparator8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_back_circle" />
+
+    <View
+        android:id="@+id/vFirstSeparator8"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/separator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleText4" />
+
+    <EditText
+        android:id="@+id/findEvents2"
+        android:layout_width="0dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="14dp"
+        android:autofillHints="username"
+        android:background="@drawable/shape_rectangle_white"
+        android:ems="10"
+        android:hint="@string/search_by_posts"
+        android:inputType="text"
+        android:paddingStart="48dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vFirstSeparator8"
+        tools:ignore="RtlSymmetry" />
+
+    <ImageView
+        android:id="@+id/imageView12"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@string/icon"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/findEvents2"
+        app:layout_constraintStart_toStartOf="@+id/findEvents2"
+        app:layout_constraintTop_toTopOf="@+id/findEvents2"
+        app:srcCompat="@drawable/ic_magnifyingglass" />
+
+    <TextView
+        android:id="@+id/textView23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="50dp"
+        android:text="@string/last_posts"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/findEvents2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvBlogs"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="14dp"
+        android:clickable="true"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView23">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

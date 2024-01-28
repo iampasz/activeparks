@@ -10,6 +10,8 @@ import com.app.activeparks.data.useCase.saveActivity.SaveActivityUseCase
 import com.app.activeparks.data.useCase.saveActivity.SaveActivityUseCaseImpl
 import com.app.activeparks.data.useCase.eventState.EventStateUseCase
 import com.app.activeparks.data.useCase.eventState.EventStateUseCaseImpl
+import com.app.activeparks.data.useCase.news.NewsUseCase
+import com.app.activeparks.data.useCase.news.NewsUseCaseImpl
 import com.app.activeparks.data.useCase.pauseActivity.PauseActivityUseCase
 import com.app.activeparks.data.useCase.pauseActivity.PauseActivityUseCaseImpl
 import com.app.activeparks.data.useCase.profileState.ProfileStateUseCase
@@ -38,4 +40,5 @@ val useCaseModule = module {
     single<UploadFileUseCase> { UploadFileUseCaseImpl(get()) }
     single<UserUseCase> { UserUseCaseImpl(get(), get(), get()) }
     single<PhotoGalleryUseCase> { PhotoGalleryUseCaseImpl(get()) }
+    single<NewsUseCase> { NewsUseCaseImpl(get()) }
 }
