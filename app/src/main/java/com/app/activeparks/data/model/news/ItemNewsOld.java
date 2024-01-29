@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemNews {
+public class ItemNewsOld {
 
     @SerializedName("id")
     @Expose
@@ -31,7 +31,7 @@ public class ItemNews {
     private String createdAt = " ";
     @SerializedName("photos")
     @Expose
-    private List<String> photos = new ArrayList<>();
+    private final List<String> photos = new ArrayList<>();
     @SerializedName("createdBy")
     @Expose
     private CreatedBy createdBy;

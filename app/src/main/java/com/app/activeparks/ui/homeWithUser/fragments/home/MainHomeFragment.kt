@@ -92,4 +92,6 @@ class MainHomeFragment : Fragment() {
     private fun openFragment(fragment: Fragment) {
         (requireActivity() as? MainActivity)?.openFragment(fragment)
     }
+
+
 }

@@ -8,6 +8,8 @@ import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
+import com.app.activeparks.data.model.news.ItemNews
+import com.app.activeparks.data.model.news.NewsListResponse
 import com.app.activeparks.data.model.registration.AdditionData
 import com.app.activeparks.data.model.registration.ForgotPasswordRequest
 import com.app.activeparks.data.model.registration.LoginRequest
@@ -35,6 +37,7 @@ import com.app.activeparks.data.network.baseNew.ApiWithAuthorization
 import com.app.activeparks.data.network.baseNew.ApiWithOutAuthorization
 import com.app.activeparks.data.network.response.parseErrorBody
 import com.app.activeparks.data.network.weather.ApiWeather
+import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.util.extention.toast
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -294,6 +297,51 @@ class NetworkManagerImpl(
             })
         }
     }
+
+
+    override suspend fun getNews(): NewsListResponse? {
+
+        val response : Response<NewsListResponse>
+        val pref = Preferences(context)
+
+        response = if (pref.token.isNullOrEmpty()){
+            apiWithOutAuthorization.getNews()
+        }else{
+            apiWithAuthorization.getNews()
+        }
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getNewsDetails(id:String): ItemNews? {
+        val response = apiWithAuthorization.getNewsDetails(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getClubNewsDetails(club: String, id:String): ItemNews? {
+        val response = apiWithAuthorization.getClubNewsDetails(club, id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+
+
+
+
+
     //Statistics
     override suspend fun getStatistics(from: String, to: String): StatisticResponse? {
         val response = apiWithAuthorization.getStatistics(0, 750, from, to)

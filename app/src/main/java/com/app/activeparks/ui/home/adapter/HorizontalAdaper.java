@@ -1,9 +1,8 @@
 package com.app.activeparks.ui.home.adapter;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.app.activeparks.data.model.news.ItemNews;
+import com.app.activeparks.data.model.news.ItemNewsOld;
 import com.app.activeparks.data.model.news.News;
 import com.app.activeparks.ui.adapter.PhotosAdaper;
-import com.app.activeparks.ui.park.ParkActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -49,16 +46,18 @@ public class HorizontalAdaper extends RecyclerView.Adapter<HorizontalAdaper.View
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ItemNews news = list.getItems().get(position);
+        ItemNewsOld news = list.getItems().get(position);
 
         holder.title.setText(news.getTitle() != null ? news.getTitle() : "Немає заголовку");
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             if (news.getPublishedAt() != null) {
                 Date data = format.parse(news.getPublishedAt());
+                assert data != null;
                 holder.data.setText("Опубліковано: " + new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(data));
             }
         } catch (ParseException e) {
@@ -69,11 +68,7 @@ public class HorizontalAdaper extends RecyclerView.Adapter<HorizontalAdaper.View
             holder.description.setVisibility(View.VISIBLE);
             String web = "<html><head><LINK href=\"https://ap.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body>" + news.getBody() + "</body></html>";
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                holder.description.setText(Html.fromHtml(web, null, null));
-            } else {
-                holder.description.setText(Html.fromHtml(web));
-            }
+            holder.description.setText(Html.fromHtml(web, null, null));
         }else{
             holder.description.setVisibility(View.GONE);
         }
@@ -94,9 +89,7 @@ public class HorizontalAdaper extends RecyclerView.Adapter<HorizontalAdaper.View
             holder.tabLayout.setVisibility(View.GONE);
         }
 
-        holder.itemView.setOnClickListener(v -> {
-            parksAdaperListener.onInfo(news);
-        });
+        holder.itemView.setOnClickListener(v -> parksAdaperListener.onInfo(news));
     }
 
     @Override
@@ -123,7 +116,7 @@ public class HorizontalAdaper extends RecyclerView.Adapter<HorizontalAdaper.View
     }
 
     public interface ParksAdaperListener{
-        void onInfo(ItemNews news);
+        void onInfo(ItemNewsOld news);
     }
 
     public HorizontalAdaper setOnCliclListener(ParksAdaperListener parksAdaperListener){

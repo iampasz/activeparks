@@ -6,6 +6,8 @@ import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
+import com.app.activeparks.data.model.news.ItemNews
+import com.app.activeparks.data.model.news.NewsListResponse
 import com.app.activeparks.data.model.registration.AdditionData
 import com.app.activeparks.data.model.registration.ForgotPasswordRequest
 import com.app.activeparks.data.model.registration.LoginRequest
@@ -93,4 +95,8 @@ interface NetworkManager {
     suspend fun updateUserVideo(id: String, userVideoItem: UserVideoItem)
     suspend fun sendUserVideo(id: String): ResponseBody?
     suspend fun deleteUserVideo(id: String): ResponseBody?
+
+    suspend fun getNews(): NewsListResponse?
+    suspend fun getNewsDetails(id: String): ItemNews?
+    suspend fun getClubNewsDetails(club:String, id: String): ItemNews?
 }

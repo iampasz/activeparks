@@ -1,24 +1,29 @@
-package com.app.activeparks.ui.homeWithUser.fragments.blog
+package com.app.activeparks.ui.news.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
+import com.app.activeparks.ui.homeWithUser.fragments.blog.HomeNewsAdapter
 import com.app.activeparks.ui.news.BlogViewModel
-import com.app.activeparks.ui.news.fragments.BlogFragment
-import com.app.activeparks.ui.news.fragments.BlogListFragment
+import com.app.activeparks.ui.news.NewsCreateActivity
 import com.app.activeparks.ui.news.util.NewsTypes
-import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.StringTypes
 import com.app.activeparks.util.extention.mainAddFragment
-import com.technodreams.activeparks.databinding.FragmentHomeBlogBinding
+import com.app.activeparks.util.extention.removeFragment
+import com.technodreams.activeparks.databinding.FragmentBlogListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeBlogFragment : Fragment() {
+class BlogListFragment : Fragment() {
 
-    private lateinit var binding: FragmentHomeBlogBinding
+    private lateinit var binding: FragmentBlogListBinding
+    private val viewModel: BlogViewModel by viewModel()
+
     val adapter = HomeNewsAdapter {
+
         val bundle = Bundle()
         bundle.putString(NewsTypes.NEWS_ID.type, it.id)
         bundle.putString(NewsTypes.CLUB_ID.type, it.clubId)
@@ -28,21 +33,21 @@ class HomeBlogFragment : Fragment() {
 
         mainAddFragment((requireActivity() as MainActivity), blogFragment)
     }
-    private val viewModel: BlogViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHomeBlogBinding.inflate(inflater, container, false)
+        binding = FragmentBlogListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        onClick()
         viewModel.getNews()
+        onClick()
         initView()
         observe()
     }
@@ -50,7 +55,6 @@ class HomeBlogFragment : Fragment() {
     private fun observe() {
         with(viewModel) {
             newsList.observe(viewLifecycleOwner) {
-                binding.pbNews.gone()
                 it?.takeIf { it.items.isNotEmpty() }
                     ?.apply {
                         adapter.list.submitList(items)
@@ -60,12 +64,16 @@ class HomeBlogFragment : Fragment() {
     }
 
     private fun initView() {
-        binding.rvNews.adapter = adapter
+        binding.rvBlogs.adapter = adapter
     }
 
     private fun onClick(){
-            binding.tvAllPArks.setOnClickListener{
-                mainAddFragment((requireActivity() as MainActivity), BlogListFragment())
-            }
+        binding.close.setOnClickListener{
+            parentFragmentManager.removeFragment(this)
+        }
+
+        binding.create.setOnClickListener{
+            startActivity(Intent(activity, NewsCreateActivity::class.java).putExtra(StringTypes.ID.type, id))
+        }
     }
 }

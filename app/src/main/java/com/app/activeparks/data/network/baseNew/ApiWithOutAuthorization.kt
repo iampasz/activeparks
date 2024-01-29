@@ -1,5 +1,6 @@
 package com.app.activeparks.data.network.baseNew
 
+import com.app.activeparks.data.model.news.NewsListResponse
 import com.app.activeparks.data.model.registration.ForgotPasswordRequest
 import com.app.activeparks.data.model.registration.LoginRequest
 import com.app.activeparks.data.model.registration.ResetPasswordResponse
@@ -50,4 +51,8 @@ interface ApiWithOutAuthorization {
     ): Response<ResponseToken>
     @GET("api/v1/sport-events/five-sport-event?&sort[startsAt]=asc")
     suspend fun getEvents(): Response<ListItemEventResponse>
+
+    //Новини
+    @GET("/api/v1/news?offset=0&sort[publishedAt]=desc")
+    suspend fun getNews(): Response<NewsListResponse>
 }

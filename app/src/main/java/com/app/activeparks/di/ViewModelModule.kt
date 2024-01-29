@@ -13,6 +13,8 @@ import com.app.activeparks.ui.homeWithUser.fragments.clubs.HomeClubsViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.home.MainHomeViewModel
 import com.app.activeparks.ui.homeWithUser.fragments.location.HomeLocationViewModel
+import com.app.activeparks.ui.news.BlogViewModel
+import com.app.activeparks.ui.news.NewsViewModel
 import com.app.activeparks.ui.participants.ParticipantsViewModel
 import com.app.activeparks.ui.profile.ProfileViewModel
 import com.app.activeparks.ui.registration.RegistrationViewModel
@@ -61,5 +63,7 @@ val viewModelModule = module {
     viewModel { ParticipantsViewModel(get()) }
     viewModel { MainEventViewModel(get(), get(), get()) }
     viewModel { GalleryViewModel() }
+    viewModel { BlogViewModel(get()) }
+    viewModel { NewsViewModel(get()) }
 
 }

@@ -11,18 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.activeparks.data.model.city.Body;
-import com.app.activeparks.data.model.city.City;
-import com.app.activeparks.data.model.news.ItemNews;
-import com.app.activeparks.data.model.workout.WorkoutItem;
-import com.app.activeparks.ui.home.adapter.HorizontalAdaper;
 import com.technodreams.activeparks.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchAdaper extends RecyclerView.Adapter<SearchAdaper.ViewHolder> {
 
-    private  List<Body> list;
+    private final List<Body> list;
     private final LayoutInflater inflater;
     public SearchAdaperListener searchAdaperListener;
 
@@ -31,10 +26,10 @@ public class SearchAdaper extends RecyclerView.Adapter<SearchAdaper.ViewHolder> 
         this.list = list;
     }
 
-    public void updateSearch(List<Body> list) {
-        this.list = list;
-        this.notifyDataSetChanged();
-    }
+//    public void updateSearch(List<Body> list) {
+//        this.list = list;
+//        this.notifyDataSetChanged();
+//    }
 
     @NonNull
     @Override
@@ -47,9 +42,7 @@ public class SearchAdaper extends RecyclerView.Adapter<SearchAdaper.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.title.setText(list.get(position).getCity());
         holder.description.setText(list.get(position).getSearch());
-        holder.itemView.setOnClickListener(view -> {
-            searchAdaperListener.onInfo(list.get(position));
-        });
+        holder.itemView.setOnClickListener(view -> searchAdaperListener.onInfo(list.get(position)));
     }
 
     @Override
