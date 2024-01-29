@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_club_event">
+
+    <fragment
+        android:id="@+id/nav_club_event"
+        android:name="com.app.activeparks.ui.clubs.fragments.ClubEventsCalendarFragment"
+        android:label="@string/events"
+        tools:layout="@layout/fragment_calendar_club" />
+
+    <fragment
+        android:id="@+id/nav_club_participant"
+        android:name="com.app.activeparks.ui.participants.ParticipantsFragment"
+        android:label="@string/participants"
+        tools:layout="@layout/fragment_event_participant" />
+
+    <fragment
+        android:id="@+id/nav_club_blog"
+        android:name="com.app.activeparks.ui.homeWithUser.fragments.blog.HomeBlogFragment"
+        android:label="@string/tv_menu_blog"
+        tools:layout="@layout/fragment_home_blog" />
+
+</navigation>

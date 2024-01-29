@@ -1,5 +1,6 @@
 package com.app.activeparks.ui.homeWithUser.fragments.clubs
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -15,6 +16,7 @@ import com.technodreams.activeparks.databinding.ItemHomeClubsListBinding
  * Created by O.Dziuba on 18.12.2023.
  */
 class HomeClubsAdapter(
+    private val clubs: (ItemClub) -> Unit
 ) : RecyclerView.Adapter<HomeClubsAdapter.LevelOfActivityVH>() {
 
     class LevelOfActivityVH(binding: ItemHomeClubsListBinding) :
@@ -47,7 +49,13 @@ class HomeClubsAdapter(
 
     override fun getItemCount() = list.currentList.size
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: LevelOfActivityVH, position: Int) {
+
+        holder.itemView.setOnClickListener{
+            clubs(list.currentList[position])
+        }
+
         val item = list.currentList[position]
         ItemHomeClubsListBinding.bind(holder.itemView).apply {
             tvDescription.text = item.name
