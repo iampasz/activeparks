@@ -3,6 +3,7 @@ package com.app.activeparks.data.network.baseNew
 import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
+import com.app.activeparks.data.model.clubs.ClubListResponse
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.registration.AdditionData
@@ -165,4 +166,9 @@ interface ApiWithAuthorization {
 //        @Path("id") id: String
 //    ): Response<ResponseSuccess>
 
+
+
+    //Clubs
+    @GET("/api/v1/clubs?offset=0")
+    suspend fun getClubList(): Response<ClubListResponse>
 }

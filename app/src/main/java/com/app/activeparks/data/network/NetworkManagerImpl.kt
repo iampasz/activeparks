@@ -5,6 +5,7 @@ import android.widget.Toast
 import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
+import com.app.activeparks.data.model.clubs.ClubListResponse
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.registration.AdditionData
@@ -256,6 +257,17 @@ class NetworkManagerImpl(
             })
         }
     }
+
+    override suspend fun getClubList(): ClubListResponse? {
+        val response = apiWithAuthorization.getClubList()
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
     //Statistics
     override suspend fun getStatistics(from: String, to: String): StatisticResponse? {
         val response = apiWithAuthorization.getStatistics(0, 750, from, to)
@@ -355,4 +367,6 @@ class NetworkManagerImpl(
 
         return  response.body()
     }
+
+
 }
