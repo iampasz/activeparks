@@ -3,6 +3,7 @@ package com.app.activeparks.data.repository;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import com.app.activeparks.data.model.news.ItemNews;
 import com.app.activeparks.data.network.baseOld.NetworkModule;
 import com.app.activeparks.data.network.baseOld.ApiService;
 import com.app.activeparks.data.model.Default;
@@ -16,7 +17,6 @@ import com.app.activeparks.data.model.clubs.ItemClub;
 import com.app.activeparks.data.model.dictionaries.Dictionaries;
 import com.app.activeparks.data.model.location.Location;
 import com.app.activeparks.data.model.meetings.MeetingsModel;
-import com.app.activeparks.data.model.news.ItemNews;
 import com.app.activeparks.data.model.news.News;
 import com.app.activeparks.data.model.news.NewsClubs;
 import com.app.activeparks.data.model.notification.Notifications;
@@ -48,6 +48,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -317,7 +318,7 @@ public class Repository {
     }
 
     public Observable<ResponseBody> setPermissionsRequest(String id, Boolean type) {
-        return service.setPermissionsRequest(token, type == true ? "provide-access" : "remove-access", id);
+        return service.setPermissionsRequest(token, type ? "provide-access" : "remove-access", id);
     }
 
     public Observable<WorkoutModel> plans(String userId) {
@@ -467,10 +468,10 @@ public class Repository {
 
     public Single<Authorisation> login(String email, String password, String type) {
         return service.login(email, password, type).onErrorResumeNext(throwable -> {
-            if (throwable instanceof HttpException) {
-                HttpException httpException = (HttpException) throwable;
+            if (throwable instanceof HttpException httpException) {
                 if (httpException.code() == 401) {
-                    ResponseBody errorBody = httpException.response().errorBody();
+                    ResponseBody errorBody = Objects.requireNonNull(httpException.response()).errorBody();
+                    assert errorBody != null;
                     return Single.error(new Exception(errorBody.string()));
                 }
             }
@@ -494,9 +495,9 @@ public class Repository {
     public Observable<ResponseBody> restorePassword(String email, String code, String password) {
         return service.restorePassword(email, code, password)
                 .onErrorResumeNext(throwable -> {
-                    if (throwable instanceof HttpException) {
-                        HttpException httpException = (HttpException) throwable;
-                        ResponseBody errorBody = httpException.response().errorBody();
+                    if (throwable instanceof HttpException httpException) {
+                        ResponseBody errorBody = Objects.requireNonNull(httpException.response()).errorBody();
+                        assert errorBody != null;
                         return Observable.error(new Exception(errorBody.string()));
                     }
                     return Observable.error(throwable);
@@ -506,10 +507,10 @@ public class Repository {
     public Single<Default> sendCodeEmail(String code) {
         return service.sendOfCodeEmail(code)
                 .onErrorResumeNext(throwable -> {
-                    if (throwable instanceof HttpException) {
-                        HttpException httpException = (HttpException) throwable;
+                    if (throwable instanceof HttpException httpException) {
                         if (httpException.code() == 400) {
-                            ResponseBody errorBody = httpException.response().errorBody();
+                            ResponseBody errorBody = Objects.requireNonNull(httpException.response()).errorBody();
+                            assert errorBody != null;
                             return Single.error(new Exception(errorBody.string()));
                         }
                     }
@@ -520,9 +521,9 @@ public class Repository {
     public Observable<ResponseBody> sendSmsCode(String phone) {
         return service.sendSmsRequest(token, phone)
                 .onErrorResumeNext(throwable -> {
-                    if (throwable instanceof HttpException) {
-                        HttpException httpException = (HttpException) throwable;
-                        ResponseBody errorBody = httpException.response().errorBody();
+                    if (throwable instanceof HttpException httpException) {
+                        ResponseBody errorBody = Objects.requireNonNull(httpException.response()).errorBody();
+                        assert errorBody != null;
                         return Observable.error(new Exception(errorBody.string()));
                     }
                     return Observable.error(throwable);
@@ -532,9 +533,9 @@ public class Repository {
     public Observable<ResponseBody> verifyUserPhoneRequest(String phone, String code) {
         return service.verifyUserPhoneRequest(token, userId, userId, phone, code)
                 .onErrorResumeNext(throwable -> {
-                    if (throwable instanceof HttpException) {
-                        HttpException httpException = (HttpException) throwable;
-                        ResponseBody errorBody = httpException.response().errorBody();
+                    if (throwable instanceof HttpException httpException) {
+                        ResponseBody errorBody = Objects.requireNonNull(httpException.response()).errorBody();
+                        assert errorBody != null;
                         return Observable.error(new Exception(errorBody.string()));
                     }
                     return Observable.error(throwable);
@@ -544,15 +545,16 @@ public class Repository {
     public Observable<ResponseBody> verifyUserEmailRequest(String email, String code) {
         return service.verifyUserEmailRequest(token, userId, userId, email, code)
                 .onErrorResumeNext(throwable -> {
-                    if (throwable instanceof HttpException) {
-                        HttpException httpException = (HttpException) throwable;
-                        ResponseBody errorBody = httpException.response().errorBody();
+                    if (throwable instanceof HttpException httpException) {
+                        ResponseBody errorBody = Objects.requireNonNull(httpException.response()).errorBody();
+                        assert errorBody != null;
                         return Observable.error(new Exception(errorBody.string()));
                     }
                     return Observable.error(throwable);
                 });
     }
 
+    @SuppressLint("CheckResult")
     public Repository setPush(String pushToken) {
         service.setPush(token, pushToken).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -694,6 +696,7 @@ public class Repository {
         return service.createQrCodeClubRequest(token, "qrcode", clubId, date);
     }
 
+    @SuppressLint("CheckResult")
     public Repository logout() {
         service.logout(token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> {
         }, error -> {

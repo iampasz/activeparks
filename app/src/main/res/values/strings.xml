@@ -376,4 +376,8 @@
     <string name="users_photos">Фотографії користувачів</string>
     <string name="official_photo">Офіційна галерея</string>
 
+
+    <string name="last_posts">Останні пости</string>
+    <string name="search_by_posts">Пошук за постами</string>
+
 </resources>

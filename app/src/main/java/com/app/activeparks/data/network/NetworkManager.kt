@@ -6,6 +6,8 @@ import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.clubs.ClubListResponse
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
+import com.app.activeparks.data.model.news.ItemNews
+import com.app.activeparks.data.model.news.NewsListResponse
 import com.app.activeparks.data.model.registration.AdditionData
 import com.app.activeparks.data.model.registration.ForgotPasswordRequest
 import com.app.activeparks.data.model.registration.LoginRequest
@@ -77,6 +79,10 @@ interface NetworkManager {
     suspend fun getAdminEvents(): EventResponse?
     suspend fun createEmptyEvent(): ItemEvent?
     suspend fun setDataEvent(id:String, itemEvent: ItemEvent): Boolean?
+
+    suspend fun getNews(): NewsListResponse?
+    suspend fun getNewsDetails(id: String): ItemNews?
+    suspend fun getClubNewsDetails(club:String, id: String): ItemNews?
 
     //Clubs
     suspend fun getClubList(): ClubListResponse?

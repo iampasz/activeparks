@@ -6,6 +6,8 @@ import com.app.activeparks.data.repository.ctiveState.ActivityStateRepository
 import com.app.activeparks.data.repository.ctiveState.ActivityStateRepositoryImpl
 import com.app.activeparks.data.repository.eventState.EventStateRepository
 import com.app.activeparks.data.repository.eventState.EventStateRepositoryImpl
+import com.app.activeparks.data.repository.news.NewsRepository
+import com.app.activeparks.data.repository.news.NewsRepositoryImpl
 import com.app.activeparks.data.repository.pauseActivity.PauseActivityRepository
 import com.app.activeparks.data.repository.pauseActivity.PauseActivityRepositoryImpl
 import com.app.activeparks.data.repository.profileState.ProfileStateRepository
@@ -41,4 +43,5 @@ val repositoryModule = module{
         single<MobileApiSessionRepository> { SharedPreferencesMobileApiSessionRepository(get()) }
         single<UserRepository> { UserRepositoryImpl(get(), get()) }
         single<GalleryStateRepository> { GalleryStateRepositoryImpl(get()) }
+        single<NewsRepository> { NewsRepositoryImpl(get()) }
 }
