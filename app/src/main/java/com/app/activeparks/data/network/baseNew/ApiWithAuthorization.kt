@@ -5,6 +5,8 @@ import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
+import com.app.activeparks.data.model.news.ItemNews
+import com.app.activeparks.data.model.news.NewsListResponse
 import com.app.activeparks.data.model.registration.AdditionData
 import com.app.activeparks.data.model.registration.PulseZoneRequest
 import com.app.activeparks.data.model.registration.ResponseId
@@ -141,7 +143,6 @@ interface ApiWithAuthorization {
         @Path("id") id: String
     ): Response<PhotoGalleryResponse>
 
-
 //    @DELETE("/api/v1/gallery-user/{id}")
 //    suspend fun deleteOnePhotoGalleryUser(
 //        @Path("id") id: String
@@ -164,5 +165,22 @@ interface ApiWithAuthorization {
 //    suspend fun applyOnePhotoUserInOfficial(
 //        @Path("id") id: String
 //    ): Response<ResponseSuccess>
+
+    //Новини
+    @GET("/api/v1/news?offset=0&limit=10&sort[sort_name]=value&filters[filter_name]=value")
+    suspend fun getNews(): Response<NewsListResponse>
+
+    //Новини
+    @GET("/api/v1/news/{id}")
+    suspend fun getNewsDetails(
+        @Path("id") id: String?
+    ): Response<ItemNews>
+
+    @GET("/api/v1/clubs/{club}/news/{id}")
+    suspend fun getClubNewsDetails(
+        @Path("club") club_id: String?,
+        @Path("id") id: String?
+    ): Response<ItemNews>
+
 
 }

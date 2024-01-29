@@ -1,27 +1,33 @@
 package com.app.activeparks.ui.homeWithUser.fragments.blog
 
-import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.app.activeparks.data.model.news.News
-import com.app.activeparks.data.repository.Repository
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import androidx.lifecycle.viewModelScope
+import com.app.activeparks.data.model.news.NewsListResponse
+import com.app.activeparks.data.useCase.news.NewsUseCase
+import kotlinx.coroutines.launch
 
 /**
  * Created by O.Dziuba on 18.12.2023.
  */
 class HomeBlogViewModel(
-    private val repository: Repository
+    private val newsUseCase: NewsUseCase
 ) : ViewModel() {
 
-    val newsList = MutableLiveData<News>()
+    val newsList = MutableLiveData<NewsListResponse>()
 
-    @SuppressLint("CheckResult")
     fun getNews() {
-        repository.news(5).subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { result: News -> newsList.setValue(result) }
+        viewModelScope.launch {
+            kotlin.runCatching {
+                newsUseCase.getNews()
 
+            }.onSuccess { response ->
+                response?.let {
+                    Log.i("TEST_NEWS", "${it.items} hello")
+                    newsList.value = it
+                }
+            }
+        }
     }
 }

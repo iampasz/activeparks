@@ -1,18 +1,13 @@
 package com.app.activeparks.ui.support;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.app.activeparks.data.model.news.ItemNews;
-import com.app.activeparks.data.model.support.SupportItem;
-import com.app.activeparks.ui.support.adapter.SupportAdaper;
 import com.app.activeparks.ui.support.adapter.SupportMessageAdaper;
 import com.technodreams.activeparks.R;
 
@@ -28,9 +23,7 @@ public class SupportAddActivity extends AppCompatActivity {
             viewModel =
                     new ViewModelProvider(this, new SupportModelFactory(this)).get(SupportViewModel.class);
 
-            findViewById(R.id.closed).setOnClickListener(v-> {
-                finish();
-            });
+            findViewById(R.id.closed).setOnClickListener(v-> finish());
 
             RecyclerView listChat = findViewById(R.id.list_chat);
 

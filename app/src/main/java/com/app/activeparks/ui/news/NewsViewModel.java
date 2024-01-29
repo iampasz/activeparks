@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.model.news.ItemNews;
+import com.app.activeparks.data.repository.Repository;
 import com.app.activeparks.data.model.news.News;
 import com.app.activeparks.data.model.news.NewsClubs;
 import com.app.activeparks.data.storage.Preferences;
@@ -13,16 +13,19 @@ import com.app.activeparks.data.storage.Preferences;
 import java.io.File;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 
 public class NewsViewModel extends ViewModel {
 
     private final Preferences sharedPreferences;
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    private MutableLiveData<News> newsList = new MutableLiveData<>();
-    private MutableLiveData<ItemNews> newsDetails = new MutableLiveData<>();
-    private Repository repository;
+    private final MutableLiveData<News> newsList = new MutableLiveData<>();
+    private final MutableLiveData<ItemNews> newsDetails = new MutableLiveData<>();
+    private final Repository repository;
 
     public NewsViewModel(Preferences sharedPreferences)   {
         this.sharedPreferences = sharedPreferences;
@@ -37,36 +40,42 @@ public class NewsViewModel extends ViewModel {
         return newsDetails;
     }
 
-    public LiveData<ItemNews> getClubNewsDetails() {
-        return newsDetails;
-    }
+//    public LiveData<ItemNews> getClubNewsDetails() {
+//        return newsDetails;
+//    }
 
     public void getNews(){
-        repository.news(100).subscribeOn(Schedulers.io())
+        Disposable newsRequest = repository.news(100).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> newsList.setValue(result),
+                .subscribe(newsList::setValue,
                         error -> {});
+
+        compositeDisposable.add(newsRequest);
     }
 
     public void getNewsId(String id){
-        repository.getClubsNews(id).subscribeOn(Schedulers.io())
+        Disposable getClubsNewsRequest = repository.getClubsNews(id).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> newsList.setValue(result),
+                .subscribe(newsList::setValue,
                         error -> {});
+
+        compositeDisposable.add(getClubsNewsRequest);
     }
 
     public void getNewsDetails(String id){
-        repository.newsDetails(id).subscribeOn(Schedulers.io())
+        Disposable newsDetailsRequest = repository.newsDetails(id).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> newsDetails.setValue(result),
+                .subscribe(newsDetails::setValue,
                         error -> {});
+        compositeDisposable.add(newsDetailsRequest);
     }
 
     public void getNewsDetails(String club, String id){
-        repository.getNewsClubDetails(club, id).subscribeOn(Schedulers.io())
+        Disposable getNewsClubDetailsRequest = repository.getNewsClubDetails(club, id).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> newsDetails.setValue(result),
+                .subscribe(newsDetails::setValue,
                         error -> {});
+        compositeDisposable.add(getNewsClubDetailsRequest);
     }
 
 

@@ -1,6 +1,7 @@
 package com.app.activeparks.ui.home.adapter;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.app.activeparks.data.model.news.ItemNews;
+import com.app.activeparks.data.model.news.ItemNewsOld;
 import com.app.activeparks.data.model.news.News;
 import com.app.activeparks.ui.adapter.PhotosAdaper;
 import com.bumptech.glide.Glide;
@@ -44,7 +45,7 @@ public class HomeAdaper extends RecyclerView.Adapter<HomeAdaper.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ItemNews news = list.getItems().get(position);
+        ItemNewsOld news = list.getItems().get(position);
 
         holder.title.setText(news.getTitle() != null ? news.getTitle() : "Немає заголовку");
 
@@ -61,23 +62,22 @@ public class HomeAdaper extends RecyclerView.Adapter<HomeAdaper.ViewHolder> {
             holder.image.setVisibility(View.VISIBLE);
         }
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date date = format.parse(news.getPublishedAt());
+            assert date != null;
             holder.distance.setText( new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
 
-        holder.itemView.setOnClickListener(v -> {
-            parksAdaperListener.onInfo(news);
-        });
+        holder.itemView.setOnClickListener(v -> parksAdaperListener.onInfo(news));
     }
 
     @Override
     public int getItemCount() {
-        return list.getItems().size() > 5 ? 5 : list.getItems().size();
+        return Math.min(list.getItems().size(), 5);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -96,7 +96,7 @@ public class HomeAdaper extends RecyclerView.Adapter<HomeAdaper.ViewHolder> {
     }
 
     public interface ParksAdaperListener{
-        void onInfo(ItemNews news);
+        void onInfo(ItemNewsOld news);
     }
 
     public HomeAdaper setOnCliclListener(ParksAdaperListener parksAdaperListener){

@@ -9,7 +9,7 @@ public class News {
 
     @SerializedName("items")
     @Expose
-    private List<ItemNews> items = null;
+    private List<ItemNewsOld> items = null;
     @SerializedName("total")
     @Expose
     private Integer total;
@@ -20,11 +20,11 @@ public class News {
     @Expose
     private Integer limit;
 
-    public List<ItemNews> getItems() {
+    public List<ItemNewsOld> getItems() {
         return items;
     }
 
-    public void setItems(List<ItemNews> items) {
+    public void setItems(List<ItemNewsOld> items) {
         this.items = items;
     }
 

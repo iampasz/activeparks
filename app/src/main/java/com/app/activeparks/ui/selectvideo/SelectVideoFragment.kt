@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
-import com.app.activeparks.ui.selectvideo.util.VIDEO_ACTIVITY_ID
 import com.app.activeparks.ui.selectvideo.util.VIDEO_CATEGORY_ID
 import com.app.activeparks.ui.selectvideo.util.VIDEO_LEVEL_ID
 import com.app.activeparks.ui.video.VideoActivity
+import com.app.activeparks.util.extention.StringTypes
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentSelectVideoBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -55,7 +55,7 @@ class SelectVideoFragment : Fragment(), ContentVideoCallback {
 
                 startActivity(
                     Intent(requireContext(), VideoActivity::class.java)
-                        .putExtra(VIDEO_ACTIVITY_ID, idx)
+                        .putExtra(StringTypes.ID.type, idx)
                         .putExtra(VIDEO_CATEGORY_ID, modelSelectCategory.TYPE_CATEGORY_ID)
                         .putExtra(
                             VIDEO_LEVEL_ID,

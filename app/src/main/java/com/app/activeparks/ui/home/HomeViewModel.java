@@ -1,5 +1,6 @@
 package com.app.activeparks.ui.home;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -7,9 +8,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.app.activeparks.data.model.clubs.ItemClub;
+import com.app.activeparks.data.model.news.ItemNews;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.repository.Repository;
-import com.app.activeparks.data.model.news.ItemNews;
 import com.app.activeparks.data.model.news.News;
 import com.app.activeparks.data.model.sportsgrounds.Sportsgrounds;
 import com.app.activeparks.data.model.user.User;
@@ -24,22 +25,25 @@ import java.util.List;
 import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 
 public class HomeViewModel extends ViewModel {
 
     private final Preferences preferences;
-    private Repository repository;
+    private final Repository repository;
 
     public MutableLiveData<User> user = new MutableLiveData<>();
-    private MutableLiveData<Sportsgrounds> parksList = new MutableLiveData<>();
-    private MutableLiveData<List<ItemEvent>> eventsList = new MutableLiveData<>();
-    private MutableLiveData<News> newsList = new MutableLiveData<>();
-    private MutableLiveData<ItemNews> newsDetails = new MutableLiveData<>();
-    private MutableLiveData<List<ItemClub>> clubList = new MutableLiveData<>();
-    private MutableLiveData<String> location = new MutableLiveData<>();
+    private final MutableLiveData<Sportsgrounds> parksList = new MutableLiveData<>();
+    private final MutableLiveData<List<ItemEvent>> eventsList = new MutableLiveData<>();
+    private final MutableLiveData<News> newsList = new MutableLiveData<>();
+    private final MutableLiveData<ItemNews> newsDetails = new MutableLiveData<>();
+    private final MutableLiveData<List<ItemClub>> clubList = new MutableLiveData<>();
+    private final MutableLiveData<String> location = new MutableLiveData<>();
 
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
     public HomeViewModel(Preferences sharedPreferences) {
         preferences = sharedPreferences;
         repository = new Repository(sharedPreferences);
@@ -81,28 +85,30 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void getParks() {
-        repository.sportsgrounds(5, "30", "" + 30.51814, "" + 50.44812).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> parksList.setValue(result),
+        Disposable sportsGroundsRequest = repository.sportsgrounds(5, "30", "" + 30.51814, "" + 50.44812).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(parksList::setValue,
                         error -> {
                         });
+        compositeDisposable.add(sportsGroundsRequest);
     }
 
-    public void getParks(double lat, double lon) {
-        repository.sportsgrounds(5, "", "" + lon, "" + lat).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> parksList.setValue(result),
-                        error -> {
-                        });
-    }
+//    public void getParks(double lat, double lon) {
+//        Disposable sportsGroundsRequest = repository.sportsgrounds(5, "", "" + lon, "" + lat).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(parksList::setValue,
+//                        error -> {
+//                        });
+//    }
 
     public void getNews() {
-        repository.news(5).subscribeOn(Schedulers.io())
+        Disposable newsRequest = repository.news(5).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> newsList.setValue(result),
+                .subscribe(newsList::setValue,
                         error -> Log.e("HomeViewModel", "getPokemons: " + error.getMessage()));
+        compositeDisposable.add(newsRequest);
     }
 
     public void getEvents() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String date = dateFormat.format(new Date());
         Map<String, String> data = new HashMap<>();
         data.put("offset", "0");
@@ -110,7 +116,7 @@ public class HomeViewModel extends ViewModel {
         data.put("filters[startsFrom]", date);
         data.put("filters[startsTo]", date);
         data.put("sort[startsAt]", "asc");
-        repository.eventsDay(data).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        Disposable eventsDayRequest = repository.eventsDay(data).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             List<ItemEvent> filteredList = new ArrayList<>();
                             for (ItemEvent element : result.getItems()) {
@@ -122,10 +128,11 @@ public class HomeViewModel extends ViewModel {
                             },
                         error -> {
                         });
+        compositeDisposable.add(eventsDayRequest);
     }
 
     public void clubs() {
-        new Repository(preferences).getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        Disposable getMyClubsRequest = new Repository(preferences).getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         result -> {
                             List<ItemClub> itemClubs = new ArrayList<>();
@@ -142,16 +149,14 @@ public class HomeViewModel extends ViewModel {
                         error -> {
                         }
                 );
+        compositeDisposable.add(getMyClubsRequest);
     }
 
     public void location(double lat, double lon) {
-        repository.location(String.valueOf(lat), String.valueOf(lon)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                            location.setValue("місцеположення визначено по геолокації - " + result.getAddress().getCity() == null ? "Київ" : result.getAddress().getCity());
-                        },
-                        error -> {
-                            location.setValue("Київ");
-                        });
+        Disposable locationRequest = repository.location(String.valueOf(lat), String.valueOf(lon)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> location.setValue(result.getAddress().getCity()),
+                        error -> location.setValue("Київ"));
+        compositeDisposable.add(locationRequest);
     }
 
     private void getDataUser() {
@@ -161,9 +166,6 @@ public class HomeViewModel extends ViewModel {
     }
 
     public boolean getUserAuth() {
-        if (preferences.getToken() != null && preferences.getToken().length() > 0) {
-            return true;
-        }
-        return false;
+        return preferences.getToken() != null && preferences.getToken().length() > 0;
     }
 }

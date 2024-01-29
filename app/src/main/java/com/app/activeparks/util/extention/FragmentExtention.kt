@@ -12,6 +12,9 @@ fun FragmentManager.removeFragment(fragment:Fragment) =
 fun mainAddFragment(mainActivity: MainActivity, fragment:Fragment) =
     mainActivity.addFragment(fragment)
 
+//fun mainReplaceFragment(mainActivity: MainActivity, fragment:Fragment) =
+//    mainActivity.openFragment(fragment)
+
 
 
 
