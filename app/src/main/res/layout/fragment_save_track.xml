@@ -1,0 +1,643 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/top_panel"
+    tools:context="com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityFragment">
+
+    <View
+        android:id="@+id/vToolBar"
+        android:layout_width="0dp"
+        android:layout_height="52dp"
+        android:background="@color/toolbar_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvData"
+        android:layout_width="165dp"
+        android:layout_height="24dp"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/vToolBar"
+        app:layout_constraintEnd_toEndOf="@+id/vToolBar"
+        app:layout_constraintStart_toStartOf="@+id/vToolBar"
+        app:layout_constraintTop_toTopOf="@+id/vToolBar"
+        tools:text="СТВОРЕННЯ ТРЕКУ" />
+
+    <ImageView
+        android:id="@+id/ivBack"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_back_action"
+        app:layout_constraintBottom_toBottomOf="@+id/vToolBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/vToolBar" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vToolBar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="0dp"
+                android:layout_height="230dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <org.osmdroid.views.MapView
+                    android:id="@+id/mapview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tvDescriptionText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="МІТКИ МАРШРУТУ"
+                android:textColor="@color/text_color"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
+            <LinearLayout
+                android:id="@+id/llAdress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/padding_8px"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDescriptionText"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/ic_location_map"
+                    app:layout_constraintBottom_toBottomOf="@+id/vActivityType"
+                    app:layout_constraintStart_toStartOf="@+id/vActivityType"
+                    app:layout_constraintTop_toTopOf="@+id/vActivityType" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="@dimen/padding_8px"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvStratAdress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="---"
+                        android:textColor="@color/text_color"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="Точка старту"
+                        android:textColor="@color/tv_description"
+                        android:textSize="14sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/padding_8px"
+                        android:layout_marginBottom="@dimen/padding_8px"
+                        android:background="@color/line_two"/>
+
+                    <TextView
+                        android:id="@+id/tvFinishAdress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="---"
+                        android:textColor="@color/text_color"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="Фінішна точка"
+                        android:textColor="@color/tv_description"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvEditMap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Перейти до редагування точок"
+                android:textColor="@color/link_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/llAdress"  />
+
+
+            <TextView
+                android:id="@+id/tvDescriptionEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="ОПИС МАРШРУТУ"
+                android:textColor="@color/text_color"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvEditMap" />
+
+
+            <EditText
+                android:id="@+id/etNameTrack"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_notification"
+                android:hint="@string/tv_training_title"
+                android:paddingStart="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDescriptionEditText"
+                tools:ignore="RtlSymmetry" />
+
+            <EditText
+                android:id="@+id/etDescriptionTrack"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_notification"
+                android:maxLength="255"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/etNameTrack"
+                tools:text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis," />
+
+
+            <TextView
+                android:id="@+id/tvCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="255/255"
+                android:textColor="@color/tv_description"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/etDescriptionTrack"
+                app:layout_constraintEnd_toEndOf="@+id/etDescriptionTrack"
+                tools:ignore="SmallSp" />
+
+            <View
+                android:id="@+id/vActivityType"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_notification"
+                app:layout_constraintEnd_toEndOf="@+id/etDescriptionTrack"
+                app:layout_constraintStart_toStartOf="@+id/etDescriptionTrack"
+                app:layout_constraintTop_toBottomOf="@+id/etDescriptionTrack" />
+
+            <ImageView
+                android:id="@+id/ivActivityType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/ic_at_at_home"
+                app:layout_constraintBottom_toBottomOf="@+id/vActivityType"
+                app:layout_constraintStart_toStartOf="@+id/vActivityType"
+                app:layout_constraintTop_toTopOf="@+id/vActivityType" />
+
+            <TextView
+                android:id="@+id/tvActivityType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:text="Тип Маршруту"
+                android:textColor="@color/tv_description"
+                android:textSize="16sp"
+                app:drawableEndCompat="@drawable/ic_arrow_right"
+                app:drawableTint="@color/text_color"
+                app:layout_constraintBottom_toBottomOf="@+id/ivActivityType"
+                app:layout_constraintEnd_toEndOf="@+id/vActivityType"
+                app:layout_constraintStart_toEndOf="@+id/ivActivityType"
+                app:layout_constraintTop_toTopOf="@+id/ivActivityType" />
+
+
+            <View
+                android:id="@+id/vAdress"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_notification"
+                app:layout_constraintEnd_toEndOf="@+id/vActivityType"
+                app:layout_constraintStart_toStartOf="@+id/vActivityType"
+                app:layout_constraintTop_toBottomOf="@+id/vActivityType" />
+
+            <ImageView
+                android:id="@+id/ivAdress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/ic_mappinline"
+                app:layout_constraintBottom_toBottomOf="@+id/vAdress"
+                app:layout_constraintStart_toStartOf="@+id/vAdress"
+                app:layout_constraintTop_toTopOf="@+id/vAdress" />
+
+            <EditText
+                android:id="@+id/etAdress"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="0dp"
+                android:background="@null"
+                android:hint="Адреса треку"
+                android:paddingStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/ivAdress"
+                app:layout_constraintEnd_toEndOf="@+id/vAdress"
+                app:layout_constraintStart_toEndOf="@+id/ivAdress"
+                app:layout_constraintTop_toTopOf="@+id/ivAdress"
+                tools:ignore="RtlSymmetry" />
+
+            <View
+                android:id="@+id/vComplexity"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_notification"
+                app:layout_constraintEnd_toEndOf="@+id/vAdress"
+                app:layout_constraintStart_toStartOf="@+id/vAdress"
+                app:layout_constraintTop_toBottomOf="@+id/vAdress" />
+
+            <ImageView
+                android:id="@+id/ivComplexity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/ic_complexity"
+                app:layout_constraintBottom_toBottomOf="@+id/vComplexity"
+                app:layout_constraintStart_toStartOf="@+id/vComplexity"
+                app:layout_constraintTop_toTopOf="@+id/vComplexity" />
+
+            <TextView
+                android:id="@+id/tvComplexity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:text="Складність маршруту"
+                android:textColor="@color/tv_description"
+                android:textSize="16sp"
+                app:drawableEndCompat="@drawable/ic_arrow_right"
+                app:drawableTint="@color/text_color"
+                app:layout_constraintBottom_toBottomOf="@+id/ivComplexity"
+                app:layout_constraintEnd_toEndOf="@+id/vComplexity"
+                app:layout_constraintStart_toEndOf="@+id/ivComplexity"
+                app:layout_constraintTop_toTopOf="@+id/ivComplexity" />
+
+            <View
+                android:id="@+id/vTime"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_notification"
+                app:layout_constraintEnd_toEndOf="@+id/vComplexity"
+                app:layout_constraintStart_toStartOf="@+id/vComplexity"
+                app:layout_constraintTop_toBottomOf="@+id/vComplexity" />
+
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:text="Обрати час"
+                android:textColor="@color/tv_description"
+                android:textSize="16sp"
+                app:drawableTint="@color/text_color"
+                app:layout_constraintBottom_toBottomOf="@+id/vTime"
+                app:layout_constraintEnd_toEndOf="@+id/vTime"
+                app:layout_constraintStart_toEndOf="@+id/vTime"
+                app:layout_constraintTop_toTopOf="@+id/vTime" />
+
+            <TextView
+                android:id="@+id/tvTimeDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Оберіть рекомендований час для проходження маршруту"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="@+id/vTime"
+                app:layout_constraintStart_toStartOf="@+id/vTime"
+                app:layout_constraintTop_toBottomOf="@+id/vTime"
+                tools:ignore="SmallSp" />
+
+
+            <View
+                android:id="@+id/vDistance"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_notification"
+                app:layout_constraintEnd_toEndOf="@+id/tvTimeDescription"
+                app:layout_constraintStart_toStartOf="@+id/tvTimeDescription"
+                app:layout_constraintTop_toBottomOf="@+id/tvTimeDescription" />
+
+
+            <TextView
+                android:id="@+id/tvDistance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:text="24 км"
+                android:textColor="@color/link_color"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/vDistance"
+                app:layout_constraintEnd_toEndOf="@+id/vDistance"
+                app:layout_constraintStart_toEndOf="@+id/vDistance"
+                app:layout_constraintTop_toTopOf="@+id/vDistance" />
+
+            <TextView
+                android:id="@+id/tvDistanceDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Зафіксована довжина машруту"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="@+id/vDistance"
+                app:layout_constraintStart_toStartOf="@+id/vDistance"
+                app:layout_constraintTop_toBottomOf="@+id/vDistance"
+                tools:ignore="SmallSp" />
+
+            <View
+                android:id="@+id/vRoadSurface"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_notification"
+                app:layout_constraintEnd_toEndOf="@+id/tvDistanceDescription"
+                app:layout_constraintStart_toStartOf="@+id/tvDistanceDescription"
+                app:layout_constraintTop_toBottomOf="@+id/tvDistanceDescription" />
+
+            <ImageView
+                android:id="@+id/ivRoadSurface"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/ic_road_surface"
+                app:layout_constraintBottom_toBottomOf="@+id/vRoadSurface"
+                app:layout_constraintStart_toStartOf="@+id/vRoadSurface"
+                app:layout_constraintTop_toTopOf="@+id/vRoadSurface" />
+
+            <TextView
+                android:id="@+id/tvRoadSurface"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:text="Тип покриття"
+                android:textColor="@color/tv_description"
+                android:textSize="16sp"
+                app:drawableEndCompat="@drawable/ic_arrow_right"
+                app:drawableTint="@color/text_color"
+                app:layout_constraintBottom_toBottomOf="@+id/ivRoadSurface"
+                app:layout_constraintEnd_toEndOf="@+id/vRoadSurface"
+                app:layout_constraintStart_toEndOf="@+id/ivRoadSurface"
+                app:layout_constraintTop_toTopOf="@+id/ivRoadSurface" />
+
+
+
+            <android.widget.Button
+                android:id="@+id/bIntegrity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="24dp"
+                android:text="Безбар’єрність"
+                android:background="@drawable/button_gray"
+                android:drawableLeft="@drawable/ic_integrity"
+                android:drawablePadding="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/vRoadSurface"
+                app:layout_constraintStart_toStartOf="@+id/vRoadSurface"
+                app:layout_constraintTop_toBottomOf="@+id/vRoadSurface" />
+
+
+            <TextView
+                android:id="@+id/tvIntegrityDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Оберіть рекомендований час для проходження маршруту"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="@+id/bIntegrity"
+                app:layout_constraintStart_toStartOf="@+id/bIntegrity"
+                app:layout_constraintTop_toBottomOf="@+id/bIntegrity"
+                tools:ignore="SmallSp" />
+
+
+            <TextView
+                android:id="@+id/tvMainPhotoText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="ГОЛОВНЕ ФОТО МАРШРУТУ:"
+                android:textColor="@color/text_color"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvIntegrityDescription" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvMainPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/tvMainPhotoText"
+                app:layout_constraintStart_toStartOf="@+id/tvMainPhotoText"
+                app:layout_constraintTop_toBottomOf="@+id/tvMainPhotoText">
+
+            <ImageView
+                android:id="@+id/ivMainPhoto"
+                android:layout_width="match_parent"
+                android:scaleType="centerCrop"
+                android:layout_height="220dp"
+                android:gravity="center"
+                android:background="@drawable/button_gray"
+                tools:src="@drawable/activity_back"
+                app:layout_constraintEnd_toEndOf="@+id/tvMainPhotoText"
+                app:layout_constraintStart_toStartOf="@+id/tvMainPhotoText"
+                app:layout_constraintTop_toBottomOf="@+id/tvMainPhotoText" />
+
+            <android.widget.Button
+                android:id="@+id/bMainPhoto"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_camera" />
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tvPhotoTrackText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="ФОТО ТРЕКУ:"
+                android:textColor="@color/text_color"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cvMainPhoto" />
+
+            <android.widget.Button
+                android:id="@+id/bPhotos"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:gravity="center"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:paddingTop="14dp"
+                android:background="@drawable/button_gray"
+                android:drawableTop="@drawable/ic_camera"
+                app:layout_constraintEnd_toEndOf="@+id/tvPhotoTrackText"
+                app:layout_constraintStart_toStartOf="@+id/tvPhotoTrackText"
+                app:layout_constraintTop_toBottomOf="@+id/tvPhotoTrackText" />
+
+
+            <TextView
+                android:id="@+id/tvListPhotoDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Оберіть до 30 фото, які будуть відображатись в галереї маршруту"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="@+id/bPhotos"
+                app:layout_constraintStart_toStartOf="@+id/bPhotos"
+                app:layout_constraintTop_toBottomOf="@+id/bPhotos"
+                tools:ignore="SmallSp" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvListPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvListPhotoDescription" />
+
+            <android.widget.Button
+                android:id="@+id/bSaveTrack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_14px"
+                android:background="@drawable/button_light_green"
+                android:elevation="20dp"
+                android:padding="@dimen/padding_14px"
+                android:text="@string/save_changes"
+                android:textAllCaps="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rvListPhoto" />
+
+            <android.widget.Button
+                android:id="@+id/bPublicTrack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_14px"
+                android:background="@drawable/button_black"
+                android:textColor="@color/white"
+                android:elevation="20dp"
+                android:padding="@dimen/padding_14px"
+                android:text="Опублікувати трек"
+                android:textAllCaps="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bSaveTrack" />
+
+
+            <TextView
+                android:id="@+id/tvDeleteTrack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"
+                android:text="Видалити трек"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bPublicTrack" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

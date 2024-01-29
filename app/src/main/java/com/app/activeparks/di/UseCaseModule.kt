@@ -16,8 +16,12 @@ import com.app.activeparks.data.useCase.pauseActivity.PauseActivityUseCase
 import com.app.activeparks.data.useCase.pauseActivity.PauseActivityUseCaseImpl
 import com.app.activeparks.data.useCase.profileState.ProfileStateUseCase
 import com.app.activeparks.data.useCase.profileState.ProfileStateUseCaseImpl
+import com.app.activeparks.data.useCase.routeActive.RouteActiveStateUseCase
+import com.app.activeparks.data.useCase.routeActive.RouteActiveStateUseCaseImpl
 import com.app.activeparks.data.useCase.statistics.StatisticsUseCase
 import com.app.activeparks.data.useCase.statistics.StatisticsUseCaseImpl
+import com.app.activeparks.data.useCase.trackState.TrackStateUseCase
+import com.app.activeparks.data.useCase.trackState.TrackStateUseCaseImpl
 import com.app.activeparks.data.useCase.uploadFile.UploadFileUseCase
 import com.app.activeparks.data.useCase.uploadFile.UploadFileUseCaseImpl
 import com.app.activeparks.data.useCase.weatehr.WeatherUseCase
@@ -41,4 +45,7 @@ val useCaseModule = module {
     single<UserUseCase> { UserUseCaseImpl(get(), get(), get()) }
     single<PhotoGalleryUseCase> { PhotoGalleryUseCaseImpl(get()) }
     single<NewsUseCase> { NewsUseCaseImpl(get()) }
+
+    single<TrackStateUseCase> { TrackStateUseCaseImpl(get()) }
+    single<RouteActiveStateUseCase> { RouteActiveStateUseCaseImpl(get()) }
 }

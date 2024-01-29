@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
 import com.app.activeparks.ui.homeWithUser.fragments.clubs.HomeClubsFragment
 import com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsFragment
+import com.app.activeparks.ui.track.fragments.listTrack.TracksListFragment
 import com.app.activeparks.ui.userProfile.statisticFragment.StatisticFragment
 import com.app.activeparks.ui.userProfile.video.VideoFragmentUserProfile
 import com.bumptech.glide.Glide
@@ -103,6 +104,9 @@ class MenuProfileFragment : Fragment() {
             tvMyVideo.setOnClickListener {
                 openFragment(VideoFragmentUserProfile())
             }
+            tvActiveRouts.setOnClickListener {
+                addFragment(TracksListFragment())
+            }
         }
     }
 
@@ -129,6 +133,10 @@ class MenuProfileFragment : Fragment() {
 
     private fun openFragment(fragment: Fragment) {
         (requireActivity() as? MainActivity)?.openFragment(fragment)
+    }
+
+    private fun addFragment(fragment: Fragment) {
+        (requireActivity() as? MainActivity)?.addFragment(fragment)
     }
 
     private fun onBack() {

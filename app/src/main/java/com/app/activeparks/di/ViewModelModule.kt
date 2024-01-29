@@ -21,6 +21,11 @@ import com.app.activeparks.ui.homeWithUser.fragments.home.MainHomeViewModel
 import com.app.activeparks.ui.news.BlogViewModel
 import com.app.activeparks.ui.news.NewsViewModel
 import com.app.activeparks.ui.participants.ParticipantsViewModel
+import com.app.activeparks.ui.routeActive.fragments.detailsRouteActive.DetailsRouteActiveViewModel
+import com.app.activeparks.ui.routeActive.fragments.listRouteActive.RouteActiveListViewModel
+import com.app.activeparks.ui.routeActive.fragments.saveRouteActive.SaveRouteActiveViewModel
+import com.app.activeparks.ui.track.fragments.listTrack.TracksListViewModel
+import com.app.activeparks.ui.track.fragments.saveTrack.SaveTrackViewModel
 import com.app.activeparks.ui.userProfile.edit.EditProfileViewModel
 import com.app.activeparks.ui.userProfile.home.ProfileHomeViewModel
 import com.app.activeparks.ui.userProfile.menu.MenuProfileViewModel
@@ -58,4 +63,10 @@ val viewModelModule = module {
     viewModel { BlogViewModel(get()) }
     viewModel { NewsViewModel(get()) }
 
+    viewModel { TracksListViewModel(get()) }
+    viewModel { SaveTrackViewModel(get(), get()) }
+
+    viewModel { RouteActiveListViewModel(get()) }
+    viewModel { DetailsRouteActiveViewModel(get()) }
+    viewModel { SaveRouteActiveViewModel(get(), get()) }
 }

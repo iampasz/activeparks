@@ -13,6 +13,8 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
+import com.app.activeparks.ui.track.fragments.listTrack.TracksListFragment
+import com.app.activeparks.ui.track.fragments.saveTrack.SaveTrackFragment
 import com.app.activeparks.ui.userProfile.edit.EditProfileFragment
 import com.app.activeparks.ui.userProfile.home.ProfileHomeFragment
 import com.app.activeparks.ui.userProfile.info.UserInfoFragment
@@ -134,7 +136,9 @@ class MainActivity : AppCompatActivity(), FragmentInteface {
             if (fragment is UserInfoFragment ||
                 fragment is MenuProfileFragment ||
                 fragment is ProfileHomeFragment ||
-                fragment is EditProfileFragment
+                fragment is EditProfileFragment ||
+                fragment is TracksListFragment ||
+                fragment is SaveTrackFragment
             ) {
                 supportFragmentManager
                     .beginTransaction()

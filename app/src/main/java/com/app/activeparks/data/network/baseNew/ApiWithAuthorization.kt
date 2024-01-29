@@ -14,14 +14,19 @@ import com.app.activeparks.data.model.registration.ResponseSuccess
 import com.app.activeparks.data.model.registration.User
 import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
+import com.app.activeparks.data.model.routeActive.ListRouteActiveResponse
+import com.app.activeparks.data.model.routeActive.RouteActiveResponse
 import com.app.activeparks.data.model.sportevents.EventResponse
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.statistic.StatisticResponse
+import com.app.activeparks.data.model.track.ListTrackResponse
+import com.app.activeparks.data.model.track.TrackResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -111,6 +116,73 @@ interface ApiWithAuthorization {
         @Path("id") id: String?,
         @Body itemEvent: ItemEvent?
     ): Call<String>
+
+    @GET("/api/v1/track?sort[updateUp]=asc")
+    suspend fun getTracks(
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int
+    ): Response<ListTrackResponse>
+
+    @GET("/api/v1/track?sort[updateUp]=asc")
+    suspend fun getTracks(
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("filters[all]") search: String
+    ): Response<ListTrackResponse>
+
+    @POST("/api/v1/track")
+    suspend fun createTrack(
+    ): Response<TrackResponse>
+
+    @GET("/api/v1/track/{id}")
+    suspend fun getTrack(
+        @Path("id") id: String,
+    ): Response<TrackResponse>
+
+    @GET("/api/v1/track/{id}")
+    suspend fun saveTrack(
+        @Path("id") id: String,
+        @Body request: TrackResponse,
+    ): Response<TrackResponse>
+
+    @DELETE("/api/v1/track/{id}")
+    suspend fun removeTrack(
+        @Path("id") id: String,
+    ): Response<TrackResponse>
+
+    @GET("/api/v1/active-routes?sort[updateUp]=asc")
+    suspend fun getRouteActives(
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int
+    ): Response<ListRouteActiveResponse>
+
+    @GET("/api/v1/active-routes?sort[updateUp]=asc")
+    suspend fun getRouteActives(
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("filters[all]") search: String
+    ): Response<ListRouteActiveResponse>
+
+    @POST("/api/v1/active-routes")
+    suspend fun createRouteActive( @Path("id") id: String
+    ): Response<RouteActiveResponse>
+
+    @GET("/api/v1/active-routes/{id}")
+    suspend fun getRouteActive(
+        @Path("id") id: String,
+    ): Response<RouteActiveResponse>
+
+    @GET("/api/v1/active-routes/{id}")
+    suspend fun saveRouteActive(
+        @Path("id") id: String,
+        @Body request: RouteActiveResponse,
+    ): Response<RouteActiveResponse>
+
+    @DELETE("/api/v1/active-routes/{id}")
+    suspend fun removeRouteActive(
+        @Path("id") id: String,
+    ): Response<RouteActiveResponse>
+
 
     //Upload file
     @POST("/api/v1/uploads")
