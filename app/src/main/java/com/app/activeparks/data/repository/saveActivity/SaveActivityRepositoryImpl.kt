@@ -5,6 +5,7 @@ import com.app.activeparks.data.db.entity.ActiveEntity
 import com.app.activeparks.data.model.activity.ActivityItemResponse
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
+import com.app.activeparks.data.model.registration.ResponseId
 import com.app.activeparks.data.network.NetworkManager
 
 /**
@@ -17,6 +18,10 @@ class SaveActivityRepositoryImpl(
     override suspend fun insert(active: ActiveEntity) {
         networkManager.createActivity(AddActivityResponse.map(active))
         dao.insert(active)
+    }
+
+    override suspend fun updateActivity(id: String, request: AddActivityResponse): ResponseId? {
+        return networkManager.updateActivity(id, request)
     }
 
     override suspend fun getActive(keyId: Long): ActiveEntity {

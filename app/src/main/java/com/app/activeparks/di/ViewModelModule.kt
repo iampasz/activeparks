@@ -45,7 +45,7 @@ val viewModelModule = module {
     viewModel { MainViewModel(get()) }
     viewModel { EventRouteViewModel(get(), get()) }
     viewModel { AllActivitiesViewModel(get()) }
-    viewModel { ActivityInfoViewModel(get()) }
+    viewModel { ActivityInfoViewModel(get(), get(), get()) }
     viewModel { VideoUserProfileViewModel(get(), get(), get()) }
     viewModel { MainViewModel(get()) }
     viewModel { EventRouteViewModel(get(), get()) }

@@ -9,6 +9,7 @@ import com.app.activeparks.data.model.registration.ResponseSuccess
 import com.app.activeparks.data.model.registration.ResponseToken
 import com.app.activeparks.data.model.registration.SendCodeEmailRequest
 import com.app.activeparks.data.model.registration.SendCodePhoneRequest
+import com.app.activeparks.data.model.registration.SimpleLogin
 import com.app.activeparks.data.model.registration.User
 import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
@@ -26,6 +27,8 @@ interface UserRepository {
     suspend fun verificationEmailCode(request: VerificationCodeEmailRequest): UserResponse?
     suspend fun updateData(id: String, request: AdditionData): User?
     suspend fun login(request: LoginRequest): ResponseToken?
+    suspend fun simpleLoginFacebook(request: SimpleLogin): ResponseToken?
+    suspend fun simpleLoginGoogle(request: SimpleLogin): ResponseToken?
     suspend fun getUser(id: String): User?
     suspend fun removeUser(id: String): User?
     suspend fun forgotPassword(request: ForgotPasswordRequest): ResponseSuccess?

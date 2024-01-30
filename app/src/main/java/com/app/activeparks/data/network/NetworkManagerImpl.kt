@@ -20,6 +20,7 @@ import com.app.activeparks.data.model.registration.ResponseSuccess
 import com.app.activeparks.data.model.registration.ResponseToken
 import com.app.activeparks.data.model.registration.SendCodeEmailRequest
 import com.app.activeparks.data.model.registration.SendCodePhoneRequest
+import com.app.activeparks.data.model.registration.SimpleLogin
 import com.app.activeparks.data.model.registration.User
 import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
@@ -29,7 +30,6 @@ import com.app.activeparks.data.model.sportevents.EventResponse
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import com.app.activeparks.data.model.statistic.StatisticResponse
-import com.app.activeparks.data.model.uservideo.UserVideo
 import com.app.activeparks.data.model.uservideo.UserVideoItem
 import com.app.activeparks.data.model.uservideo.VideosResponse
 import com.app.activeparks.data.model.weather.WeatherResponse
@@ -91,6 +91,26 @@ class NetworkManagerImpl(
 
     override suspend fun sendCodeEmail(request: SendCodeEmailRequest): ResponseSuccess? {
         val response = apiWithOutAuthorization.sendCodeEmail(request)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun simpleLoginFacebook(request: SimpleLogin): ResponseToken? {
+        val response = apiWithOutAuthorization.simpleLoginFacebook(request)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun simpleLoginGoogle(request: SimpleLogin): ResponseToken? {
+        val response = apiWithOutAuthorization.simpleLoginGoogle(request)
 
         if (!response.isSuccessful) {
             Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
@@ -208,6 +228,16 @@ class NetworkManagerImpl(
         return body
     }
 
+    override suspend fun updateActivity(id: String, request: AddActivityResponse): ResponseId? {
+        val response = apiWithAuthorization.createActivity(id, request)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
     override suspend fun getWorkoutsActivity(): ActivityResponse? {
         val response = apiWithAuthorization.getWorkoutsActivity()
 
@@ -266,7 +296,7 @@ class NetworkManagerImpl(
         val response = apiWithAuthorization.getAdminEvents()
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
         return response.body()
     }
@@ -275,7 +305,7 @@ class NetworkManagerImpl(
 
         val response = apiWithAuthorization.createEmptyEvent()
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
         return response.body()
     }
@@ -291,6 +321,7 @@ class NetworkManagerImpl(
                         continuation.resume(false)
                     }
                 }
+
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     continuation.resume(false)
                 }
@@ -301,46 +332,41 @@ class NetworkManagerImpl(
 
     override suspend fun getNews(): NewsListResponse? {
 
-        val response : Response<NewsListResponse>
+        val response: Response<NewsListResponse>
         val pref = Preferences(context)
 
-        response = if (pref.token.isNullOrEmpty()){
+        response = if (pref.token.isNullOrEmpty()) {
             apiWithOutAuthorization.getNews()
-        }else{
+        } else {
             apiWithAuthorization.getNews()
         }
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
     }
 
-    override suspend fun getNewsDetails(id:String): ItemNews? {
+    override suspend fun getNewsDetails(id: String): ItemNews? {
         val response = apiWithAuthorization.getNewsDetails(id)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
     }
 
-    override suspend fun getClubNewsDetails(club: String, id:String): ItemNews? {
+    override suspend fun getClubNewsDetails(club: String, id: String): ItemNews? {
         val response = apiWithAuthorization.getClubNewsDetails(club, id)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
     }
-
-
-
-
-
 
     //Statistics
     override suspend fun getStatistics(from: String, to: String): StatisticResponse? {
@@ -380,7 +406,7 @@ class NetworkManagerImpl(
         val response = apiWithAuthorization.getPhotoGalleryOfficial(id)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -390,7 +416,7 @@ class NetworkManagerImpl(
         val response = apiWithAuthorization.getPhotoGalleryUser(id)
 
         if (!response.isSuccessful) {
-            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
         }
 
         return response.body()
@@ -494,9 +520,9 @@ class NetworkManagerImpl(
             )
 
         if (!response.isSuccessful) {
-            toast(context, response.parseErrorBody().error.toString())
+            toast(context, response.parseErrorBody().message.toString())
         }
 
-        return  response.body()
+        return response.body()
     }
 }

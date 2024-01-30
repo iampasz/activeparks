@@ -9,6 +9,7 @@ import com.app.activeparks.data.model.registration.ResponseSuccess
 import com.app.activeparks.data.model.registration.ResponseToken
 import com.app.activeparks.data.model.registration.SendCodeEmailRequest
 import com.app.activeparks.data.model.registration.SendCodePhoneRequest
+import com.app.activeparks.data.model.registration.SimpleLogin
 import com.app.activeparks.data.model.registration.User
 import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
@@ -52,6 +53,20 @@ data class UserUseCaseImpl(
 
     override suspend fun login(request: LoginRequest): ResponseToken? {
         val response = userRepository.login(request)
+        getTokenAndSaveUser(response)
+
+        return response
+    }
+
+    override suspend fun simpleLoginFacebook(request: SimpleLogin): ResponseToken? {
+        val response =  userRepository.simpleLoginFacebook(request)
+        getTokenAndSaveUser(response)
+
+        return response
+    }
+
+    override suspend fun simpleLoginGoogle(request: SimpleLogin): ResponseToken? {
+        val response =  userRepository.simpleLoginGoogle(request)
         getTokenAndSaveUser(response)
 
         return response

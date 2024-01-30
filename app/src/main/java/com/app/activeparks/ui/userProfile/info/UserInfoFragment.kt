@@ -169,13 +169,7 @@ class UserInfoFragment : Fragment() {
 
                         tvUserName.text = "${it.firstName} ${it.lastName}"
 
-                        tvUserRole.text = if (it.isTrainer.toBoolean()) {
-                            UserRole.TRAINER.role
-                        } else if (it.isCoordinatorReport.toBoolean()) {
-                            UserRole.COORDINATOR.role
-                        } else {
-                            UserRole.USER.role
-                        }
+                        tvUserRole.text = UserRole.getRoleByKeyId(it.roleId)
                     }
                 }
             }

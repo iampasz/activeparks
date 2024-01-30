@@ -64,13 +64,7 @@ class ProfileHomeFragment : Fragment() {
                             .error(R.drawable.ic_prew)
                             .into(iProfileUser.vBackgroundUser)
 
-                        iProfileUser.tvUserRole.text = if (it.isTrainer.toBoolean()) {
-                            UserRole.TRAINER.role
-                        } else if (it.isCoordinatorReport.toBoolean()) {
-                            UserRole.COORDINATOR.role
-                        } else {
-                            UserRole.USER.role
-                        }
+                        iProfileUser.tvUserRole.text = UserRole.getRoleByKeyId(it.roleId)
                     }
                 }
             }
@@ -93,7 +87,6 @@ class ProfileHomeFragment : Fragment() {
             iProfileUser.ivMenu.setOnClickListener {
                 openFragment(MenuProfileFragment())
             }
-
 
             FileHelper.changeSize(iProfileUser.vBackgroundUser, resources)
             FileHelper.changeSize(iProfileUser.vBackgroundUser, iProfileUser.ivUser)

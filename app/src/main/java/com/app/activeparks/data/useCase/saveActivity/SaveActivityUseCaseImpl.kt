@@ -3,6 +3,8 @@ package com.app.activeparks.data.useCase.saveActivity
 import com.app.activeparks.data.db.entity.ActiveEntity
 import com.app.activeparks.data.model.activity.ActivityItemResponse
 import com.app.activeparks.data.model.activity.ActivityResponse
+import com.app.activeparks.data.model.activity.AddActivityResponse
+import com.app.activeparks.data.model.registration.ResponseId
 import com.app.activeparks.data.repository.saveActivity.SaveActivityRepository
 
 /**
@@ -13,6 +15,10 @@ class SaveActivityUseCaseImpl(
 ) : SaveActivityUseCase {
     override suspend fun insert(active: ActiveEntity) {
         repository.insert(active)
+    }
+
+    override suspend fun updateActivity(id: String, request: AddActivityResponse): ResponseId? {
+        return repository.updateActivity(id, request)
     }
 
     override suspend fun getActive(keyId: Long): ActiveEntity {

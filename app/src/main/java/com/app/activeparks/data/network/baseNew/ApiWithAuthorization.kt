@@ -67,6 +67,7 @@ interface ApiWithAuthorization {
         @Path("id") id: String,
         @Body request: AddActivityResponse
     ): Response<ResponseId>
+
     @GET("/api/v1/workouts-activity/{id}")
     suspend fun getWorkoutActivity(
         @Path("id") id: String

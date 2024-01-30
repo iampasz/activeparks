@@ -12,6 +12,7 @@ import com.app.activeparks.data.model.registration.ResponseToken
 import com.app.activeparks.data.model.registration.SendCodeEmailRequest
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.registration.SendCodePhoneRequest
+import com.app.activeparks.data.model.registration.SimpleLogin
 import com.app.activeparks.data.model.registration.User
 import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswordRequest
@@ -48,6 +49,14 @@ data class UserRepositoryImpl(
 
     override suspend fun login(request: LoginRequest): ResponseToken? {
         return networkManager.login(request)
+    }
+
+    override suspend fun simpleLoginFacebook(request: SimpleLogin): ResponseToken? {
+        return networkManager.simpleLoginFacebook(request)
+    }
+
+    override suspend fun simpleLoginGoogle(request: SimpleLogin): ResponseToken? {
+        return networkManager.simpleLoginGoogle(request)
     }
 
     override suspend fun getUser(id: String): User? {

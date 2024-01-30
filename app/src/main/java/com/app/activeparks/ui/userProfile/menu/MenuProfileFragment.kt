@@ -16,7 +16,7 @@ import com.app.activeparks.ui.support.SupportActivity
 import com.app.activeparks.ui.userProfile.home.ProfileHomeViewModel
 import com.app.activeparks.util.URL_INFO_LIST
 import com.app.activeparks.util.extention.gone
-import com.app.activeparks.util.extention.toBoolean
+import com.app.activeparks.util.extention.logOut
 import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -65,21 +65,20 @@ class MenuProfileFragment : Fragment() {
 
                         tvUserName.text = "${it.firstName} ${it.lastName}"
 
-                        tvUserRole.text = if (it.isTrainer.toBoolean()) {
+                        tvUserRole.text = UserRole.getRoleByKeyId(it.roleId)
+                        if (it.isTrainer == 2) {
                             tvFavorite.gone()
                             tvKnowledgeBase.gone()
                             tvAdminEvent.gone()
-                            UserRole.TRAINER.role
-                        } else if (it.isCoordinatorReport.toBoolean()) {
+                        } else if (it.roleId == UserRole.ADMIN.keyId || it.roleId == UserRole.EVENT_MODERATOR.keyId) {
                             tvFavorite.gone()
                             tvKnowledgeBase.gone()
+                            tvActiveRoads.gone()
                             tvRoads.gone()
-                            UserRole.COORDINATOR.role
                         } else {
                             tvActiveRoads.gone()
                             tvRoads.gone()
                             tvAdminEvent.gone()
-                            UserRole.USER.role
                         }
                     }
                 }
@@ -87,11 +86,7 @@ class MenuProfileFragment : Fragment() {
 
             logOut.observe(viewLifecycleOwner) {
                 if (it) {
-                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestEmail()
-                        .build()
-                    val mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-                    mGoogleSignInClient.signOut()
+                    logOut(requireActivity())
                     onBack()
                 }
             }

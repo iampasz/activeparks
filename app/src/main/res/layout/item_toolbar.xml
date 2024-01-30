@@ -45,10 +45,7 @@
         android:layout_marginEnd="16dp"
         android:layout_weight="1"
         android:contentDescription="@string/icon"
-        android:src="@drawable/ic_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

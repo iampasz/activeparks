@@ -11,6 +11,7 @@ import com.app.activeparks.data.model.registration.LoginRequest
 import com.app.activeparks.data.model.registration.PulseZoneRequest
 import com.app.activeparks.data.model.registration.SendCodeEmailRequest
 import com.app.activeparks.data.model.registration.SendCodePhoneRequest
+import com.app.activeparks.data.model.registration.SimpleLogin
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
 import com.app.activeparks.data.useCase.registration.UserUseCase
@@ -161,6 +162,39 @@ class RegistrationViewModel(
             }
         }
     }
+
+    fun simpleLoginFacebook() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                userUseCase.simpleLoginFacebook(
+                    SimpleLogin(
+                        facebookToken = additionData.facebookToken
+                    )
+                )
+            }.onSuccess { response ->
+                response?.let {
+                    onLoggedIn.value = true
+                } ?: kotlin.run { onHideProgress.value = true }
+            }
+        }
+    }
+
+    fun simpleLoginGoogle() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                userUseCase.simpleLoginGoogle(
+                    SimpleLogin(
+                        googleToken = additionData.googleToken
+                    )
+                )
+            }.onSuccess { response ->
+                response?.let {
+                    onLoggedIn.value = true
+                } ?: kotlin.run { onHideProgress.value = true }
+            }
+        }
+    }
+
 
     private fun clearUser() {
         viewModelScope.launch {

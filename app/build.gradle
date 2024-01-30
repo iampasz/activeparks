@@ -179,6 +179,9 @@ dependencies {
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.kal72:RackMonthPicker:1.6.1'
+    implementation 'com.facebook.android:facebook-android-sdk:latest.release'
+
+
 
 
 

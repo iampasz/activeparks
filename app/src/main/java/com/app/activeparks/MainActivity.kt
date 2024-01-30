@@ -16,6 +16,7 @@ import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.ui.userProfile.activities.AllActivitiesFragment
 import com.app.activeparks.ui.userProfile.activityInfo.ActivityInfoFragment
 import com.app.activeparks.ui.userProfile.activityInfo.ActivityInfoViewModel
+import com.app.activeparks.ui.userProfile.activityInfo.gallery.ImageGalleryFragment
 import com.app.activeparks.ui.userProfile.edit.EditProfileFragment
 import com.app.activeparks.ui.userProfile.home.ProfileHomeFragment
 import com.app.activeparks.ui.userProfile.home.ProfileHomeViewModel
@@ -145,6 +146,7 @@ class MainActivity : AppCompatActivity(), FragmentInteface {
                 fragment is AddVideoUserProfile ||
                 fragment is ActivityInfoFragment ||
                 fragment is AllActivitiesFragment ||
+                fragment is ImageGalleryFragment ||
                 fragment is EditProfileFragment
             ) {
                 supportFragmentManager

@@ -85,7 +85,6 @@ class ProfileFragment : Fragment(), OnRefreshListener {
                 if (user.sex != null) {
                     view?.findViewById<View>(R.id.layout_sex)?.visibility =
                         View.VISIBLE
-                    // binding.sex.setText(if (user.sex == "male") "Чоловік" else "Жінка")
                 }
                 if (viewModelOld.isProfile(user.roleId) == true) {
                     view?.findViewById<View>(R.id.web_title_action)?.visibility =

@@ -8,6 +8,8 @@ import java.util.UUID
 const val MIN_PASSWORD_LENGTH = 8
 const val MIN_ACTIVITY_TITLE_LENGTH = 5
 const val ANDROID_TYPE_ID = 1
+const val ADMIN = "631db81f-fa07-42e2-b394-062c9be66b09"
+const val COORDINATOR = "5dcf0363-d171-45db-9280-cb337ca5e101"
 
 const val SESSION_REPOSITORY = "com.app.activeparks"
 

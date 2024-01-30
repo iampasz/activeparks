@@ -18,6 +18,7 @@ import com.app.activeparks.data.model.registration.ResponseSuccess
 import com.app.activeparks.data.model.registration.ResponseToken
 import com.app.activeparks.data.model.registration.SendCodeEmailRequest
 import com.app.activeparks.data.model.registration.SendCodePhoneRequest
+import com.app.activeparks.data.model.registration.SimpleLogin
 import com.app.activeparks.data.model.registration.User
 import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
@@ -47,6 +48,8 @@ interface NetworkManager {
     suspend fun verificationPhoneCode(request: VerificationPhoneCode): ResponseToken?
     suspend fun sendCodeEmail(request: SendCodeEmailRequest): ResponseSuccess?
     suspend fun login(request: LoginRequest): ResponseToken?
+    suspend fun simpleLoginFacebook(request: SimpleLogin): ResponseToken?
+    suspend fun simpleLoginGoogle(request: SimpleLogin): ResponseToken?
 
     suspend fun forgotPassword(request: ForgotPasswordRequest): ResponseSuccess?
     suspend fun verificationCode(request: VerificationCodeForgotPasswordRequest): ResponseSuccess?
@@ -59,6 +62,7 @@ interface NetworkManager {
     suspend fun setHeartRateZones(request: PulseZoneRequest): ResponseSuccess?
     suspend fun getHeartRateZones(): PulseZoneRequest?
     suspend fun createActivity(request: AddActivityResponse): ResponseId?
+    suspend fun updateActivity(id: String, request: AddActivityResponse): ResponseId?
     suspend fun getWorkoutsActivity(): ActivityResponse?
     suspend fun getWorkoutActivity(id: String): ActivityItemResponse?
     suspend fun getWorkoutsActivity(
@@ -98,5 +102,5 @@ interface NetworkManager {
 
     suspend fun getNews(): NewsListResponse?
     suspend fun getNewsDetails(id: String): ItemNews?
-    suspend fun getClubNewsDetails(club:String, id: String): ItemNews?
+    suspend fun getClubNewsDetails(club: String, id: String): ItemNews?
 }

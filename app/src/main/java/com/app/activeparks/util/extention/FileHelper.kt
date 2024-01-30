@@ -51,6 +51,22 @@ class FileHelper {
             view.layoutParams = layoutParams
         }
 
+        fun changeSize(view: View, resources: Resources, spanCount: Int) {
+            val ratioWidth = 16
+            val ratioHeight = 10
+
+            val screenWidth = resources.displayMetrics.widthPixels
+            val itemWidth = screenWidth / spanCount
+
+            val newHeight = (itemWidth.toFloat() / ratioWidth * ratioHeight).toInt()
+
+            val layoutParams = view.layoutParams
+            layoutParams.width = itemWidth
+            layoutParams.height = newHeight
+            view.layoutParams = layoutParams
+        }
+
+
         fun changeSize(firstImageView: ImageView, secondImageView: ImageView) {
             val firstImageLayoutParams = firstImageView.layoutParams
             val firstImageHeight = firstImageLayoutParams.height
