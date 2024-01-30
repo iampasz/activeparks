@@ -4,6 +4,7 @@ import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityItemResponse
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
+import com.app.activeparks.data.model.clubs.ClubListResponse
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.news.ItemNews
@@ -15,9 +16,13 @@ import com.app.activeparks.data.model.registration.ResponseSuccess
 import com.app.activeparks.data.model.registration.User
 import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
+import com.app.activeparks.data.model.routeActive.ListRouteActiveResponse
+import com.app.activeparks.data.model.routeActive.RouteActiveResponse
 import com.app.activeparks.data.model.sportevents.EventResponse
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.statistic.StatisticResponse
+import com.app.activeparks.data.model.track.ListTrackResponse
+import com.app.activeparks.data.model.track.TrackResponse
 import com.app.activeparks.data.model.uservideo.UserVideoItem
 import com.app.activeparks.data.model.uservideo.VideosResponse
 import okhttp3.MultipartBody
@@ -76,6 +81,7 @@ interface ApiWithAuthorization {
 
     @GET("api/v1/workouts-activity")
     suspend fun getWorkoutsActivity(@Query("sort[createdAt]") sort: String = "asc"): Response<ActivityResponse>
+
     @GET("api/v1/workouts-activity")
     suspend fun getWorkoutsActivity(
         @Query("filters[startsFrom]") startsFrom: String,
@@ -132,6 +138,74 @@ interface ApiWithAuthorization {
         @Path("id") id: String?,
         @Body itemEvent: ItemEvent?
     ): Call<String>
+
+    @GET("/api/v1/track?sort[updateUp]=asc")
+    suspend fun getTracks(
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int
+    ): Response<ListTrackResponse>
+
+    @GET("/api/v1/track?sort[updateUp]=asc")
+    suspend fun getTracks(
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("filters[all]") search: String
+    ): Response<ListTrackResponse>
+
+    @POST("/api/v1/track")
+    suspend fun createTrack(
+    ): Response<TrackResponse>
+
+    @GET("/api/v1/track/{id}")
+    suspend fun getTrack(
+        @Path("id") id: String,
+    ): Response<TrackResponse>
+
+    @GET("/api/v1/track/{id}")
+    suspend fun saveTrack(
+        @Path("id") id: String,
+        @Body request: TrackResponse,
+    ): Response<TrackResponse>
+
+    @DELETE("/api/v1/track/{id}")
+    suspend fun removeTrack(
+        @Path("id") id: String,
+    ): Response<TrackResponse>
+
+    @GET("/api/v1/active-routes?sort[updateUp]=asc")
+    suspend fun getRouteActives(
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int
+    ): Response<ListRouteActiveResponse>
+
+    @GET("/api/v1/active-routes?sort[updateUp]=asc")
+    suspend fun getRouteActives(
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("filters[all]") search: String
+    ): Response<ListRouteActiveResponse>
+
+    @POST("/api/v1/active-routes")
+    suspend fun createRouteActive(
+        @Path("id") id: String
+    ): Response<RouteActiveResponse>
+
+    @GET("/api/v1/active-routes/{id}")
+    suspend fun getRouteActive(
+        @Path("id") id: String,
+    ): Response<RouteActiveResponse>
+
+    @GET("/api/v1/active-routes/{id}")
+    suspend fun saveRouteActive(
+        @Path("id") id: String,
+        @Body request: RouteActiveResponse,
+    ): Response<RouteActiveResponse>
+
+    @DELETE("/api/v1/active-routes/{id}")
+    suspend fun removeRouteActive(
+        @Path("id") id: String,
+    ): Response<RouteActiveResponse>
+
 
     //Upload file
     @POST("/api/v1/uploads")
@@ -206,4 +280,7 @@ interface ApiWithAuthorization {
     ): Response<ItemNews>
 
 
+    //Clubs
+    @GET("/api/v1/clubs?offset=0")
+    suspend fun getClubList(): Response<ClubListResponse>
 }

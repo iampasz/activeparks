@@ -13,6 +13,8 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
+import com.app.activeparks.ui.track.fragments.listTrack.TracksListFragment
+import com.app.activeparks.ui.track.fragments.saveTrack.SaveTrackFragment
 import com.app.activeparks.ui.userProfile.activities.AllActivitiesFragment
 import com.app.activeparks.ui.userProfile.activityInfo.ActivityInfoFragment
 import com.app.activeparks.ui.userProfile.activityInfo.ActivityInfoViewModel
@@ -35,7 +37,6 @@ import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.ActivityMainBinding
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
@@ -147,7 +148,9 @@ class MainActivity : AppCompatActivity(), FragmentInteface {
                 fragment is ActivityInfoFragment ||
                 fragment is AllActivitiesFragment ||
                 fragment is ImageGalleryFragment ||
-                fragment is EditProfileFragment
+                fragment is EditProfileFragment ||
+                fragment is TracksListFragment ||
+                fragment is SaveTrackFragment
             ) {
                 supportFragmentManager
                     .beginTransaction()

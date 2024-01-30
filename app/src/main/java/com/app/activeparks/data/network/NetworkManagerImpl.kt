@@ -6,6 +6,7 @@ import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityItemResponse
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
+import com.app.activeparks.data.model.clubs.ClubListResponse
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.news.ItemNews
@@ -26,12 +27,16 @@ import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswordRequest
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
+import com.app.activeparks.data.model.routeActive.ListRouteActiveResponse
+import com.app.activeparks.data.model.routeActive.RouteActiveResponse
 import com.app.activeparks.data.model.sportevents.EventResponse
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import com.app.activeparks.data.model.statistic.StatisticResponse
 import com.app.activeparks.data.model.uservideo.UserVideoItem
 import com.app.activeparks.data.model.uservideo.VideosResponse
+import com.app.activeparks.data.model.track.ListTrackResponse
+import com.app.activeparks.data.model.track.TrackResponse
 import com.app.activeparks.data.model.weather.WeatherResponse
 import com.app.activeparks.data.network.baseNew.ApiWithAuthorization
 import com.app.activeparks.data.network.baseNew.ApiWithOutAuthorization
@@ -329,6 +334,17 @@ class NetworkManagerImpl(
         }
     }
 
+    override suspend fun getClubList(): ClubListResponse? {
+        val response = apiWithAuthorization.getClubList()
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+
 
     override suspend fun getNews(): NewsListResponse? {
 
@@ -489,6 +505,118 @@ class NetworkManagerImpl(
 
         return response.body()
     }
+
+    override suspend fun getTracks(name: String): ListTrackResponse? {
+        val response = if (name.count() > 1) {
+            apiWithAuthorization.getTracks(0, 50, name)
+        } else {
+            apiWithAuthorization.getTracks(0, 50)
+        }
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getTrack(id: String): TrackResponse? {
+        val response = apiWithAuthorization.getTrack(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun createTrack(): TrackResponse? {
+        val response = apiWithAuthorization.createTrack()
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun removeTrack(id: String): TrackResponse? {
+        val response = apiWithAuthorization.removeTrack(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun saveTrack(id: String, request: TrackResponse): TrackResponse? {
+        val response = apiWithAuthorization.saveTrack(id, request)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getRouteActives(name: String): ListRouteActiveResponse? {
+        val response = if (name.count() > 1) {
+            apiWithAuthorization.getRouteActives(0, 50, name)
+        } else {
+            apiWithAuthorization.getRouteActives(0, 50)
+        }
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getRouteActive(id: String): RouteActiveResponse? {
+        val response = apiWithAuthorization.getRouteActive(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun insert(id: String): RouteActiveResponse? {
+        val response = apiWithAuthorization.createRouteActive(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun removeRouteActives(id: String): RouteActiveResponse? {
+        val response = apiWithAuthorization.removeRouteActive(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun saveRouteActive(
+        id: String,
+        request: RouteActiveResponse
+    ): RouteActiveResponse? {
+        val response = apiWithAuthorization.saveRouteActive(id, request)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
 
     //Load file
     override suspend fun uploadFile(

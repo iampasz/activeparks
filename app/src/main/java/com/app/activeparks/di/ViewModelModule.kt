@@ -4,6 +4,8 @@ import com.app.activeparks.MainViewModel
 import com.app.activeparks.ui.active.ActiveViewModel
 import com.app.activeparks.ui.active.fragments.pulseGadget.PulseGadgetViewModel
 import com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityViewModel
+import com.app.activeparks.ui.clubs.ClubsViewModel
+import com.app.activeparks.ui.clubs.ClubsViewModelKT
 import com.app.activeparks.ui.event.fragments.MainEventViewModel
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel
 import com.app.activeparks.ui.event.viewmodel.EventViewModel
@@ -19,7 +21,12 @@ import com.app.activeparks.ui.participants.ParticipantsViewModel
 import com.app.activeparks.ui.profile.ProfileViewModel
 import com.app.activeparks.ui.registration.RegistrationViewModel
 import com.app.activeparks.ui.registration.fragments.forgotPassword.ForgotPasswordViewModel
+import com.app.activeparks.ui.routeActive.fragments.detailsRouteActive.DetailsRouteActiveViewModel
+import com.app.activeparks.ui.routeActive.fragments.listRouteActive.RouteActiveListViewModel
+import com.app.activeparks.ui.routeActive.fragments.saveRouteActive.SaveRouteActiveViewModel
 import com.app.activeparks.ui.selectvideo.SelectVideoViewModel
+import com.app.activeparks.ui.track.fragments.listTrack.TracksListViewModel
+import com.app.activeparks.ui.track.fragments.saveTrack.SaveTrackViewModel
 import com.app.activeparks.ui.userProfile.activities.AllActivitiesViewModel
 import com.app.activeparks.ui.userProfile.activityInfo.ActivityInfoViewModel
 import com.app.activeparks.ui.userProfile.edit.EditProfileViewModel
@@ -49,6 +56,8 @@ val viewModelModule = module {
     viewModel { VideoUserProfileViewModel(get(), get(), get()) }
     viewModel { MainViewModel(get()) }
     viewModel { EventRouteViewModel(get(), get()) }
+    viewModel { MainViewModel(get(), get()) }
+    viewModel { EventRouteViewModel(get(), get()) }
     viewModel { ProfileViewModel(get()) }
     viewModel { SelectVideoViewModel(get()) }
 
@@ -62,8 +71,17 @@ val viewModelModule = module {
     viewModel { EventViewModel(get()) }
     viewModel { ParticipantsViewModel(get()) }
     viewModel { MainEventViewModel(get(), get(), get()) }
+    viewModel { ClubsViewModelKT(get(), get()) }
+    viewModel { ClubsViewModel(get()) }
+    viewModel { MainEventViewModel(get(), get(), get()) }
     viewModel { GalleryViewModel() }
     viewModel { BlogViewModel(get()) }
     viewModel { NewsViewModel(get()) }
 
+    viewModel { TracksListViewModel(get()) }
+    viewModel { SaveTrackViewModel(get(), get()) }
+
+    viewModel { RouteActiveListViewModel(get()) }
+    viewModel { DetailsRouteActiveViewModel(get()) }
+    viewModel { SaveRouteActiveViewModel(get(), get()) }
 }

@@ -14,12 +14,16 @@ import com.app.activeparks.data.repository.profileState.ProfileStateRepository
 import com.app.activeparks.data.repository.profileState.ProfileStateRepositoryImpl
 import com.app.activeparks.data.repository.registratio.UserRepository
 import com.app.activeparks.data.repository.registratio.UserRepositoryImpl
+import com.app.activeparks.data.repository.routeActive.RouteActiveStateRepository
+import com.app.activeparks.data.repository.routeActive.RouteActiveStateRepositoryImpl
 import com.app.activeparks.data.repository.saveActivity.SaveActivityRepository
 import com.app.activeparks.data.repository.saveActivity.SaveActivityRepositoryImpl
 import com.app.activeparks.data.repository.sesion.MobileApiSessionRepository
 import com.app.activeparks.data.repository.sesion.SharedPreferencesMobileApiSessionRepository
 import com.app.activeparks.data.repository.statistics.StatisticsRepository
 import com.app.activeparks.data.repository.statistics.StatisticsRepositoryImpl
+import com.app.activeparks.data.repository.track.TrackStateRepository
+import com.app.activeparks.data.repository.track.TrackStateRepositoryImpl
 import com.app.activeparks.data.repository.uploadFile.UploadFileRepository
 import com.app.activeparks.data.repository.uploadFile.UploadFileRepositoryImpl
 import com.app.activeparks.data.repository.video.VideoRepository
@@ -47,4 +51,7 @@ val repositoryModule = module{
         single<UserRepository> { UserRepositoryImpl(get(), get()) }
         single<GalleryStateRepository> { GalleryStateRepositoryImpl(get()) }
         single<NewsRepository> { NewsRepositoryImpl(get()) }
+
+        single<TrackStateRepository> { TrackStateRepositoryImpl(get()) }
+        single<RouteActiveStateRepository> { RouteActiveStateRepositoryImpl(get()) }
 }

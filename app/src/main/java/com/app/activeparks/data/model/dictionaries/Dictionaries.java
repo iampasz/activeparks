@@ -74,6 +74,10 @@ public class Dictionaries {
     @SerializedName("SupportTicketStatuses")
     @Expose
     private List<BaseDictionaries> supportTicketStatuses = null;
+
+    @SerializedName("ClubTypes")
+    @Expose
+    private List<BaseDictionaries> clubTypes = null;
     @SerializedName("ClubStatuses")
     @Expose
     private List<BaseDictionaries> clubStatuses = null;
@@ -191,6 +195,10 @@ public class Dictionaries {
 
     public void setRegions(List<Region> regions) {
         this.regions = regions;
+    }
+
+    public List<BaseDictionaries> getClubTypes() {
+        return clubTypes;
     }
 
     public List<BaseDictionaries> getUserRoles() {

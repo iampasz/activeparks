@@ -13,13 +13,12 @@ import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
 import com.app.activeparks.data.model.user.UserRole
 import com.app.activeparks.ui.support.SupportActivity
+import com.app.activeparks.ui.track.fragments.listTrack.TracksListFragment
 import com.app.activeparks.ui.userProfile.home.ProfileHomeViewModel
 import com.app.activeparks.util.URL_INFO_LIST
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.logOut
 import com.bumptech.glide.Glide
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentMenuProfileBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -130,6 +129,9 @@ class MenuProfileFragment : Fragment() {
             tvSupport.setOnClickListener {
                 startActivity(Intent(requireActivity(), SupportActivity::class.java))
             }
+            tvActiveRouts.setOnClickListener {
+                addFragment(TracksListFragment())
+            }
         }
     }
 
@@ -180,6 +182,10 @@ class MenuProfileFragment : Fragment() {
                 )
             )
         }
+    }
+
+    private fun addFragment(fragment: Fragment) {
+        (requireActivity() as? MainActivity)?.addFragment(fragment)
     }
 
     private fun onBack() {

@@ -4,6 +4,7 @@ import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityItemResponse
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
+import com.app.activeparks.data.model.clubs.ClubListResponse
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.news.ItemNews
@@ -24,10 +25,14 @@ import com.app.activeparks.data.model.registration.UserResponse
 import com.app.activeparks.data.model.registration.VerificationCodeEmailRequest
 import com.app.activeparks.data.model.registration.VerificationCodeForgotPasswordRequest
 import com.app.activeparks.data.model.registration.VerificationPhoneCode
+import com.app.activeparks.data.model.routeActive.ListRouteActiveResponse
+import com.app.activeparks.data.model.routeActive.RouteActiveResponse
 import com.app.activeparks.data.model.sportevents.EventResponse
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import com.app.activeparks.data.model.statistic.StatisticResponse
+import com.app.activeparks.data.model.track.ListTrackResponse
+import com.app.activeparks.data.model.track.TrackResponse
 import com.app.activeparks.data.model.uservideo.UserVideoItem
 import com.app.activeparks.data.model.uservideo.VideosResponse
 import com.app.activeparks.data.model.weather.WeatherResponse
@@ -103,4 +108,19 @@ interface NetworkManager {
     suspend fun getNews(): NewsListResponse?
     suspend fun getNewsDetails(id: String): ItemNews?
     suspend fun getClubNewsDetails(club: String, id: String): ItemNews?
+
+    suspend fun getTracks(name: String): ListTrackResponse?
+    suspend fun getTrack(id: String): TrackResponse?
+    suspend fun createTrack(): TrackResponse?
+    suspend fun removeTrack(id: String): TrackResponse?
+    suspend fun saveTrack(id: String, request: TrackResponse): TrackResponse?
+
+    suspend fun getRouteActives(name: String): ListRouteActiveResponse?
+    suspend fun getRouteActive(id: String): RouteActiveResponse?
+    suspend fun insert(id: String): RouteActiveResponse?
+    suspend fun removeRouteActives(id: String): RouteActiveResponse?
+    suspend fun saveRouteActive(id: String, request: RouteActiveResponse): RouteActiveResponse?
+
+    //Clubs
+    suspend fun getClubList(): ClubListResponse?
 }

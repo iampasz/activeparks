@@ -2,6 +2,8 @@ package com.app.activeparks.di
 
 import com.app.activeparks.data.useCase.activeState.ActivityStateUseCase
 import com.app.activeparks.data.useCase.activeState.ActivityStateUseCaseImpl
+import com.app.activeparks.data.useCase.clubs.ClubsUseCase
+import com.app.activeparks.data.useCase.clubs.ClubsUseCaseImpl
 import com.app.activeparks.data.useCase.photoGallery.PhotoGalleryUseCase
 import com.app.activeparks.data.useCase.photoGallery.PhotoGalleryUseCaseImpl
 import com.app.activeparks.data.useCase.registration.UserUseCase
@@ -16,8 +18,12 @@ import com.app.activeparks.data.useCase.pauseActivity.PauseActivityUseCase
 import com.app.activeparks.data.useCase.pauseActivity.PauseActivityUseCaseImpl
 import com.app.activeparks.data.useCase.profileState.ProfileStateUseCase
 import com.app.activeparks.data.useCase.profileState.ProfileStateUseCaseImpl
+import com.app.activeparks.data.useCase.routeActive.RouteActiveStateUseCase
+import com.app.activeparks.data.useCase.routeActive.RouteActiveStateUseCaseImpl
 import com.app.activeparks.data.useCase.statistics.StatisticsUseCase
 import com.app.activeparks.data.useCase.statistics.StatisticsUseCaseImpl
+import com.app.activeparks.data.useCase.trackState.TrackStateUseCase
+import com.app.activeparks.data.useCase.trackState.TrackStateUseCaseImpl
 import com.app.activeparks.data.useCase.uploadFile.UploadFileUseCase
 import com.app.activeparks.data.useCase.uploadFile.UploadFileUseCaseImpl
 import com.app.activeparks.data.useCase.video.VideoUseCase
@@ -43,5 +49,9 @@ val useCaseModule = module {
     single<UploadFileUseCase> { UploadFileUseCaseImpl(get()) }
     single<UserUseCase> { UserUseCaseImpl(get(), get(), get()) }
     single<PhotoGalleryUseCase> { PhotoGalleryUseCaseImpl(get()) }
+    single<ClubsUseCase> { ClubsUseCaseImpl(get()) }
     single<NewsUseCase> { NewsUseCaseImpl(get()) }
+
+    single<TrackStateUseCase> { TrackStateUseCaseImpl(get()) }
+    single<RouteActiveStateUseCase> { RouteActiveStateUseCaseImpl(get()) }
 }
