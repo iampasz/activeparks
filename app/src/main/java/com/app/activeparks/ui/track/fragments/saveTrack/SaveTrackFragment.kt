@@ -10,6 +10,7 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -17,7 +18,9 @@ import androidx.fragment.app.activityViewModels
 import com.app.activeparks.MainActivity
 import com.app.activeparks.data.model.track.PointsTrack
 import com.app.activeparks.ui.active.ActiveViewModel
+import com.app.activeparks.ui.active.model.Feeling
 import com.app.activeparks.ui.track.fragments.changeMapTrack.TrackChangeMapFragment
+import com.app.activeparks.ui.track.model.Complexity
 import com.app.activeparks.util.AddressOfDoubleUtil
 import com.app.activeparks.util.EasyTextWatcher
 import com.app.activeparks.util.MapsViewController
@@ -47,15 +50,12 @@ class SaveTrackFragment : Fragment() {
     private var mapsViewController: MapsViewController? = null
     private var polyLine = Polyline()
 
-    private var trackId: String = ""
-
     companion object {
         fun newInstance(trackId: String): SaveTrackFragment {
             val fragment = SaveTrackFragment()
             val args = Bundle()
             args.putString("track_id", trackId)
             fragment.arguments = args
-            fragment.trackId = trackId
             return fragment
         }
     }
@@ -126,7 +126,7 @@ class SaveTrackFragment : Fragment() {
         }
 
         bIntegrity.setOnClickListener {
-            openGalleryForImage()
+            selectIntegrity()
         }
 
         bMainPhoto.setOnClickListener {
@@ -197,6 +197,29 @@ class SaveTrackFragment : Fragment() {
             }
         }
     }
+
+//    private fun initComplexityAdapter() {
+//        val complexitys = Complexity.getComplexity()
+//        val popupMenu = PopupMenu(requireContext(), binding.vComplexity)
+//        binding.tvComplexity.setOnClickListener {
+//            popupMenu.show()
+//        }
+//
+//        complexitys.forEach { complexity ->
+//            popupMenu.menu.add(complexity.title).setIcon(complexity.img).setOnMenuItemClickListener {
+//                onComplexitySelected(complexity)
+//                true
+//            }
+//        }
+//    }
+
+    private fun onComplexitySelected(complexity: Complexity) {
+        with(binding) {
+            tvComplexity.text = complexity.title
+            ivComplexity.setImageResource(complexity.img)
+        }
+    }
+
     private fun handleSelectedImage(data: Intent?) {
         val selectedImage: Uri? = data?.data
         viewModel.trackDate.value?.coverImage = selectedImage?.toString()
@@ -228,6 +251,18 @@ class SaveTrackFragment : Fragment() {
     private fun openGalleryForImage() {
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         imageActivityResultLauncher.launch(galleryIntent)
+    }
+
+    private fun selectIntegrity() {
+        if (viewModel.trackDate.value?.integrity == true){
+            binding.bIntegrity.resources.getDrawable(R.drawable.background_green,null)
+            binding.bIntegrity.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            viewModel.trackDate.value?.integrity = false
+        }else{
+            binding.bIntegrity.resources.getDrawable(R.drawable.button_gray_video,null)
+            binding.bIntegrity.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_color))
+            viewModel.trackDate.value?.integrity = true
+        }
     }
 
     private fun openFragment(fragment: Fragment) =

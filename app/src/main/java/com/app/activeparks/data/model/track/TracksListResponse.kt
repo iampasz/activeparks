@@ -22,7 +22,7 @@ data class TrackResponse(
     val dateStartRecord: String? = null,
     var description: String? = null,
     val id: String,
-    val integrity: Boolean? = null,
+    var integrity: Boolean? = null,
     val isTrackActive: Boolean? = null,
     var name: String? = null,
     var photos: List<String>? = null,
