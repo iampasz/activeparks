@@ -4,6 +4,7 @@ import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.clubs.ClubListResponse
+import com.app.activeparks.data.model.clubs.ClubsCombinedResponse
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.news.ItemNews
@@ -117,7 +118,6 @@ interface ApiWithAuthorization {
     @POST("/api/v1/uploads")
     @Multipart
     suspend fun uploadFile(
-
         @Part("fileName") fileName: String?,
         @Part("chunkIndex") chunkIndex: Int,
         @Part("totalChunk") totalChunk: Int,
@@ -183,10 +183,11 @@ interface ApiWithAuthorization {
         @Path("id") id: String?
     ): Response<ItemNews>
 
-
-
-
     //Clubs
     @GET("/api/v1/clubs?offset=0")
     suspend fun getClubList(): Response<ClubListResponse>
+
+    @GET("/api/v1/clubs/my?offset=0&limit=5")
+    suspend fun getCombinatedClubList(): Response<ClubsCombinedResponse>
+
 }

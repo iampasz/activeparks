@@ -1,5 +1,7 @@
 package com.app.activeparks.di
 
+import com.app.activeparks.data.repository.clubs.ClubsRepository
+import com.app.activeparks.data.repository.clubs.ClubsRepositoryImpl
 import com.app.activeparks.data.repository.gallery.GalleryStateRepository
 import com.app.activeparks.data.repository.gallery.GalleryStateRepositoryImpl
 import com.app.activeparks.data.repository.ctiveState.ActivityStateRepository
@@ -44,4 +46,5 @@ val repositoryModule = module{
         single<UserRepository> { UserRepositoryImpl(get(), get()) }
         single<GalleryStateRepository> { GalleryStateRepositoryImpl(get()) }
         single<NewsRepository> { NewsRepositoryImpl(get()) }
+        single<ClubsRepository> { ClubsRepositoryImpl(get()) }
 }

@@ -56,7 +56,7 @@ val viewModelModule = module {
     viewModel { EventViewModel(get()) }
     viewModel { ParticipantsViewModel(get()) }
     viewModel { MainEventViewModel(get(),get(),get()) }
-    viewModel { ClubsViewModelKT(get(), get()) }
+    viewModel { ClubsViewModelKT(get()) }
     viewModel { ClubsViewModel(get()) }
     viewModel { MainEventViewModel(get(), get(), get()) }
     viewModel { GalleryViewModel() }
