@@ -49,7 +49,7 @@ val viewModelModule = module {
     viewModel { ForgotPasswordViewModel(get()) }
     viewModel { HomeBlogViewModel(get()) }
     viewModel { HomeLocationViewModel(get()) }
-    viewModel { HomeClubsViewModel(get(), get()) }
+    viewModel { HomeClubsViewModel(get()) }
     viewModel { HomeEventsViewModel(get(), get()) }
     viewModel { RegistrationViewModel(get(), androidContext()) }
 
