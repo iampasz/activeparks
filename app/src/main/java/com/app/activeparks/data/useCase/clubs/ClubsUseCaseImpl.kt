@@ -12,7 +12,7 @@ class ClubsUseCaseImpl (
          return repository.getClubList()
     }
 
-    override suspend fun getCombinatedClubList(id:String): ClubsCombinedResponse? {
-        return repository.getCombinatedClubList(id)
+    override suspend fun getCombinatedClubList(): ClubsCombinedResponse? {
+        return repository.getCombinatedClubList()
     }
 }

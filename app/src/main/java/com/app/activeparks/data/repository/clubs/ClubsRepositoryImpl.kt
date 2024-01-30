@@ -11,8 +11,8 @@ private val networkManager: NetworkManager
         return networkManager.getClubList()
     }
 
-    override suspend fun getCombinatedClubList(id:String): ClubsCombinedResponse? {
-        return networkManager.getCombinatedClubList(id)
+    override suspend fun getCombinatedClubList(): ClubsCombinedResponse? {
+        return networkManager.getCombinatedClubList()
     }
 
 

@@ -47,13 +47,12 @@ class ClubsListFragment : Fragment() {
             parentFragmentManager.removeFragment(this)
         }
 
-        clubsViewModelKT.getCombinatedClubList("5c4bc22a-7c74-431b-9a5a-c1ae1a28ce03")
+        clubsViewModelKT.getCombinatedClubList()
         initView()
         observe()
     }
 
     private fun observe() {
-
         clubsViewModelKT.clubList.observe(viewLifecycleOwner){v->
             val listPublished = v.items.published
             val listUserIsHead = v.items.userIsHead
@@ -62,7 +61,6 @@ class ClubsListFragment : Fragment() {
             adapterPublished.list.submitList(listPublished)
             adapterUserIsHead.list.submitList(listUserIsHead)
             adapterUserIsMember.list.submitList(listUserIsMember)
-
         }
     }
 

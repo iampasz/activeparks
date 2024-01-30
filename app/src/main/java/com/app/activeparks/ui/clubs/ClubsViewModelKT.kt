@@ -13,10 +13,10 @@ class ClubsViewModelKT(
 
     val clubList = MutableLiveData<ClubsCombinedResponse>()
 
-    fun getCombinatedClubList(id:String) {
+    fun getCombinatedClubList() {
         viewModelScope.launch {
             kotlin.runCatching {
-                clubsUseCase.getCombinatedClubList(id)
+                clubsUseCase.getCombinatedClubList()
             }.onSuccess { response ->
                 response?.let {
                     clubList.value = it

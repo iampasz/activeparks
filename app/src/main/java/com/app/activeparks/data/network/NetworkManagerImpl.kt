@@ -272,7 +272,7 @@ class NetworkManagerImpl(
         return response.body()
     }
 
-    override suspend fun getCombinatedClubList(id:String): ClubsCombinedResponse? {
+    override suspend fun getCombinatedClubList(): ClubsCombinedResponse? {
         val response = apiWithAuthorization.getCombinatedClubList()
         if (!response.isSuccessful) {
             Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()

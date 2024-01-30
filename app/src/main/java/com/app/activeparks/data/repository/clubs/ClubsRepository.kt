@@ -5,5 +5,5 @@ import com.app.activeparks.data.model.clubs.ClubsCombinedResponse
 
 interface ClubsRepository {
     suspend fun getClubList(): ClubListResponse?
-    suspend fun getCombinatedClubList(id:String): ClubsCombinedResponse?
+    suspend fun getCombinatedClubList(): ClubsCombinedResponse?
 }
