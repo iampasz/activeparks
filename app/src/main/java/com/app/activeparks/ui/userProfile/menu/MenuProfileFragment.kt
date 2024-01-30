@@ -72,10 +72,10 @@ class MenuProfileFragment : Fragment() {
                         } else if (it.roleId == UserRole.ADMIN.keyId || it.roleId == UserRole.EVENT_MODERATOR.keyId) {
                             tvFavorite.gone()
                             tvKnowledgeBase.gone()
-                            tvActiveRoads.gone()
+                            tvActiveRouts.gone()
                             tvRoads.gone()
                         } else {
-                            tvActiveRoads.gone()
+                            tvActiveRouts.gone()
                             tvRoads.gone()
                             tvAdminEvent.gone()
                         }

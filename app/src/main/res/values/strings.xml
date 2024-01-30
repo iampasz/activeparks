@@ -380,9 +380,6 @@
     <string name="tv_settings">Налаштування</string>
     <string name="tv_note">Нотатки тренування:</string>
     <string name="tv_pause_mode">Режим паузи</string>
-
-    <string name="last_posts">Останні пости</string>
-    <string name="search_by_posts">Пошук за постами</string>
     <string name="tv_add_30_photos">Оберыть до 30 фото, які будуть відображатись в галереї</string>
     <string name="tv_add_max_photo_count">Ви додали максимальну кількість фото</string>
 

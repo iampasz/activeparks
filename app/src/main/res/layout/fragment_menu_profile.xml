@@ -193,7 +193,7 @@
                 app:drawableStartCompat="@drawable/ic_light_bulb" />
 
             <TextView
-                android:id="@+id/tvActiveRoads"
+                android:id="@+id/tvActiveRouts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
