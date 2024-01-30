@@ -3,6 +3,7 @@ package com.app.activeparks.data.network
 import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
+import com.app.activeparks.data.model.clubs.ClubListResponse
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.news.ItemNews
@@ -98,4 +99,7 @@ interface NetworkManager {
     suspend fun insert(id: String): RouteActiveResponse?
     suspend fun removeRouteActives(id: String): RouteActiveResponse?
     suspend fun saveRouteActive(id: String, request: RouteActiveResponse): RouteActiveResponse?
+
+    //Clubs
+    suspend fun getClubList(): ClubListResponse?
 }

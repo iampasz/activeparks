@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constrain_events_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <com.applandeo.materialcalendarview.CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:showDividers="none"
+        app:abbreviationsBarColor="@color/background"
+        app:abbreviationsLabelsColor="@color/text_color"
+        app:eventsEnabled="true"
+        app:forwardButtonSrc="@drawable/ic_arrow_right_gray"
+        app:headerColor="@color/background"
+        app:headerLabelColor="@color/text_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginBaseline="0dp"
+        app:pagesColor="@color/background"
+        app:previousButtonSrc="@drawable/ic_arrow_left_gray"
+        app:selectionColor="@color/color_park"
+        app:todayLabelColor="@color/color_park"
+        app:type="one_day_picker">
+
+    </com.applandeo.materialcalendarview.CalendarView>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/nearest_event"
+        android:textAllCaps="true"
+        android:textColor="@color/text_color"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
