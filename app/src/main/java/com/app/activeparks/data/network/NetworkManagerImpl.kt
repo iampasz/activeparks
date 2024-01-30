@@ -7,6 +7,7 @@ import com.app.activeparks.data.model.activity.ActivityItemResponse
 import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.clubs.ClubListResponse
+import com.app.activeparks.data.model.clubs.ClubsCombinedResponse
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.news.ItemNews
@@ -341,6 +342,14 @@ class NetworkManagerImpl(
             Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
         }
 
+        return response.body()
+    }
+
+    override suspend fun getCombinatedClubList(): ClubsCombinedResponse? {
+        val response = apiWithAuthorization.getCombinatedClubList()
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
         return response.body()
     }
 
