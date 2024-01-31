@@ -45,18 +45,14 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
 
     private lateinit var eventMenu: Menu
     private lateinit var joinItem: MenuItem
-
     private val viewModel: EventViewModel by activityViewModel()
     private val participantVM: ParticipantsViewModel by activityViewModel()
-
     private var mapsViewController: MapsViewController? = null
-
     lateinit var binding: FragmentEventBinding
-
     private var isAdmin = false
     private var isEvent = true
-
     var eventId  = ""
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -73,10 +69,136 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.updateEventData(eventId)
+        viewModel.setCurrentId(eventId)
+
+        initNavigation()
+        onClick()
+        initView()
+        observe()
+        initClickListener()
+    }
+
+
+    private fun initClickListener() {
+        binding.share.setOnClickListener {
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "text/plain"
+            intent.putExtra(
+                Intent.EXTRA_SUBJECT,
+                "Хочу тебе запросити до заходу \"" + binding.include.nameEvent.text
+                    .toString() + "\""
+            )
+            intent.putExtra(
+                Intent.EXTRA_TEXT,
+                "Хочу тебе запросити до заходу \"" + binding.include.nameEvent.text
+                    .toString() + "\" \n\n https://ap.sportforall.gov.ua/fc-events/0/" + viewModel.mId + "\n\nПриєднуйся до нас! Та оздоровлюйся разом зі мною! \n\nРозроблено на завдання президента України для проекту “Активні парки”"
+            )
+            startActivity(Intent.createChooser(intent, getString(R.string.app_name)))
+        }
+    }
+
+    private fun startTimer(time: Long) {
+        if (time > 0) {
+            binding.timerConstrain.gone()
+            return
+        }
+        object : CountDownTimer(abs(time), 1000) {
+            @SuppressLint("DefaultLocale")
+            override fun onTick(millisUntilFinished: Long) {
+                val Days = millisUntilFinished / (24 * 60 * 60 * 1000)
+                val Hours = millisUntilFinished / (60 * 60 * 1000) % 24
+                val Minutes = millisUntilFinished / (60 * 1000) % 60
+                val Seconds = millisUntilFinished / 1000 % 60
+
+                with(binding.timer) {
+                    mDay.text = String.format("%02d", Days)
+                    mHour.text = String.format("%02d", Hours)
+                    mMinutes.text = String.format("%02d", Minutes)
+                    mSeconds.text = String.format("%02d", Seconds)
+                }
+            }
+
+            override fun onFinish() {
+                cancel()
+            }
+        }.start()
+    }
+
+    private fun showRoutePoint() {
+        val dialog = RoutePointFragment(viewModel.mId)
+        dialog.show(parentFragmentManager, "route_point_fragment")
+    }
+
+    override fun getDrawable(source: String?): Drawable {
+        val d = LevelListDrawable()
+        @SuppressLint("UseCompatLoadingForDrawables") val empty =
+            resources.getDrawable(R.drawable.logo_active_parks, null)
+        d.addLevel(/* low = */ 0, /* high = */ 0, /* drawable = */ empty)
+        d.setBounds(0, 0, empty.intrinsicWidth, empty.intrinsicHeight)
+        return d
+    }
+
+    override fun update() {
+        //viewModel.getUpdateEvent()
+        //viewModel.meetingRecords()
+    }
+
+    private fun onBackPressed() {
+        parentFragmentManager.removeFragment(this@EventFragment)
+    }
+
+    override fun onRefresh() {
+        binding.swipeRefreshLayout.setRefreshing(false)
+        //viewModel.getUpdateEvent()
+    }
+
+    private fun initNavigation() {
+
+        val navHostFragment =
+            childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        binding.navView.setupWithNavController(navController)
+        binding.navView.setOnNavigationItemSelectedListener { item ->
+
+            when (item.itemId) {
+                R.id.nav_about_event, R.id.nav_participant, R.id.nav_gallery -> {
+                    NavigationUI.onNavDestinationSelected(item, navController)
+                }
+
+                R.id.nav_join -> {
+                    viewModel.applyUser()
+                }
+            }
+            true
+        }
+    }
+
+    private fun updatePartisipiantVM() {
+        if (isEvent) {
+            participantVM.getEventUser(viewModel.currentId.value, true)
+            if (isAdmin) {
+                participantVM.getEventUserApplying(viewModel.currentId.value)
+            }
+        } else {
+            participantVM.getClubsUser(viewModel.currentId.value)
+            if (isAdmin) {
+                participantVM.getClubsUserApplying(viewModel.currentId.value)
+            }
+        }
+    }
+
+    private fun initView(){
+        mapsViewController = MapsViewController(binding.eventMap, requireContext())
         eventMenu = binding.navView.menu
         joinItem = eventMenu.findItem(R.id.nav_join)
-
         binding.swipeRefreshLayout.setOnRefreshListener(this)
+    }
+
+    private fun onClick(){
+        binding.close.setOnClickListener {
+            onBackPressed()
+        }
 
         binding.showRout.setOnClickListener {
             showRoutePoint()
@@ -88,19 +210,10 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                     .putExtra("pointId", viewModel.location.value)
             )
         }
+    }
 
-        viewModel.updateEventData(eventId)
-        viewModel.setCurrentId(eventId)
-
-        initNavigation()
-
-        binding.close.setOnClickListener {
-            onBackPressed()
-        }
-
-
-        mapsViewController = MapsViewController(binding.eventMap, requireContext())
-
+    @SuppressLint("SetTextI18n", "UseCompatLoadingForDrawables")
+    private fun observe(){
         viewModel.eventDetails.observe(
             viewLifecycleOwner
         ) { events: ItemEvent ->
@@ -217,117 +330,6 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
         ) { location: String? ->
             binding.address.text = location
         }
-
-        initClickListener()
     }
 
-
-    private fun initClickListener() {
-        binding.share.setOnClickListener {
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.type = "text/plain"
-            intent.putExtra(
-                Intent.EXTRA_SUBJECT,
-                "Хочу тебе запросити до заходу \"" + binding.include.nameEvent.text
-                    .toString() + "\""
-            )
-            intent.putExtra(
-                Intent.EXTRA_TEXT,
-                "Хочу тебе запросити до заходу \"" + binding.include.nameEvent.text
-                    .toString() + "\" \n\n https://ap.sportforall.gov.ua/fc-events/0/" + viewModel.mId + "\n\nПриєднуйся до нас! Та оздоровлюйся разом зі мною! \n\nРозроблено на завдання президента України для проекту “Активні парки”"
-            )
-            startActivity(Intent.createChooser(intent, getString(R.string.app_name)))
-        }
-    }
-
-    private fun startTimer(time: Long) {
-        if (time > 0) {
-            binding.timerConstrain.gone()
-            return
-        }
-        object : CountDownTimer(abs(time), 1000) {
-            @SuppressLint("DefaultLocale")
-            override fun onTick(millisUntilFinished: Long) {
-                val Days = millisUntilFinished / (24 * 60 * 60 * 1000)
-                val Hours = millisUntilFinished / (60 * 60 * 1000) % 24
-                val Minutes = millisUntilFinished / (60 * 1000) % 60
-                val Seconds = millisUntilFinished / 1000 % 60
-
-                with(binding.timer) {
-                    mDay.text = String.format("%02d", Days)
-                    mHour.text = String.format("%02d", Hours)
-                    mMinutes.text = String.format("%02d", Minutes)
-                    mSeconds.text = String.format("%02d", Seconds)
-                }
-            }
-
-            override fun onFinish() {
-                cancel()
-            }
-        }.start()
-    }
-
-    private fun showRoutePoint() {
-        val dialog = RoutePointFragment(viewModel.mId)
-        dialog.show(parentFragmentManager, "route_point_fragment")
-    }
-
-    override fun getDrawable(source: String?): Drawable {
-        val d = LevelListDrawable()
-        @SuppressLint("UseCompatLoadingForDrawables") val empty =
-            resources.getDrawable(R.drawable.logo_active_parks, null)
-        d.addLevel(/* low = */ 0, /* high = */ 0, /* drawable = */ empty)
-        d.setBounds(0, 0, empty.intrinsicWidth, empty.intrinsicHeight)
-        return d
-    }
-
-    override fun update() {
-        viewModel.getUpdateEvent()
-        viewModel.meetingRecords()
-    }
-
-    private fun onBackPressed() {
-        parentFragmentManager.removeFragment(this@EventFragment)
-    }
-
-    override fun onRefresh() {
-        binding.swipeRefreshLayout.setRefreshing(false)
-        viewModel.getUpdateEvent()
-    }
-
-    private fun initNavigation() {
-
-        val navHostFragment =
-            childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        binding.navView.setupWithNavController(navController)
-        binding.navView.setOnNavigationItemSelectedListener { item ->
-
-            when (item.itemId) {
-                R.id.nav_about_event, R.id.nav_participant, R.id.nav_gallery -> {
-                    NavigationUI.onNavDestinationSelected(item, navController)
-                }
-
-                R.id.nav_join -> {
-                    viewModel.applyUser()
-                }
-            }
-            true
-        }
-    }
-
-    private fun updatePartisipiantVM() {
-
-        if (isEvent) {
-            participantVM.getEventUser(viewModel.currentId.value, true)
-            if (isAdmin) {
-                participantVM.getEventUserApplying(viewModel.currentId.value)
-            }
-        } else {
-            participantVM.getClubsUser(viewModel.currentId.value)
-            if (isAdmin) {
-                participantVM.getClubsUserApplying(viewModel.currentId.value)
-            }
-        }
-    }
 }

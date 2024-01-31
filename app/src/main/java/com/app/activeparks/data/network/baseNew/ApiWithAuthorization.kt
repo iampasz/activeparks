@@ -6,6 +6,7 @@ import com.app.activeparks.data.model.activity.ActivityResponse
 import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.clubs.ClubListResponse
 import com.app.activeparks.data.model.clubs.ClubsCombinedResponse
+import com.app.activeparks.data.model.clubs.ItemClub
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.news.ItemNews
@@ -288,4 +289,8 @@ interface ApiWithAuthorization {
     @GET("/api/v1/clubs/my?offset=0&limit=5")
     suspend fun getCombinatedClubList(): Response<ClubsCombinedResponse>
 
+    @GET("/api/v1/clubs/{id}")
+    suspend fun getClubsDetails(
+        @Path("id") id: String?
+    ): Response<ItemClub>
 }
