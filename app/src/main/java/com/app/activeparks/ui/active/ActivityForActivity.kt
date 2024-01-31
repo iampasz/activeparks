@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.app.activeparks.MainActivity
+import com.app.activeparks.data.model.track.PointsTrack
 import com.app.activeparks.ui.active.fragments.infoItem.ActivityInfoItemFragment
 import com.app.activeparks.ui.active.fragments.map.MapActivityFragment
 import com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityFragment
@@ -32,9 +33,11 @@ import com.app.activeparks.ui.active.fragments.type.ActivityTypeFragment
 import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
 import com.app.activeparks.ui.active.model.ActivityState
 import com.app.activeparks.ui.active.model.PulseZone
+import com.app.activeparks.ui.active.model.TypeOfTraining
 import com.app.activeparks.ui.active.util.AddressUtil
 import com.app.activeparks.ui.active.util.BluetoothService
 import com.app.activeparks.ui.active.util.PulseSimulator
+import com.app.activeparks.ui.track.fragments.saveTrack.SaveTrackFragment
 import com.app.activeparks.util.CLIENT_CHARACTERISTIC_CONFIG_UUID
 import com.app.activeparks.util.DEVICE_IS_DISCONNECTED
 import com.app.activeparks.util.HR_MEASUREMENT_UUID
@@ -46,6 +49,7 @@ import com.app.activeparks.util.extention.getStingForSpeak
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.visible
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.Gson
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentActiveBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -53,6 +57,24 @@ import java.util.Locale
 
 @Suppress("DEPRECATION")
 class ActivityForActivity : AppCompatActivity() {
+
+    companion object {
+        fun startActivityWithParams(
+            context: Context,
+            typeOfTraining: TypeOfTraining,
+            activeRoad: List<PointsTrack>,
+            activeRoadId: String
+        ) {
+            with(context) {
+                val intent = Intent(this, ActivityForActivity::class.java).apply {
+                    putExtra("typeOfTraining", typeOfTraining)
+                    putExtra("activeRoad", Gson().toJson(activeRoad))
+                    putExtra("activeRoadId", activeRoadId)
+                }
+                startActivity(intent)
+            }
+        }
+    }
 
     private lateinit var binding: FragmentActiveBinding
     private val activeViewModel: ActiveViewModel by viewModel()
@@ -66,7 +88,7 @@ class ActivityForActivity : AppCompatActivity() {
 
     private var bluetoothService: BluetoothService? = null
     private var isServiceBound = false
-    private var bluetoothGatt : BluetoothGatt? = null
+    private var bluetoothGatt: BluetoothGatt? = null
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -159,6 +181,7 @@ class ActivityForActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        parseIntent()
         val serviceIntent = Intent(this, BluetoothService::class.java)
         startService(serviceIntent)
         bindBluetoothService()
@@ -174,12 +197,31 @@ class ActivityForActivity : AppCompatActivity() {
         navController = findNavController(R.id.navActivity)
         navView.setupWithNavController(navController)
 
-
         textToSpeech = TextToSpeech(this) { status ->
             textToSpeech.language = Locale("ukr", "UKR")
             if (status != TextToSpeech.SUCCESS) {
                 Toast.makeText(this, "TextToSpeech initialization failed", Toast.LENGTH_SHORT)
                     .show()
+            }
+        }
+    }
+
+    private fun parseIntent() {
+        activeViewModel.activityState.apply {
+            intent.getStringExtra("activeRoad")
+                ?.takeIf { it.isNotEmpty() }
+                ?.apply {
+                    activeRoad.addAll(
+                        Gson().fromJson(this, Array<PointsTrack>::class.java).toList()
+                    )
+                }
+
+            (intent.getSerializableExtra("typeOfTraining") as? TypeOfTraining)?.let {
+                typeOfTraining = it
+            }
+
+            intent.getStringExtra("activeRoadId")?.let {
+                activeRoadId = it
             }
         }
     }
@@ -202,7 +244,12 @@ class ActivityForActivity : AppCompatActivity() {
                     updateMap.value = true
                     updateUI.value = true
                     loadActiveState()
-                    activityState.activityInfoItems = ActivityInfoTrainingItem.getActivityInfoItem()
+                    activityState.apply {
+                        activityInfoItems = ActivityInfoTrainingItem.getActivityInfoItem()
+                        activeRoad.clear()
+                        activeRoadId = ""
+                        typeOfTraining = TypeOfTraining.ACTIVITY
+                    }
                 }
             }
             supportFragmentManager.beginTransaction()
@@ -271,6 +318,7 @@ class ActivityForActivity : AppCompatActivity() {
     private fun initListeners() {
         with(binding) {
             btnStart.setOnClickListener {
+                val list = activeViewModel.activityState.activeRoad
                 btnStart.disable()
                 if (activeViewModel.activityState.isAudioHelper) {
                     if (activeViewModel.activityState.isLazyStart) {
@@ -288,6 +336,7 @@ class ActivityForActivity : AppCompatActivity() {
                 activeViewModel.saveActiveState()
             }
             btnPause.setOnClickListener {
+                val list = activeViewModel.activityState.activeRoad
                 onPause()
             }
             btnEnd.setOnClickListener {
@@ -296,11 +345,12 @@ class ActivityForActivity : AppCompatActivity() {
                 visible(navMain, btnStart)
                 restartTimer()
                 with(activeViewModel) {
-                    activityState.isTrainingStart = false
+                    val list = activityState.activeRoad
+                    activityState .isTrainingStart = false
                     activityState.isPause = false
                     checkLocation.value = false
                     getWeather()
-                    activityState.activityTime.finishesAt = System.currentTimeMillis()/1000
+                    activityState.activityTime.finishesAt = System.currentTimeMillis() / 1000
                     activityState.activityTime.time =
                         activityState.activityTime.finishesAt - activityState.activityTime.startsAt
 
@@ -397,7 +447,7 @@ class ActivityForActivity : AppCompatActivity() {
                 activityState.isTrainingStart = true
                 updateUI.value = true
                 checkLocation.value = true
-                activityState.activityTime.startsAt = System.currentTimeMillis()/1000
+                activityState.activityTime.startsAt = System.currentTimeMillis() / 1000
             }
         }
     }
@@ -438,7 +488,6 @@ class ActivityForActivity : AppCompatActivity() {
             })
         finish()
     }
-
 
 
     private fun startTimer() {
@@ -484,9 +533,6 @@ class ActivityForActivity : AppCompatActivity() {
             navigate.observe(this@ActivityForActivity) {
                 it?.let { openFragment(it) }
             }
-            saved.observe(this@ActivityForActivity) {
-                if (it) openFragment(SaveActivityFragment())
-            }
             updateActivityInfoTrainingItem.observe(this@ActivityForActivity) {
                 if (it) {
                     updateInfoItem(activityState)
@@ -500,7 +546,12 @@ class ActivityForActivity : AppCompatActivity() {
 
             updateWeather.observe(this@ActivityForActivity) {
                 if (it) {
-                    openFragment(SaveActivityFragment())
+                    if (activityState.typeOfTraining == TypeOfTraining.RECORD_TRACK) {
+                        //TODO need change
+                        openFragment(SaveTrackFragment())
+                    } else {
+                        openFragment(SaveActivityFragment())
+                    }
                     updateWeather.value = false
                 }
             }
@@ -612,11 +663,11 @@ class ActivityForActivity : AppCompatActivity() {
     }
 
     fun connectCurrentPulse() {
-            bluetoothService?.connectToDevice(bluetoothGattCallback)
+        bluetoothService?.connectToDevice(bluetoothGattCallback)
     }
 
     @SuppressLint("MissingPermission")
-     fun disconnectCurrentPulse() {
+    fun disconnectCurrentPulse() {
         bluetoothGatt?.disconnect()
         bluetoothGatt?.close()
     }

@@ -35,7 +35,6 @@ class ActiveViewModel(
     var updateActivityInfoTrainingItem = MutableLiveData(false)
     val updateUI: MutableLiveData<Boolean> = MutableLiveData(false)
     val checkLocation: MutableLiveData<Boolean> = MutableLiveData(true)
-    val saved: MutableLiveData<Boolean> = MutableLiveData(false)
     val updateMap: MutableLiveData<Boolean> = MutableLiveData(false)
     val updateWeather: MutableLiveData<Boolean> = MutableLiveData(false)
     val pulseZoneRequest: MutableLiveData<PulseZoneRequest> = MutableLiveData()
@@ -108,7 +107,17 @@ class ActiveViewModel(
             kotlin.runCatching {
                 activityStateUseCase.getActivityState()
             }.onSuccess {
-                it?.let { activityState = it }
+                it?.let {
+                    //TODO need change
+                    val list = activityState.activeRoad
+                    val type = activityState.typeOfTraining
+                    val idRout = activityState.activeRoadId
+                    activityState = it
+                    activityState.activeRoad.clear()
+                    activityState.activeRoad.addAll(list)
+                    activityState.typeOfTraining = type
+                    activityState.activeRoadId = idRout
+                }
                 updateUI.value = true
             }
         }
@@ -127,8 +136,8 @@ class ActiveViewModel(
     }
 
     fun getWeather() {
-        if (activityState.activeRoad.isNotEmpty()) {
-            getWeather(activityState.activeRoad.first())
+        if (activityState.activityRoad.isNotEmpty()) {
+            getWeather(activityState.activityRoad.first())
         } else if (location != null) {
             getWeather(GeoPoint(location?.latitude ?: 0.0, location?.longitude ?: 0.0))
         } else {

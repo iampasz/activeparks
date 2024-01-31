@@ -1,5 +1,6 @@
 package com.app.activeparks.ui.active.model
 
+import com.app.activeparks.data.model.track.PointsTrack
 import org.osmdroid.util.GeoPoint
 
 /**
@@ -8,7 +9,9 @@ import org.osmdroid.util.GeoPoint
 data class ActivityState(
     var activityType: TypeOfActivity = TypeOfActivity.getTypeOfActivity().first(),
     var activityTypeOutside: LevelOfActivity = LevelOfActivity.getLevelOfActivity().first(),
-    val activeRoad: MutableList<GeoPoint> = mutableListOf(),
+    val activityRoad: MutableList<GeoPoint> = mutableListOf(),
+    val activeRoad: MutableList<PointsTrack> = mutableListOf(),
+    var activeRoadId: String = "",
     var startPoint: String = "",
     var temperature: String = "",
     var weather: String = "",
@@ -18,12 +21,12 @@ data class ActivityState(
     var minPulse: Int = 300,
     var maxPulse: Int = 0,
     var pulseZone: PulseZone = PulseZone.getPulseZone().first(),
-    var aiFirst: ActivityInfoTrainingItem =  ActivityInfoTrainingItem.getActivityInfoItem()[0],
-    var aiSecond: ActivityInfoTrainingItem =  ActivityInfoTrainingItem.getActivityInfoItem()[1],
-    var aiThird: ActivityInfoTrainingItem =  ActivityInfoTrainingItem.getActivityInfoItem()[2],
-    var aiFirstOutside: ActivityInfoTrainingItem =  ActivityInfoTrainingItem.getActivityInfoItem()[4],
-    var aiSecondOutside: ActivityInfoTrainingItem =  ActivityInfoTrainingItem.getActivityInfoItem()[6],
-    var aiThirdOutside: ActivityInfoTrainingItem =  ActivityInfoTrainingItem.getActivityInfoItem()[7],
+    var aiFirst: ActivityInfoTrainingItem = ActivityInfoTrainingItem.getActivityInfoItem()[0],
+    var aiSecond: ActivityInfoTrainingItem = ActivityInfoTrainingItem.getActivityInfoItem()[1],
+    var aiThird: ActivityInfoTrainingItem = ActivityInfoTrainingItem.getActivityInfoItem()[2],
+    var aiFirstOutside: ActivityInfoTrainingItem = ActivityInfoTrainingItem.getActivityInfoItem()[4],
+    var aiSecondOutside: ActivityInfoTrainingItem = ActivityInfoTrainingItem.getActivityInfoItem()[6],
+    var aiThirdOutside: ActivityInfoTrainingItem = ActivityInfoTrainingItem.getActivityInfoItem()[7],
     var onSelectedTypeFromSetting: Boolean = true,
     var isPulseGadgetConnected: Boolean = false,
     var isAutoPause: Boolean = false,
@@ -41,4 +44,5 @@ data class ActivityState(
     var activityInfoItems: List<ActivityInfoTrainingItem> =
         ActivityInfoTrainingItem.getActivityInfoItem(),
     var activityPulseItems: List<InfoItem> = InfoItem.getPulseInfo(),
+    var typeOfTraining: TypeOfTraining = TypeOfTraining.ACTIVITY
 )

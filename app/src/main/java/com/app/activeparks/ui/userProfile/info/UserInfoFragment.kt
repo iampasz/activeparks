@@ -22,20 +22,23 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
 import com.app.activeparks.data.model.user.UserRole
+import com.app.activeparks.ui.active.ActivityForActivity
+import com.app.activeparks.ui.active.model.TypeOfTraining
 import com.app.activeparks.ui.userProfile.edit.EditProfileFragment
 import com.app.activeparks.ui.userProfile.model.PhotoType
 import com.app.activeparks.util.cropper.CropImage
 import com.app.activeparks.util.extention.DataHelper
 import com.app.activeparks.util.extention.FileHelper
+import com.app.activeparks.util.extention.generateRandomRoute
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.setSex
-import com.app.activeparks.util.extention.toBoolean
 import com.app.activeparks.util.extention.visible
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentUserInfoBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.osmdroid.util.GeoPoint
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -197,6 +200,15 @@ class UserInfoFragment : Fragment() {
                 openFragment(EditProfileFragment())
             }
 
+            tvUserName.setOnClickListener {
+                ActivityForActivity.startActivityWithParams(
+                    requireActivity(),
+                    TypeOfTraining.RECORD_TRACK,
+                    generateRandomRoute(GeoPoint(48.913844, 24.709513), 7, 0.0001),
+                    "123"
+                )
+            }
+
             FileHelper.changeSize(vBackgroundUser, resources)
             FileHelper.changeSize(vBackgroundUser, ivUser)
             FileHelper.changeSizeCircle(ivUser, ivUserCircle)
@@ -303,6 +315,7 @@ class UserInfoFragment : Fragment() {
             currentPhotoPath = absolutePath
         }
     }
+
     private fun openFragment(fragment: Fragment) {
         (requireActivity() as? MainActivity)?.openFragment(fragment)
     }
