@@ -90,6 +90,8 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
         }
 
         viewModel.updateEventData(eventId)
+        viewModel.setCurrentId(eventId)
+
         initNavigation()
 
         binding.close.setOnClickListener {
@@ -257,7 +259,6 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                     mMinutes.text = String.format("%02d", Minutes)
                     mSeconds.text = String.format("%02d", Seconds)
                 }
-
             }
 
             override fun onFinish() {

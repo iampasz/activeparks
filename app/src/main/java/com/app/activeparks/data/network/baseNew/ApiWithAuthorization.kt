@@ -226,6 +226,7 @@ interface ApiWithAuthorization {
     ): Response<ImageLinkResponse>
 
 
+    //Gallery
     @GET("/api/v1/gallery/{id}/official?")
     suspend fun getPhotoGalleryOfficial(
         @Path("id") id: String

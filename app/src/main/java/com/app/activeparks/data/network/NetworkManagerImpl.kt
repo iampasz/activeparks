@@ -427,6 +427,8 @@ class NetworkManagerImpl(
         return response.body()
     }
 
+    //Gallery
+
     override suspend fun getPhotoGalleryOfficial(id: String): PhotoGalleryResponse? {
         val response = apiWithAuthorization.getPhotoGalleryOfficial(id)
 
