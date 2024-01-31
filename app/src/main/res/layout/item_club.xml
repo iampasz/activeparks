@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="250dp"
     android:elevation="0dp"
-    app:cardBackgroundColor="#27B8BF">
+    app:cardBackgroundColor="@color/color_park">
 
     <ImageView
         android:id="@+id/logo"
