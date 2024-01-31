@@ -42,6 +42,7 @@ import com.app.activeparks.util.extention.FileHelper
 import com.app.activeparks.util.extention.toast
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.gson.Gson
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentSaveTrackBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -108,10 +109,18 @@ class SaveTrackFragment : Fragment(), DataCallback {
     private var currentPhotoPath = ""
 
     companion object {
-        fun newInstance(trackId: String): SaveTrackFragment {
+        fun show(trackId: String): SaveTrackFragment {
             val fragment = SaveTrackFragment()
             val args = Bundle()
             args.putString("track_id", trackId)
+            fragment.arguments = args
+            return fragment
+        }
+
+        fun insert(routeActive: List<GeoPoint>): SaveTrackFragment {
+            val fragment = SaveTrackFragment()
+            val args = Bundle()
+            args.putString("insert_track", Gson().toJson(routeActive))
             fragment.arguments = args
             return fragment
         }
@@ -127,15 +136,25 @@ class SaveTrackFragment : Fragment(), DataCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var trackId = arguments?.getString("track_id") ?: ""
 
         with(binding) {
-            viewModel.getTrack(trackId)
 
+            parseIntent()
             setListener()
             initView()
             observe()
         }
+    }
+
+    private fun parseIntent() {
+        arguments?.getString("insert_track")?.let {
+            viewModel.activityRoad.addAll(Gson().fromJson(it, Array<GeoPoint>::class.java).toList())
+            viewModel.insert()
+        }
+        arguments?.getString("track_id")?.let {
+            viewModel.getTrack(it)
+        }
+
     }
 
     private fun FragmentSaveTrackBinding.setListener() {
@@ -228,12 +247,15 @@ class SaveTrackFragment : Fragment(), DataCallback {
                     binding.tvStratAdress.setText(it)
                 }
 
-                response.pointsTrack?.last()?.let {
+                response.pointsTrack?.takeIf { it.isNotEmpty() }?.apply {
+                    response.pointsTrack?.last()?.let {
                         val address =
-                            AddressOfDoubleUtil.getAddressFromLocation(requireContext(), it.latitude,
+                            AddressOfDoubleUtil.getAddressFromLocation(
+                                requireContext(), it.latitude,
                                 it.longitude
                             )
                         binding.tvFinishAdress.text = address
+                    }
                 }
 
                 response.name.let {

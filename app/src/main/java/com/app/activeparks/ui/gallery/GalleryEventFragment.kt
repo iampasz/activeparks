@@ -3,6 +3,7 @@ package com.app.activeparks.ui.gallery
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.app.activeparks.ui.event.viewmodel.EventViewModel
 import com.app.activeparks.ui.gallery.adapter.GalleryAdapter
 import com.app.activeparks.util.cropper.CropImage
 import com.app.activeparks.util.extention.ImageTypes
+import com.app.activeparks.util.extention.StringTypes
 import com.app.activeparks.util.extention.mainAddFragment
 import com.technodreams.activeparks.databinding.FragmentGalleryBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -29,27 +31,11 @@ class GalleryEventFragment : Fragment() {
     private val galleryViewModel: GalleryViewModel by activityViewModel()
 
     val adapter = GalleryAdapter {
-
-        val imageGalleryFragment = ImageGalleryFragment()
-
-        val bundle = Bundle()
-        bundle.putInt("CURRENT_POSITION", it)
-        imageGalleryFragment.arguments = bundle
-        (requireActivity() as? MainActivity)?.let {
-            mainAddFragment(requireActivity() as MainActivity, imageGalleryFragment)
-        }
+        openFullScreenImage(it)
     }
 
     val adapterOfficial = GalleryAdapter {
-
-        val imageGalleryFragment = ImageGalleryFragment()
-
-        val bundle = Bundle()
-        bundle.putInt("CURRENT_POSITION", it)
-        imageGalleryFragment.arguments = bundle
-        (requireActivity() as? MainActivity)?.let {
-            mainAddFragment(requireActivity() as MainActivity, imageGalleryFragment)
-        }
+        openFullScreenImage(it)
     }
 
     //private lateinit var currentPhotoPath: String
@@ -114,6 +100,8 @@ class GalleryEventFragment : Fragment() {
         binding.imageCover.setOnClickListener {
             getContentLauncher.launch("image/*")
         }
+
+        Log.i("SHOWMYGALLERY","${eventModel.currentId.value.toString()} yo")
 
         viewModel.getPhotoGalleryOfficial(eventModel.currentId.value.toString())
         viewModel.getPhotoGalleryUser(eventModel.currentId.value.toString())
@@ -222,11 +210,20 @@ class GalleryEventFragment : Fragment() {
 
         binding.rvGallery.layoutManager = layoutManager
         binding.rvGallery.adapter = adapter
-
         binding.rvGalleryOfficial.layoutManager = layoutManagerOfficial
         binding.rvGalleryOfficial.adapter = adapterOfficial
     }
 
+    private fun openFullScreenImage(position:Int){
+        val imageGalleryFragment = ImageGalleryFragment()
+
+        val bundle = Bundle()
+        bundle.putInt(StringTypes.CURRENT_POSITION.type, position)
+        imageGalleryFragment.arguments = bundle
+        (requireActivity() as? MainActivity)?.let {
+            mainAddFragment(requireActivity() as MainActivity, imageGalleryFragment)
+        }
+    }
 
 }
 

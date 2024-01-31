@@ -17,14 +17,16 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 class ClubsListFragment : Fragment() {
 
     lateinit var binding: FragmentClubsListBinding
-    val adapter = HomeClubsAdapter{
+    val adapterPublished = HomeClubsAdapter {
+        openClubFragment(it.id)
+    }
 
-        val bundle = Bundle()
-        bundle.putString("CLUB_ID", it.id)
-        val clubFragment = ClubFragment()
-        clubFragment.arguments = bundle
+    val adapterUserIsHead = HomeClubsAdapter {
+        openClubFragment(it.id)
+    }
 
-        mainAddFragment((requireActivity() as MainActivity), clubFragment)
+    val adapterUserIsMember = HomeClubsAdapter {
+        openClubFragment(it.id)
     }
     private val clubsViewModelKT: ClubsViewModelKT by activityViewModel()
 
@@ -35,36 +37,45 @@ class ClubsListFragment : Fragment() {
     ): View {
         binding = FragmentClubsListBinding
             .inflate(inflater, container, false)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.close.setOnClickListener{
+        binding.close.setOnClickListener {
             parentFragmentManager.removeFragment(this)
         }
 
-        clubsViewModelKT.getClubs()
+        clubsViewModelKT.getCombinatedClubList()
         initView()
         observe()
     }
 
     private fun observe() {
-        with(clubsViewModelKT) {
-            clubList.observe(viewLifecycleOwner) { response ->
-                response?.takeIf { it.isNotEmpty() }
-                    ?.apply {
-                        adapter.list.submitList(this)
-                    } ?: kotlin.run {
-                }
-            }
+        clubsViewModelKT.clubList.observe(viewLifecycleOwner){v->
+            val listPublished = v.items.published
+            val listUserIsHead = v.items.userIsHead
+            val listUserIsMember = v.items.userIsMember
+
+            adapterPublished.list.submitList(listPublished)
+            adapterUserIsHead.list.submitList(listUserIsHead)
+            adapterUserIsMember.list.submitList(listUserIsMember)
         }
     }
 
     private fun initView() {
-        binding.rvClubs.adapter = adapter
+        binding.rvAllClubs.adapter = adapterPublished
+        binding.rvMyClubs.adapter = adapterUserIsHead
+        binding.rvClubs.adapter = adapterUserIsMember
+    }
+
+    private fun openClubFragment(id:String){
+        val bundle = Bundle()
+        bundle.putString("CLUB_ID", id)
+        val clubFragment = ClubFragment()
+        clubFragment.arguments = bundle
+        mainAddFragment((requireActivity() as MainActivity), clubFragment)
     }
 
 }

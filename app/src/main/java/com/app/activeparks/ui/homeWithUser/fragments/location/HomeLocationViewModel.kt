@@ -21,10 +21,11 @@ class HomeLocationViewModel(
     fun getParks() {
         repository.sportsgrounds(5, "30", "" + 30.51814, "" + 50.44812).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { result: Sportsgrounds ->
-                parksList.setValue(
-                    result
-                )
+            .subscribe({ result: Sportsgrounds ->
+                parksList.setValue(result)
+                }
+            ) { error: Throwable ->
+
             }
 
     }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.activeparks.data.db.mapper.ActivityStateToActiveEntityMapper
 import com.app.activeparks.data.model.activity.AddActivityResponse
+import com.app.activeparks.data.model.track.PointsTrack
 import com.app.activeparks.data.model.track.TrackResponse
 import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.data.useCase.saveActivity.SaveActivityUseCase
@@ -18,12 +19,15 @@ import com.app.activeparks.ui.active.model.CurrentActivity
 import com.app.activeparks.ui.active.model.StartInfo
 import com.app.activeparks.util.AddressOfDoubleUtil
 import kotlinx.coroutines.launch
+import org.osmdroid.util.GeoPoint
 import java.io.File
 
 class SaveTrackViewModel(
     private val trackStateUseCase: TrackStateUseCase,
     private val uploadFileUseCase: UploadFileUseCase
 ) : ViewModel() {
+
+    val activityRoad: MutableList<GeoPoint> = mutableListOf()
 
     var trackDate: MutableLiveData<TrackResponse> = MutableLiveData()
     var photos: MutableList<String> = mutableListOf("")
@@ -61,13 +65,22 @@ class SaveTrackViewModel(
         }
     }
 
-    fun createTrack() {
+    fun insert() {
         viewModelScope.launch {
             kotlin.runCatching {
                 trackStateUseCase.insert()
             }.onSuccess { response ->
                 response?.let { item ->
-                    getTrack(item.id)
+                    trackDate.value = item
+                    val pointsTrackList: List<PointsTrack> = activityRoad.map {
+                        PointsTrack(
+                            latitude = it.latitude,
+                            longitude = it.longitude,
+                            turn = ""
+                        )
+                    }
+                    trackDate.value?.pointsTrack = pointsTrackList
+                    trackDate.value = trackDate.value
                 }
             }
         }
@@ -87,8 +100,6 @@ class SaveTrackViewModel(
                     }
                 }
             }
-        }else{
-            createTrack()
         }
     }
 

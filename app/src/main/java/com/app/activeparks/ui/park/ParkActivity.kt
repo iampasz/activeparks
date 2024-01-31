@@ -78,6 +78,7 @@ class ParkActivity : AppCompatActivity() {
                     binding.tvEmailCordenator.text = park.coordinators[0].email
                     binding.tvPhoneCordenator.text = park.coordinators[0].phone
                 }
+
                 if (park.sportEvents.size > 0) {
 
                     binding.tvParkEvent.visibility = View.GONE
@@ -115,7 +116,6 @@ class ParkActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 })
-
         }
     }
 

@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.app.activeparks.data.model.routeActive.PointsTrack
 import com.app.activeparks.data.model.routeActive.RouteActiveResponse
+import com.app.activeparks.data.model.track.PointsTrack
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.visible
 import com.bumptech.glide.Glide

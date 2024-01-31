@@ -8,6 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
+import com.app.activeparks.data.model.track.PointsTrack
+import com.app.activeparks.ui.active.ActivityForActivity
+import com.app.activeparks.ui.active.model.TypeOfTraining
 import com.app.activeparks.ui.track.adapter.TrackItemAdapter
 import com.app.activeparks.ui.track.fragments.saveTrack.SaveTrackFragment
 import com.app.activeparks.ui.userProfile.video.AddVideoUserProfile
@@ -40,13 +43,10 @@ class TracksListFragment  : Fragment() {
 
     private fun setListener() {
         with(binding) {
-
             ivAddTrack.setOnClickListener {
-                openFragment(AddVideoUserProfile())
-            }
-
-            rvTracksList.setOnClickListener {
-                openFragment(SaveTrackFragment())
+                ActivityForActivity.startActivityWithParams(requireActivity(),
+                    TypeOfTraining.RECORD_TRACK, mutableListOf(PointsTrack(0.0, 0.0,"")),""
+                )
             }
 
             ivBack.setOnClickListener {
@@ -78,7 +78,7 @@ class TracksListFragment  : Fragment() {
     private fun initView() {
         with(binding) {
             adapter = TrackItemAdapter { id ->
-                openFragment(SaveTrackFragment.newInstance(id))
+                openFragment(SaveTrackFragment.show(id))
             }
             rvTracksList.adapter = adapter
         }

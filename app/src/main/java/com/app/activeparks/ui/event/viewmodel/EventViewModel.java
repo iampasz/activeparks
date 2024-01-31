@@ -45,19 +45,14 @@ public class EventViewModel extends ViewModel {
     private final List<ItemEvent> mSportEvent = new ArrayList<>();
     public String mId;
     private final MutableLiveData<String> currentId = new MutableLiveData<>();
-
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
 
     public RoutePoint address;
-
     public Map<String, String> filterLongitude = new HashMap<>();
-
     public String eventSelectDay = "";
     public int eventFilter = 1;
-
     public Boolean isCoordinator = false;
-
     private final Repository repository;
 
     public EventViewModel(Preferences preferences) {
@@ -151,10 +146,7 @@ public class EventViewModel extends ViewModel {
         eventsDay(dateFormat.format(new Date()));
     }
 
-//    public void getEventsList(String clubId) {
-//        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//        getEvents(dateFormat.format(new Date()), clubId);
-//    }
+
     public void getEvents(String date, String clubId) {
         Disposable events = repository.events(30, date, clubId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> statusMapper(result.getItems()),

@@ -1,5 +1,7 @@
 package com.app.activeparks.data.model.routeActive
 
+import com.app.activeparks.data.model.track.PointsTrack
+
 data class ListRouteActiveResponse (
     val items: List<RouteActiveResponse>,
     val total: Long,
@@ -31,9 +33,4 @@ data class RouteActiveResponse(
     var distanceToPoint: Double,
     var location: List<Double>,
     val updatedAt: String
-)
-data class PointsTrack(
-    val latitude: Double,
-    val longitude: Double,
-    var turn: String = ""
 )

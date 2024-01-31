@@ -12,26 +12,35 @@ import com.app.activeparks.data.storage.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 
 public class ClubsViewModel extends ViewModel {
 
-    private final Preferences sharedPreferences;
-    private Repository repository;
-    private MutableLiveData<List<ItemClub>> clubsCreatorList = new MutableLiveData<>();
-    private MutableLiveData<List<ItemClub>> clubsParticipantList = new MutableLiveData<>();
-    private List<ItemClub> filter = new ArrayList<>();
-    private MutableLiveData<ItemClub> mClubsDetails = new MutableLiveData<>();
+
+    private final MutableLiveData<ItemClub> mClubsDetails;
+
+    private final Repository repository;
+    private final MutableLiveData<List<ItemClub>> clubsCreatorList = new MutableLiveData<>();
+    private final MutableLiveData<List<ItemClub>> clubsParticipantList = new MutableLiveData<>();
+    private final List<ItemClub> filter = new ArrayList<>();
+
+
     public Boolean admin = false, apply = false,  owner = false, member  = false;
     public String mId;
 
+
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+
     public ClubsViewModel(Preferences sharedPreferences)   {
-        this.sharedPreferences = sharedPreferences;
         repository = new Repository(sharedPreferences);
+        mClubsDetails = new MutableLiveData<>();
     }
 
     public LiveData<List<ItemClub>> getClubsCreator() {
@@ -48,72 +57,79 @@ public class ClubsViewModel extends ViewModel {
 
 
     public void getClubsCreatorList(){
-        repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        Disposable getMyClubs = repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        result -> {
-                            clubsCreatorList.setValue(result.getItems().getUserIsHead());
-                        },
+                        result -> clubsCreatorList.setValue(result.getItems().getUserIsHead()),
                         error -> {
                         }
                 );
+
+        compositeDisposable.add(getMyClubs);
     }
 
     public void getClubsParticipantList(){
-        repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        Disposable getMyClubs = repository.getMyClubs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        result -> {
-                            clubsParticipantList.setValue(result.getItems().getUserIsMember());
-                            },
+                        result -> clubsParticipantList.setValue(result.getItems().getUserIsMember()),
                         error -> {
                         }
                 );
+
+        compositeDisposable.add(getMyClubs);
     }
 
     public void getAllClubs(int limit){
-        repository.getClubsAll(String.valueOf(limit)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        Disposable getClubsAll = repository.getClubsAll(String.valueOf(limit)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             filter.clear();
                             clubsParticipantList.setValue(result.getItems());
                             filter.addAll(result.getItems());
                         },
                         error -> {});
+
+        compositeDisposable.add(getClubsAll);
     }
 
     public void getSearchClubs(String name){
-        repository.getSearchClubsAll(name).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        Disposable getSearchClubsAll = repository.getSearchClubsAll(name).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             filter.clear();
                             clubsParticipantList.setValue(result.getItems());
                             filter.addAll(result.getItems());
                         },
-                        error -> {
-                            Log.d("LOG","test" + error.getMessage());
-                        });
+                        error -> Log.d("LOG","test" + error.getMessage()));
+        compositeDisposable.add(getSearchClubsAll);
     }
+
+
+
 
     public void getClubsDetail(String id){
         this.mId = id;
-        repository.getClubsDetails(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                            mClubsDetails.setValue(result);
-                            if (result.getClubUser() != null){
-                                admin = (result.getClubUser().getIsCoordinator());
-                                apply = true;
-                            }else {
-                                apply = false;
-                            }
-                        },
+
+        // mClubsDetails.setValue(null);
+        //                            if (result.getClubUser() != null){
+        //                                admin = (result.getClubUser().getIsCoordinator());
+        //                                apply = true;
+        //                            }else {
+        //                                apply = false;
+        //                            }
+        Disposable getClubsDetails = repository.getClubsDetails(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(mClubsDetails::setValue,
                         error -> {});
+
+        compositeDisposable.add(getClubsDetails);
     }
 
     public void applyUser(){
-        if (apply == false) {
-            repository.applyUser(mId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        if (!apply) {
+            Disposable applyUser = repository.applyUser(mId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(result -> getClubsDetail(mId),
                             error -> {});
+            compositeDisposable.add(applyUser);
         }else {
-            if (mClubsDetails.getValue().getClubUser() != null) {
-                if (mClubsDetails.getValue().getClubUser().getIsApproved() == true) {
+            if (Objects.requireNonNull(mClubsDetails.getValue()).getClubUser() != null) {
+                if (mClubsDetails.getValue().getClubUser().getIsApproved()) {
                     removeUser();
                 } else {
                     rejectUser();
@@ -123,18 +139,18 @@ public class ClubsViewModel extends ViewModel {
     }
 
     public void setPermissionsRequest(Boolean type){
-        repository.setPermissionsRequest(mId, type).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        Disposable setPermissionsRequest = repository.setPermissionsRequest(mId, type).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {},
                         error -> {});
+
+        compositeDisposable.add(setPermissionsRequest);
     }
 
     void filterData(String search) {
         if (search.length() > 2) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                List<ItemClub> beerDrinkers = filter.stream()
-                        .filter(p -> p.getName().toLowerCase().contains(search.toLowerCase())).collect(Collectors.toList());
-                clubsParticipantList.setValue(beerDrinkers);
-            }
+            List<ItemClub> beerDrinkers = filter.stream()
+                    .filter(p -> p.getName().toLowerCase().contains(search.toLowerCase())).collect(Collectors.toList());
+            clubsParticipantList.setValue(beerDrinkers);
         }else{
             clubsParticipantList.setValue(filter);
         }
@@ -142,14 +158,18 @@ public class ClubsViewModel extends ViewModel {
 
 
     public void rejectUser(){
-        repository.rejectUser(mId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        Disposable rejectUser =  repository.rejectUser(mId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> getClubsDetail(mId),
                         error -> {});
+
+        compositeDisposable.add(rejectUser);
     }
 
     public void removeUser(){
-        repository.removeUser(mId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        Disposable removeUser = repository.removeUser(mId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> getClubsDetail(mId),
                         error -> {});
+
+        compositeDisposable.add(removeUser);
     }
 }

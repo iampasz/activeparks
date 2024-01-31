@@ -1,8 +1,15 @@
 package com.app.activeparks.util.extention
 
+import android.content.Context
 import android.location.Address
+import androidx.core.content.ContextCompat
+import com.app.activeparks.data.model.track.PointsTrack
 import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
+import com.app.activeparks.util.MapsViewController
+import com.technodreams.activeparks.R
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Polyline
 
 /**
  * Created by O.Dziuba on 15.11.2023.
@@ -21,7 +28,7 @@ fun Int?.toBoolean() = this == 1
 fun String.isPhone() = this.contains("+380")
 fun String.setSex() = if (this == "male") "Чоловік" else "Жінка"
 fun String.replaceAddress() = this.replace("вулиця", "вул.")
-fun String.replacePhone() = this.replaceBrackets().replace(" ","")
+fun String.replacePhone() = this.replaceBrackets().replace(" ", "")
 fun String.replaceBrackets() = this.replace("(", "").replace(")", "")
 fun String.replaceNull() = this.replace("null", "")
 fun String.timeToSeconds(): Int {
@@ -77,6 +84,12 @@ fun List<GeoPoint>.getListForBack(): List<List<Double>> {
     }
 }
 
+fun List<PointsTrack>.getTrackForBack(): List<List<Double>> {
+    return this.map { point ->
+        listOf(point.latitude, point.longitude)
+    }
+}
+
 
 fun List<List<Double>>.getListForUI(): List<GeoPoint> {
     return map { coordinates ->
@@ -86,5 +99,45 @@ fun List<List<Double>>.getListForUI(): List<GeoPoint> {
             throw IllegalArgumentException("Invalid coordinates format: $coordinates")
         }
     }
+}
+
+fun MutableList<PointsTrack>.drawActiveRoute(
+    context: Context,
+    mapview: MapView,
+    mapsViewController: MapsViewController?
+) {
+    this.takeIf { it.isNotEmpty() }
+        ?.apply {
+
+            val line = Polyline()
+            line.width = 12f
+            line.color = ContextCompat.getColor(context, R.color.light_green)
+            forEach {
+                line.addPoint(GeoPoint(it.latitude, it.longitude))
+                if (it.turn == "left" || it.turn == "right") {
+                    mapsViewController?.addMarker(
+                        it.latitude,
+                        it.longitude,
+                        R.drawable.ic_chekbox_on
+                    )
+                }
+            }
+
+            mapsViewController?.addMarker(
+                first().latitude,
+                first().longitude,
+                com.technodreams.activeparks.R.drawable.ic_start_active_rout
+            )
+            mapsViewController?.addMarker(
+                last().latitude,
+                last().longitude,
+                com.technodreams.activeparks.R.drawable.ic_end_active_rout
+            )
+
+            with(mapview) {
+                overlayManager.add(line)
+                invalidate()
+            }
+        }
 }
 

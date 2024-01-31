@@ -333,6 +333,7 @@
 
     <string name="about_event">Про захід</string>
     <string name="participants">Учасники</string>
+    <string name="club_participants">Учасник клубу</string>
     <string name="gallery">Галерея</string>
     <string name="join">Приєднатися</string>
 
@@ -380,7 +381,7 @@
     <string name="tv_settings">Налаштування</string>
     <string name="tv_note">Нотатки тренування:</string>
     <string name="tv_pause_mode">Режим паузи</string>
-    <string name="tv_add_30_photos">Оберыть до 30 фото, які будуть відображатись в галереї</string>
+    <string name="tv_add_30_photos">Оберіть до 30 фото, які будуть відображатись в галереї</string>
     <string name="tv_add_max_photo_count">Ви додали максимальну кількість фото</string>
 
 </resources>

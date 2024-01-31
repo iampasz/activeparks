@@ -25,7 +25,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.app.activeparks.MainActivity
-import com.app.activeparks.data.model.routeActive.PointsTrack
+import com.app.activeparks.data.model.track.PointsTrack
 import com.app.activeparks.ui.track.model.Complexity
 import com.app.activeparks.ui.track.model.RoadSurface
 import com.app.activeparks.ui.track.model.TrackTypes

@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 import com.app.activeparks.ui.participants.adapter.UsersAdaper;
 import com.app.activeparks.ui.people.UserActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -43,9 +42,10 @@ public class ParticipantsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
 
-        EventViewModel eventVM = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+      //  EventViewModel eventVM = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
 
-        id = eventVM.getCurrentId().getValue();
+       // id = eventVM.getCurrentId().getValue();
+        id = "";
 
         viewModel =
                 new ViewModelProvider(this, new ParticipantsModelFactory(getContext())).get(ParticipantsViewModel.class);

@@ -20,6 +20,8 @@
         android:id="@+id/nav_gallery"
         android:name="com.app.activeparks.ui.gallery.GalleryEventFragment"
         android:label="@string/gallery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_gallery" >
+
+    </fragment>
 
 </navigation>

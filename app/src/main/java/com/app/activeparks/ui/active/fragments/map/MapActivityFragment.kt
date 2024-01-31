@@ -20,6 +20,7 @@ import com.app.activeparks.ui.active.util.AddressUtil
 import com.app.activeparks.ui.active.util.CalorieCalculator
 import com.app.activeparks.util.EasySensorEventListener
 import com.app.activeparks.util.MapsViewController
+import com.app.activeparks.util.extention.drawActiveRoute
 import com.app.activeparks.util.extention.toInfo
 import com.technodreams.activeparks.databinding.FragmentMapActivityBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -65,8 +66,8 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initValue()
         setCurrentLocation()
+        initValue()
         observes()
 
         startCheckLocation()
@@ -84,6 +85,10 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
                 SensorManager.SENSOR_DELAY_NORMAL
             )
         }
+
+        viewModel.activityState.activeRoad.drawActiveRoute(
+            requireContext(), binding.mapview, mapsViewController
+        )
     }
 
     private fun observes() {
@@ -149,25 +154,27 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
     }
 
     override fun onLocationChanged(location: Location) {
-        if (viewModel.activityState.startPoint.isEmpty() && viewModel.activityState.isTrainingStart) {
-            viewModel.activityState.startPoint =
-                 AddressUtil.getAddressFromLocation(requireContext(), location)
-            viewModel.activityState.stepCount = 0
+        try {
+            if (viewModel.activityState.startPoint.isEmpty() && viewModel.activityState.isTrainingStart) {
+                viewModel.activityState.startPoint =
+                    AddressUtil.getAddressFromLocation(requireContext(), location)
+                viewModel.activityState.stepCount = 0
 
-            mapsViewController?.zoomOnStart()
-        }
+                mapsViewController?.zoomOnStart()
+            }
 
-        if (viewModel.activityState.isTrainingStart && !viewModel.activityState.isPause) {
-            val geoPoint = GeoPoint(location)
+            if (viewModel.activityState.isTrainingStart && !viewModel.activityState.isPause) {
+                val geoPoint = GeoPoint(location)
 
-            calculateParameters(location, geoPoint)
+                calculateParameters(location, geoPoint)
 
-            viewModel.activityState.currentPulse -= 1
-        }
+                viewModel.activityState.currentPulse -= 1
+            }
 
-        if (viewModel.location == null) {
-            viewModel.location = location
-        }
+            if (viewModel.location == null) {
+                viewModel.location = location
+            }
+        } catch (_: Exception) {}
     }
 
     private fun calculateParameters(location: Location, geoPoint: GeoPoint) {
@@ -222,7 +229,7 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
                     maxSpeed
                 )
 
-                viewModel.activityState.activeRoad.add(geoPoint)
+                viewModel.activityState.activityRoad.add(geoPoint)
 
                 drawLine(geoPoint)
             }
@@ -239,7 +246,7 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
             binding.mapview.invalidate()
         } catch (_: Exception) {
             line = Polyline()
-            viewModel.activityState.activeRoad.forEach {
+            viewModel.activityState.activityRoad.forEach {
                 line.addPoint(it)
             }
             binding.mapview.overlayManager.add(line)
