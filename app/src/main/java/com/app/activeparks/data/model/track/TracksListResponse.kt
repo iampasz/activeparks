@@ -1,6 +1,8 @@
 package com.app.activeparks.data.model.track
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
 data class ListTrackResponse (
@@ -39,4 +41,4 @@ data class PointsTrack(
     val longitude: Double,
     val longitudude: Double,
     val turn: String
-)
+) : Serializable

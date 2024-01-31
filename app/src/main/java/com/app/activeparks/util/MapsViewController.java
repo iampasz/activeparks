@@ -188,6 +188,17 @@ public class MapsViewController implements MapEventsReceiver {
         mapView.invalidate();
     }
 
+    public void addMarker(final double aLatitude, final double aLongitude, int id) {
+        Marker startMarker = new Marker(mapView);
+        startMarker.setIcon(ctx.getResources().getDrawable(id).mutate());
+        startMarker.setPosition(new GeoPoint(aLatitude, aLongitude));
+        startMarker.setInfoWindow(null);
+        mapView.getOverlays().add(startMarker);
+        mapController.setZoom(12.0);
+        mapController.setCenter(new GeoPoint(aLatitude, aLongitude));
+        mapView.invalidate();
+    }
+
     public void selectMarker(Double lat, Double lon) {
         new Handler(Looper.getMainLooper()).post(() -> {
             mapView.getController().animateTo(new GeoPoint(lat, lon));

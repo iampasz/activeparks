@@ -7,6 +7,7 @@ import com.app.activeparks.ui.active.model.ActivityTime
 import com.app.activeparks.ui.active.model.CurrentActivity
 import com.app.activeparks.ui.active.model.StartInfo
 import com.app.activeparks.util.extention.getListForBack
+import com.app.activeparks.util.extention.getTrackForBack
 import com.app.activeparks.util.extention.timeToSeconds
 import java.util.UUID
 
@@ -44,7 +45,7 @@ class ActivityStateToActiveEntityMapper {
                 activityInfoItems[12].number.toDouble().toInt(),
                 currentActivity.feeling?.id ?: 0,
                 startInfo.weather.unit,
-                activityState.activeRoad.getListForBack(),
+                activityState.activityRoad.getListForBack(),
                 uri,
                 listOf(),
                 activityInfoItems[3].number,
@@ -57,9 +58,9 @@ class ActivityStateToActiveEntityMapper {
                 activityState.activityType.id.toString(),
                 activityState.activityTypeOutside.id,
                 startInfo.startPoint.unit,
-                "0",
-                "",
-                listOf()
+                if (activityState.activeRoad.isNotEmpty()) "1" else "0",
+                activityState.activeRoadId,
+                activityState.activeRoad.getTrackForBack()
             )
         }
     }

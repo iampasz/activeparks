@@ -15,7 +15,7 @@ class ActivityPauseMapper {
             return ActivityPauseEntity(
                 activityType = activityState.activityType,
                 activityTypeOutside = activityState.activityTypeOutside,
-                activeRoad = activityState.activeRoad,
+                activeRoad = activityState.activityRoad,
                 startPoint = activityState.startPoint,
                 weather = activityState.weather,
                 weatherIcon = activityState.weatherIcon,
@@ -53,7 +53,7 @@ class ActivityPauseMapper {
                 ActivityState(
                     activityType = activityPauseEntity.activityType,
                     activityTypeOutside = activityPauseEntity.activityTypeOutside,
-                    activeRoad = activityPauseEntity.activeRoad,
+                    activityRoad = activityPauseEntity.activeRoad,
                     startPoint = activityPauseEntity.startPoint,
                     weather = activityPauseEntity.weather,
                     weatherIcon = activityPauseEntity.weatherIcon,

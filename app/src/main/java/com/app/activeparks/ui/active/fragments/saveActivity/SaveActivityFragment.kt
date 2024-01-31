@@ -29,16 +29,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.app.activeparks.ui.active.ActiveViewModel
 import com.app.activeparks.ui.active.fragments.level.ActivityInfoTrainingAdapter
 import com.app.activeparks.ui.active.model.Feeling
-import com.app.activeparks.ui.userProfile.model.PhotoType
 import com.app.activeparks.util.EasyTextWatcher
 import com.app.activeparks.util.MapsViewController
 import com.app.activeparks.util.cropper.CropImage
 import com.app.activeparks.util.extention.FileHelper
+import com.app.activeparks.util.extention.drawActiveRoute
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.invisible
 import com.app.activeparks.util.extention.replaceNull
 import com.app.activeparks.util.extention.visibleIf
-import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentSaveActivityBinding
@@ -47,9 +46,7 @@ import org.osmdroid.views.overlay.Polyline
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 
 class SaveActivityFragment : Fragment() {
 
@@ -150,8 +147,8 @@ class SaveActivityFragment : Fragment() {
             activityViewModel.activityState.weather
 
         activityViewModel.activityState.apply {
-            ivLocation.visibleIf(activityType.isOutside && startPoint.isNotEmpty() && activeRoad.isNotEmpty())
-            ivWeather.visibleIf(activityType.isOutside && startPoint.isNotEmpty() && activeRoad.isNotEmpty() && activityType.isOutside && weather.isNotEmpty())
+            ivLocation.visibleIf(activityType.isOutside && startPoint.isNotEmpty() && activityRoad.isNotEmpty())
+            ivWeather.visibleIf(activityType.isOutside && startPoint.isNotEmpty() && activityRoad.isNotEmpty() && activityType.isOutside && weather.isNotEmpty())
 
         }
 
@@ -192,6 +189,10 @@ class SaveActivityFragment : Fragment() {
             setCurrentLocation()
         }
         initFeelingAdapter()
+
+        activityViewModel.activityState.activeRoad.drawActiveRoute(
+            requireContext(), binding.mapview, mapsViewController
+        )
     }
 
     private fun initFeelingAdapter() {
@@ -274,16 +275,16 @@ class SaveActivityFragment : Fragment() {
     }
 
     private fun setCurrentLocation() {
-        activityViewModel.activityState.activeRoad.takeIf { it.isNotEmpty() }?.apply {
+        activityViewModel.activityState.activityRoad.takeIf { it.isNotEmpty() }?.apply {
             mapsViewController = MapsViewController(
                 binding.mapview,
                 context,
-                activityViewModel.activityState.activeRoad.first()
+                activityViewModel.activityState.activityRoad.first()
             )
             mapsViewController?.homeView = true
 
             activityViewModel.apply {
-                activityState.activeRoad.forEach {
+                activityState.activityRoad.forEach {
                     polyLine.addPoint(it)
                 }
 
