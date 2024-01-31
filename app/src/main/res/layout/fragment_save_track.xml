@@ -17,14 +17,15 @@
 
     <TextView
         android:id="@+id/tvData"
-        android:layout_width="165dp"
+        android:layout_width="match_parent"
         android:layout_height="24dp"
+        android:text="СТВОРЕННЯ ТРЕКУ"
+        android:gravity="center_horizontal"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/vToolBar"
         app:layout_constraintEnd_toEndOf="@+id/vToolBar"
         app:layout_constraintStart_toStartOf="@+id/vToolBar"
-        app:layout_constraintTop_toTopOf="@+id/vToolBar"
-        tools:text="СТВОРЕННЯ ТРЕКУ" />
+        app:layout_constraintTop_toTopOf="@+id/vToolBar" />
 
     <ImageView
         android:id="@+id/ivBack"
@@ -162,11 +163,12 @@
                 android:id="@+id/tvEditMap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="Перейти до редагування точок"
                 android:textColor="@color/link_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/llAdress"  />
+                app:layout_constraintTop_toBottomOf="@+id/llAdress" />
 
 
             <TextView
@@ -214,7 +216,7 @@
                 android:paddingStart="16dp"
                 android:paddingTop="16dp"
                 android:paddingEnd="16dp"
-                android:paddingBottom="32dp"
+                android:paddingBottom="64dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/etNameTrack"
@@ -446,8 +448,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="8dp"
-                android:text="Тип покриття"
-                android:textColor="@color/tv_description"
+                android:text="Асфальт"
+                android:textColor="@color/text_color"
                 android:textSize="16sp"
                 app:drawableEndCompat="@drawable/ic_arrow_right"
                 app:drawableTint="@color/text_color"
@@ -556,7 +558,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/cvMainPhoto" />
 
             <android.widget.Button
-                android:id="@+id/bPhotos"
+                android:id="@+id/bAddGallery"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
                 android:gravity="center"
@@ -572,21 +574,21 @@
 
 
             <TextView
-                android:id="@+id/tvListPhotoDescription"
+                android:id="@+id/tvGalleryDescription"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Оберіть до 30 фото, які будуть відображатись в галереї маршруту"
                 android:textColor="@color/black"
                 android:textSize="10sp"
-                app:layout_constraintEnd_toEndOf="@+id/bPhotos"
-                app:layout_constraintStart_toStartOf="@+id/bPhotos"
-                app:layout_constraintTop_toBottomOf="@+id/bPhotos"
+                app:layout_constraintEnd_toEndOf="@+id/bAddGallery"
+                app:layout_constraintStart_toStartOf="@+id/bAddGallery"
+                app:layout_constraintTop_toBottomOf="@+id/bAddGallery"
                 tools:ignore="SmallSp" />
 
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvListPhoto"
+                android:id="@+id/rvGallery"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
@@ -594,7 +596,7 @@
                 android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvListPhotoDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/tvGalleryDescription" />
 
             <android.widget.Button
                 android:id="@+id/bSaveTrack"
@@ -608,7 +610,7 @@
                 android:textAllCaps="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvListPhoto" />
+                app:layout_constraintTop_toBottomOf="@+id/rvGallery" />
 
             <android.widget.Button
                 android:id="@+id/bPublicTrack"

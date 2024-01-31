@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 class SaveRouteActiveViewModel(
-    private val trackStateUseCase: RouteActiveStateUseCase,
+    private val routeActiveStateUseCase: RouteActiveStateUseCase,
     private val uploadFileUseCase: UploadFileUseCase
 ) : ViewModel() {
 
@@ -33,11 +33,11 @@ class SaveRouteActiveViewModel(
 
     var isGallery: Boolean = false
 
-    fun saveTrack() {
+    fun saveRouteActive() {
         viewModelScope.launch {
             kotlin.runCatching {
                 trackDate.value?.id?.let {
-                    trackStateUseCase.saveRouteActive(it, trackDate.value!!)
+                    routeActiveStateUseCase.saveRouteActive(it, trackDate.value!!)
                 }
             }
         }
@@ -52,39 +52,58 @@ class SaveRouteActiveViewModel(
             }.onSuccess { image ->
                 image?.url.let {
                     if (isGallery == true){
-                        photos.add(it.toString())
+                        trackDate.value?.photos =
+                            (trackDate.value?.photos.orEmpty() + it.toString()).toMutableList()
                     }else {
-                        trackDate.value?.coverImage = it
-                }
-                }
-            }
-        }
-    }
-
-
-    fun getTrack(id: String) {
-        if (id.isNotEmpty()) {
-            viewModelScope.launch {
-                kotlin.runCatching {
-                    trackStateUseCase.getRouteActive(id)
-                }.onSuccess { response ->
-                    response?.let { item ->
-                        trackDate.value = item
+                        trackDate.value?.coverImage = it.toString()
                     }
                 }
             }
         }
     }
 
-    fun removeTrack() {
-        trackDate.value?.id.let{
+    fun insert(id: String) {
         viewModelScope.launch {
             kotlin.runCatching {
-                trackStateUseCase.deleteTrack(it!!)
+                routeActiveStateUseCase.insert(id)
             }.onSuccess { response ->
-                back.value = true
+                response?.let { item ->
+                    trackDate.value = item
+                    item.photos?.toMutableList()?.let {
+                        photos = it
+                    }
+                }
             }
         }
+    }
+
+
+    fun getRouteActive(id: String) {
+        if (id.isNotEmpty()) {
+            viewModelScope.launch {
+                kotlin.runCatching {
+                    routeActiveStateUseCase.getRouteActive(id)
+                }.onSuccess { response ->
+                    response?.let { item ->
+                        trackDate.value = item
+                        item.photos?.toMutableList()?.let {
+                            photos = it
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun removeRouteActive() {
+        trackDate.value?.id.let{
+            viewModelScope.launch {
+                kotlin.runCatching {
+                    routeActiveStateUseCase.removeRouteActives(it!!)
+                }.onSuccess { response ->
+                    back.value = true
+                }
+            }
         }
     }
 }

@@ -11,4 +11,8 @@ interface RouteActiveStateRepository {
     suspend fun getRouteActive(id: String): RouteActiveResponse?
     suspend fun removeRouteActives(id: String)
     suspend fun getRouteActives(name: String): ListRouteActiveResponse?
+
+    suspend fun getFavoriteRouteActive(): ListRouteActiveResponse?
+    suspend fun addFavoriteRouteActive(id: String): Boolean?
+    suspend fun removeFavoriteRouteActive(id: String): Boolean?
 }

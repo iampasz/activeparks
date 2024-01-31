@@ -45,11 +45,14 @@ public class ParkListAdaper extends RecyclerView.Adapter<ParkListAdaper.ViewHold
         holder.description.setText(item.description);
 
         if (item.description.contains("https")) {
+            holder.url = item.description;
             holder.itemView.setOnClickListener(v -> {
                 listener.onUrl(list.get(position).description);
             });
+            holder.description.setText("Перейти");
             holder.description.setTextColor(inflater.getContext().getResources().getColor(R.color.color_park));
         }else{
+            holder.description.setText(item.description);
             holder.description.setTextColor(inflater.getContext().getResources().getColor(R.color.text_color));
         }
     }
@@ -62,6 +65,8 @@ public class ParkListAdaper extends RecyclerView.Adapter<ParkListAdaper.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
         final TextView title, description;
+        String url = "";
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -1,8 +1,5 @@
 package com.app.activeparks.data.model.routeActive
 
-import com.app.activeparks.data.model.track.PointsTrack
-
-
 data class ListRouteActiveResponse (
     val items: List<RouteActiveResponse>,
     val total: Long,
@@ -11,25 +8,32 @@ data class ListRouteActiveResponse (
 )
 
 data class RouteActiveResponse(
-    var address: String? = null,
-    val calories: String? = null,
-    val complexityId: String? = null,
-    var coverImage: String? = null,
-    val coverType: List<String>? = null,
-    val createdAt: String? = null,
-    val createdBy: String? = null,
-    val dateFinishRecord: String? = null,
-    val dateStartRecord: String? = null,
-    var description: String? = null,
+    var address: String,
+    val calories: String,
+    var complexityId: String,
+    var coverImage: String,
+    var coverType: List<String>,
+    val createdAt: String,
+    val createdBy: String,
+    val dateFinishRecord: String,
+    val dateStartRecord: String,
+    var description: String,
     val id: String,
-    val integrity: Boolean? = null,
-    val isTrackActive: Boolean? = null,
-    var name: String? = null,
-    val photos: List<String>? = null,
-    val pointsTrack: List<PointsTrack>? = null,
-    val recommendedTime: String? = null,
-    val routeLength: String? = null,
-    val screenshot: String? = null,
-    val type: String? = null,
-    val updatedAt: String? = null
+    var integrity: Boolean,
+    val isTrackActive: Boolean,
+    var name: String,
+    var photos: List<String>,
+    val pointsActiveRoutes: List<PointsTrack>,
+    var recommendedTime: String,
+    val routeLength: String,
+    val screenshot: String,
+    var type: String,
+    var distanceToPoint: Double,
+    var location: List<Double>,
+    val updatedAt: String
+)
+data class PointsTrack(
+    val latitude: Double,
+    val longitude: Double,
+    var turn: String = ""
 )

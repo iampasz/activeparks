@@ -5,8 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.app.activeparks.data.model.routeActive.RouteActiveResponse
-import com.app.activeparks.data.model.track.PointsTrack
+import com.app.activeparks.data.model.routeActive.*
 import com.bumptech.glide.Glide
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.ItemRouteActiveBinding
@@ -14,9 +13,6 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 
-/**
- * Created by O.Dziuba on 30.10.2023.
- */
 class RouteActiveItemAdapter(private val onItemClick: (String) -> Unit, private val onRoutePoint: (PointsTrack) -> Unit) : RecyclerView.Adapter<RouteActiveItemAdapter.RouteActiveItemVH>() {
 
     class RouteActiveItemVH(binding: ItemRouteActiveBinding) :
@@ -59,21 +55,27 @@ class RouteActiveItemAdapter(private val onItemClick: (String) -> Unit, private 
 
             val serverData = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
-            tvCreateRoute.text = SimpleDateFormat("dd.MM.yyyy", Locale("uk", "UA")).format(
-                serverData.parse(item.dateStartRecord)
-            )
+            item.dateStartRecord?.let {
+                tvCreateRoute.text = SimpleDateFormat("dd.MM.yyyy", Locale("uk", "UA")).format(
+                    serverData.parse(it)
+                )
+            }
 
-            tvDateUpdate.text = SimpleDateFormat("dd.MM.yyyy", Locale("uk", "UA")).format(
-                serverData.parse(item.updatedAt)
-            )
+            item.updatedAt?.let {
+                tvDateUpdate.text = SimpleDateFormat("dd.MM.yyyy", Locale("uk", "UA")).format(
+                    serverData.parse(it)
+                )
+            }
+
             Glide.with(ivLogo.context).load(item.coverType).error(R.drawable.ic_prew)
                 .into(ivLogo)
 
             holder.itemView.setOnClickListener {
                 onItemClick.invoke(item.id)
             }
+
             ivRoute.setOnClickListener {
-                item.pointsTrack?.get(0)?.let {
+                item.pointsActiveRoutes?.get(0)?.let {
                     onRoutePoint.invoke(it)
                 }
             }

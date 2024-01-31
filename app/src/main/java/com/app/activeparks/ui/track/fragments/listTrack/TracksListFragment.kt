@@ -68,6 +68,10 @@ class TracksListFragment  : Fragment() {
                 override fun afterTextChanged(s: Editable?) {
                 }
             })
+
+            srUpdate.setOnRefreshListener {
+                viewModel.getTracksList()
+            }
         }
     }
 

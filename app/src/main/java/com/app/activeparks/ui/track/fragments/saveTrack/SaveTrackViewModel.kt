@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.activeparks.data.db.mapper.ActivityStateToActiveEntityMapper
+import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.track.TrackResponse
 import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.data.useCase.saveActivity.SaveActivityUseCase
@@ -50,10 +51,10 @@ class SaveTrackViewModel(
             }.onSuccess { image ->
                 image?.url.let {
                     if (isGallery == true){
-                        photos.add(it.toString())
-                        trackDate.value?.photos = photos
+                        trackDate.value?.photos =
+                            (trackDate.value?.photos.orEmpty() + it.toString()).toMutableList()
                     }else {
-                        trackDate.value?.coverImage = it
+                        trackDate.value?.coverImage = it.toString()
                 }
                 }
             }

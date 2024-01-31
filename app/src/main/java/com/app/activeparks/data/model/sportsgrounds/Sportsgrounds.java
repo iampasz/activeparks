@@ -1,5 +1,6 @@
 package com.app.activeparks.data.model.sportsgrounds;
 
+import com.app.activeparks.data.model.routeActive.RouteActiveResponse;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,6 +11,9 @@ public class Sportsgrounds {
     @SerializedName("items")
     @Expose
     public List<ItemSportsground> items = null;
+    @SerializedName("itemsActive")
+    @Expose
+    public List<RouteActiveResponse> itemsActive = null;
     @SerializedName("total")
     @Expose
     private Integer total;
@@ -22,6 +26,10 @@ public class Sportsgrounds {
 
     public List<ItemSportsground> getSportsground() {
         return items;
+    }
+
+    public List<RouteActiveResponse> getActiveRouter() {
+        return itemsActive;
     }
 
 //    public void setSportsground(List<ItemSportsground> items) {

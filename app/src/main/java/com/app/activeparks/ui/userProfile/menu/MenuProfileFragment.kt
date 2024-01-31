@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
 import com.app.activeparks.data.model.user.UserRole
+import com.app.activeparks.ui.routeActive.fragments.listRouteActive.RouteActiveListFragment
 import com.app.activeparks.ui.support.SupportActivity
 import com.app.activeparks.ui.track.fragments.listTrack.TracksListFragment
 import com.app.activeparks.ui.userProfile.home.ProfileHomeViewModel
@@ -131,6 +132,9 @@ class MenuProfileFragment : Fragment() {
             }
             tvActiveRouts.setOnClickListener {
                 addFragment(TracksListFragment())
+            }
+            tvRoads.setOnClickListener {
+                addFragment(RouteActiveListFragment())
             }
         }
     }
