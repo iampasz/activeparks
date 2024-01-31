@@ -32,3 +32,11 @@ buildOutputCleanup
 .buildOutputCleanup.lock
 .file-system.probe
 .outputFiles.bin
+
+/Users/macbookair/AndroidStudioProjects/ActiveparksAndroid/.gradle/buildOutputCleanup/buildOutputCleanup.lock
+.gradle/buildOutputCleanup/buildOutputCleanup.lock
+
+/Users/macbookair/AndroidStudioProjects/ActiveparksAndroid/.gradle/buildOutputCleanup/outputFiles.bin
+.gradle/buildOutputCleanup/outputFiles.bin
+
+.gradle/buildOutputCleanup

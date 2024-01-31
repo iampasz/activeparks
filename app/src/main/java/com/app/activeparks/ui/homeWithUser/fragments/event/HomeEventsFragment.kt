@@ -1,16 +1,16 @@
 package com.app.activeparks.ui.homeWithUser.fragments.event
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
-import com.app.activeparks.ui.event.activity.EventActivityOld
+import com.app.activeparks.ui.event.activity.EventFragment
 import com.app.activeparks.ui.event.fragments.EventListFragment
 import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.mainAddFragment
 import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.databinding.FragmentHomeEventsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -19,7 +19,11 @@ class HomeEventsFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeEventsBinding
     val adapter = HomeEventsAdapter{
-        startActivity(Intent(activity, EventActivityOld::class.java).putExtra("id", it.id))
+        val bundle = Bundle()
+        bundle.putString("EVENT_ID", it.id)
+        val eventFragment = EventFragment()
+        eventFragment.arguments = bundle
+        mainAddFragment((requireActivity() as MainActivity), eventFragment)
     }
     private val viewModel: HomeEventsViewModel by viewModel()
 

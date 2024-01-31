@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.app.activeparks.MainActivity
-import com.app.activeparks.ui.userProfile.home.ProfileHomeFragment
 import com.app.activeparks.util.extention.FileHelper
 import com.app.activeparks.util.extention.gone
 import com.bumptech.glide.Glide
@@ -46,7 +45,7 @@ class MainHomeFragment : Fragment() {
     private fun setListener() {
         with(binding) {
             iHomeUser.inNotification.setOnClickListener {
-                openFragment(ProfileHomeFragment())
+                //openFragment(ProfileHomeFragment())
             }
         }
     }

@@ -7,16 +7,23 @@
     android:layout_marginStart="15dp"
     android:layout_marginTop="15dp"
     android:layout_marginEnd="15dp"
-    android:elevation="0dp"
+    app:cardBackgroundColor="@color/color_park"
     app:cardCornerRadius="8dp">
+
+    <ImageView
+        android:id="@+id/imageView20"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_gravity="center"
+        android:contentDescription="@string/icon"
+        android:src="@drawable/ic_logo" />
 
     <ImageView
         android:contentDescription="@string/icon"
         android:id="@+id/photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/preview_one" />
+        android:scaleType="centerCrop" />
 
     <ImageView
         android:contentDescription="@string/icon"

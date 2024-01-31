@@ -7,16 +7,25 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
 import com.app.activeparks.ui.clubs.fragments.ClubsListFragment
+import com.app.activeparks.ui.event.activity.ClubFragment
 import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.mainAddFragment
 import com.app.activeparks.util.extention.mainReplaceFragment
-import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.databinding.FragmentHomeClubsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeClubsFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeClubsBinding
-    val adapter = HomeClubsAdapter{}
+    val adapter = HomeClubsAdapter{
+
+        val bundle = Bundle()
+        bundle.putString("CLUB_ID", it.id)
+        val clubFragment = ClubFragment()
+        clubFragment.arguments = bundle
+        mainAddFragment((requireActivity() as MainActivity), clubFragment)
+
+    }
     private val viewModel: HomeClubsViewModel by viewModel()
 
     override fun onCreateView(
@@ -31,25 +40,16 @@ class HomeClubsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         onClick()
-        viewModel.getClubs()
+        viewModel.getCombinatedClubList()
         initView()
         observe()
     }
 
     private fun observe() {
-        with(viewModel) {
-            clubList.observe(viewLifecycleOwner) { response ->
-                binding.pbClubs.gone()
-                response?.takeIf { it.isNotEmpty() }
-                    ?.apply {
-                        adapter.list.submitList(this)
-                    } ?: kotlin.run {
-                        binding.tvAllClubs.gone()
-                        binding.tvMyClubs.gone()
-                        binding.tvMoreClubs.gone()
-                        binding.tvNoClubs.visible()
-                }
-            }
+        viewModel.combineClubList.observe(viewLifecycleOwner){v->
+            val listUserIsHead = v.items.userIsHead
+            adapter.list.submitList(listUserIsHead)
+            binding.pbClubs.gone()
         }
     }
 

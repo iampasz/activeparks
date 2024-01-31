@@ -64,14 +64,14 @@ val viewModelModule = module {
     viewModel { ForgotPasswordViewModel(get()) }
     viewModel { HomeBlogViewModel(get()) }
     viewModel { HomeLocationViewModel(get()) }
-    viewModel { HomeClubsViewModel(get(), get()) }
+    viewModel { HomeClubsViewModel(get()) }
     viewModel { HomeEventsViewModel(get(), get()) }
     viewModel { RegistrationViewModel(get(), androidContext()) }
 
     viewModel { EventViewModel(get()) }
     viewModel { ParticipantsViewModel(get()) }
-    viewModel { MainEventViewModel(get(), get(), get()) }
-    viewModel { ClubsViewModelKT(get(), get()) }
+    viewModel { MainEventViewModel(get(),get(),get()) }
+    viewModel { ClubsViewModelKT(get()) }
     viewModel { ClubsViewModel(get()) }
     viewModel { MainEventViewModel(get(), get(), get()) }
     viewModel { GalleryViewModel() }
