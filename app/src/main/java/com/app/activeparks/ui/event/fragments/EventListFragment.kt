@@ -30,6 +30,7 @@ import com.app.activeparks.ui.event.adapter.EventsListAdapterKT
 import com.app.activeparks.ui.event.interfaces.OnItemClickListener
 import com.app.activeparks.ui.event.viewmodel.EventViewModel
 import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.mainAddFragment
 import com.app.activeparks.util.extention.removeFragment
 import com.app.activeparks.util.extention.visible
 import com.applandeo.materialcalendarview.CalendarWeekDay
@@ -239,10 +240,11 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
 
     @SuppressLint("CommitTransaction")
     override fun onItemClick(position: Int) {
-        //viewModel.updateEventData();
-        viewModel.setCurrentId(nameList[position].id)
-        parentFragmentManager.beginTransaction()
-            .add(R.id.constrain_events_container, EventFragment(), "EVENT_FRAGMENT").commit()
+        val bundle = Bundle()
+        bundle.putString("EVENT_ID", nameList[position].id)
+        val eventFragment = EventFragment()
+        eventFragment.arguments = bundle
+        mainAddFragment((requireActivity() as MainActivity), eventFragment)
     }
 
     private fun showCreateEventButton() {

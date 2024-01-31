@@ -56,6 +56,7 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
     private var isAdmin = false
     private var isEvent = true
 
+    var eventId  = ""
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -64,6 +65,7 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
         binding = FragmentEventBinding
             .inflate(inflater, container, false)
 
+        eventId = arguments?.getString("EVENT_ID", "") ?: ""
         return binding.root
     }
 
@@ -87,15 +89,13 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
             )
         }
 
+        viewModel.updateEventData(eventId)
         initNavigation()
 
         binding.close.setOnClickListener {
             onBackPressed()
         }
 
-        viewModel.currentId.observe(viewLifecycleOwner) {
-            viewModel.updateEventData(viewModel.currentId.value)
-        }
 
         mapsViewController = MapsViewController(binding.eventMap, requireContext())
 
