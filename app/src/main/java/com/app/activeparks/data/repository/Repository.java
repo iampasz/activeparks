@@ -87,7 +87,7 @@ public class Repository {
 
     public Repository() {
         if (service == null) {
-            service = new NetworkModule().getInterface();
+            service = new NetworkModule().getTest();
         }
     }
 
@@ -109,6 +109,10 @@ public class Repository {
 
     public Observable<Sportsgrounds> sportsgrounds(int limit, String radius, String longitude, String latitude) {
         return service.getSportsgrounds(String.valueOf(limit), radius, longitude, latitude);
+    }
+
+    public Observable<Sportsgrounds> getSportsgroundsAndRoute(String radius, String longitude, String latitude) {
+        return service.getSportsgroundsAndRoute(radius, longitude, latitude);
     }
 
     public Observable<ItemSportsground> getSportsground(String id) {

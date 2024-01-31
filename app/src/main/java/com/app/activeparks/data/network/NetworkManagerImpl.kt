@@ -1,6 +1,7 @@
 package com.app.activeparks.data.network
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityItemResponse
@@ -631,6 +632,36 @@ class NetworkManagerImpl(
         request: RouteActiveResponse
     ): RouteActiveResponse? {
         val response = apiWithAuthorization.saveRouteActive(id, request)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getFavoriteRouteActive(): ListRouteActiveResponse? {
+        val response = apiWithAuthorization.getFavoritesRouteActive()
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun addFavoriteRouteActive(id: String): Boolean?  {
+        val response = apiWithAuthorization.addFavoriteRouteActive(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun removeFavoriteRouteActive(id: String): Boolean?  {
+        val response = apiWithAuthorization.removeFavoriteRouteActive(id)
 
         if (!response.isSuccessful) {
             Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()

@@ -73,26 +73,18 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:autofillHints="username"
+                android:drawableLeft="@drawable/ic_magnifyingglass"
                 android:background="@drawable/shape_rectangle_white"
                 android:ems="10"
                 android:hint="Пошук за маршрутами"
                 android:inputType="text"
-                android:paddingStart="48dp"
+                android:drawablePadding="8dp"
+                android:paddingLeft="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvTitle"
                 tools:ignore="RtlSymmetry" />
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="8dp"
-                android:contentDescription="@string/icon"
-                app:layout_constraintBottom_toBottomOf="@+id/etFindTrack"
-                app:layout_constraintStart_toStartOf="@+id/etFindTrack"
-                app:layout_constraintTop_toTopOf="@+id/etFindTrack"
-                app:srcCompat="@drawable/ic_magnifyingglass" />
 
 
             <TextView

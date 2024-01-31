@@ -18,7 +18,6 @@ fun generateRandomRoute(center: GeoPoint, numPoints: Int, maxDistance: Double): 
         route.add(PointsTrack(
             randomPoint.latitude,
             randomPoint.longitude,
-            0.0,
             if (i/3 == 1) "left" else ""
         ))
     }

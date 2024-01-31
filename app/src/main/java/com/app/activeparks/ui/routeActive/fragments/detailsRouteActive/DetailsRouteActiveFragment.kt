@@ -1,14 +1,16 @@
 package com.app.activeparks.ui.routeActive.fragments.detailsRouteActive
 
-import android.content.Intent
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.app.activeparks.MainActivity
 import com.app.activeparks.data.model.track.PointsTrack
 import com.app.activeparks.ui.active.ActivityForActivity
+import com.app.activeparks.ui.active.model.TypeOfTraining
+import com.app.activeparks.ui.track.model.Complexity
 import com.app.activeparks.util.MapsViewController
 import com.app.activeparks.util.TypeActivity
 import com.bumptech.glide.Glide
@@ -63,7 +65,13 @@ class DetailsRouteActiveFragment : Fragment() {
 
 
         bRouteActive.setOnClickListener {
-            startActivity(Intent(requireContext(), ActivityForActivity::class.java))
+            viewModel.routeActive?.value?.let {
+                ActivityForActivity.startActivityWithParams(requireActivity(),
+                    TypeOfTraining.ACTIVE_TRACK,
+                    it.pointsActiveRoutes,
+                    it.id
+                )
+            }
         }
     }
 
@@ -96,8 +104,18 @@ class DetailsRouteActiveFragment : Fragment() {
                     binding.tvCalories.setText(it + " ккал")
                 }
 
-                response.complexityId.let {
-                    binding.tvComplexity.setText(it + " км")
+                response.complexityId.let {complexityId ->
+                    Complexity.getComplexity().find { it.id == complexityId  }?.let {
+                        with(binding) {
+                            tvComplexity.text = it!!.title
+                            tvComplexity.setTextColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.white
+                                )
+                            )
+                        }
+                    }
                 }
 
                 response.coverImage.let {
@@ -120,7 +138,7 @@ class DetailsRouteActiveFragment : Fragment() {
                     }
                 }
 
-                response.pointsTrack?.let {
+                response.pointsActiveRoutes?.let {
                     setCurrentLocation(it)
                 }
             }

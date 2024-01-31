@@ -123,6 +123,10 @@ interface NetworkManager {
     suspend fun removeRouteActives(id: String): RouteActiveResponse?
     suspend fun saveRouteActive(id: String, request: RouteActiveResponse): RouteActiveResponse?
 
+    suspend fun getFavoriteRouteActive(): ListRouteActiveResponse?
+    suspend fun addFavoriteRouteActive(id: String): Boolean?
+    suspend fun removeFavoriteRouteActive(id: String): Boolean?
+
     //Clubs
     suspend fun getClubList(): ClubListResponse?
     suspend fun getCombinatedClubList(): ClubsCombinedResponse?

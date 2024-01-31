@@ -147,6 +147,14 @@ public interface ApiService {
     @GET("/api/v1/sportsgrounds/all?filters[statusId]=036735ba-f634-469b-ac30-77a164e3a918&sort[distanceToPoint]=asc")
     Observable<Sportsgrounds> getSportsgrounds(@Query("limit") String limit, @Query("filters[radius]") String radius, @Query("filters[longitude]") String longitude, @Query("filters[latitude]") String latitude);
 
+
+    //Получення даних мапи
+    @GET("/api/v1/sportsgrounds/active-router?filters[statusId]=036735ba-f634-469b-ac30-77a164e3a918&sort[distanceToPoint]=asc")
+    Observable<Sportsgrounds> getSportsgroundsAndRoute(@Query("filters[radius]") String radius,
+                                                       @Query("filters[longitude]") String longitude,
+                                                       @Query("filters[latitude]") String latitude);
+
+
     @GET("/city.php")
     Observable<City> searchCity(@Query("q") String q);
 

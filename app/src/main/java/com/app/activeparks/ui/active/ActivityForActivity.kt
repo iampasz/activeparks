@@ -548,7 +548,7 @@ class ActivityForActivity : AppCompatActivity() {
                 if (it) {
                     if (activityState.typeOfTraining == TypeOfTraining.RECORD_TRACK) {
                         //TODO need change
-                        openFragment(SaveTrackFragment())
+                        openFragment(SaveTrackFragment.insert(activeViewModel.activityState.activityRoad))
                     } else {
                         openFragment(SaveActivityFragment())
                     }

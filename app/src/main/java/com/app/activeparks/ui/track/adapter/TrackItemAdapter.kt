@@ -66,17 +66,23 @@ class TrackItemAdapter(private val onItemClick: (String) -> Unit) : RecyclerView
 
             val serverData = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
-            tvCreateRoute.text = SimpleDateFormat("dd.MM.yyyy", Locale("uk", "UA")).format(
-                serverData.parse(item.dateStartRecord)
-            )
+            item.dateStartRecord?.let {
+                tvCreateRoute.text = SimpleDateFormat("dd.MM.yyyy", Locale("uk", "UA")).format(
+                    serverData.parse(it)
+                )
+            }
 
-            tvStartRoute.text = SimpleDateFormat("HH:mm", Locale("uk", "UA")).format(
-                serverData.parse(item.dateStartRecord)
-            )
+            item.dateStartRecord?.let {
+                tvStartRoute.text = SimpleDateFormat("HH:mm", Locale("uk", "UA")).format(
+                    serverData.parse(it)
+                )
+            }
 
-            tvFinishRoute.text = SimpleDateFormat("HH:mm", Locale("uk", "UA")).format(
-                serverData.parse(item.dateFinishRecord)
-            )
+            item.dateStartRecord?.let {
+                tvFinishRoute.text = SimpleDateFormat("HH:mm", Locale("uk", "UA")).format(
+                    serverData.parse(it)
+                )
+            }
 
             Glide.with(ivLogo.context).load(item.coverType).error(R.drawable.ic_prew)
                 .into(ivLogo)

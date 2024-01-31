@@ -13,6 +13,12 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
+import com.app.activeparks.ui.routeActive.adapter.RouteActiveItemAdapter
+import com.app.activeparks.ui.routeActive.fragments.detailsRouteActive.DetailsRouteActiveFragment
+import com.app.activeparks.ui.routeActive.fragments.favoritesActiveRoutes.FavoritesRouteActiveListFragment
+import com.app.activeparks.ui.routeActive.fragments.listRouteActive.RouteActiveListFragment
+import com.app.activeparks.ui.routeActive.fragments.saveRouteActive.SaveRouteActiveFragment
+import com.app.activeparks.ui.track.fragments.changeMapTrack.TrackChangeMapFragment
 import com.app.activeparks.ui.track.fragments.listTrack.TracksListFragment
 import com.app.activeparks.ui.track.fragments.saveTrack.SaveTrackFragment
 import com.app.activeparks.ui.userProfile.activities.AllActivitiesFragment
@@ -150,7 +156,12 @@ class MainActivity : AppCompatActivity(), FragmentInteface {
                 fragment is ImageGalleryFragment ||
                 fragment is EditProfileFragment ||
                 fragment is TracksListFragment ||
-                fragment is SaveTrackFragment
+                fragment is SaveTrackFragment ||
+                fragment is TrackChangeMapFragment ||
+                fragment is RouteActiveListFragment ||
+                fragment is FavoritesRouteActiveListFragment ||
+                fragment is DetailsRouteActiveFragment ||
+                fragment is SaveRouteActiveFragment
             ) {
                 supportFragmentManager
                     .beginTransaction()
