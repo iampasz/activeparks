@@ -140,8 +140,8 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
     }
 
     override fun update() {
-        //viewModel.getUpdateEvent()
-        //viewModel.meetingRecords()
+        viewModel.getUpdateEvent()
+        viewModel.meetingRecords()
     }
 
     private fun onBackPressed() {
@@ -150,7 +150,6 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
 
     override fun onRefresh() {
         binding.swipeRefreshLayout.setRefreshing(false)
-        //viewModel.getUpdateEvent()
     }
 
     private fun initNavigation() {
@@ -320,10 +319,6 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                 Picasso.get().load(item.items[0].photo).into(binding.include.imageFirst)
             }
         }
-
-//        participantVM.userMembers.observe(viewLifecycleOwner){
-//            members ->
-//        }
 
         viewModel.location.observe(
             viewLifecycleOwner
