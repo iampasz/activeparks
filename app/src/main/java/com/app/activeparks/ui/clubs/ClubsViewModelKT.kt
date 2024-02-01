@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.activeparks.data.model.clubs.ClubsCombinedResponse
 import com.app.activeparks.data.model.clubs.ItemClub
+import com.app.activeparks.data.model.clubs.UserInviteDeclaration
 import com.app.activeparks.data.useCase.clubs.ClubsUseCase
 import kotlinx.coroutines.launch
 
@@ -14,6 +15,8 @@ class ClubsViewModelKT(
 
     val clubList = MutableLiveData<ClubsCombinedResponse>()
     val clubDetails = MutableLiveData<ItemClub>()
+    val requestToEntry = MutableLiveData<Boolean>()
+    val requestToCansel = MutableLiveData<Boolean>()
 
     fun getCombinatedClubList() {
         viewModelScope.launch {
@@ -34,6 +37,30 @@ class ClubsViewModelKT(
             }.onSuccess { response ->
                 response?.let {
                     clubDetails.value = it
+                }
+            }
+        }
+    }
+
+    fun getApplyUser(id: String, request: UserInviteDeclaration) {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                clubsUseCase.getApplyUser(id, request)
+            }.onSuccess { response ->
+                response?.let {
+                    requestToEntry.value = it
+                }
+            }
+        }
+    }
+
+    fun getRejectUser(id: String, request: UserInviteDeclaration) {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                clubsUseCase.getRejectUser(id, request)
+            }.onSuccess { response ->
+                response?.let {
+                    requestToCansel.value = it
                 }
             }
         }

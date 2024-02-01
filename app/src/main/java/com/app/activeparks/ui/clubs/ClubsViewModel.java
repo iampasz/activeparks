@@ -106,19 +106,17 @@ public class ClubsViewModel extends ViewModel {
 
     public void getClubsDetail(String id){
         this.mId = id;
-
-        // mClubsDetails.setValue(null);
-        //                            if (result.getClubUser() != null){
-        //                                admin = (result.getClubUser().getIsCoordinator());
-        //                                apply = true;
-        //                            }else {
-        //                                apply = false;
-        //                            }
-        Disposable getClubsDetails = repository.getClubsDetails(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mClubsDetails::setValue,
+        repository.getClubsDetails(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                            mClubsDetails.setValue(result);
+                            if (result.getClubUser() != null){
+                                admin = (result.getClubUser().getIsCoordinator());
+                                apply = true;
+                            }else {
+                                apply = false;
+                            }
+                        },
                         error -> {});
-
-        compositeDisposable.add(getClubsDetails);
     }
 
     public void applyUser(){

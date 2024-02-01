@@ -7,6 +7,7 @@ import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.clubs.ClubListResponse
 import com.app.activeparks.data.model.clubs.ClubsCombinedResponse
 import com.app.activeparks.data.model.clubs.ItemClub
+import com.app.activeparks.data.model.clubs.UserInviteDeclaration
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.news.ItemNews
@@ -48,7 +49,6 @@ interface NetworkManager {
 
     //Weather
     suspend fun getWeather(lat: Double, lon: Double): WeatherResponse
-
 
     //WithOut Authorization
     suspend fun sendCodePhone(request: SendCodePhoneRequest): ResponseSuccess?
@@ -127,4 +127,6 @@ interface NetworkManager {
     suspend fun getClubList(): ClubListResponse?
     suspend fun getCombinatedClubList(): ClubsCombinedResponse?
     suspend fun getClubsDetails(id:String): ItemClub?
+    suspend fun getApplyUser(id: String, request: UserInviteDeclaration): Boolean?
+    suspend fun getRejectUser(id: String, request: UserInviteDeclaration): Boolean?
 }
