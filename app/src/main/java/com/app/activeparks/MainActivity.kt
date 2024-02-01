@@ -13,7 +13,13 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
-import com.app.activeparks.ui.routeActive.adapter.RouteActiveItemAdapter
+import com.app.activeparks.ui.clubs.fragments.ClubsListFragment
+import com.app.activeparks.ui.event.activity.ClubFragment
+import com.app.activeparks.ui.event.fragments.AboutEventFragment
+import com.app.activeparks.ui.event.fragments.EventListFragment
+import com.app.activeparks.ui.event.fragments.FragmentEventCreate
+import com.app.activeparks.ui.news.fragments.BlogFragment
+import com.app.activeparks.ui.news.fragments.BlogListFragment
 import com.app.activeparks.ui.routeActive.fragments.detailsRouteActive.DetailsRouteActiveFragment
 import com.app.activeparks.ui.routeActive.fragments.favoritesActiveRoutes.FavoritesRouteActiveListFragment
 import com.app.activeparks.ui.routeActive.fragments.listRouteActive.RouteActiveListFragment
@@ -161,7 +167,15 @@ class MainActivity : AppCompatActivity(), FragmentInteface {
                 fragment is RouteActiveListFragment ||
                 fragment is FavoritesRouteActiveListFragment ||
                 fragment is DetailsRouteActiveFragment ||
-                fragment is SaveRouteActiveFragment
+                fragment is SaveRouteActiveFragment ||
+                fragment is EventListFragment ||
+                fragment is BlogListFragment ||
+                fragment is ClubsListFragment ||
+                fragment is FragmentEventCreate ||
+                fragment is AboutEventFragment ||
+                fragment is BlogFragment ||
+                fragment is ClubFragment
+
             ) {
                 supportFragmentManager
                     .beginTransaction()
