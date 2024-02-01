@@ -133,4 +133,5 @@ interface NetworkManager {
     suspend fun getClubsDetails(id:String): ItemClub?
     suspend fun getApplyUser(id: String, request: UserInviteDeclaration): Boolean?
     suspend fun getRejectUser(id: String, request: UserInviteDeclaration): Boolean?
+    suspend fun getClubNewsList(clubId:String): NewsListResponse?
 }

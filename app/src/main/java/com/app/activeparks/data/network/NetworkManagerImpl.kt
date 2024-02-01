@@ -1,7 +1,6 @@
 package com.app.activeparks.data.network
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityItemResponse
@@ -403,6 +402,16 @@ class NetworkManagerImpl(
         }
     }
 
+    override suspend fun getClubNewsList(clubId:String): NewsListResponse? {
+
+        val response = apiWithAuthorization.getClubNewsList(clubId)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
 
     override suspend fun getNews(): NewsListResponse? {
 
@@ -459,11 +468,8 @@ class NetworkManagerImpl(
     ): Default? {
         val random = (Math.random() * 200).toInt()
         val name = "file$random"
-
         val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
-
         val body = MultipartBody.Part.createFormData("file", file.name, requestBody)
-
         val filename = type.toRequestBody("text/plain".toMediaTypeOrNull())
 
         val response =

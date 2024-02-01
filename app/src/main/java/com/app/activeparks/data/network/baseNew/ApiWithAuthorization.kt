@@ -311,4 +311,9 @@ interface ApiWithAuthorization {
         @Path("id") id: String?,
         @Body request: UserInviteDeclaration
     ): Call<String>
+
+    @GET("/api/v1/clubs/{id}/news?offset=0&limit=10&sort[publishedAt]=desc")
+    suspend fun getClubNewsList(
+        @Path("id") id: String?,
+    ): Response<NewsListResponse>
 }

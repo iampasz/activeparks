@@ -56,6 +56,7 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
             .inflate(inflater, container, false)
 
         clubId = arguments?.getString("CLUB_ID", "") ?: ""
+        clubsViewModelKT.currentClubId.value = clubId
 
         return binding.root
     }
@@ -75,11 +76,12 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
             onBackPressed()
         }
 
-
         onClick()
         clubsViewModelKT.getClubsDetails(clubId)
         initClickListener()
         observe()
+
+        clubsViewModelKT.getClubNewsList(clubId)
     }
 
 
