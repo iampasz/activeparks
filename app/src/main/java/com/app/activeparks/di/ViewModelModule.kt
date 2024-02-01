@@ -22,6 +22,7 @@ import com.app.activeparks.ui.profile.ProfileViewModel
 import com.app.activeparks.ui.registration.RegistrationViewModel
 import com.app.activeparks.ui.registration.fragments.forgotPassword.ForgotPasswordViewModel
 import com.app.activeparks.ui.routeActive.fragments.detailsRouteActive.DetailsRouteActiveViewModel
+import com.app.activeparks.ui.routeActive.fragments.favoritesActiveRoutes.FavoritesRouteActiveListViewModel
 import com.app.activeparks.ui.routeActive.fragments.listRouteActive.RouteActiveListViewModel
 import com.app.activeparks.ui.routeActive.fragments.saveRouteActive.SaveRouteActiveViewModel
 import com.app.activeparks.ui.selectvideo.SelectVideoViewModel
@@ -84,4 +85,5 @@ val viewModelModule = module {
     viewModel { RouteActiveListViewModel(get()) }
     viewModel { DetailsRouteActiveViewModel(get()) }
     viewModel { SaveRouteActiveViewModel(get(), get()) }
+    viewModel { FavoritesRouteActiveListViewModel(get()) }
 }

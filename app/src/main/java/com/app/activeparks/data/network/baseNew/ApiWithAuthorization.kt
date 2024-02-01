@@ -164,7 +164,7 @@ interface ApiWithAuthorization {
         @Path("id") id: String,
     ): Response<TrackResponse>
 
-    @GET("/api/v1/track/{id}")
+    @PUT("/api/v1/track/{id}")
     suspend fun saveTrack(
         @Path("id") id: String,
         @Body request: TrackResponse,
@@ -198,7 +198,7 @@ interface ApiWithAuthorization {
         @Path("id") id: String,
     ): Response<RouteActiveResponse>
 
-    @GET("/api/v1/active-routes/{id}")
+    @PUT("/api/v1/active-routes/{id}")
     suspend fun saveRouteActive(
         @Path("id") id: String,
         @Body request: RouteActiveResponse,
@@ -209,6 +209,13 @@ interface ApiWithAuthorization {
         @Path("id") id: String,
     ): Response<RouteActiveResponse>
 
+    @GET("/api/v1/active-routes/favorites")
+    suspend fun getFavoritesRouteActive(): Response<ListRouteActiveResponse>
+    @POST("/api/v1/active-routes/{id}/add-favorites")
+    suspend fun addFavoriteRouteActive(@Path("id") id: String): Response<Boolean>
+
+    @POST("/api/v1/active-routes/{id}/remove-favorites")
+    suspend fun removeFavoriteRouteActive(@Path("id") id: String): Response<Boolean>
 
     //Upload file
     @POST("/api/v1/uploads")

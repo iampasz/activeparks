@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
 import com.app.activeparks.ui.active.ActivityForActivity
 import com.app.activeparks.ui.routeActive.adapter.RouteActiveItemAdapter
+import com.app.activeparks.ui.routeActive.fragments.saveRouteActive.SaveRouteActiveFragment
 import com.app.activeparks.ui.track.fragments.saveTrack.SaveTrackFragment
 import com.technodreams.activeparks.databinding.FragmentRouteActiveListBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -43,12 +44,6 @@ class RouteActiveListFragment : Fragment() {
     private fun setListener() {
         with(binding) {
 
-            rvTracksList.setOnClickListener {
-                //TODO Переслати користувача на ActivityForActivity після закінчення на SaveTrackFragment
-                //openFragment(SaveTrackFragment())
-                startActivity(Intent(requireContext(), ActivityForActivity::class.java))
-            }
-
             ivBack.setOnClickListener {
                 requireActivity().onBackPressed()
             }
@@ -68,6 +63,10 @@ class RouteActiveListFragment : Fragment() {
                 override fun afterTextChanged(s: Editable?) {
                 }
             })
+
+            srUpdate.setOnRefreshListener {
+                viewModel.getRouteActivesList()
+            }
         }
     }
 
@@ -75,7 +74,7 @@ class RouteActiveListFragment : Fragment() {
         with(binding) {
             adapter = RouteActiveItemAdapter (
                 onItemClick = { id ->
-                    openFragment(SaveTrackFragment.newInstance(id))
+                    openFragment(SaveRouteActiveFragment.show(id))
                 },
                 onRoutePoint = { pointsTrack ->
                     val uri =

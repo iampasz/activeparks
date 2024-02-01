@@ -8,102 +8,107 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:orientation="horizontal">
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="68dp"
-            android:layout_height="68dp"
-            app:srcCompat="@drawable/ic_prew" />
 
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
+        <androidx.cardview.widget.CardView
+            android:layout_width="114dp"
             android:layout_height="match_parent"
-            android:lines="1"
-            android:layout_weight="1"
-            android:fontFamily="@font/montserrat_medium"
-            android:letterSpacing="0.01"
-            android:textColor="@color/text_color"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:layout_gravity="center_horizontal"
+            android:elevation="10dp"
+            app:cardCornerRadius="8dp">
 
-        <TextView
-            android:id="@+id/tvAdress"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:lines="1"
-            android:fontFamily="@font/montserrat_medium"
-            android:letterSpacing="0.01"
-            android:text="вул. Коцюбинського, 12"
-            android:textColor="@color/text_color"
-            android:textSize="12sp"/>
+            <ImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/ic_prew" />
+
+
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/ivRoute"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                app:srcCompat="@drawable/ic_route" />
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:paddingLeft="@dimen/padding_15px"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:fontFamily="@font/montserrat_medium"
+                android:letterSpacing="0.01"
+                android:lines="1"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:text="Довжина:"
-                    android:textColor="@color/color_park"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tvAdress"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat_medium"
+                android:letterSpacing="0.01"
+                android:lines="1"
+                android:text="вул. Коцюбинського, 12"
+                android:textColor="@color/text_color"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tvSizeRoute"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ivRoute"
                     android:layout_width="wrap_content"
-                    android:layout_height="24dp"
-                    android:text="---"
-                    android:textColor="@color/text_color"
-                    android:textSize="14sp"
-                    android:visibility="visible" />
+                    android:layout_height="36dp"
+                    app:srcCompat="@drawable/ic_route" />
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/padding_15px">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="2"
+                        android:text="Довжина:"
+                        android:textColor="@color/color_park"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvSizeRoute"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="---"
+                        android:textColor="@color/text_color"
+                        android:textSize="12sp"
+                        android:visibility="visible" />
+
+                </LinearLayout>
             </LinearLayout>
+
+
         </LinearLayout>
-
-
-    </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/llDate"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
@@ -127,19 +132,23 @@
             android:textSize="14sp"
             android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tvCreateRoute"
-        android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:gravity="left"
-        android:text="---"
-        android:textColor="@color/text_color"
-        android:textSize="14sp"
-        android:visibility="visible" />
+        <TextView
+            android:id="@+id/tvCreateRoute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="---"
+            android:textColor="@color/text_color"
+            android:textSize="14sp"
+            android:visibility="visible" />
 
 </LinearLayout>
 
 
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -159,7 +168,7 @@
             <TextView
                 android:id="@+id/tvDateUpdate"
                 android:layout_width="wrap_content"
-                android:layout_height="24dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="---"
                 android:textColor="@color/text_color"

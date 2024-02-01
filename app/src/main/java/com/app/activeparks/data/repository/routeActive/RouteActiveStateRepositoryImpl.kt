@@ -29,4 +29,16 @@ class RouteActiveStateRepositoryImpl (
     override suspend fun getRouteActives(name: String): ListRouteActiveResponse? {
         return networkManager.getRouteActives(name)
     }
+
+    override suspend fun getFavoriteRouteActive(): ListRouteActiveResponse? {
+        return networkManager.getFavoriteRouteActive()
+    }
+
+    override suspend fun addFavoriteRouteActive(id: String): Boolean? {
+        return networkManager.addFavoriteRouteActive(id)
+    }
+
+    override suspend fun removeFavoriteRouteActive(id: String): Boolean? {
+        return networkManager.removeFavoriteRouteActive(id)
+    }
 }
