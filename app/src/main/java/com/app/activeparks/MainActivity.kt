@@ -13,7 +13,6 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.app.activeparks.data.repository.Repository
 import com.app.activeparks.data.storage.Preferences
-import com.app.activeparks.ui.routeActive.adapter.RouteActiveItemAdapter
 import com.app.activeparks.ui.routeActive.fragments.detailsRouteActive.DetailsRouteActiveFragment
 import com.app.activeparks.ui.routeActive.fragments.favoritesActiveRoutes.FavoritesRouteActiveListFragment
 import com.app.activeparks.ui.routeActive.fragments.listRouteActive.RouteActiveListFragment
@@ -129,13 +128,6 @@ class MainActivity : AppCompatActivity(), FragmentInteface {
     }
 
     fun openFragment(fragment: Fragment) {
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.navFragment, fragment)
-            .commit()
-    }
-
-    fun addFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
             .add(R.id.navFragment, fragment)

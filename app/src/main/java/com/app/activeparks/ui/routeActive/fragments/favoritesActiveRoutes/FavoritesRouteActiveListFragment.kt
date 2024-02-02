@@ -3,19 +3,13 @@ package com.app.activeparks.ui.routeActive.fragments.favoritesActiveRoutes
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
-import com.app.activeparks.ui.active.ActivityForActivity
 import com.app.activeparks.ui.routeActive.adapter.FavoritesRouteActiveItemAdapter
-import com.app.activeparks.ui.routeActive.adapter.RouteActiveItemAdapter
 import com.app.activeparks.ui.routeActive.fragments.detailsRouteActive.DetailsRouteActiveFragment
-import com.app.activeparks.ui.routeActive.fragments.saveRouteActive.SaveRouteActiveFragment
-import com.app.activeparks.ui.track.fragments.saveTrack.SaveTrackFragment
 import com.app.activeparks.util.extention.gone
 import com.technodreams.activeparks.databinding.FragmentRouteActiveListBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -89,5 +83,5 @@ class FavoritesRouteActiveListFragment : Fragment() {
     }
 
     private fun openFragment(fragment: Fragment) =
-        (requireActivity() as? MainActivity)?.addFragment(fragment)
+        (requireActivity() as? MainActivity)?.openFragment(fragment)
 }

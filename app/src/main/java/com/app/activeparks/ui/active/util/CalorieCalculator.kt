@@ -36,7 +36,10 @@ class CalorieCalculator {
             weightKg: Double,
             speedKmpH: Double
         ): Int {
-            return (metForWalk(speedKmpH, weightKg) * secondsToHours(durationHours) * weightKg).toInt()
+            return (metForWalk(
+                speedKmpH,
+                weightKg
+            ) * secondsToHours(durationHours) * weightKg).toInt()
         }
 
         fun calculateCaloriesForScandinavianWalk(
@@ -62,6 +65,25 @@ class CalorieCalculator {
         ): Int {
             return (metForRun(speedKmpH) * secondsToHours(durationHours) * weightKg).toInt()
         }
+
+        fun calculateImt(weight: Double?, height: Int?): Double? {
+            return if (weight != null && height != null) {
+                val hM = height.toDouble() / 100
+                weight / (hM * hM)
+            } else null
+        }
+
+        fun getImtStatus(bmi: Double): String {
+            return when {
+                bmi < 18.5 -> "Недостатня вага"
+                bmi in 18.5..24.9 -> "Нормальна вага"
+                bmi in 25.0..29.9 -> "Надлишкова вага (передожиріння)"
+                bmi in 30.0..34.9 -> "Ожиріння I ступеня"
+                bmi in 35.0..39.9 -> "Ожиріння II ступеня"
+                else -> "Ожиріння III ступеня (морбідне ожиріння)"
+            }
+        }
+
 
         private fun secondsToHours(seconds: Int) = seconds / 3600.0
     }

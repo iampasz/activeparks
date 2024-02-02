@@ -569,7 +569,7 @@ class SaveTrackFragment : Fragment(), DataCallback {
     }
 
     private fun openFragment(fragment: Fragment) =
-        (requireActivity() as? MainActivity)?.addFragment(fragment)
+        (requireActivity() as? MainActivity)?.openFragment(fragment)
 
     override fun onDataReceived(data: List<PointsTrack>) {
         viewModel.trackDate.value?.pointsTrack = data

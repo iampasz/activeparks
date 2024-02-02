@@ -19,11 +19,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
 import com.app.activeparks.data.model.user.UserRole
 import com.app.activeparks.ui.active.ActivityForActivity
 import com.app.activeparks.ui.active.model.TypeOfTraining
+import com.app.activeparks.ui.active.util.CalorieCalculator
 import com.app.activeparks.ui.userProfile.edit.EditProfileFragment
 import com.app.activeparks.ui.userProfile.model.PhotoType
 import com.app.activeparks.util.cropper.CropImage
@@ -32,7 +34,9 @@ import com.app.activeparks.util.extention.FileHelper
 import com.app.activeparks.util.extention.generateRandomRoute
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.setSex
+import com.app.activeparks.util.extention.toInfo
 import com.app.activeparks.util.extention.visible
+import com.app.activeparks.util.extention.visibleIf
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.technodreams.activeparks.R
@@ -173,6 +177,12 @@ class UserInfoFragment : Fragment() {
                         tvUserName.text = "${it.firstName} ${it.lastName}"
 
                         tvUserRole.text = UserRole.getRoleByKeyId(it.roleId)
+
+                        CalorieCalculator.calculateImt(it.weight, it.height)?.let { imt ->
+                            tvImtValue.text = imt.toInfo()
+                            tvImtTitle.text = CalorieCalculator.getImtStatus(imt)
+                        }
+
                     }
                 }
             }
@@ -207,6 +217,10 @@ class UserInfoFragment : Fragment() {
                     generateRandomRoute(GeoPoint(48.913844, 24.709513), 7, 0.0001),
                     "123"
                 )
+            }
+
+            tvImtDescription.setOnClickListener {
+                tvImtLongDescription.visibleIf(!tvImtLongDescription.isVisible)
             }
 
             FileHelper.changeSize(vBackgroundUser, resources)

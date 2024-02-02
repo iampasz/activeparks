@@ -14,6 +14,7 @@ const val COORDINATOR = "5dcf0363-d171-45db-9280-cb337ca5e101"
 const val SESSION_REPOSITORY = "com.app.activeparks"
 
 const val URL_INFO_LIST = "https://ap.sportforall.gov.ua/infolist/start"
+const val URL_PERSONAL_DATE = "https://ap.sportforall.gov.ua/info/Hz0lhIus"
 
 val HR_MEASUREMENT_UUID: UUID = UUID.fromString("00002a37-0000-1000-8000-00805f9b34fb")
 val HR_SERVICE_UUID: UUID = UUID.fromString("0000180D-0000-1000-8000-00805f9b34fb")

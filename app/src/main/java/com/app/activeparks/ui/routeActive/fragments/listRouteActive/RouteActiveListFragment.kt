@@ -10,10 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
-import com.app.activeparks.ui.active.ActivityForActivity
 import com.app.activeparks.ui.routeActive.adapter.RouteActiveItemAdapter
 import com.app.activeparks.ui.routeActive.fragments.saveRouteActive.SaveRouteActiveFragment
-import com.app.activeparks.ui.track.fragments.saveTrack.SaveTrackFragment
 import com.technodreams.activeparks.databinding.FragmentRouteActiveListBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
@@ -98,5 +96,5 @@ class RouteActiveListFragment : Fragment() {
     }
 
     private fun openFragment(fragment: Fragment) =
-        (requireActivity() as? MainActivity)?.addFragment(fragment)
+        (requireActivity() as? MainActivity)?.openFragment(fragment)
 }
