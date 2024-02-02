@@ -97,6 +97,7 @@ class RegistrationUserDataFragment : Fragment() {
             passwordEditText.addTextChangedListener(object : EasyTextWatcher() {
                 override fun afterTextChanged(s: Editable?) {
                     btnNext.enableIf(isDataValid())
+                    viewModel.sendCodePhoneRequest.password = s.toString()
                 }
             })
 
