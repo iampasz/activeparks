@@ -7,6 +7,7 @@ import android.graphics.drawable.LevelListDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -17,6 +18,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.app.activeparks.data.model.clubs.UserInviteDeclaration
+import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.ui.clubs.ClubsViewModelKT
 import com.app.activeparks.ui.event.interfaces.EventScannerListener
 import com.app.activeparks.util.extention.gone
@@ -39,7 +42,10 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
 
     private val clubsViewModelKT: ClubsViewModelKT by activityViewModel()
     lateinit var binding: FragmentClubBinding
-    var clubId  = ""
+    var clubId = ""
+
+    var userInClub = false
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -131,10 +137,17 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                 }
 
                 R.id.nav_club_join -> {
-                    //viewModel.applyUser()
-                    //Log.i("FRFEFEFF","we a click")
+                    val preferences = Preferences(requireContext())
+                    val userId = preferences.id
+                    val userInviteDeclaration = UserInviteDeclaration(userId)
 
-                    //clubsViewModelKT.applyUser()
+                    if (userInClub) {
+                        clubsViewModelKT.getRejectUser(clubId, userInviteDeclaration)
+                        Log.i("TAG_JOIN_THE_CLUB","${userInClub} Користувача учасник клубу. Надсилаємо заявку на вихід з клубу")
+                    } else {
+                        clubsViewModelKT.getApplyUser(clubId, userInviteDeclaration)
+                        Log.i("TAG_JOIN_THE_CLUB","${userInClub} Користувача в клубі немає. Надсилаємо заявку на вступ")
+                    }
                 }
             }
             true
@@ -142,10 +155,9 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
     }
 
 
-    private fun observe(){
+    private fun observe() {
 
-        clubsViewModelKT.clubDetails.observe(viewLifecycleOwner){
-            clubs->
+        clubsViewModelKT.clubDetails.observe(viewLifecycleOwner) { clubs ->
 
             Picasso.get().load(clubs.logoUrl).into(binding.include.photo)
             binding.countParticipant.text = clubs.memberAmount.toString()
@@ -156,62 +168,101 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
             @SuppressLint("SimpleDateFormat") val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             try {
                 val date = format.parse(clubs.createdAt)!!
-                binding.createdDate.setText(SimpleDateFormat("dd MMMM yyyy", Locale("uk", "UA")).format(date))
+                binding.createdDate.setText(
+                    SimpleDateFormat(
+                        "dd MMMM yyyy",
+                        Locale("uk", "UA")
+                    ).format(date)
+                )
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
 
 
-            if(clubs.instagramUrl!=null){
+            if (clubs.instagramUrl != null) {
                 binding.circleInstagram.visible()
-                binding.circleInstagram.setOnClickListener{
+                binding.circleInstagram.setOnClickListener {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(clubs.instagramUrl))
                     startActivity(intent)
                 }
-            }else{
+            } else {
                 binding.circleInstagram.gone()
             }
 
-            if(clubs.facebookUrl!=null){
+            if (clubs.facebookUrl != null) {
                 binding.circleFacebook.visible()
-                binding.circleFacebook.setOnClickListener{
+                binding.circleFacebook.setOnClickListener {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(clubs.facebookUrl))
                     startActivity(intent)
                 }
-            }else{
+            } else {
                 binding.circleFacebook.gone()
             }
 
-            if(clubs.telegramUrl!=null){
+            if (clubs.telegramUrl != null) {
                 binding.circleTelegram.visible()
-                binding.circleTelegram.setOnClickListener{
+                binding.circleTelegram.setOnClickListener {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(clubs.telegramUrl))
                     startActivity(intent)
                 }
-            }else{
+            } else {
                 binding.circleTelegram.gone()
             }
 
-            if(clubs.youtubeUrl!=null){
+            if (clubs.youtubeUrl != null) {
                 binding.circleYoutube.visible()
-                binding.circleYoutube.setOnClickListener{
+                binding.circleYoutube.setOnClickListener {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(clubs.youtubeUrl))
                     startActivity(intent)
                 }
-            }else{
+            } else {
                 binding.circleYoutube.gone()
+            }
+
+            if (clubs.clubUser != null) {
+                Log.i("TAG_JOIN_THE_CLUB","${clubs.clubUser} Користувач учасник клубу")
+                joinItem.title = getString(R.string.cansel)
+                userInClub = true
+            } else {
+                Log.i("TAG_JOIN_THE_CLUB","${clubs.clubUser} Користувача в клубі немає")
+                joinItem.title = getString(R.string.join)
+                userInClub = false
             }
         }
 
+        clubsViewModelKT.requestToEntry.observe(viewLifecycleOwner) { result ->
+            Log.i("TAG_JOIN_THE_CLUB","Прийшла відповідь запиту на приєднання до клубу")
+            if (result) {
+                joinItem.title = getString(R.string.cansel)
+                userInClub = true
+                Log.i("TAG_JOIN_THE_CLUB","Відповідь $result заявка надіслана")
+            } else {
+                joinItem.title = getString(R.string.join)
+                userInClub = false
+                Log.i("TAG_JOIN_THE_CLUB","Відповідь $result заявка вже була надіслана")
+            }
+        }
+
+        clubsViewModelKT.requestToCansel.observe(viewLifecycleOwner) { result ->
+            Log.i("TAG_JOIN_THE_CLUB","Прийшла відповідь запиту на відміну заявки до клубу")
+            if (result) {
+                joinItem.title = getString(R.string.join)
+                Log.i("TAG_JOIN_THE_CLUB","Відповідь $result ви вийшли з клубу")
+                userInClub = false
+            } else {
+                joinItem.title = getString(R.string.cansel)
+                Log.i("TAG_JOIN_THE_CLUB","Відповідь $result ви вже вийшли з клубу")
+            }
+        }
     }
 
-    private fun onClick(){
-        binding.share.setOnClickListener{
+    private fun onClick() {
+        binding.share.setOnClickListener {
             shareClub()
         }
     }
 
-    private fun shareClub(){
+    private fun shareClub() {
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = "text/plain"
         intent.putExtra(

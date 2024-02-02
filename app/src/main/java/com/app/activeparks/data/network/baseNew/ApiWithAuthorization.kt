@@ -7,6 +7,7 @@ import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.clubs.ClubListResponse
 import com.app.activeparks.data.model.clubs.ClubsCombinedResponse
 import com.app.activeparks.data.model.clubs.ItemClub
+import com.app.activeparks.data.model.clubs.UserInviteDeclaration
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.news.ItemNews
@@ -240,8 +241,6 @@ interface ApiWithAuthorization {
         @Path("id") id: String
     ): Response<PhotoGalleryResponse>
 
-    //my user, token for test
-    //1f17d9c3-0bd1-4423-8731-5df8c8f978fa
     @GET("/api/v1/gallery/{id}/user?")
     suspend fun getPhotoGalleryUser(
         @Path("id") id: String
@@ -300,4 +299,16 @@ interface ApiWithAuthorization {
     suspend fun getClubsDetails(
         @Path("id") id: String?
     ): Response<ItemClub>
+
+    @POST("/api/v1/clubs/{id}/apply-user")
+    fun getApplyUser(
+        @Path("id") id: String?,
+        @Body request: UserInviteDeclaration
+    ): Call<String>
+
+    @POST("/api/v1/clubs/{id}/reject-user")
+    fun getRejectUser(
+        @Path("id") id: String?,
+        @Body request: UserInviteDeclaration
+    ): Call<String>
 }

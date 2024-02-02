@@ -10,6 +10,7 @@ import com.app.activeparks.data.model.activity.AddActivityResponse
 import com.app.activeparks.data.model.clubs.ClubListResponse
 import com.app.activeparks.data.model.clubs.ClubsCombinedResponse
 import com.app.activeparks.data.model.clubs.ItemClub
+import com.app.activeparks.data.model.clubs.UserInviteDeclaration
 import com.app.activeparks.data.model.events.ImageLinkResponse
 import com.app.activeparks.data.model.gallery.PhotoGalleryResponse
 import com.app.activeparks.data.model.news.ItemNews
@@ -364,7 +365,43 @@ class NetworkManagerImpl(
     }
 
 
+    override suspend fun getApplyUser(id: String, request: UserInviteDeclaration): Boolean {
+        return suspendCoroutine { continuation ->
+            val call = apiWithAuthorization.getApplyUser(id, request)
+            call.enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        continuation.resume(true)
+                    } else {
+                        continuation.resume(false)
+                    }
+                }
 
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    continuation.resume(false)
+                }
+            })
+        }
+    }
+
+    override suspend fun getRejectUser(id: String, request: UserInviteDeclaration): Boolean {
+        return suspendCoroutine { continuation ->
+            val call = apiWithAuthorization.getRejectUser(id, request)
+            call.enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        continuation.resume(true)
+                    } else {
+                        continuation.resume(false)
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    continuation.resume(false)
+                }
+            })
+        }
+    }
 
 
     override suspend fun getNews(): NewsListResponse? {
