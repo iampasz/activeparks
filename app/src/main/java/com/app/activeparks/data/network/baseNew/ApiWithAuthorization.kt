@@ -26,6 +26,7 @@ import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.statistic.StatisticResponse
 import com.app.activeparks.data.model.track.ListTrackResponse
 import com.app.activeparks.data.model.track.TrackResponse
+import com.app.activeparks.data.model.user.UserParticipants
 import com.app.activeparks.data.model.uservideo.UserVideoItem
 import com.app.activeparks.data.model.uservideo.VideosResponse
 import okhttp3.MultipartBody
@@ -211,6 +212,7 @@ interface ApiWithAuthorization {
 
     @GET("/api/v1/active-routes/favorites")
     suspend fun getFavoritesRouteActive(): Response<ListRouteActiveResponse>
+
     @POST("/api/v1/active-routes/{id}/add-favorites")
     suspend fun addFavoriteRouteActive(@Path("id") id: String): Response<Boolean>
 
@@ -316,4 +318,48 @@ interface ApiWithAuthorization {
     suspend fun getClubNewsList(
         @Path("id") id: String?,
     ): Response<NewsListResponse>
+
+    //Participants
+    @GET("/api/v1/clubs/{id}/news?offset=0&limit=10&sort[publishedAt]=desc")
+    suspend fun getUserApplying(
+        @Path("id") id: String?,
+    ): Response<UserParticipants>
+
+    @GET("/api/v1/clubs/{id}/participants/{user}")
+    suspend fun getClubUsers(
+        @Path("id") id: String?,
+        @Path("user") userType: String?
+    ): Response<UserParticipants>
+
+    //Participants Clubs
+    @GET("/api/v1/clubs/{id}/participants/heads")
+    suspend fun getHeadsClubUsers(
+        @Path("id") id: String?,
+    ): Response<UserParticipants>
+
+    @GET("/api/v1/clubs/{id}/participants/applying")
+    suspend fun getApplyingClubUsers(
+        @Path("id") id: String?,
+    ): Response<UserParticipants>
+
+    @GET("/api/v1/clubs/{id}/participants/members")
+    suspend fun getMembersClubUsers(
+        @Path("id") id: String?,
+    ): Response<UserParticipants>
+
+    //Participants Events
+    @GET("/api/v1/sport-events/{id}/participants/heads")
+    suspend fun getHeadsEventUsers(
+        @Path("id") id: String?,
+    ): Response<UserParticipants>
+
+    @GET("/api/v1/sport-events/{id}/participants/applying")
+    suspend fun getApplyingEventUsers(
+        @Path("id") id: String?,
+    ): Response<UserParticipants>
+
+    @GET("/api/v1/sport-events/{id}/participants/members")
+    suspend fun getMembersEventUsers(
+        @Path("id") id: String?,
+    ): Response<UserParticipants>
 }

@@ -14,6 +14,8 @@ import com.app.activeparks.data.useCase.eventState.EventStateUseCase
 import com.app.activeparks.data.useCase.eventState.EventStateUseCaseImpl
 import com.app.activeparks.data.useCase.news.NewsUseCase
 import com.app.activeparks.data.useCase.news.NewsUseCaseImpl
+import com.app.activeparks.data.useCase.participants.ParticipantsUseCase
+import com.app.activeparks.data.useCase.participants.ParticipantsUseCaseImpl
 import com.app.activeparks.data.useCase.pauseActivity.PauseActivityUseCase
 import com.app.activeparks.data.useCase.pauseActivity.PauseActivityUseCaseImpl
 import com.app.activeparks.data.useCase.profileState.ProfileStateUseCase
@@ -54,4 +56,5 @@ val useCaseModule = module {
 
     single<TrackStateUseCase> { TrackStateUseCaseImpl(get()) }
     single<RouteActiveStateUseCase> { RouteActiveStateUseCaseImpl(get()) }
+    single<ParticipantsUseCase> { ParticipantsUseCaseImpl(get()) }
 }

@@ -26,7 +26,7 @@ import com.app.activeparks.ui.event.interfaces.EventScannerListener;
 import com.app.activeparks.ui.event.fragments.MeetingsFragment;
 import com.app.activeparks.ui.event.util.EventModelFactory;
 import com.app.activeparks.ui.event.viewmodel.EventViewModel;
-import com.app.activeparks.ui.participants.ParticipantsFragment;
+import com.app.activeparks.ui.participants.ParticipantsFragmentOld;
 import com.app.activeparks.ui.routepoint.RoutePointFragment;
 import com.app.activeparks.util.ButtonSelect;
 import com.app.activeparks.util.LoadImage;
@@ -275,7 +275,7 @@ public class EventActivityOld extends AppCompatActivity implements EventScannerL
         });
 
         mPeopleAction.setOnClickListener(v -> {
-            setFragment(new ParticipantsFragment(viewModel.mId, false, true));
+            setFragment(new ParticipantsFragmentOld(viewModel.mId, false, true));
             replaceButton();
             mPeopleAction.on();
         });

@@ -36,6 +36,7 @@ import com.app.activeparks.data.model.sportevents.ListItemEventResponse
 import com.app.activeparks.data.model.statistic.StatisticResponse
 import com.app.activeparks.data.model.track.ListTrackResponse
 import com.app.activeparks.data.model.track.TrackResponse
+import com.app.activeparks.data.model.user.UserParticipants
 import com.app.activeparks.data.model.uservideo.UserVideoItem
 import com.app.activeparks.data.model.uservideo.VideosResponse
 import com.app.activeparks.data.model.weather.WeatherResponse
@@ -130,8 +131,22 @@ interface NetworkManager {
     //Clubs
     suspend fun getClubList(): ClubListResponse?
     suspend fun getCombinatedClubList(): ClubsCombinedResponse?
-    suspend fun getClubsDetails(id:String): ItemClub?
+    suspend fun getClubsDetails(id: String): ItemClub?
     suspend fun getApplyUser(id: String, request: UserInviteDeclaration): Boolean?
     suspend fun getRejectUser(id: String, request: UserInviteDeclaration): Boolean?
-    suspend fun getClubNewsList(clubId:String): NewsListResponse?
+    suspend fun getClubNewsList(clubId: String): NewsListResponse?
+
+    //Participants
+    suspend fun getUserApplying(id: String): UserParticipants?
+    suspend fun getClubUsers(id: String, userType: String): UserParticipants?
+
+    suspend fun getHeadsClubUsers(id: String): UserParticipants?
+    suspend fun getApplyingClubUsers(id: String): UserParticipants?
+    suspend fun getMembersClubUsers(id: String): UserParticipants?
+
+    //Events
+    suspend fun getHeadsEventUsers(id: String): UserParticipants?
+    suspend fun getApplyingEventUsers(id: String): UserParticipants?
+    suspend fun getMembersEventUsers(id: String): UserParticipants?
+
 }

@@ -20,6 +20,6 @@ public class ParticipantsModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new ParticipantsViewModel(sharedPrefsUserRepository);
+        return (T) new ParticipantsViewModelOld(sharedPrefsUserRepository);
     }
 }

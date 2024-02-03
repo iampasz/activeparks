@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
 import com.app.activeparks.ui.clubs.ClubsViewModelKT
-import com.app.activeparks.ui.event.activity.ClubFragment
 import com.app.activeparks.ui.homeWithUser.fragments.clubs.HomeClubsAdapter
 import com.app.activeparks.util.extention.mainAddFragment
 import com.app.activeparks.util.extention.removeFragment

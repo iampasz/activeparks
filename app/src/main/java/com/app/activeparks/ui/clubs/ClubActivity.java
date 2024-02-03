@@ -16,16 +16,16 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.app.activeparks.ui.event.fragments.EventListFragment;
 import com.app.activeparks.ui.news.NewsFragment;
-import com.app.activeparks.ui.participants.ParticipantsFragment;
+import com.app.activeparks.ui.participants.ParticipantsFragmentOld;
 import com.app.activeparks.ui.qr.QrCodeActivity;
 import com.app.activeparks.util.ButtonSelect;
 import com.bumptech.glide.Glide;
-import com.technodreams.activeparks.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import com.technodreams.activeparks.R;
 
 public class ClubActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -170,7 +170,7 @@ public class ClubActivity extends AppCompatActivity implements SwipeRefreshLayou
         });
 
         people.setOnClickListener(v -> {
-            setFragment(new ParticipantsFragment(viewModel.mId, viewModel.admin, false));
+            setFragment(new ParticipantsFragmentOld(viewModel.mId, viewModel.admin, false));
             replaceButton();
             people.on();
         });
