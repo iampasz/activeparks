@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Suppress("DEPRECATION")
-class BlogFragment : Fragment(),  Html.ImageGetter {
+class BlogFragment : Fragment(), Html.ImageGetter {
 
     private lateinit var binding: FragmentBlogBinding
     private val blogViewModel: BlogViewModel by viewModel()
@@ -49,9 +49,9 @@ class BlogFragment : Fragment(),  Html.ImageGetter {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(clubId.isEmpty()){
+        if (clubId.isEmpty()) {
             blogViewModel.getNewsDetails(blogId)
-        }else{
+        } else {
             blogViewModel.getClubNewsDetails(clubId, blogId)
         }
 
@@ -83,22 +83,25 @@ class BlogFragment : Fragment(),  Html.ImageGetter {
             try {
                 val date = format.parse(news.publishedAt)
                 binding.include.date.text = (
-                    "Опубліковано: " + date?.let {
-                        SimpleDateFormat(
-                            "dd MMMM yyyy",
-                            Locale("uk", "UA")
-                        ).format(it)
-                    }
-                )
+                        "Опубліковано: " + date?.let {
+                            SimpleDateFormat(
+                                "dd MMMM yyyy",
+                                Locale("uk", "UA")
+                            ).format(it)
+                        }
+                        )
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
         }
 
-        blogViewModel.newsClubDetails.observe(viewLifecycleOwner){
+        blogViewModel.newsClubDetails.observe(viewLifecycleOwner) {
 
                 news ->
-            Picasso.get().load(news.photo).into(binding.include.photo)
+
+            news.photo.takeIf { it.isNotEmpty() }?.let {
+                Picasso.get().load(it).into(binding.include.photo)
+            }
 
             var web =
                 "<html><head><LINK href=\"https://ap.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body>" + news.body + "</body></html>"
