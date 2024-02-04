@@ -275,7 +275,7 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                     )
 
                 } else if (events.typeId
-                        .contains(EventTypes.EVENTS_SIMPLE.type)
+                        .contains(EventTypes.SIMPLE_TRAINING.type)
                 ) {
                     mapsViewController?.setMarker(
                         eventViewModel.address.location[0],

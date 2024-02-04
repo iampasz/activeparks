@@ -131,8 +131,15 @@ interface ApiWithAuthorization {
         @Body user: User
     ): Response<User>
 
+    //Events
     @GET("/api/v1/sport-events/my?offset=0&limit=100&filters[isClubEvent]=0&sort[createdAt]=desc")
     suspend fun getAdminEvents(): Response<EventResponse>
+
+    @GET("/api/v1/sport-events/day?offset=0&sort[startsAt]=asc")
+    suspend fun getEventsForDate(
+        @Query("filters[startsFrom]") startsFrom: String?,
+        @Query("filters[startsTo]") startsTo: String?,
+    ): Response<EventResponse>
 
     @POST("/api/v1/sport-events/")
     suspend fun createEmptyEvent(): Response<ItemEvent>

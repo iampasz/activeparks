@@ -13,7 +13,7 @@ import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.sportsgrounds.ItemSportsground
 import com.app.activeparks.ui.adapter.PhotosAdaper
 import com.app.activeparks.ui.event.activity.EventFragment
-import com.app.activeparks.ui.event.adapter.EventsListAdaper
+import com.app.activeparks.ui.event.adapter.EventsListAdaperOld
 import com.app.activeparks.ui.park.adapter.ParkListAdaper
 import com.app.activeparks.util.MapsViewController
 import com.bumptech.glide.Glide
@@ -85,10 +85,11 @@ class ParkActivity : AppCompatActivity() {
                     binding.rvParkEvent.visibility = View.VISIBLE
 
                     binding.rvParkEvent.setAdapter(
-                        EventsListAdaper(
+                        EventsListAdaperOld(
                             this,
                             park.sportEvents
-                        ).setOnEventListener(object : EventsListAdaper.EventsListener {
+                        )
+                            .setOnEventListener(object : EventsListAdaperOld.EventsListener {
                             override fun onInfo(itemClub: ItemEvent) {
                                 startActivity(
                                     Intent(

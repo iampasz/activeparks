@@ -1,6 +1,7 @@
 package com.app.activeparks.data.network
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityItemResponse
@@ -336,6 +337,16 @@ class NetworkManagerImpl(
                 }
             })
         }
+    }
+
+    override suspend fun getEventsForDate(startData: String, endData: String): EventResponse? {
+
+        val response = apiWithAuthorization.getEventsForDate(startData, endData)
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
     }
 
     override suspend fun getClubList(): ClubListResponse? {

@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import com.app.activeparks.data.model.sportevents.EventList
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.ui.event.activity.EventFragment
-import com.app.activeparks.ui.event.adapter.EventsListAdapterKT
 import com.app.activeparks.ui.event.interfaces.OnItemClickListener
 import com.app.activeparks.ui.event.viewmodel.EventViewModel
 import com.technodreams.activeparks.R
@@ -29,7 +28,6 @@ class ClubEventsCalendarFragment : Fragment(), LocationListener, OnItemClickList
     private val viewModel: EventViewModel by activityViewModel()
     private var locationManager: LocationManager? = null
     private var nameList: MutableList<ItemEvent> = mutableListOf()
-    private val eventsListAdapter = EventsListAdapterKT(this)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,8 +49,7 @@ class ClubEventsCalendarFragment : Fragment(), LocationListener, OnItemClickList
     @SuppressLint("NotifyDataSetChanged")
     fun setAdapter(events: EventList) {
         nameList = events.items as MutableList<ItemEvent>
-        eventsListAdapter.differ.submitList(events.items)
-        eventsListAdapter.notifyDataSetChanged()
+
     }
 
     override fun onResume() {

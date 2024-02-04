@@ -23,6 +23,11 @@ public class ItemEvent {
     @SerializedName("typeId")
     @Expose
     private String typeId;
+
+    @SerializedName("type_id")
+    @Expose
+    private String type_id;
+
     @SerializedName("isPrivate")
     @Expose
     private Boolean isPrivate;
@@ -157,8 +162,16 @@ public class ItemEvent {
         return typeId;
     }
 
+    public String getTypeIdNew() {
+        return type_id;
+    }
+
     public void setTypeId(String typeId) {
         this.typeId = typeId;
+    }
+
+    public void setTypeIdNew(String type_id) {
+        this.type_id = type_id;
     }
 
     public Boolean getIsPrivate() {

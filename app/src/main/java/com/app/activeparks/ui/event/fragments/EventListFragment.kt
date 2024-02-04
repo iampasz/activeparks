@@ -21,14 +21,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.activeparks.MainActivity
 import com.app.activeparks.data.model.calendar.CalendarModel
 import com.app.activeparks.data.model.sportevents.EventList
-import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.data.model.sportevents.ItemEventTitle
 import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.ui.event.activity.EventFragment
 import com.app.activeparks.ui.event.adapter.EventTypeAdapter
-import com.app.activeparks.ui.event.adapter.EventsListAdapterKT
+import com.app.activeparks.ui.event.adapter.EventsListAdapter
 import com.app.activeparks.ui.event.interfaces.OnItemClickListener
 import com.app.activeparks.ui.event.viewmodel.EventViewModel
+import com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsViewModel
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.mainAddFragment
 import com.app.activeparks.util.extention.removeFragment
@@ -40,9 +40,11 @@ import com.google.android.material.tabs.TabLayout
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentEventsBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Objects
 
 
@@ -50,14 +52,18 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
 
     lateinit var binding: FragmentEventsBinding
     private val viewModel: EventViewModel by activityViewModel()
+    private val homeEventsViewModel: HomeEventsViewModel by viewModel()
     private var locationManager: LocationManager? = null
     private lateinit var evetTypeAdapter: EventTypeAdapter
-    private var nameList: MutableList<ItemEvent> = mutableListOf()
-    private val eventsListAdapter = EventsListAdapterKT(this)
     private lateinit var preferences: Preferences
 
-
-    //private val clubsList: ArrayList<ItemClub> = java.util.ArrayList()
+    val adapter = EventsListAdapter{
+        val bundle = Bundle()
+        bundle.putString("EVENT_ID", it.id)
+        val eventFragment = EventFragment()
+        eventFragment.arguments = bundle
+        mainAddFragment((requireActivity() as MainActivity), eventFragment)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,78 +78,21 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        preferences = Preferences(requireContext())
-        showCreateEventButton()
-        binding.listEvents.adapter = eventsListAdapter
-        locationManager = requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
         viewModel.getEventsList()
         viewModel.calendarEvent()
+        val today = getCurrentDate()
+        homeEventsViewModel.getEventsForDate(today, today)
 
-        binding.closed.setOnClickListener {
-            parentFragmentManager.removeFragment(this)
-        }
-        binding.createEvent.setOnClickListener {
-            (requireActivity() as MainActivity).openFragment(FragmentEventCreate())
-        }
-
-        viewModel.mySportEventsList.observe(viewLifecycleOwner) { result: EventList ->
-            run {
-                setAdapter(result)
-                // binding.titleText2.text = "Жодного запланованого заходу"
-            }
-        }
-
-        viewModel.calendar.observe(
-            viewLifecycleOwner
-        ) { calendarItem: CalendarModel? ->
-            calendarItem?.let {
-                this.setMapperAdapter(
-                    it
-                )
-            }
-        }
-
-        binding.calendarView.setOnDayClickListener(object : OnDayClickListener {
-            override fun onDayClick(eventDay: EventDay) {
-                val cal = eventDay.calendar
-                @SuppressLint("SimpleDateFormat") val dateFormat =
-                    SimpleDateFormat("yyyy-MM-dd")
-
-                viewModel.eventsDay(dateFormat.format(cal.time))
-                viewModel.getEventsByDay(dateFormat.format(cal.time))
-            }
-        })
-        addEventTitlesList()
-        binding.findEvents.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                //filterList(s.toString())
-            }
-        })
-
-        initToolBar()
-
+        observe()
+        initClickListener()
+        initView()
     }
-
-
-    //  fun filterList() {
-//        val filteredList = originalList.filter { item ->
-//            // Здійснюємо фільтрацію за введеним текстом
-//            item.name.contains(query, ignoreCase = true)
-//        }
-
-    // Оновлюємо список з відфільтрованими даними
-    // adapter.updateList(filteredList)
-    //   }
 
     @SuppressLint("NotifyDataSetChanged")
     fun setAdapter(events: EventList) {
-        nameList = events.items as MutableList<ItemEvent>
-        eventsListAdapter.differ.submitList(events.items)
-        eventsListAdapter.notifyDataSetChanged()
+        //nameList = events.items as MutableList<ItemEvent>
+       // eventsListAdapter.differ.submitList(events.items)
+        //eventsListAdapter.notifyDataSetChanged()
     }
 
     private fun setMapperAdapter(calendarItem: CalendarModel) {
@@ -194,7 +143,6 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
 
     override fun onProviderDisabled(provider: String) {}
 
-
     private fun addEventTitlesList() {
 
         val listTitle = ArrayList<ItemEventTitle>()
@@ -241,7 +189,7 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
     @SuppressLint("CommitTransaction")
     override fun onItemClick(position: Int) {
         val bundle = Bundle()
-        bundle.putString("EVENT_ID", nameList[position].id)
+       // bundle.putString("EVENT_ID", nameList[position].id)
         val eventFragment = EventFragment()
         eventFragment.arguments = bundle
         mainAddFragment((requireActivity() as MainActivity), eventFragment)
@@ -292,28 +240,76 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
         })
     }
 
-//    fun getAllClubs(limit: Int) {
-//        val allClubs = repository.getClubsAll(limit.toString()).subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe(
-//                { result: Clubs ->
-//                    clubsList.clear()
-//                    clubsList.addAll(result.items)
-//                    setClubsAdapter()
-//                }
-//            ) { error: Throwable? -> }
-//    }
+    private fun initView(){
+        preferences = Preferences(requireContext())
+        showCreateEventButton()
+      //  binding.listEvents.adapter = eventsListAdapter
+        locationManager = requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
 
-    // private fun setClubsAdapter() {
-    // binding.listEvents.adapter = ClubsAdaper(requireContext(), clubsList)
-    //        .setOnClubsListener { itemClub ->
-//                startActivity(
-////                    Intent(this@EventListActivity2, ClubActivity::class.java).putExtra(
-////                        "id",
-////                        itemClub.id
-////                    )
-//                )
-    //   }
-    //  }
+        binding.findEvents.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+        })
+        initToolBar()
+
+        binding.listEvents.adapter = adapter
+    }
+
+    private fun observe(){
+        viewModel.mySportEventsList.observe(viewLifecycleOwner) { result: EventList ->
+            run {
+                setAdapter(result)
+                // binding.titleText2.text = "Жодного запланованого заходу"
+            }
+        }
+
+        viewModel.calendar.observe(
+            viewLifecycleOwner
+        ) { calendarItem: CalendarModel? ->
+            calendarItem?.let {
+                this.setMapperAdapter(
+                    it
+                )
+            }
+        }
+
+        homeEventsViewModel.eventDayList.observe(viewLifecycleOwner){
+            result ->
+            adapter.list.submitList(result.items)
+            //adapter.list.submitList(result.newGetting)
+        }
+    }
+
+    private fun initClickListener(){
+        binding.closed.setOnClickListener {
+            parentFragmentManager.removeFragment(this)
+        }
+        binding.createEvent.setOnClickListener {
+            (requireActivity() as MainActivity).openFragment(FragmentEventCreate())
+        }
+
+        binding.calendarView.setOnDayClickListener(object : OnDayClickListener {
+            override fun onDayClick(eventDay: EventDay) {
+                val cal = eventDay.calendar
+                @SuppressLint("SimpleDateFormat") val dateFormat =
+                    SimpleDateFormat("yyyy-MM-dd")
+
+                viewModel.eventsDay(dateFormat.format(cal.time))
+                viewModel.getEventsByDay(dateFormat.format(cal.time))
+            }
+        })
+        addEventTitlesList()
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun getCurrentDate(): String {
+        val currentDate = Date()
+        val formatter = SimpleDateFormat("yyyy-MM-dd")
+        return formatter.format(currentDate)
+    }
 
 }
