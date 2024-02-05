@@ -10,6 +10,7 @@ import com.app.activeparks.ui.active.fragments.pulseGadget.PulseGadgetFragment
 import com.app.activeparks.ui.active.fragments.pulseZone.PulseZoneFragment
 import com.app.activeparks.ui.active.fragments.type.ActivityTypeFragment
 import com.app.activeparks.util.extention.enableIf
+import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentSettingsActivityBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
@@ -25,17 +26,38 @@ class SettingsActivityFragment : Fragment() {
         binding = FragmentSettingsActivityBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setSTartValue()
         setListener()
         observe()
+    }
+
+    private fun setSTartValue() {
+        with(viewModel) {
+            changeActivityTYpe()
+        }
+    }
+
+    private fun ActiveViewModel.changeActivityTYpe() {
+        binding.tvTypeActivity.apply {
+            text = activityState.activityType.title
+            setCompoundDrawablesWithIntrinsicBounds(
+                activityState.activityType.img,
+                0,
+                R.drawable.ic_arrow_right_gray,
+                0
+            )
+        }
     }
 
     private fun observe() {
         viewModel.updateUI.observe(viewLifecycleOwner) {
             with(binding) {
                 setEnableViews()
+                viewModel.changeActivityTYpe()
             }
         }
     }

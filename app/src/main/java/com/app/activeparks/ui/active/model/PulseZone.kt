@@ -14,11 +14,11 @@ data class PulseZone(
     companion object {
         fun getPulseZone(): List<PulseZone> {
             return listOf(
-                PulseZone(0,"Максимальний тренінг", R.drawable.view_puls_level_6),
+                PulseZone(0,"Верхня межа", R.drawable.view_puls_level_6),
                 PulseZone(1,"Анаеробна", R.drawable.view_puls_level_5),
                 PulseZone(2,"Аеробна", R.drawable.view_puls_level_4),
                 PulseZone(3,"Спалювання жиру", R.drawable.view_puls_level_3),
-                PulseZone(4,"Легкий тренінг", R.drawable.view_puls_level_2),
+                PulseZone(4,"Легко", R.drawable.view_puls_level_2),
                 PulseZone(5,"Стан спокою", R.drawable.view_puls_level_1)
             )
         }

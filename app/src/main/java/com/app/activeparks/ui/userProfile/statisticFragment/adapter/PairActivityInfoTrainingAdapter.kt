@@ -11,6 +11,7 @@ import com.app.activeparks.ui.userProfile.model.getUnitInfFirst
 import com.app.activeparks.ui.userProfile.model.getUnitInfSecond
 import com.app.activeparks.util.extention.DataHelper
 import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.replaceBrackets
 import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.databinding.ItemPairActivityTrainingBinding
 
@@ -63,7 +64,7 @@ class PairActivityInfoTrainingAdapter :
                     DataHelper.formatDurationHour(item.numberFirst.toLong())
                 }
                 7 -> {
-                    "${DataHelper.formatDuration(item.numberFirst.toLong())} ${item.unit}"
+                    "${DataHelper.formatDuration(item.numberFirst.toLong())} ${item.unit}".replaceBrackets()
                 }
                 else -> {
                     item.getUnitInfFirst()

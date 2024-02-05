@@ -61,6 +61,11 @@ fun Long.getStingForSpeak() = when (this / 1000) {
     1L -> "Два"
     else -> "Один"
 }
+fun Long.getNumberForSpeak() = when (this / 1000) {
+    2L -> "3"
+    1L -> "2"
+    else -> "1"
+}
 
 //List
 fun List<ActivityInfoTrainingItem>.filterInside() =
@@ -126,12 +131,12 @@ fun MutableList<PointsTrack>.drawActiveRoute(
             mapsViewController?.addMarker(
                 first().latitude,
                 first().longitude,
-                com.technodreams.activeparks.R.drawable.ic_start_active_rout
+                R.drawable.ic_start_active_rout
             )
             mapsViewController?.addMarker(
                 last().latitude,
                 last().longitude,
-                com.technodreams.activeparks.R.drawable.ic_end_active_rout
+                R.drawable.ic_end_active_rout
             )
 
             with(mapview) {

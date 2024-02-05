@@ -19,7 +19,6 @@ import com.app.activeparks.util.extention.logOut
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
-import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -40,7 +39,6 @@ class RegistrationFragment : Fragment() {
 
     lateinit var binding: FragmentRegistrationBinding
     private lateinit var callbackManager: CallbackManager
-    private lateinit var loginManager: LoginManager
     private val viewModel: RegistrationViewModel by activityViewModel()
 
     private val imageList = listOf(
@@ -146,7 +144,7 @@ class RegistrationFragment : Fragment() {
 
                 override fun onCancel() { }
 
-                override fun onError(exception: FacebookException) {
+                override fun onError(error: FacebookException) {
                     Toast.makeText(
                         requireContext(),
                         getString(R.string.tv_somsing_went_wrong), Toast.LENGTH_LONG

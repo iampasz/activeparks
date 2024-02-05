@@ -33,6 +33,7 @@ import com.app.activeparks.util.extention.DataHelper
 import com.app.activeparks.util.extention.FileHelper
 import com.app.activeparks.util.extention.generateRandomRoute
 import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.replaceNull
 import com.app.activeparks.util.extention.setSex
 import com.app.activeparks.util.extention.toInfo
 import com.app.activeparks.util.extention.visible
@@ -153,14 +154,20 @@ class UserInfoFragment : Fragment() {
 
                         tvPhoneNumber.text = it.phone
                         tvEmailNumber.text = it.email
-                        tvWeigh.text = requireContext().getString(
-                            R.string.tv_weight_picker,
-                            it.weight.toString()
-                        )
-                        tvHeight.text = requireContext().getString(
-                            R.string.tv_height_picker,
-                            it.height.toString()
-                        )
+
+                        if (it.weight.toString().replaceNull().isNotEmpty()) {
+                            tvWeigh.text = requireContext().getString(
+                                R.string.tv_weight_picker,
+                                it.weight.toString()
+                            )
+                        }
+
+                        if (it.height.toString().replaceNull().isNotEmpty()) {
+                            tvHeight.text = requireContext().getString(
+                                R.string.tv_height_picker,
+                                it.height.toString()
+                            )
+                        }
 
                         tvBDay.text = DataHelper.formatBDay(it.birthday ?: "")
 

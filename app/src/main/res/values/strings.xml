@@ -288,7 +288,7 @@
 
     <string name="login">Увійти</string>
     <string name="zero">0</string>
-    <string name="max_text_count">255/255</string>
+    <string name="max_text_count">0/255</string>
 
     <string name="all_activities">Всі активності</string>
     <string name="review">Огляд</string>
@@ -389,6 +389,20 @@
     <string name="tv_personal_user_date"><![CDATA[<font color="#FFFFFF">Даю згоду на</font> <u><font color="#C5E505">передачу та обробку персональних данних</font></u>]]></string>
     <string name="tv_imt_title">ІМТ</string>
     <string name="tv_imt_long_description">Важливо враховувати, що ІМТ є лише загальним показником і не враховує інших факторів, таких як розподіл жиру в організмі, м\'язова маса та інші аспекти здоров\'я. ІМТ може служити початковим орієнтиром, але для повноцінної оцінки здоров\'я рекомендується звертатися до лікаря, фахівця у галузі харчування та фізичної активності або використати спеціальні ваги які вимірюють розподіл жиру в організмі, м\'язова маса і т.д</string>
+    <string name="tv_lets_go">Поїхали</string>
+    <string name="tv_note_helper">Нотатки</string>
+    <string name="tv_pulse_info_description_max">Ця зона відповідає за максимальне фізичне навантаження і використовується для роботи над максимальною потужністю та швидкістю. Тренування в цій зоні має бути дуже інтенсивним і короткочасним.</string>
+    <string name="tv_pulse_info_description_anaerobic">Тренування в цій зоні важке і призначене для покращення аеробної і анаеробної потужності. Воно вимагає значного зусилля і може бути короткочасним.</string>
+    <string name="tv_pulse_info_description_aerobic">Ця зона вже ближча до інтенсивного тренінгу і допомагає покращити аеробну і анаеробну витривалість. Тренування в цій зоні може бути важчим для серця і легень.</string>
+    <string name="tv_pulse_info_description_fat_burning">В цій зоні тривалість тренування може бути довшою, а потужність більше ніж в зоні 1. Вона підходить для підтримки фізичної форми і покращення витривалості.</string>
+    <string name="tv_pulse_info_description_min">Ця зона відповідає за базовий аеробний тренінг і покращення загальної фізичної витривалості.</string>
+    <string name="tv_max_zone">Верхня межа</string>
+    <string name="tv_anaerob_zone">Анаеробна</string>
+    <string name="tv_aerob_zone">Аеробна</string>
+    <string name="tv_fat_zone">Спалювання жиру</string>
+    <string name="tv_min_zone">Легко</string>
+    <string name="tv_no_added_video">Не додали жодного відео</string>
+    <string name="tv_imt_default">Індекс маси тіла</string>
 
 
 </resources>

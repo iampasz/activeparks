@@ -45,6 +45,7 @@ import com.app.activeparks.util.HR_SERVICE_UUID
 import com.app.activeparks.util.extention.disable
 import com.app.activeparks.util.extention.enable
 import com.app.activeparks.util.extention.enableIf
+import com.app.activeparks.util.extention.getNumberForSpeak
 import com.app.activeparks.util.extention.getStingForSpeak
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.visible
@@ -318,16 +319,17 @@ class ActivityForActivity : AppCompatActivity() {
     private fun initListeners() {
         with(binding) {
             btnStart.setOnClickListener {
-                val list = activeViewModel.activityState.activeRoad
                 btnStart.disable()
                 if (activeViewModel.activityState.isAudioHelper) {
                     if (activeViewModel.activityState.isLazyStart) {
-                        startDelayedStartTimer()
+                        gHelper.visible()
+                        speakDelayedStartTimer()
                     } else {
                         showToastAndSpeak(getString(R.string.tv_start_activity_speak))
                         startActivity()
                     }
                 } else if (activeViewModel.activityState.isLazyStart) {
+                    gHelper.visible()
                     startDelayedStartTimer()
                 } else {
                     startActivity()
@@ -336,7 +338,6 @@ class ActivityForActivity : AppCompatActivity() {
                 activeViewModel.saveActiveState()
             }
             btnPause.setOnClickListener {
-                val list = activeViewModel.activityState.activeRoad
                 onPause()
             }
             btnEnd.setOnClickListener {
@@ -345,8 +346,7 @@ class ActivityForActivity : AppCompatActivity() {
                 visible(navMain, btnStart)
                 restartTimer()
                 with(activeViewModel) {
-                    val list = activityState.activeRoad
-                    activityState .isTrainingStart = false
+                    activityState.isTrainingStart = false
                     activityState.isPause = false
                     checkLocation.value = false
                     getWeather()
@@ -524,8 +524,13 @@ class ActivityForActivity : AppCompatActivity() {
         val minutes = (activeViewModel.activityState.activityDuration % 3600) / 60
         val secs = activeViewModel.activityState.activityDuration % 60
 
-        binding.topPanel.time.text =
+        val formattedText = if (hours > 0) {
             String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, secs)
+        } else {
+            String.format(Locale.getDefault(), "%02d:%02d", minutes, secs)
+        }
+
+        binding.topPanel.time.text = formattedText
     }
 
     private fun observes() {
@@ -622,14 +627,38 @@ class ActivityForActivity : AppCompatActivity() {
         }
     }
 
-    private fun startDelayedStartTimer() {
+    private fun speakDelayedStartTimer() {
         object : CountDownTimer(3000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 showToastAndSpeak(millisUntilFinished.getStingForSpeak())
+                binding.tvTitleHelper.text = millisUntilFinished.getNumberForSpeak()
             }
 
             override fun onFinish() {
                 showToastAndSpeak(getString(R.string.tv_start_activity_speak))
+                binding.tvTitleHelper.text = getString(R.string.tv_lets_go)
+
+                Handler(Looper.getMainLooper()).postDelayed({
+                    binding.gHelper.gone()
+                }, 500)
+                startActivity()
+            }
+        }.start()
+    }
+
+    private fun startDelayedStartTimer() {
+        object : CountDownTimer(3000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                binding.tvTitleHelper.text = millisUntilFinished.getNumberForSpeak()
+
+            }
+
+            override fun onFinish() {
+                binding.tvTitleHelper.text = getString(R.string.tv_lets_go)
+
+                Handler(Looper.getMainLooper()).postDelayed({
+                    binding.gHelper.gone()
+                }, 500)
                 startActivity()
             }
         }.start()

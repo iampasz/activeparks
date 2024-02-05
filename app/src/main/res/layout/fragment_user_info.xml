@@ -429,11 +429,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:text="@string/tv_imt_default"
                 android:textColor="@color/accent"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/ivImt"
-                app:layout_constraintTop_toTopOf="@+id/ivImt"
-                tools:text="Нормальна вага" />
+                app:layout_constraintTop_toTopOf="@+id/ivImt" />
 
             <TextView
                 android:id="@+id/tvImtDescription"

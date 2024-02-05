@@ -3,6 +3,7 @@ package com.app.activeparks.ui.userProfile.edit
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,6 +12,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +33,7 @@ import com.app.activeparks.util.PhoneNumberMaskWatcher
 import com.app.activeparks.util.cropper.CropImage
 import com.app.activeparks.util.extention.DataHelper
 import com.app.activeparks.util.extention.FileHelper
+import com.app.activeparks.util.extention.replaceNull
 import com.app.activeparks.util.extention.replacePhone
 import com.app.activeparks.util.extention.setSex
 import com.app.activeparks.util.extention.toBoolean
@@ -150,8 +153,19 @@ class EditProfileFragment : Fragment() {
                         etBDay.text = DataHelper.formatBDay(it.birthday ?: "")
                         etSex.text = it.sex?.setSex()
 
-                        etWeight.text = getString(R.string.tv_weight_picker, it.weight.toString())
-                        etHeight.text = getString(R.string.tv_height_picker, it.height.toString())
+                        if (it.weight.toString().replaceNull().isNotEmpty()) {
+                            etWeight.text = requireContext().getString(
+                                R.string.tv_weight_picker,
+                                it.weight.toString()
+                            )
+                        }
+
+                        if (it.height.toString().replaceNull().isNotEmpty()) {
+                            etHeight.text = requireContext().getString(
+                                R.string.tv_height_picker,
+                                it.height.toString()
+                            )
+                        }
 
                         scVeteran.isChecked = it.isVeteran.toBoolean()
                         scVPO.isChecked = it.isVpo.toBoolean()
@@ -264,42 +278,62 @@ class EditProfileFragment : Fragment() {
         requireActivity().onBackPressed()
     }
 
-    private fun showWeightPicker() {
-        val weightPicker = NumberPicker(requireContext())
+    private fun showWeightPicker(weight: Double? = 75.2) {
+        val kilogramsPicker = NumberPicker(requireContext())
+        val gramsPicker = NumberPicker(requireContext())
 
-        val minValue = 40100
-        val maxValue = 200000
-        val step = 100
+        val kilogramsMinValue = 40
+        val kilogramsMaxValue = 200
 
-        val valueCount = (maxValue - minValue) / step + 1
-        val displayedValues = Array(valueCount) { i ->
-            val weight = minValue + i * step
-            (weight / 1000).toString() + "." + (weight % 1000)
+        val gramsMinValue = 0
+        val gramsMaxValue = 9
+        val gramsStep = 100
+
+        val kilogramsDisplayedValues = Array(kilogramsMaxValue - kilogramsMinValue + 1) { (kilogramsMinValue + it).toString() }
+        val gramsDisplayedValues = Array(gramsMaxValue - gramsMinValue + 1) { (gramsMinValue + it * gramsStep).toString() }
+
+
+        kilogramsPicker.minValue = kilogramsMinValue
+        kilogramsPicker.maxValue = kilogramsMaxValue
+        kilogramsPicker.displayedValues = kilogramsDisplayedValues
+
+        gramsPicker.minValue = gramsMinValue
+        gramsPicker.maxValue = gramsMaxValue
+        gramsPicker.displayedValues = gramsDisplayedValues
+
+        weight?.let {
+            val integerPart = weight.toInt()
+            val fractionalPart = ((weight - integerPart) * 10).toInt()
+            kilogramsPicker.value = integerPart
+            gramsPicker.value = fractionalPart
+        } ?: kotlin.run {
+            kilogramsPicker.value = 75
+            gramsPicker.value = 2
+
         }
 
-        weightPicker.minValue = 0
-        weightPicker.maxValue = valueCount - 1
-        weightPicker.displayedValues = displayedValues
+        val dialogView = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER
+            addView(kilogramsPicker)
+            addView(gramsPicker)
+        }
 
-
-        val dialog = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+        val dialog = AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.tv_select_weight))
-            .setView(weightPicker)
+            .setView(dialogView)
             .setPositiveButton(getString(R.string.tv_ok)) { _, _ ->
-
-                val selectedWeight = minValue + weightPicker.value * step
-                val formattedWeight =
-                    (selectedWeight / 1000).toString() + "." + (selectedWeight % 1000)
-
-                binding.etWeight.text =
-                    getString(R.string.tv_weight_picker, formattedWeight)
-
+                val selectedKilograms = kilogramsPicker.value
+                val selectedGrams = gramsPicker.value * gramsStep
+                val formattedWeight = "$selectedKilograms.$selectedGrams"
+                binding.etWeight.text = getString(R.string.tv_weight_picker, formattedWeight)
                 viewModel.user = viewModel.user?.copy(weight = formattedWeight.toDouble())
             }
             .create()
 
         dialog.show()
     }
+
 
     private fun showHeightPicker() {
         val numberPicker = NumberPicker(requireContext())
