@@ -2,9 +2,11 @@ package com.app.activeparks.util.extention
 
 import android.content.Context
 import android.location.Address
+import android.location.Location
 import androidx.core.content.ContextCompat
 import com.app.activeparks.data.model.track.PointsTrack
 import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
+import com.app.activeparks.ui.active.model.Direction
 import com.app.activeparks.util.MapsViewController
 import com.technodreams.activeparks.R
 import org.osmdroid.util.GeoPoint
@@ -14,6 +16,14 @@ import org.osmdroid.views.overlay.Polyline
 /**
  * Created by O.Dziuba on 15.11.2023.
  */
+
+//GeoPoint
+fun PointsTrack.toLocation(): Location {
+    return Location("").apply {
+        latitude = this.latitude
+        longitude = this.longitude
+    }
+}
 
 //Double
 fun Double.toInfo() = String.format("%.2f", this).replace(",", ".")
@@ -61,6 +71,7 @@ fun Long.getStingForSpeak() = when (this / 1000) {
     1L -> "Два"
     else -> "Один"
 }
+
 fun Long.getNumberForSpeak() = when (this / 1000) {
     2L -> "3"
     1L -> "2"
@@ -119,7 +130,7 @@ fun MutableList<PointsTrack>.drawActiveRoute(
             line.color = ContextCompat.getColor(context, R.color.light_green)
             forEach {
                 line.addPoint(GeoPoint(it.latitude, it.longitude))
-                if (it.turn == "left" || it.turn == "right") {
+                if (it.turn == Direction.LEFT.direction || it.turn == Direction.RIGHT.direction) {
                     mapsViewController?.addMarker(
                         it.latitude,
                         it.longitude,

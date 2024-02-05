@@ -32,6 +32,7 @@ import com.app.activeparks.ui.active.fragments.saveActivity.SaveActivityFragment
 import com.app.activeparks.ui.active.fragments.type.ActivityTypeFragment
 import com.app.activeparks.ui.active.model.ActivityInfoTrainingItem
 import com.app.activeparks.ui.active.model.ActivityState
+import com.app.activeparks.ui.active.model.Direction
 import com.app.activeparks.ui.active.model.PulseZone
 import com.app.activeparks.ui.active.model.TypeOfTraining
 import com.app.activeparks.ui.active.util.AddressUtil
@@ -215,6 +216,8 @@ class ActivityForActivity : AppCompatActivity() {
                     activeRoad.addAll(
                         Gson().fromJson(this, Array<PointsTrack>::class.java).toList()
                     )
+
+                    addControlPoints()
                 }
 
             (intent.getSerializableExtra("typeOfTraining") as? TypeOfTraining)?.let {
@@ -225,6 +228,24 @@ class ActivityForActivity : AppCompatActivity() {
                 activeRoadId = it
             }
         }
+    }
+
+    private fun ActivityState.addControlPoints() {
+        val first = activeRoad.first()
+        controlPoints.add(
+            PointsTrack(
+            first.latitude, first.longitude, Direction.START.direction
+        )
+        )
+        activeRoad.forEach {
+            if (it.turn == Direction.LEFT.direction || it.turn == Direction.RIGHT.direction)
+                controlPoints.add(it)
+        }
+
+        val last = activeRoad.last()
+        controlPoints.add(PointsTrack(
+            last.latitude, last.longitude, Direction.FINISH.direction
+        ))
     }
 
     override fun onResume() {
