@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
+import com.app.activeparks.data.model.calendar.CalendarModel
 import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.ui.event.activity.EventFragment
 import com.app.activeparks.ui.event.adapter.EventsListAdapter
@@ -25,6 +26,7 @@ import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.mainAddFragment
 import com.app.activeparks.util.extention.removeFragment
 import com.app.activeparks.util.extention.visible
+import com.applandeo.materialcalendarview.CalendarWeekDay
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
 import com.google.android.material.tabs.TabLayout
@@ -32,8 +34,11 @@ import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentEventsBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
+import java.util.Objects
 
 
 class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
@@ -49,6 +54,7 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
         bundle.putString("EVENT_ID", it.id)
         val eventFragment = EventFragment()
         eventFragment.arguments = bundle
+
         mainAddFragment((requireActivity() as MainActivity), eventFragment)
     }
 
@@ -149,9 +155,20 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
     }
 
     private fun observe(){
+
         homeEventsViewModel.eventDayList.observe(viewLifecycleOwner){
             result ->
             adapter.list.submitList(result.newGetting)
+        }
+
+        viewModel.calendar.observe(
+            viewLifecycleOwner
+        ) { calendarItem: CalendarModel? ->
+            calendarItem?.let {
+                this.setMapperAdapter(
+                    it
+                )
+            }
         }
     }
 
@@ -169,10 +186,14 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
                 @SuppressLint("SimpleDateFormat") val dateFormat =
                     SimpleDateFormat("yyyy-MM-dd")
 
-                viewModel.eventsDay(dateFormat.format(cal.time))
-                viewModel.getEventsByDay(dateFormat.format(cal.time))
+               // viewModel.eventsDay(dateFormat.format(cal.time))
+                //viewModel.getEventsByDay(dateFormat.format(cal.time))
+
+                homeEventsViewModel.getEventsForDate(dateFormat.format(cal.time), dateFormat.format(cal.time))
             }
         })
+
+
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -183,9 +204,31 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
     }
 
     fun update(){
+
         val today = getCurrentDate()
         homeEventsViewModel.getEventsForDate(today, today)
         viewModel.getEventsList()
         viewModel.calendarEvent()
+    }
+
+    private fun setMapperAdapter(calendarItem: CalendarModel) {
+        val days: MutableList<EventDay> = ArrayList()
+        var calendar: Calendar
+        @SuppressLint("SimpleDateFormat") val sdf = SimpleDateFormat("yyyy-MM-dd")
+        for (item in calendarItem.items) {
+            try {
+                if (item.data() != null) {
+                    calendar = Calendar.getInstance()
+                    calendar.time = Objects.requireNonNull(sdf.parse(item.data()))
+                    days.add(EventDay(calendar, R.drawable.seekbar_drawable_mark))
+                }
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+        }
+
+        binding.calendarView.setEvents(days)
+        binding.calendarView.setCalendarDayLayout(R.layout.custom_calendar_day)
+        binding.calendarView.setFirstDayOfWeek(CalendarWeekDay.MONDAY)
     }
 }
