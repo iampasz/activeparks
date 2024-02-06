@@ -211,31 +211,31 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                 Glide.with(this).load(events.imageUrl).error(R.drawable.ic_prew)
                     .into(binding.include.photo)
                 binding.include.nameEvent.text = events.title
-                if (events.sportsground != null && events.sportsground
-                        .title != null
-                ) {
-                    binding.include.typeEvent.text = events.sportsground.title
-                } else {
-                    if (events.routePoints != null && events.routePoints.size > 0) {
+
+                events.sportsground?.title?.let { title ->
+                    binding.include.typeEvent.text = title
+                } ?: run {
+                    events.routePoints?.takeIf { it.isNotEmpty() }?.let {
                         val lat = eventViewModel.address.location[0]
                         val lon = eventViewModel.address.location[1]
                         eventViewModel.location(lat, lon)
                         binding.include.typeEvent.setOnClickListener {
-                            val uri =
-                                "https://google.com/maps/search/?api=1&query=$lat,$lon"
-                            val intent =
-                                Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+                            val uri = "https://google.com/maps/search/?api=1&query=$lat,$lon"
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
                             startActivity(intent)
                         }
                     }
                 }
 
-                startTimer(events.timeZoneDifference)
+                events.timeZoneDifference?.let { difference ->
+                    startTimer(difference)
+                }
+
 
                 @SuppressLint("SimpleDateFormat") val format =
                     SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 try {
-                    val date = format.parse(events.startsAt)
+                    val date = events.startsAt?.let { format.parse(it) }
                     binding.include.date.text = date?.let {
                         SimpleDateFormat(
                             "dd MMMM yyyy",
@@ -245,19 +245,20 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                 } catch (e: ParseException) {
                     e.printStackTrace()
                 }
-                if (events.startsAt != null && events.finishesAt != null) {
-                    val startIndex = events.startsAt.length.coerceAtMost(events.startsAt.length - 3)
-                    val startsAt =
-                        events.startsAt.substring(11, startIndex)
-                    val endIndex =
-                        events.finishesAt.length.coerceAtMost(events.finishesAt.length - 3)
-                    val finishesAt =
-                        events.finishesAt.substring(11, endIndex)
-                    binding.include.endTimeEvent.text = "| $startsAt - $finishesAt"
+
+                events.startsAt?.let { startsAt ->
+                    events.finishesAt?.let { finishesAt ->
+                        val startIndex = startsAt.length.coerceAtMost(startsAt.length - 3)
+                        val endsIndex = finishesAt.length.coerceAtMost(finishesAt.length - 3)
+                        val startsTime = startsAt.substring(11, startIndex)
+                        val finishesTime = finishesAt.substring(11, endsIndex)
+                        binding.include.endTimeEvent.text = "| $startsTime - $finishesTime"
+                    }
                 }
+
+
                 binding.include.statusEvent.text = eventViewModel.statusMapper(events.holdingStatusId)
-                if (events.holdingStatusId
-                        .contains(EventTypes.EVENTS_DURING.type)
+                if (events.holdingStatusId?.contains(EventTypes.EVENTS_DURING.type) == true
                 ) {
                     binding.include.greanSquare.background =
                         resources.getDrawable(
@@ -266,8 +267,7 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                         )
                 }
 
-                if (events.typeId
-                        .contains(EventTypes.WITH_ROUTE.type)
+                if (events.typeId?.contains(EventTypes.ROUTE_TRAINING.type) == true
                 ) {
                     mapsViewController?.setMarker(
                         eventViewModel.address.location[0],
@@ -275,30 +275,35 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                     )
 
                 } else if (events.typeId
-                        .contains(EventTypes.SIMPLE_TRAINING.type)
+                        ?.contains(EventTypes.SIMPLE_TRAINING.type) == true
                 ) {
                     mapsViewController?.setMarker(
                         eventViewModel.address.location[0],
                         eventViewModel.address.location[1]
                     )
                 }
-                if (events.eventUser != null) {
-                    if (events.eventUser.isApproved) {
-                        joinItem.title = getString(R.string.leave)
+
+                events.eventUser?.let { eventUser ->
+                    joinItem.title = if (eventUser.isApproved) {
+                        getString(R.string.leave)
                     } else {
-                        joinItem.title = getString(R.string.cansel)
+                        getString(R.string.cansel)
                     }
-                } else {
+                } ?: run {
                     joinItem.title = getString(R.string.join)
                 }
+
+
             } catch (ignored: Exception) {
             }
 
-
-            if (events.memberAmount > 1) {
-                binding.include.gCounter.visible()
-                binding.include.counterText.text = "+" + (events.memberAmount - 1)
+            events.memberAmount?.let { memberAmount ->
+                if (memberAmount > 1) {
+                    binding.include.gCounter.visible()
+                    binding.include.counterText.text = "+${memberAmount - 1}"
+                }
             }
+
         }
 
         eventViewModel.location.observe(

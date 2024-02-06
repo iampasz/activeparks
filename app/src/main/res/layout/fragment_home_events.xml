@@ -1,11 +1,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/event_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context="com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsFragment">
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/tvEventsCalendar"
@@ -73,7 +71,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvMyEvents"
         app:layout_constraintVertical_bias="0.0"
         tools:itemCount="1"
-        tools:listitem="@layout/item_home_list" />
+        tools:listitem="@layout/item_home_list"/>
 
     <ProgressBar
         android:id="@+id/pbEvents"

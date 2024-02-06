@@ -1,7 +1,6 @@
 package com.app.activeparks.ui.homeWithUser.fragments.event
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -12,7 +11,7 @@ import com.app.activeparks.ui.event.util.EventTypes
 import com.app.activeparks.util.extention.DataHelper
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.visible
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.ItemEventsBinding
 
@@ -60,21 +59,17 @@ class HomeEventsAdapter(
         ItemEventsBinding.bind(holder.itemView).apply {
             val context = tvTitle.context
 
-            Log.i("UHGFHJHGF","${item.typeId}")
-            Log.i("UHGFHJHGF","${item.title}")
-            Log.i("UHGFHJHGF","${EventTypes.EVENTS_DURING.type}" )
-
             when(item.typeId){
-                EventTypes.EVENTS_DURING.type -> tvDescription.text ="EVENTS_DURING"
-                EventTypes.WITH_ROUTE.type -> tvDescription.text ="WITH_ROUTE"
-                EventTypes.ROUTE_TRAINING.type -> tvDescription.text ="ROUTE_TRAINING"
-                EventTypes.SIMPLE_TRAINING.type -> tvDescription.text ="SIMPLE_TRAINING"
-                EventTypes.ONLINE_TRAINING.type -> tvDescription.text ="ONLINE_TRAINING"
+                EventTypes.ROUTE_TRAINING.type -> tvDescription.text =context.getString(R.string.with_route)
+                EventTypes.SIMPLE_TRAINING.type -> tvDescription.text =context.getString(R.string.simple)
+                EventTypes.ONLINE_TRAINING.type -> tvDescription.text =context.getString(R.string.online_training)
             }
 
-            item.imageUrl.let {
-                Picasso.get().load(item.imageUrl).into(photo)
-            }
+            Glide
+                .with(photo.context)
+                .load(item.imageUrl)
+                .error(R.drawable.ic_prew)
+                .into(photo)
 
             photo.setOnClickListener {
                 event(item)
@@ -93,17 +88,26 @@ class HomeEventsAdapter(
                 counterText.apply {
                     text = "+${(item.countUser - 1)}"
                 }
-                item.imageUrl.let {
-                    Picasso.get().load(item.createdBy.photo).into(imageFirst)
-                }
+
+                item?.createdBy?.photo?.let {
+                    Glide
+                        .with(imageFirst.context)
+                        .load(item.createdBy.photo)
+                        .error(R.drawable.ic_prew)
+                        .into(imageFirst) }
+
+
             } else {
                 gCounter.gone()
-                item.imageUrl.let {
-                    Picasso.get().load(item.createdBy.photo).into(imageAuthor)
-                }
+
+                item?.createdBy?.photo?.let {
+                    Glide
+                        .with(imageAuthor.context)
+                        .load(item.createdBy.photo)
+                        .error(R.drawable.ic_prew)
+                        .into(imageAuthor) }
             }
 
-           // tvDescription.text = item.shortDescription
             tvStartPoint.text = item.startAdressPoint
 
             date.text = DataHelper.formatDateTimeRange(item.startsAt, item.finishesAt)

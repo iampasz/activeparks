@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/rounded_corner_drawable"
-    tools:context="com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsFragment">
+    android:background="@drawable/rounded_corner_drawable">
 
     <TextView
         android:id="@+id/tvShow"
