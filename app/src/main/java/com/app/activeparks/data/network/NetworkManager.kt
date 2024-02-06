@@ -100,6 +100,7 @@ interface NetworkManager {
     suspend fun getAdminEvents(): EventResponse?
     suspend fun createEmptyEvent(): ItemEvent?
     suspend fun setDataEvent(id: String, itemEvent: ItemEvent): Boolean?
+    suspend fun getEventsForDate(startData:String, endData: String): EventResponse?
 
     suspend fun createUserVideo(): UserVideoItem?
     suspend fun getUserVideo(id: String): UserVideoItem?

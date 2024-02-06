@@ -25,7 +25,7 @@ import com.app.activeparks.ui.participants.ParticipantsViewModel
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.removeFragment
 import com.app.activeparks.util.extention.visible
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentClubBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -65,18 +65,13 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        participantsViewModel.id = clubId
-        participantsViewModel.isEvent = false
-        clubsViewModelKT.getClubsDetails(clubId)
-        clubsViewModelKT.getClubNewsList(clubId)
-
+        update()
         initView()
-        initClickListener()
+        initListener()
         observe()
     }
 
-
-    private fun initClickListener() {
+    private fun initListener() {
         val inviteToClubString = getString(R.string.invite_to_club)
         val eventNameString = binding.include.nameEvent.text.toString()
         val linkString = "https://ap.sportforall.gov.ua/fc-events/0/$clubId"
@@ -92,7 +87,7 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
             startActivity(Intent.createChooser(intent, getString(R.string.app_name)))
         }
         binding.close.setOnClickListener {
-            onBackPressed()
+            parentFragmentManager.removeFragment(this@ClubFragment)
         }
     }
 
@@ -106,11 +101,11 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
     }
 
     override fun update() {
+        participantsViewModel.id = clubId
+        participantsViewModel.isEvent = false
         clubsViewModelKT.getClubsDetails(clubId)
-    }
-
-    private fun onBackPressed() {
-        parentFragmentManager.removeFragment(this@ClubFragment)
+        clubsViewModelKT.getClubNewsList(clubId)
+        clubsViewModelKT.getClubsDetails(clubId)
     }
 
     override fun onRefresh() {
@@ -156,7 +151,22 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
 
         clubsViewModelKT.clubDetails.observe(viewLifecycleOwner) { clubs ->
 
-            Picasso.get().load(clubs.logoUrl).into(binding.include.photo)
+            clubs?.logoUrl?.let {
+                Glide
+                    .with(binding.include.photo.context)
+                    .load(clubs.logoUrl)
+                    .error(R.drawable.ic_prew)
+                    .into(binding.include.photo) }
+
+
+            clubs?.logoUrl?.let {
+                Glide
+                    .with(binding.include.photo.context)
+                    .load(clubs.logoUrl)
+                    .error(R.drawable.ic_prew)
+                    .into(binding.include.photo) }
+
+
             binding.countParticipant.text = clubs.memberAmount.toString()
             binding.description.text = clubs.description
             binding.include.nameEvent.text = clubs.name

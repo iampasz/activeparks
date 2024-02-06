@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.app.activeparks.ui.auth.AuthFragment;
 import com.app.activeparks.ui.profile.FragmentProfileOld;
-import com.app.activeparks.ui.profile.ProfileFragment;
 import com.technodreams.activeparks.R;
 import com.technodreams.activeparks.databinding.FragmentUserBinding;
 

@@ -50,8 +50,8 @@ import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.removeFragment
 import com.app.activeparks.util.extention.toast
 import com.app.activeparks.util.extention.visible
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.squareup.picasso.Picasso
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentEventCreateBinding
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -95,6 +95,7 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
                 .getIntent(requireContext())
             cropActivityResultLauncher.launch(cropIntent)
         }
+
     private val cropActivityResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -118,7 +119,14 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
     private val setDataResponseSuccessful = object : ResponseCallBack {
         override fun load(responseFromApi: String) {
             viewModelStore.clear()
-            itemEvent.let {eventController.publishDataEvent(itemEvent.id, publishResponseSuccessful) }
+
+            itemEvent.id?.let {
+                eventController.publishDataEvent(
+                    it,
+                    publishResponseSuccessful
+                )
+            }
+
         }
     }
 
@@ -155,92 +163,11 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        MapsViewController(binding.eventMap, requireContext())
-        eventController = EventController(requireContext())
-        mapsViewController = MapsViewController(binding.eventMap, requireContext())
-        val formatCurrentData = ChangeDateType.formatCurrentDate()
-
-        with(binding) {
-            startData.text = formatCurrentData
-            endData.text = formatCurrentData
-            eventMap.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
-                @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-                override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-                    when (currentTrainingType) {
-                        EventTypes.SIMPLE_TRAINING.type -> {
-                            geoPointsList.clear()
-                        }
-                    }
-                    p?.let {
-                        geoPointsList.add(it)
-                        markerList.clear()
-                        EventHelper.drawRoute(geoPointsList, binding.eventMap)
-                        EventHelper.drawMarkers(
-                            binding.eventMap,
-                            geoPointsList,
-                            this@FragmentEventCreate,
-                            markerType
-                        )
-                        getAddress(it)
-                    }
-
-                    return true
-                }
-
-                override fun longPressHelper(p: GeoPoint?): Boolean {
-                    return false
-                }
-
-
-            }))
-            eventMap.setOnTouchListener { _, _ ->
-                scroll.requestDisallowInterceptTouchEvent(true)
-                false
-            }
-            editFullDescription.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                @SuppressLint("SetTextI18n")
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val charCount = s?.length ?: 0
-                    val maxTextSize = 255
-                    binding.textCounter.text = "$charCount / $maxTextSize"
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                }
-            })
-            checkEditTextListener(editNameEvent)
-            checkEditTextListener(editDescriptionEvent)
-            checkEditTextListener(editFullDescription)
-        }
-
-        viewModel.createEmptyEvent()
-        viewModel.newItemEvent.observe(viewLifecycleOwner) { response ->
-            itemEvent = response
-        }
-
-        viewModel.imageLink.observe(viewLifecycleOwner) { url ->
-            itemEvent.let { itemEvent.imageUrl = url }
-        }
-
-        viewModel.dataUpdated.observe(viewLifecycleOwner) { response ->
-
-            if (response) {
-                viewModel.dataUpdated.value = false
-                (requireActivity() as MainActivity).openFragment(EventListFragment())
-            }
-        }
-
+        initView()
+        update()
         observer()
         initSpinner()
-        initOnClick()
+        initListener()
     }
 
     private fun fetchData(
@@ -267,7 +194,6 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun getAddress(p: GeoPoint) {
-
         val geocoder = Geocoder(requireContext())
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -392,15 +318,20 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
 
             collectEventData()
 
-            itemEvent.let{
-                viewModel.setDataEvent(itemEvent.id, itemEvent)
+
+            itemEvent.id?.let { eventId ->
+                viewModel.setDataEvent(eventId, itemEvent)
             }
+
+
         }
         builder.setNegativeButton(requireActivity().resources.getString(R.string.no)) { _, _ ->
-            itemEvent.id?.let {
-                eventController.deleteEvent(itemEvent.id)
+
+            itemEvent.id?.let { eventId ->
+                eventController.deleteEvent(eventId)
                 viewModelStore.clear()
             }
+
             parentFragmentManager.removeFragment(this)
         }
 
@@ -421,9 +352,9 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
                 editFullDescription.setText(newData.fullDescription)
                 editDescriptionEvent.setText(newData.shortDescription)
                 startData.text =
-                    ChangeDateType.formatDateTime(newData.startsAt)
+                    newData.startsAt?.let { ChangeDateType.formatDateTime(it) }
                 endData.text =
-                    ChangeDateType.formatDateTime(newData.finishesAt)
+                    newData.finishesAt?.let { ChangeDateType.formatDateTime(it) }
             }
 
             currentTrainingType = newData.typeId ?: EventTypes.SIMPLE_TRAINING.type
@@ -439,7 +370,15 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
                     markerType = 1
                 }
             }
-            newData?.imageUrl?.let { Picasso.get().load(it).into(binding.imageCover) }
+            newData?.imageUrl?.let {
+                Glide
+                    .with(binding.imageCover.context)
+                    .load(newData.imageUrl)
+                    .error(R.drawable.ic_prew)
+                    .into(binding.imageCover)
+            }
+
+
         }
 
         viewModel.getGeoPointsLiveData().observe(viewLifecycleOwner) { geoPoints ->
@@ -455,6 +394,22 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
                     )
                     geoPointsList = it
                 }
+            }
+        }
+
+        viewModel.newItemEvent.observe(viewLifecycleOwner) { response ->
+            itemEvent = response
+        }
+
+        viewModel.imageLink.observe(viewLifecycleOwner) { url ->
+            itemEvent.let { itemEvent.imageUrl = url }
+        }
+
+        viewModel.dataUpdated.observe(viewLifecycleOwner) { response ->
+
+            if (response) {
+                viewModel.dataUpdated.value = false
+                (requireActivity() as MainActivity).openFragment(EventListFragment())
             }
         }
     }
@@ -614,21 +569,16 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
     private fun openFullMap() {
 
         val itemEvvent = viewModel.newItemEvent.value
-        itemEvvent?.title = "Hello world"
-
 
         itemEvvent?.let {
             viewModel.updateItemEvent(it)
-            // viewModel.setDataEvent(it.id, it)
         }
 
         collectEventData()
         viewModel.setGeoPoints(geoPointsList)
-        //viewModel.updateItemEventData(eventData)
         viewModel.setLastMapGeoPoint(binding.eventMap.mapCenter)
 
         (requireActivity() as MainActivity).openFragment(FragmentChangeRoute())
-
     }
 
     private fun publishFielldEvent(setDataResponseSuccessful: ResponseCallBack) {
@@ -645,17 +595,21 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
         }
     }
 
-    private fun initOnClick() {
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initListener() {
         with(binding) {
             imageCover.setOnClickListener { setCoverImageDialog() }
-            backButton.setOnClickListener {
-                alertBeforeClosing()
-            }
+            backButton.setOnClickListener{alertBeforeClosing() }
             startData.setOnClickListener { setDate(startData) }
             endData.setOnClickListener { setDate(endData) }
             openFullMap.setOnClickListener { openFullMap() }
             editAdress.setOnClickListener { setAddressBySearch() }
             buttonPublish.setOnClickListener { publishFielldEvent(setDataResponseSuccessful) }
+
+            eventMap.setOnTouchListener { _, _ -> binding.scroll.requestDisallowInterceptTouchEvent(true)
+                false
+            }
+
         }
     }
 
@@ -693,6 +647,71 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
                 binding.startData.text = ChangeDateType.formatCurrentDate()
             }
         }
+    }
+
+    private fun update() {
+        viewModel.createEmptyEvent()
+    }
+
+    private fun initView(){
+        MapsViewController(binding.eventMap, requireContext())
+        eventController = EventController(requireContext())
+        mapsViewController = MapsViewController(binding.eventMap, requireContext())
+        val formatCurrentData = ChangeDateType.formatCurrentDate()
+
+        binding.startData.text = formatCurrentData
+        binding.endData.text = formatCurrentData
+        binding.eventMap.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
+            @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+            override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+                when (currentTrainingType) {
+                    EventTypes.SIMPLE_TRAINING.type -> {
+                        geoPointsList.clear()
+                    }
+                }
+                p?.let {
+                    geoPointsList.add(it)
+                    markerList.clear()
+                    EventHelper.drawRoute(geoPointsList, binding.eventMap)
+                    EventHelper.drawMarkers(
+                        binding.eventMap,
+                        geoPointsList,
+                        this@FragmentEventCreate,
+                        markerType
+                    )
+                    getAddress(it)
+                }
+
+                return true
+            }
+
+            override fun longPressHelper(p: GeoPoint?): Boolean {
+                return false
+            }
+        }))
+
+        binding.editFullDescription.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            @SuppressLint("SetTextI18n")
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val charCount = s?.length ?: 0
+                val maxTextSize = 255
+                binding.textCounter.text = "$charCount / $maxTextSize"
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+        })
+        checkEditTextListener(binding.editNameEvent)
+        checkEditTextListener(binding.editDescriptionEvent)
+        checkEditTextListener(binding.editFullDescription)
     }
 }
 

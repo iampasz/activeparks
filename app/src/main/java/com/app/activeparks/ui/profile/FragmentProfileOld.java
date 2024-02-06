@@ -37,7 +37,7 @@ import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
 import com.app.activeparks.ui.event.activity.EventFragment;
-import com.app.activeparks.ui.event.adapter.EventsListAdaper;
+import com.app.activeparks.ui.event.adapter.EventsListAdaperOld;
 import com.app.activeparks.ui.profile.uservideo.UserAddVideoActivity;
 import com.app.activeparks.ui.profile.uservideo.adapter.UserVideoAdapter;
 import com.app.activeparks.ui.support.SupportActivity;
@@ -344,7 +344,7 @@ public class FragmentProfileOld extends Fragment implements SwipeRefreshLayout.O
             } else {
                 statusView.setText("Ви ще не вступили \n в жоден захід");
             }
-            profileList.setAdapter(new EventsListAdaper(getContext(), result).setOnEventListener(new EventsListAdaper.EventsListener() {
+            profileList.setAdapter(new EventsListAdaperOld(getContext(), result).setOnEventListener(new EventsListAdaperOld.EventsListener() {
                 @Override
                 public void onInfo(ItemEvent itemClub) {
                     startActivity(new Intent(getContext(), EventFragment.class).putExtra("id", itemClub.getId()));
@@ -361,7 +361,7 @@ public class FragmentProfileOld extends Fragment implements SwipeRefreshLayout.O
             if (result.getItems().size() > 0) {
                 statusView.setVisibility(View.GONE);
             }
-            profileList.setAdapter(new EventsListAdaper(getContext(), result.getItems()).setOnEventListener(new EventsListAdaper.EventsListener() {
+            profileList.setAdapter(new EventsListAdaperOld(getContext(), result.getItems()).setOnEventListener(new EventsListAdaperOld.EventsListener() {
                 @Override
                 public void onInfo(ItemEvent itemClub) {
                     startActivity(new Intent(getContext(), EventFragment.class).putExtra("id", itemClub.getId()));

@@ -11,21 +11,9 @@
         android:label="fragment_home_events"
         tools:layout="@layout/fragment_home_clubs" />
 
-    <fragment
-        android:id="@+id/navEventsUser"
-        android:name="com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsFragment"
-        android:label="@string/tv_menu_events"
-        tools:layout="@layout/fragment_home_events">
-        <action
-            android:id="@+id/action_navEventsHomeUser_to_eventsListFragment"
-            app:destination="@id/eventsListFragment" />
-    </fragment>
 
-    <fragment
-        android:id="@+id/eventsListFragment"
-        android:name="com.app.activeparks.ui.event.fragments.EventsListFragment"
-        android:label="EventsListFragment"
-        tools:layout="@layout/fragment_events" />
+
+
 
     <fragment
         android:id="@+id/navStatisticsUser"

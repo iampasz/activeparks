@@ -29,7 +29,7 @@ import com.app.activeparks.data.storage.Preferences;
 import com.app.activeparks.ui.event.util.EventModelFactory;
 
 import com.app.activeparks.ui.event.fragments.FragmentEventCreate;
-import com.app.activeparks.ui.event.adapter.EventsListAdaper;
+import com.app.activeparks.ui.event.adapter.EventsListAdaperOld;
 import com.app.activeparks.ui.event.viewmodel.EventRouteViewModel;
 import com.app.activeparks.ui.event.viewmodel.EventViewModel;
 import com.applandeo.materialcalendarview.CalendarView;
@@ -140,9 +140,9 @@ public class EventsListActivity extends AppCompatActivity implements LocationLis
         if (events.getItems().size() > 0) {
             findViewById(R.id.list_null).setVisibility(View.GONE);
         }
-        listClubOwner.setAdapter(new EventsListAdaper(
+        listClubOwner.setAdapter(new EventsListAdaperOld(
                 this, events.getItems()).setOnEventListener(
-                        new EventsListAdaper.EventsListener() {
+                        new EventsListAdaperOld.EventsListener() {
             @Override
             public void onInfo(ItemEvent itemClub) {
                 startActivity(new Intent(getBaseContext(), EventFragment.class).putExtra("id", itemClub.getId()));

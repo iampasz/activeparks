@@ -40,6 +40,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
@@ -127,7 +128,7 @@ public class EventActivityOld extends AppCompatActivity implements EventScannerL
                 @SuppressLint("SimpleDateFormat")
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
-                    Date date = format.parse(events.getStartsAt());
+                    Date date = format.parse(Objects.requireNonNull(events.getStartsAt()));
                     assert date != null;
                     mStartEvent.setText(new SimpleDateFormat("dd MMMM yyyy", new Locale("uk", "UA")).format(date));
                 } catch (ParseException e) {
@@ -147,7 +148,7 @@ public class EventActivityOld extends AppCompatActivity implements EventScannerL
                 mEventStatus.setVisibility(View.VISIBLE);
                 statusView.setVisibility(View.VISIBLE);
 
-                if (events.getHoldingStatusId().contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")) {
+                if (Objects.requireNonNull(events.getHoldingStatusId()).contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")) {
                     statusView.setBackground(getResources().getDrawable(R.drawable.button_color, null));
                 }
 
@@ -168,16 +169,16 @@ public class EventActivityOld extends AppCompatActivity implements EventScannerL
                     mClubName.setVisibility(View.GONE);
                 }
 
-                if (events.getTypeId().contains("bd09f36f-835c-49e4-88b8-4f835c1602ac")) {
+                if (Objects.requireNonNull(events.getTypeId()).contains("bd09f36f-835c-49e4-88b8-4f835c1602ac")) {
                     mLocationAction.setVisibility(View.VISIBLE);
                     findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
                     mapsViewController.setMarker(viewModel.address.getLocation().get(0), viewModel.address.getLocation().get(1));
 
-                    if (events.getStatusId().contains("032fd5ba-f634-469b-3c30-77a1gh63a918") && events.getHoldingStatusId().contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")) {
+                    if (Objects.requireNonNull(events.getStatusId()).contains("032fd5ba-f634-469b-3c30-77a1gh63a918") && events.getHoldingStatusId().contains("tg2po97g-96r3-36hr-74ty-6tfgj1p8dzxq")) {
                         if (events.getEventUser() != null && events.getEventUser().getIsCoordinator()) {
                             startPointAction.setVisibility(View.VISIBLE);
                             startPointAction.setEnabled(true);
-                            if (events.getRouteStartAt() == null) {
+                            if (events.getRouteStartedAt() == null) {
                                 startPointAction.setText("Розпочати захід");
                             } else {
                                 startPointAction.setText("Зупинити захід");

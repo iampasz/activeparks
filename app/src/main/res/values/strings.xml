@@ -412,4 +412,8 @@
     <string name="tv_imt_default">Індекс маси тіла</string>
 
 
+    <string name="event_finished">Захід закінчився</string>
+    <string name="event_during">Захід йде</string>
+    <string name="event_has_not_started">Захід ще не почався</string>
+
 </resources>

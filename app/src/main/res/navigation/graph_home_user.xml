@@ -10,11 +10,8 @@
         android:name="com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsFragment"
         android:label="@string/tv_menu_events"
         tools:layout="@layout/fragment_home_events" >
-        <action
-            android:id="@+id/action_navEventsHomeUser_to_eventsListFragment"
-            app:destination="@id/eventsListFragment" />
-    </fragment>
 
+    </fragment>
 
     <fragment
         android:id="@+id/navLocationHomeUser"

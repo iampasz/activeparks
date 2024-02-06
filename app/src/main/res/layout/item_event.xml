@@ -2,6 +2,7 @@
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:elevation="0dp"
@@ -152,7 +153,7 @@
             android:text="@string/data_time"
             android:textColor="@color/tv_description"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/type_event" />
 
         <ImageView
             android:id="@+id/blue_dot"
@@ -172,7 +173,7 @@
             android:layout_height="wrap_content"
             android:text="@string/marathon"
             android:textColor="@color/tv_description"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 

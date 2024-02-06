@@ -77,9 +77,6 @@ public class EventViewModel extends ViewModel {
         return mSportEvents;
     }
 
-    public LiveData<EventList> getMySportEventsList() {
-        return mySportEvents;
-    }
 
     public LiveData<CalendarModel> getCalendar() {
         return calendar;
@@ -246,7 +243,7 @@ public class EventViewModel extends ViewModel {
     }
 
     public void startEvent() {
-        if (Objects.requireNonNull(mItemEvent.getValue()).getRouteStartAt() != null) {
+        if (Objects.requireNonNull(mItemEvent.getValue()).getRouteStartedAt() != null) {
             Disposable eventPostRequest = repository.eventPostRequest(mId, "stop-route").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(result -> getUpdateEvent(),
                             error -> getUpdateEvent());

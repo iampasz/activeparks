@@ -22,7 +22,7 @@ import com.app.activeparks.data.model.workout.WorkoutItem;
 import com.app.activeparks.ui.clubs.ClubActivity;
 import com.app.activeparks.ui.clubs.adapter.ClubsAdaper;
 import com.app.activeparks.ui.event.activity.EventFragment;
-import com.app.activeparks.ui.event.adapter.EventsListAdaper;
+import com.app.activeparks.ui.event.adapter.EventsListAdaperOld;
 import com.app.activeparks.ui.training.TrainingDialog;
 import com.app.activeparks.ui.workout.adapter.journal.JournalListAdaper;
 import com.app.activeparks.ui.workout.adapter.plan.PlanListAdaper;
@@ -222,7 +222,7 @@ public class UserActivity extends AppCompatActivity implements SwipeRefreshLayou
             }else{
                 listStatus.setText("Користувач не вступив у жоден захід");
             }
-            profileList.setAdapter(new EventsListAdaper(this, result).setOnEventListener(new EventsListAdaper.EventsListener() {
+            profileList.setAdapter(new EventsListAdaperOld(this, result).setOnEventListener(new EventsListAdaperOld.EventsListener() {
                 @Override
                 public void onInfo(ItemEvent itemClub) {
                     startActivity(new Intent(getApplicationContext(), EventFragment.class).putExtra("id", itemClub.getId()));
@@ -239,7 +239,7 @@ public class UserActivity extends AppCompatActivity implements SwipeRefreshLayou
             if (result.getItems().size() > 0) {
                 listStatus.setVisibility(View.GONE);
             }
-            profileList.setAdapter(new EventsListAdaper(this, result.getItems()).setOnEventListener(new EventsListAdaper.EventsListener() {
+            profileList.setAdapter(new EventsListAdaperOld(this, result.getItems()).setOnEventListener(new EventsListAdaperOld.EventsListener() {
                 @Override
                 public void onInfo(ItemEvent itemClub) {
                     startActivity(new Intent(getApplicationContext(), EventFragment.class).putExtra("id", itemClub.getId()));

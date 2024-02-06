@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.app.activeparks.data.model.gallery.PhotoItem
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
+import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.ItemPagerPhotoGalleryBinding
 
 class GalleryPagerAdapter(
@@ -54,9 +55,12 @@ class GalleryPagerAdapter(
         }
 
         ItemPagerPhotoGalleryBinding.bind(holder.itemView).apply {
-            item.userPhoto.let {
-                Picasso.get().load(item.url).into(photo)
-            }
+            item?.userPhoto?.let {
+                Glide
+                    .with(photo.context)
+                    .load(item.userPhoto)
+                    .error(R.drawable.ic_prew)
+                    .into(photo) }
         }
     }
 }

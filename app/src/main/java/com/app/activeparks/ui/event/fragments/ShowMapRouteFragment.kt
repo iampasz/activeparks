@@ -145,7 +145,7 @@ class ShowMapRouteFragment : Fragment() {
 
     private fun observer(myListener: Marker.OnMarkerDragListener) {
         viewModel.dataEvent.observe(viewLifecycleOwner) { newData ->
-            currentTrainingType = newData.typeId
+            currentTrainingType = newData.typeId.toString()
         }
 
         viewModel.getGeoPointsLiveData().observe(viewLifecycleOwner) { geoPoints ->

@@ -11,4 +11,6 @@ data class EventResponse (
     val offset: Int? = null,
     @SerializedName("limit")
     val limit: Int? = null,
+    @SerializedName("newGetting")
+    val newGetting: List<ItemEvent>? = null
 )
