@@ -17,6 +17,7 @@ import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.DialogPulseZoneBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
+@Suppress("DEPRECATION")
 class PulseZoneFragment : Fragment() {
 
     lateinit var binding: DialogPulseZoneBinding

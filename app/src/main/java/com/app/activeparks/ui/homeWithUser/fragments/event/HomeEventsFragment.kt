@@ -51,7 +51,7 @@ class HomeEventsFragment : Fragment() {
     private fun initListener() {
         with(binding) {
             tvEventsCalendar.setOnClickListener {
-                (requireActivity() as MainActivity).addFragment(EventListFragment())
+                (requireActivity() as MainActivity).openFragment(EventListFragment())
             }
         }
     }
