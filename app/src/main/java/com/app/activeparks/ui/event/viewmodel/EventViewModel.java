@@ -11,7 +11,6 @@ import com.app.activeparks.data.model.calendar.CalendarModel;
 import com.app.activeparks.data.model.dictionaries.BaseDictionaries;
 import com.app.activeparks.data.model.meetings.MeetingsModel;
 import com.app.activeparks.data.model.points.RoutePoint;
-import com.app.activeparks.data.model.sportevents.EventList;
 import com.app.activeparks.data.model.sportevents.ItemEvent;
 import com.app.activeparks.data.model.sportevents.SportEvents;
 import com.app.activeparks.data.repository.Repository;
@@ -36,12 +35,10 @@ public class EventViewModel extends ViewModel {
 
     private final MutableLiveData<ItemEvent> mItemEvent;
     private final MutableLiveData<SportEvents> mSportEvents;
-    private final MutableLiveData<EventList> mySportEvents;
     private final MutableLiveData<String> location = new MutableLiveData<>();
     private final MutableLiveData<CalendarModel> calendar = new MutableLiveData<>();
     private final MutableLiveData<List<MeetingsModel.MeetingItem>> mMeeting = new MutableLiveData<>();
     private List<BaseDictionaries> eventHoldingStatuses = new ArrayList<>();
-    private final List<ItemEvent> mySportEvent = new ArrayList<>();
     private final List<ItemEvent> mSportEvent = new ArrayList<>();
     public String mId;
     private final MutableLiveData<String> currentId = new MutableLiveData<>();
@@ -59,7 +56,6 @@ public class EventViewModel extends ViewModel {
         repository = new Repository(preferences);
         mItemEvent = new MutableLiveData<>();
         mSportEvents = new MutableLiveData<>();
-        mySportEvents = new MutableLiveData<>();
 
         try {
             if (preferences.getDictionarie() != null) {
@@ -92,7 +88,10 @@ public class EventViewModel extends ViewModel {
 
     public void updateEventData(String id) {
         mId = id;
-        Disposable eventDetails = repository.getEventDetails(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        Disposable eventDetails = repository
+                .getEventDetails(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                             for (RoutePoint item : result.getRoutePoints()) {
                                 if (item.getPointIndex() == 0) {
@@ -178,34 +177,6 @@ public class EventViewModel extends ViewModel {
         compositeDisposable.add(eventsDay);
     }
 
-    public void getEventsByDay(String date) {
-        eventSelectDay = date;
-
-        Map<String, String> data = new HashMap<>();
-        data.put("offset", "0");
-        data.put("limit", "10");
-        data.put("filters[startsFrom]", date);
-        data.put("filters[startsTo]", date);
-
-        if (eventFilter == 0) {
-            Log.d("test_log", "0" + filterLongitude.toString());
-            data.putAll(filterLongitude);
-        } else if (eventFilter == 1) {
-            data.put("sort[startsAt]", "asc");
-        } else if (eventFilter == 2) {
-            data.put("sort[startsAt]", "asc");
-            data.put("filters[holdingstatus]", "active");
-        }
-        Disposable myEvents = repository
-                .eventsDay(data)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> useStatusMapper(result.getItems()),
-                        error -> {
-                        });
-
-        compositeDisposable.add(myEvents);
-    }
 
     public void applyUser() {
         if (Objects.requireNonNull(mItemEvent.getValue()).getEventUser() == null) {
@@ -270,19 +241,6 @@ public class EventViewModel extends ViewModel {
          mSportEvents.setValue(sportEvents);
     }
 
-    public void useStatusMapper(List<ItemEvent> itemEvent) {
-        mySportEvent.clear();
-        for (ItemEvent itemEvent1 : itemEvent) {
-            for (BaseDictionaries eventHoldingStatuses : eventHoldingStatuses) {
-                if (itemEvent1.getHoldingStatusId().equals(eventHoldingStatuses.getId())) {
-                    itemEvent1.setHoldingStatusText(eventHoldingStatuses.getTitle());
-                }
-            }
-            mySportEvent.add(itemEvent1);
-        }
-        EventList eventLists = new EventList(mySportEvent);
-        mySportEvents.setValue(eventLists);
-    }
 
     public String statusMapper(String status) {
         for (BaseDictionaries eventHoldingStatuses : eventHoldingStatuses) {

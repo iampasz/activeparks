@@ -68,16 +68,14 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        participantViewModel.isEvent = true
-        participantViewModel.id = eventId
-        eventViewModel.updateEventData(eventId)
-        eventViewModel.setCurrentId(eventId)
 
+
+        update()
         initNavigation()
         onClick()
         initView()
-        observe()
         initClickListener()
+        observe()
     }
 
 
@@ -144,12 +142,14 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
     }
 
     override fun update() {
+
+        participantViewModel.isEvent = true
+        participantViewModel.id = eventId
+
+        eventViewModel.updateEventData(eventId)
+        eventViewModel.setCurrentId(eventId)
         eventViewModel.getUpdateEvent()
         eventViewModel.meetingRecords()
-    }
-
-    private fun onBackPressed() {
-        parentFragmentManager.removeFragment(this@EventFragment)
     }
 
     override fun onRefresh() {
@@ -186,7 +186,7 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
 
     private fun onClick(){
         binding.close.setOnClickListener {
-            onBackPressed()
+            parentFragmentManager.removeFragment(this@EventFragment)
         }
 
         binding.showRout.setOnClickListener {

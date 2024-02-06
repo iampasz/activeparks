@@ -186,8 +186,6 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
                 @SuppressLint("SimpleDateFormat") val dateFormat =
                     SimpleDateFormat("yyyy-MM-dd")
 
-               // viewModel.eventsDay(dateFormat.format(cal.time))
-                //viewModel.getEventsByDay(dateFormat.format(cal.time))
 
                 homeEventsViewModel.getEventsForDate(dateFormat.format(cal.time), dateFormat.format(cal.time))
             }
