@@ -1,11 +1,14 @@
 package com.app.activeparks.ui.registration.fragments.registrationFlow.fragments.additionalValue
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.NumberPicker
 import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
@@ -14,6 +17,7 @@ import com.app.activeparks.ui.registration.RegistrationViewModel
 import com.app.activeparks.ui.registration.fragments.registrationFlow.fragments.additionalValue.Gender.Companion.FEMALE
 import com.app.activeparks.ui.registration.fragments.registrationFlow.fragments.additionalValue.Gender.Companion.MALE
 import com.app.activeparks.util.extention.disable
+import com.app.activeparks.util.extention.enable
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.isSelectedToResponse
 import com.app.activeparks.util.extention.visible
@@ -53,7 +57,10 @@ class AdditionalValueFragment : Fragment() {
     private fun observe() {
         with(viewModel) {
             onRegistered.observe(viewLifecycleOwner) {
-                binding.progress.gone()
+                binding.apply {
+                    progress.gone()
+                    btnNext.enable()
+                }
                 if (it == true) {
                     startActivity(Intent(requireActivity(), MainActivity::class.java))
                     requireActivity().finish()
@@ -61,7 +68,10 @@ class AdditionalValueFragment : Fragment() {
             }
 
             onHideProgress.observe(viewLifecycleOwner) {
-                binding.progress.gone()
+                binding.apply {
+                    progress.gone()
+                    btnNext.enable()
+                }
             }
         }
     }
@@ -100,35 +110,55 @@ class AdditionalValueFragment : Fragment() {
     }
 
 
-    private fun showWeightPicker() {
-        val weightPicker = NumberPicker(requireContext())
+    private fun showWeightPicker(weight: Double? = 75.2) {
+        val kilogramsPicker = NumberPicker(requireContext())
+        val gramsPicker = NumberPicker(requireContext())
 
-        val minValue = 40100
-        val maxValue = 200000
-        val step = 100
+        val kilogramsMinValue = 40
+        val kilogramsMaxValue = 200
 
-        val valueCount = (maxValue - minValue) / step + 1
-        val displayedValues = Array(valueCount) { i ->
-            val weight = minValue + i * step
-            (weight / 1000).toString() + "." + (weight % 1000)
+        val gramsMinValue = 0
+        val gramsMaxValue = 9
+        val gramsStep = 100
+
+        val kilogramsDisplayedValues = Array(kilogramsMaxValue - kilogramsMinValue + 1) { (kilogramsMinValue + it).toString() }
+        val gramsDisplayedValues = Array(gramsMaxValue - gramsMinValue + 1) { (gramsMinValue + it * gramsStep).toString() }
+
+
+        kilogramsPicker.minValue = kilogramsMinValue
+        kilogramsPicker.maxValue = kilogramsMaxValue
+        kilogramsPicker.displayedValues = kilogramsDisplayedValues
+
+        gramsPicker.minValue = gramsMinValue
+        gramsPicker.maxValue = gramsMaxValue
+        gramsPicker.displayedValues = gramsDisplayedValues
+
+        weight?.let {
+            val integerPart = weight.toInt()
+            val fractionalPart = ((weight - integerPart) * 10).toInt()
+            kilogramsPicker.value = integerPart
+            gramsPicker.value = fractionalPart
+        } ?: kotlin.run {
+            kilogramsPicker.value = 75
+            gramsPicker.value = 2
+
         }
 
-        weightPicker.minValue = 0
-        weightPicker.maxValue = valueCount - 1
-        weightPicker.displayedValues = displayedValues
+        val dialogView = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER
+            addView(kilogramsPicker)
+            addView(gramsPicker)
+        }
 
-
-        val dialog = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+        val dialog = AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.tv_select_weight))
-            .setView(weightPicker)
+            .setView(dialogView)
             .setPositiveButton(getString(R.string.tv_ok)) { _, _ ->
-
-                val selectedWeight = minValue + weightPicker.value * step
-                val formattedWeight =
-                    (selectedWeight / 1000).toString() + "." + (selectedWeight % 1000)
-
-                binding.btnWeight.text =
-                    getString(R.string.tv_weight_picker, formattedWeight)
+                val selectedKilograms = kilogramsPicker.value
+                val selectedGrams = gramsPicker.value * gramsStep
+                val formattedWeight = "$selectedKilograms.$selectedGrams"
+                binding.btnWeight.text = getString(R.string.tv_weight_picker, formattedWeight)
                 viewModel.additionData.weight = formattedWeight.toDouble()
             }
             .create()

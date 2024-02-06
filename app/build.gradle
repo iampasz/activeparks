@@ -13,8 +13,8 @@ android {
         applicationId "com.technodreams.activeparks"
         minSdk 26
         targetSdk 34
-        versionCode 180
-        versionName "1.8.0"
+        versionCode 183
+        versionName "1.8.3"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -180,11 +180,4 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.kal72:RackMonthPicker:1.6.1'
     implementation 'com.facebook.android:facebook-android-sdk:latest.release'
-
-
-
-
-
-
-
 }

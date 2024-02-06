@@ -113,8 +113,8 @@
         android:id="@+id/vBottomView"
         android:layout_width="0dp"
         android:layout_height="90dp"
-        android:visibility="gone"
         android:background="@drawable/background_bottom_panel"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -160,4 +160,34 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:constraint_referenced_ids="vBackground, tvPause, btnEnd, btnContinue" />
+
+    <View
+        android:id="@+id/vBackHelper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_park"
+        android:elevation="20dp" />
+
+    <TextView
+        android:id="@+id/tvTitleHelper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:elevation="20dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="100sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/gHelper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="vBackHelper, tvTitleHelper" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

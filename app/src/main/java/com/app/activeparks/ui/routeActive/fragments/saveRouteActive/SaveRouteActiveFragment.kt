@@ -523,5 +523,5 @@ class SaveRouteActiveFragment : Fragment() {
     }
 
     private fun openFragment(fragment: Fragment) =
-        (requireActivity() as? MainActivity)?.addFragment(fragment)
+        (requireActivity() as? MainActivity)?.openFragment(fragment)
 }

@@ -13,7 +13,6 @@ import com.app.activeparks.ui.active.ActivityForActivity
 import com.app.activeparks.ui.active.model.TypeOfTraining
 import com.app.activeparks.ui.track.adapter.TrackItemAdapter
 import com.app.activeparks.ui.track.fragments.saveTrack.SaveTrackFragment
-import com.app.activeparks.ui.userProfile.video.AddVideoUserProfile
 import com.technodreams.activeparks.databinding.FragmentTracksListBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
@@ -97,5 +96,5 @@ class TracksListFragment  : Fragment() {
     }
 
     private fun openFragment(fragment: Fragment) =
-        (requireActivity() as? MainActivity)?.addFragment(fragment)
+        (requireActivity() as? MainActivity)?.openFragment(fragment)
 }

@@ -1,6 +1,7 @@
 package com.app.activeparks.util.extention
 
 import com.app.activeparks.data.model.track.PointsTrack
+import com.app.activeparks.ui.active.model.Direction
 import org.osmdroid.util.GeoPoint
 import kotlin.random.Random
 
@@ -18,7 +19,7 @@ fun generateRandomRoute(center: GeoPoint, numPoints: Int, maxDistance: Double): 
         route.add(PointsTrack(
             randomPoint.latitude,
             randomPoint.longitude,
-            if (i/3 == 1) "left" else ""
+            if (i/3 == 1) Direction.RIGHT.direction else ""
         ))
     }
     return route

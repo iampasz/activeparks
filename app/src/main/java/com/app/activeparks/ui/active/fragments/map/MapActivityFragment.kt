@@ -9,6 +9,7 @@ import android.hardware.SensorManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,12 +17,15 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.app.activeparks.ui.active.ActiveViewModel
+import com.app.activeparks.ui.active.model.Direction
 import com.app.activeparks.ui.active.util.AddressUtil
 import com.app.activeparks.ui.active.util.CalorieCalculator
 import com.app.activeparks.util.EasySensorEventListener
 import com.app.activeparks.util.MapsViewController
 import com.app.activeparks.util.extention.drawActiveRoute
 import com.app.activeparks.util.extention.toInfo
+import com.app.activeparks.util.extention.toLocation
+import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentMapActivityBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.osmdroid.util.GeoPoint
@@ -32,6 +36,7 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
 
 
     private var sensorManager: SensorManager? = null
+    private var mediaPlayer: MediaPlayer? = null
 
     private var previousX = 0f
     private var previousY = 0f
@@ -163,6 +168,46 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
                 mapsViewController?.zoomOnStart()
             }
 
+            if (viewModel.activityState.controlPoints.isNotEmpty()) {
+                val firstCheckpoint = viewModel.activityState.controlPoints.first()
+                val distance = location.distanceTo(firstCheckpoint.toLocation())
+
+                if (distance <= 10) {
+                    when (firstCheckpoint.turn) {
+                        Direction.START.direction -> {
+                            play(R.raw.song_run_start)
+                        }
+
+                        Direction.LEFT.direction -> {
+                            play(R.raw.song_run_left)
+                        }
+
+                        Direction.RIGHT.direction -> {
+                            play(R.raw.song_run_right)
+                        }
+
+                        Direction.FINISH.direction -> {
+                            play(R.raw.song_run_finish)
+                        }
+                    }
+                    viewModel.activityState.controlPoints.removeAt(0)
+                }
+            }
+
+            if (viewModel.activityState.activeRoad.isNotEmpty()) {
+                var onTrack = false
+                viewModel.activityState.activeRoad.forEach {
+                    val distance = location.distanceTo(it.toLocation())
+
+                    if (distance <= 10) {
+                        onTrack = true
+                    }
+
+                    if (!onTrack) play(R.raw.song_not_round)
+                }
+            }
+
+
             if (viewModel.activityState.isTrainingStart && !viewModel.activityState.isPause) {
                 val geoPoint = GeoPoint(location)
 
@@ -174,7 +219,18 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
             if (viewModel.location == null) {
                 viewModel.location = location
             }
-        } catch (_: Exception) {}
+        } catch (_: Exception) {
+        }
+    }
+
+    private fun play(mp3: Int) {
+        if (viewModel.activityState.isAudioHelper) {
+            mediaPlayer?.apply {
+                stop()
+                mediaPlayer = MediaPlayer.create(requireContext(), mp3)
+                start()
+            }
+        }
     }
 
     private fun calculateParameters(location: Location, geoPoint: GeoPoint) {
@@ -317,5 +373,11 @@ class MapActivityFragment : Fragment(), LocationListener, EasySensorEventListene
         previousX = x
         previousY = y
         previousZ = z
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer?.release()
+        mediaPlayer = null
     }
 }

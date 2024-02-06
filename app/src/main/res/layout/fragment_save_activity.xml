@@ -127,7 +127,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:contentDescription="@string/icon"
-                android:background="@drawable/ic_smile"
                 app:layout_constraintBottom_toBottomOf="@+id/vFeel"
                 app:layout_constraintStart_toStartOf="@+id/vFeel"
                 app:layout_constraintTop_toTopOf="@+id/vFeel" />
@@ -202,6 +201,7 @@
             <EditText
                 android:id="@+id/etDescriptionActivity"
                 android:layout_width="0dp"
+                android:minHeight="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
@@ -210,12 +210,13 @@
                 android:maxLength="255"
                 android:paddingStart="16dp"
                 android:paddingTop="16dp"
+                android:gravity="top"
                 android:paddingEnd="16dp"
                 android:paddingBottom="32dp"
+                android:hint="@string/tv_note_helper"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rvInfoView"
-                tools:text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis,"
                 tools:ignore="Autofill,TextFields" />
 
 

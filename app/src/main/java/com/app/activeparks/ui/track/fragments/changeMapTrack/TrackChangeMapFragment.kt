@@ -1,8 +1,6 @@
 package com.app.activeparks.ui.track.fragments.changeMapTrack
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,11 +9,8 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.app.activeparks.data.model.track.PointsTrack
-import com.app.activeparks.ui.routeActive.adapter.RouteActiveItemAdapter
-import com.app.activeparks.ui.routeActive.fragments.saveRouteActive.SaveRouteActiveFragment
+import com.app.activeparks.ui.active.model.Direction
 import com.app.activeparks.ui.track.adapter.RouteChangeAdapter
-import com.app.activeparks.ui.track.adapter.TrackItemAdapter
-import com.app.activeparks.ui.track.fragments.saveTrack.SaveTrackFragment
 import com.app.activeparks.util.MapsViewController
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.technodreams.activeparks.R
@@ -23,7 +18,7 @@ import com.technodreams.activeparks.databinding.FragmentEditTrackBinding
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Polyline
 
-class TrackChangeMapFragment  : Fragment() {
+class TrackChangeMapFragment : Fragment() {
 
     lateinit var binding: FragmentEditTrackBinding
     private lateinit var adapter: RouteChangeAdapter
@@ -51,12 +46,13 @@ class TrackChangeMapFragment  : Fragment() {
 
     private fun initView() {
         with(binding) {
-            adapter = RouteChangeAdapter (
-            onItemClick = { index ->
-                setChangeMapDialog(index)
-            })
+            adapter = RouteChangeAdapter(
+                onItemClick = { index ->
+                    setChangeMapDialog(index)
+                })
             rvListRouteActive.adapter = adapter
-            rvListRouteActive.layoutManager = GridLayoutManager(requireContext(), calculateSpanCount(requireContext()))
+            rvListRouteActive.layoutManager =
+                GridLayoutManager(requireContext(), calculateSpanCount(requireContext()))
 
             arguments?.getParcelableArrayList<PointsTrack>("pointsList")?.let {
                 setCurrentLocation(it)
@@ -69,11 +65,12 @@ class TrackChangeMapFragment  : Fragment() {
     private fun setListener() {
         with(binding) {
             ivBack.setOnClickListener {
-                pointsTrack?.let { dataCallback?.onDataReceived(it)}
+                pointsTrack?.let { dataCallback?.onDataReceived(it) }
                 requireActivity().onBackPressed()
             }
         }
     }
+
     private fun setCurrentLocation(points: List<PointsTrack>) {
         points.takeIf { it.isNotEmpty() }?.apply {
             pointsTrack = points
@@ -99,14 +96,14 @@ class TrackChangeMapFragment  : Fragment() {
         dialog.setContentView(R.layout.dialog_change_map)
         val rightAction = dialog.findViewById<LinearLayout>(R.id.llRightAction)
         rightAction?.setOnClickListener {
-            pointsTrack = editTurnInList(index, "right")
+            pointsTrack = editTurnInList(index, Direction.RIGHT.direction)
             sendDataToFragment()
             dialog.dismiss()
         }
 
         val leftAction = dialog.findViewById<LinearLayout>(R.id.llLeftAction)!!
         leftAction.setOnClickListener {
-            pointsTrack = editTurnInList(index, "left")
+            pointsTrack = editTurnInList(index, Direction.RIGHT.direction)
             sendDataToFragment()
             dialog.dismiss()
         }
@@ -131,9 +128,11 @@ class TrackChangeMapFragment  : Fragment() {
     private fun calculateSpanCount(context: Context): Int {
         val displayMetrics = context.resources.displayMetrics
         val dpWidth = displayMetrics.widthPixels / displayMetrics.density
-        val columns = (dpWidth / 64).toInt()  // Замените YOUR_ITEM_WIDTH_DP на ширину вашего элемента в dp
+        val columns =
+            (dpWidth / 64).toInt()  // Замените YOUR_ITEM_WIDTH_DP на ширину вашего элемента в dp
         return if (columns > 0) columns else 1
     }
+
     private fun sendDataToFragment() {
         pointsTrack?.let { adapter.submitData(it) }
         pointsTrack?.let { dataCallback?.onDataReceived(it) }

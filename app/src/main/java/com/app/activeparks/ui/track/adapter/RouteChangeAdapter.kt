@@ -1,16 +1,19 @@
 package com.app.activeparks.ui.track.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.app.activeparks.data.model.track.PointsTrack
+import com.app.activeparks.ui.active.model.Direction
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.ItemRoutePointsBinding
 
 
-class RouteChangeAdapter(private val onItemClick: (Int) -> Unit) : RecyclerView.Adapter<RouteChangeAdapter.ItemRoutePointsVH>() {
+class RouteChangeAdapter(private val onItemClick: (Int) -> Unit) :
+    RecyclerView.Adapter<RouteChangeAdapter.ItemRoutePointsVH>() {
 
     class ItemRoutePointsVH(binding: ItemRoutePointsBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -43,17 +46,21 @@ class RouteChangeAdapter(private val onItemClick: (Int) -> Unit) : RecyclerView.
     fun submitData(newData: List<PointsTrack>) {
         list.submitList(newData)
     }
+
     override fun getItemCount() = list.currentList.size
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: ItemRoutePointsVH, position: Int) {
         val item = list.currentList[position]
         ItemRoutePointsBinding.bind(holder.itemView).apply {
-            tvNumber.text = "${position}"
+            tvNumber.text = "$position"
 
-            if (item.turn == "left" || item.turn == "right"){
-                tvNumber.background = holder.itemView.resources.getDrawable(R.drawable.button_ap,null)
-            }else {
-                tvNumber.background = holder.itemView.resources.getDrawable(R.drawable.background_green,null)
+            if (item.turn == Direction.RIGHT.direction || item.turn == Direction.RIGHT.direction) {
+                tvNumber.background =
+                    holder.itemView.resources.getDrawable(R.drawable.button_ap, null)
+            } else {
+                tvNumber.background =
+                    holder.itemView.resources.getDrawable(R.drawable.background_green, null)
             }
 
             tvNumber.setOnClickListener {

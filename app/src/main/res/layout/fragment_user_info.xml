@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/white"
     android:orientation="vertical"
     tools:context="com.app.activeparks.ui.home.HomeFragment">
@@ -69,8 +70,8 @@
                 android:id="@+id/vBackgroundUser"
                 android:layout_width="0dp"
                 android:layout_height="171dp"
-                android:scaleType="centerCrop"
                 android:background="@color/bg_2"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -414,6 +415,77 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvHeightInfo" />
 
+            <ImageView
+                android:id="@+id/ivImt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/ic_imt"
+                app:layout_constraintStart_toStartOf="@+id/tvContact"
+                app:layout_constraintTop_toBottomOf="@+id/vSeparateHeight" />
+
+            <TextView
+                android:id="@+id/tvImtTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/tv_imt_default"
+                android:textColor="@color/accent"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/ivImt"
+                app:layout_constraintTop_toTopOf="@+id/ivImt" />
+
+            <TextView
+                android:id="@+id/tvImtDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:text="@string/tv_imt_title"
+                android:textColor="@color/tv_description"
+                android:textSize="10sp"
+                app:drawableEndCompat="@drawable/ic_caretdown"
+                app:drawableTint="@color/tv_description"
+                app:layout_constraintStart_toStartOf="@+id/tvImtTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvImtTitle"
+                tools:ignore="SmallSp" />
+
+            <TextView
+                android:id="@+id/tvImtLongDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/tv_imt_long_description"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/tvImtValue"
+                app:layout_constraintStart_toStartOf="@+id/ivImt"
+                app:layout_constraintTop_toBottomOf="@+id/tvImtDescription" />
+
+            <TextView
+                android:id="@+id/tvImtValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/tv_description"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/ivImt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toEndOf="@+id/tvImtDescription"
+                app:layout_constraintTop_toTopOf="@+id/ivImt"
+                tools:ignore="SmallSp"
+                tools:text="24.5" />
+
+            <View
+                android:id="@+id/vSeparateIMT"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/dark_gray_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvImtLongDescription" />
+
             <TextView
                 android:id="@+id/tvAboutMeInfo"
                 android:layout_width="wrap_content"
@@ -426,7 +498,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/vSeparateHeight" />
+                app:layout_constraintTop_toBottomOf="@+id/vSeparateIMT" />
 
             <TextView
                 android:id="@+id/tvAboutMe"
@@ -441,8 +513,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvAboutMeInfo"
                 tools:text="Я активно займаюсь спортом, знаходячи в ньому свою мотивацію та задоволення. Щодня регулярно тренуюся, комбінуючи кардіо-тренування та силові вправи. Спорт допомагає мені підтримувати форму, зберігати енергію та підвищувати самодисципліну. Це не лише фізична активність, але й спосіб життя, який допомагає мені бути здоровим та емоційно збалансованим." />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

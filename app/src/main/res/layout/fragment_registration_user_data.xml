@@ -14,7 +14,6 @@
         android:background="@color/registration_main"
         tools:context="com.app.activeparks.ui.registration.RegistrationActivity">
 
-
         <ProgressBar
             android:id="@+id/progress"
             android:layout_width="wrap_content"
@@ -162,36 +161,31 @@
             app:layout_constraintStart_toStartOf="@+id/passwordInputLayout"
             app:layout_constraintTop_toBottomOf="@+id/passwordInputLayout" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/rePasswordInputLayout"
-            style="@style/Widget.MyApp.TextInputLayout"
+        <CheckBox
+            android:id="@+id/cbPersonalDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvHelpPassword" />
+
+        <TextView
+            android:id="@+id/tvPersonalDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
-            android:textColorHint="@color/black"
-            app:hintTextColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/cbPersonalDate"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvHelpPassword"
-            app:passwordToggleEnabled="true">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/rePasswordEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_white"
-                android:hint="@string/tv_re_password"
-                android:inputType="textPassword" />
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintStart_toEndOf="@+id/cbPersonalDate"
+            app:layout_constraintTop_toTopOf="@+id/cbPersonalDate" />
 
         <android.widget.Button
             android:id="@+id/btnNext"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="32dp"
             android:background="@drawable/selector_button_light_green"
@@ -199,7 +193,7 @@
             app:layout_constraintBottom_toTopOf="@+id/ivVp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rePasswordInputLayout"
+            app:layout_constraintTop_toBottomOf="@+id/cbPersonalDate"
             app:layout_constraintVertical_bias="1" />
 
         <TextView

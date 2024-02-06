@@ -221,59 +221,22 @@ class PulseZoneFragment : Fragment() {
                     }
                 }
             }
-            val pulseZone = viewModel.activityState.pulseZone
-            tvPulseInfoTitle.text = when (pulseZone.id) {
-                0 -> {
-                    pulseZone.title
-                }
+            setPulseZoneInfo(viewModel.activityState.pulseZone)
+        }
+    }
 
-                1 -> {
-                    pulseZone.title
-                }
-
-                2 -> {
-                    pulseZone.title
-                }
-
-                3 -> {
-                    pulseZone.title
-                }
-
-                4 -> {
-                    pulseZone.title
-                }
-
-                else -> {
-                    "Unknown type"
-                }
+    private fun setPulseZoneInfo(pulseZone: PulseZone) {
+        with(binding) {
+            vPulseZoneInfo.setImageResource(pulseZone.background)
+            tvPulseInfoTitle.text = pulseZone.title
+            tvPulseInfoDescription.text = when (pulseZone.id) {
+                0 -> getString(R.string.tv_pulse_info_description_max)
+                1 -> getString(R.string.tv_pulse_info_description_anaerobic)
+                2 -> getString(R.string.tv_pulse_info_description_aerobic)
+                3 -> getString(R.string.tv_pulse_info_description_fat_burning)
+                4 -> getString(R.string.tv_pulse_info_description_min)
+                else -> "Unknown type"
             }
-            vPulseZoneInfo.setImageResource(
-                when (pulseZone.id) {
-                    0 -> {
-                        pulseZone.background
-                    }
-
-                    1 -> {
-                        pulseZone.background
-                    }
-
-                    2 -> {
-                        pulseZone.background
-                    }
-
-                    3 -> {
-                        pulseZone.background
-                    }
-
-                    4 -> {
-                        pulseZone.background
-                    }
-
-                    else -> {
-                        R.drawable.view_puls_level_1
-                    }
-                }
-            )
         }
     }
 
@@ -286,7 +249,6 @@ class PulseZoneFragment : Fragment() {
             )
         }
     }
-
 
     private fun setPulseZoneValue(
         textView: TextView,
@@ -316,6 +278,7 @@ class PulseZoneFragment : Fragment() {
 
     private fun setPulseZone(pulseZone: PulseZone) {
         viewModel.activityState.pulseZone = pulseZone
+        setPulseZoneInfo(viewModel.activityState.pulseZone)
     }
 
     private fun changeZoneInfo(

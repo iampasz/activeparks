@@ -10,6 +10,7 @@ data class ActivityState(
     var activityType: TypeOfActivity = TypeOfActivity.getTypeOfActivity().first(),
     var activityTypeOutside: LevelOfActivity = LevelOfActivity.getLevelOfActivity().first(),
     val activityRoad: MutableList<GeoPoint> = mutableListOf(),
+    val controlPoints: MutableList<PointsTrack> = mutableListOf(),
     val activeRoad: MutableList<PointsTrack> = mutableListOf(),
     var activeRoadId: String = "",
     var startPoint: String = "",

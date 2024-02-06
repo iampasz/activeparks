@@ -409,6 +409,7 @@
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/background_notification"
                 android:hint="@string/tv_phone"
+                android:inputType="phone"
                 android:paddingStart="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

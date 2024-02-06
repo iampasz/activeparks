@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
 import com.app.activeparks.data.model.user.UserRole
+import com.app.activeparks.ui.routeActive.fragments.favoritesActiveRoutes.FavoritesRouteActiveListFragment
 import com.app.activeparks.ui.routeActive.fragments.listRouteActive.RouteActiveListFragment
 import com.app.activeparks.ui.support.SupportActivity
 import com.app.activeparks.ui.track.fragments.listTrack.TracksListFragment
@@ -131,10 +132,13 @@ class MenuProfileFragment : Fragment() {
                 startActivity(Intent(requireActivity(), SupportActivity::class.java))
             }
             tvActiveRouts.setOnClickListener {
-                addFragment(TracksListFragment())
+                openFragment(TracksListFragment())
             }
             tvRoads.setOnClickListener {
-                addFragment(RouteActiveListFragment())
+                openFragment(RouteActiveListFragment())
+            }
+            tvFavorite.setOnClickListener {
+                openFragment(FavoritesRouteActiveListFragment())
             }
         }
     }
@@ -188,8 +192,8 @@ class MenuProfileFragment : Fragment() {
         }
     }
 
-    private fun addFragment(fragment: Fragment) {
-        (requireActivity() as? MainActivity)?.addFragment(fragment)
+    private fun openFragment(fragment: Fragment) {
+        (requireActivity() as? MainActivity)?.openFragment(fragment)
     }
 
     private fun onBack() {

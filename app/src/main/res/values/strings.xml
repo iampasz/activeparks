@@ -6,6 +6,7 @@
     <string name="title_notifications">Сповіщення</string>
     <string name="title_activity">Активності</string>
     <string name="title_user">Користувач</string>
+    <string name="title_profile">Профіль</string>
     <string name="title_activity_notification">notification</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
@@ -155,13 +156,13 @@
     <string name="tv_db">База знань</string>
     <string name="tv_forgot_pass">Забули пароль?</string>
     <string name="tv_hint_pass">Пароль</string>
-    <string name="tv_hint_email">Email</string>
+    <string name="tv_hint_email">Пошта</string>
     <string name="tv_hint_email_phone">Email, телефон або нікнейм</string>
     <string name="tv_welcome_back">Вітаємо з поверненням</string>
     <string name="tv_enter_password">Відновити пароль</string>
     <string name="tv_forgot_pass_desc">Вкажіть ввідні дані, щоб ми могли допомогти Вам з відновленням паролю</string>
     <string name="tv_enter_sms">Введіть код з СМС</string>
-    <string name="tv_enter_email">Введіть код з Email</string>
+    <string name="tv_enter_email">Введіть код з листа</string>
     <string name="tv_not_recived_sms">Не отримали жодного коду?</string>
     <string name="tv_new_password">Новий пароль</string>
     <string name="tv_regex_password">Мінімум 8 символів. Пароль повинен містити цифри, та літери верхнього та нижнього регістру</string>
@@ -173,7 +174,7 @@
     <string name="tv_nick">Нікнейм</string>
     <string name="tv_verification">Верифікація</string>
     <string name="tv_description_sms_code">Введіть код, який прийшов на введений вами телефон</string>
-    <string name="tv_description_email_code">Введіть код, який прийшов на введений вами email</string>
+    <string name="tv_description_email_code">Введіть код, який прийшов на введений вами пошту</string>
     <string name="tv_last_name">Прізвище</string>
     <string name="tv_firts_name">Ім\'я</string>
     <string name="tv_end_registration">Завершити реєстрацію</string>
@@ -223,6 +224,7 @@
     <string name="tv_menu_events">Заходи</string>
     <string name="tv_menu_location">Локації</string>
     <string name="tv_menu_blog">Блог</string>
+    <string name="tv_menu_blogs">Блоги</string>
     <string name="tv_menu_clubs">Клуби</string>
     <string name="tv_events_calendar"><u>Календар заходів</u></string>
     <string name="tv_all_parks"><u>Показати перелік активних парків</u></string>
@@ -286,7 +288,7 @@
 
     <string name="login">Увійти</string>
     <string name="zero">0</string>
-    <string name="max_text_count">255/255</string>
+    <string name="max_text_count">0/255</string>
 
     <string name="all_activities">Всі активності</string>
     <string name="review">Огляд</string>
@@ -319,7 +321,7 @@
     <string name="tv_support">Підтримка</string>
     <string name="tv_favorite">Обране</string>
     <string name="tv_active_routs">Активні маршртути</string>
-    <string name="tv_admin_event">Заходи Адмін</string>
+    <string name="tv_admin_event">Каталог заходів</string>
     <string name="tv_cash_clear">Очищення кешу</string>
     <string name="tv_acc_bind">Прив’язка акаунту</string>
     <string name="tv_apk_update">Оновити додаток</string>
@@ -390,5 +392,24 @@
     <string name="applications">Заявки</string>
     <string name="organizers">Організатори</string>
     <string name="information_no_available">Інформація відсутня</string>
+    <string name="tv_welcome_text">Долучіться до нашої спільноти, зареєструйтесь та отримайте повний функціонал</string>
+    <string name="tv_personal_user_date"><![CDATA[<font color="#FFFFFF">Даю згоду на</font> <u><font color="#C5E505">передачу та обробку персональних данних</font></u>]]></string>
+    <string name="tv_imt_title">ІМТ</string>
+    <string name="tv_imt_long_description">Важливо враховувати, що ІМТ є лише загальним показником і не враховує інших факторів, таких як розподіл жиру в організмі, м\'язова маса та інші аспекти здоров\'я. ІМТ може служити початковим орієнтиром, але для повноцінної оцінки здоров\'я рекомендується звертатися до лікаря, фахівця у галузі харчування та фізичної активності або використати спеціальні ваги які вимірюють розподіл жиру в організмі, м\'язова маса і т.д</string>
+    <string name="tv_lets_go">Поїхали</string>
+    <string name="tv_note_helper">Нотатки</string>
+    <string name="tv_pulse_info_description_max">Ця зона відповідає за максимальне фізичне навантаження і використовується для роботи над максимальною потужністю та швидкістю. Тренування в цій зоні має бути дуже інтенсивним і короткочасним.</string>
+    <string name="tv_pulse_info_description_anaerobic">Тренування в цій зоні важке і призначене для покращення аеробної і анаеробної потужності. Воно вимагає значного зусилля і може бути короткочасним.</string>
+    <string name="tv_pulse_info_description_aerobic">Ця зона вже ближча до інтенсивного тренінгу і допомагає покращити аеробну і анаеробну витривалість. Тренування в цій зоні може бути важчим для серця і легень.</string>
+    <string name="tv_pulse_info_description_fat_burning">В цій зоні тривалість тренування може бути довшою, а потужність більше ніж в зоні 1. Вона підходить для підтримки фізичної форми і покращення витривалості.</string>
+    <string name="tv_pulse_info_description_min">Ця зона відповідає за базовий аеробний тренінг і покращення загальної фізичної витривалості.</string>
+    <string name="tv_max_zone">Верхня межа</string>
+    <string name="tv_anaerob_zone">Анаеробна</string>
+    <string name="tv_aerob_zone">Аеробна</string>
+    <string name="tv_fat_zone">Спалювання жиру</string>
+    <string name="tv_min_zone">Легко</string>
+    <string name="tv_no_added_video">Не додали жодного відео</string>
+    <string name="tv_imt_default">Індекс маси тіла</string>
+
 
 </resources>

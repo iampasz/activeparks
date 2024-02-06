@@ -75,7 +75,7 @@
         android:background="@drawable/view_puls_level_6"
         android:gravity="center|start"
         android:paddingStart="8dp"
-        android:text="Максимальний тренінг"
+        android:text="@string/tv_max_zone"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -91,7 +91,7 @@
         android:background="@drawable/view_puls_level_5"
         android:gravity="center|start"
         android:paddingStart="8dp"
-        android:text="Анаеробна"
+        android:text="@string/tv_anaerob_zone"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -121,7 +121,7 @@
         android:background="@drawable/view_puls_level_4"
         android:gravity="center|start"
         android:paddingStart="8dp"
-        android:text="Аеробна"
+        android:text="@string/tv_aerob_zone"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/tvZone5"
@@ -151,7 +151,7 @@
         android:background="@drawable/view_puls_level_3"
         android:gravity="center|start"
         android:paddingStart="8dp"
-        android:text="Спалювання жиру"
+        android:text="@string/tv_fat_zone"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/tvZone4"
@@ -181,7 +181,7 @@
         android:background="@drawable/view_puls_level_2"
         android:gravity="center|start"
         android:paddingStart="8dp"
-        android:text="Легкий тренінг"
+        android:text="@string/tv_min_zone"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/tvZone3"
@@ -286,18 +286,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Ця зона відповідає за максимальне фізичне навантаження і використовується для роботи над максимальною потужністю та швидкістю. Тренування в цій зоні має бути дуже інтенсивним і короткочасним."
+        android:text="@string/tv_pulse_info_description_min"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/vPulseZoneInfo"
         app:layout_constraintTop_toBottomOf="@+id/vPulseZoneInfo" />
-
-    <!--    <NumberPicker-->
-    <!--        android:id="@+id/npPulse"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        app:layout_constraintBottom_toBottomOf="@+id/tvPulseInfoDescription"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent" />-->
-
 </androidx.constraintlayout.widget.ConstraintLayout>

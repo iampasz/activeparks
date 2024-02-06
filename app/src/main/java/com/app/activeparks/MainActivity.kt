@@ -29,9 +29,11 @@ import com.app.activeparks.ui.track.fragments.listTrack.TracksListFragment
 import com.app.activeparks.ui.track.fragments.saveTrack.SaveTrackFragment
 import com.app.activeparks.ui.userProfile.activities.AllActivitiesFragment
 import com.app.activeparks.ui.userProfile.activityInfo.ActivityInfoFragment
+import com.app.activeparks.ui.userProfile.activityInfo.ActivityInfoViewModel
 import com.app.activeparks.ui.userProfile.activityInfo.gallery.ImageGalleryFragment
 import com.app.activeparks.ui.userProfile.edit.EditProfileFragment
 import com.app.activeparks.ui.userProfile.home.ProfileHomeFragment
+import com.app.activeparks.ui.userProfile.home.ProfileHomeViewModel
 import com.app.activeparks.ui.userProfile.info.UserInfoFragment
 import com.app.activeparks.ui.userProfile.menu.MenuProfileFragment
 import com.app.activeparks.ui.userProfile.video.AddVideoUserProfile
@@ -55,6 +57,8 @@ class MainActivity : AppCompatActivity(), FragmentInteface {
     private var binding: ActivityMainBinding? = null
     private var appUpdateManager: AppUpdateManager? = null
     private val viewModel: MainViewModel by viewModel()
+    private val profileViewModel: ProfileHomeViewModel by viewModel()
+    private val activityInfoViewModel: ActivityInfoViewModel by viewModel()
     var navControllerMain: NavController? = null
         private set
     private var preferences: Preferences? = null
@@ -131,13 +135,6 @@ class MainActivity : AppCompatActivity(), FragmentInteface {
     }
 
     fun openFragment(fragment: Fragment) {
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.navFragment, fragment)
-            .commit()
-    }
-
-    fun addFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
             .add(R.id.navFragment, fragment)

@@ -1,7 +1,10 @@
 package com.app.activeparks.ui.registration.fragments.registrationFlow.fragments.userData
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +14,11 @@ import com.app.activeparks.ui.registration.RegistrationViewModel
 import com.app.activeparks.util.EasyTextWatcher
 import com.app.activeparks.util.MIN_PASSWORD_LENGTH
 import com.app.activeparks.util.PhoneNumberMaskWatcher
+import com.app.activeparks.util.URL_PERSONAL_DATE
 import com.app.activeparks.util.extention.disable
 import com.app.activeparks.util.extention.enableIf
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.isNotEmpty
-import com.app.activeparks.util.extention.replaceAddress
 import com.app.activeparks.util.extention.replacePhone
 import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.R
@@ -64,9 +67,26 @@ class RegistrationUserDataFragment : Fragment() {
     private fun initListener() {
         with(binding) {
 
+            tvPersonalDate.apply {
+                text = Html.fromHtml(
+                    getString(R.string.tv_personal_user_date),
+                    Html.FROM_HTML_MODE_LEGACY
+                )
+                setOnClickListener {
+
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(URL_PERSONAL_DATE))
+                    startActivity(intent)
+                }
+            }
+
+            cbPersonalDate.setOnClickListener {
+                btnNext.enableIf(isDataValid())
+            }
+
             phoneEditText.addTextChangedListener(PhoneNumberMaskWatcher(phoneEditText) {
                 btnNext.enableIf(isDataValid())
-                viewModel.sendCodePhoneRequest.phone = phoneEditText.text?.toString()?.replacePhone() ?: ""
+                viewModel.sendCodePhoneRequest.phone =
+                    phoneEditText.text?.toString()?.replacePhone() ?: ""
             })
             nickEditText.addTextChangedListener(object : EasyTextWatcher() {
                 override fun afterTextChanged(s: Editable?) {
@@ -75,11 +95,6 @@ class RegistrationUserDataFragment : Fragment() {
                 }
             })
             passwordEditText.addTextChangedListener(object : EasyTextWatcher() {
-                override fun afterTextChanged(s: Editable?) {
-                    btnNext.enableIf(isDataValid())
-                }
-            })
-            rePasswordEditText.addTextChangedListener(object : EasyTextWatcher() {
                 override fun afterTextChanged(s: Editable?) {
                     btnNext.enableIf(isDataValid())
                     viewModel.sendCodePhoneRequest.password = s.toString()
@@ -102,12 +117,12 @@ class RegistrationUserDataFragment : Fragment() {
         binding.phoneEditText.isNotEmpty() &&
                 binding.nickEditText.isNotEmpty() &&
                 (binding.passwordEditText.isNotEmpty() && isPasswordValid(
-                    binding.passwordEditText.text.toString(),
-                    binding.rePasswordEditText.text.toString()
-                ))
+                    binding.passwordEditText.text.toString()
+                )) &&
+                binding.cbPersonalDate.isChecked
 
 
-    private fun isPasswordValid(password: String, confirmPassword: String): Boolean {
+    private fun isPasswordValid(password: String): Boolean {
         if (password.length < MIN_PASSWORD_LENGTH) {
             return false
         }
@@ -115,9 +130,7 @@ class RegistrationUserDataFragment : Fragment() {
         val containsDigit = password.any { it.isDigit() }
         val containsUpperCase = password.any { it.isUpperCase() }
         val containsLowerCase = password.any { it.isLowerCase() }
-        val isPasswordValid = containsDigit && containsUpperCase && containsLowerCase
-        val isConfirmationMatch = password == confirmPassword
 
-        return isPasswordValid && isConfirmationMatch
+        return containsDigit && containsUpperCase && containsLowerCase
     }
 }

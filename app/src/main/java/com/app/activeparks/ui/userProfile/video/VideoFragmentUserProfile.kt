@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.activeparks.MainActivity
+import com.app.activeparks.util.extention.gone
+import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.databinding.FragmentUserProfileVideoBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -44,7 +46,12 @@ class VideoFragmentUserProfile : Fragment() {
         with(viewModel) {
             userVideos.observe(viewLifecycleOwner) {
                 it?.items?.let { videos ->
-                    adapter.list.submitList(videos)
+                    if (videos.isNotEmpty()) {
+                        adapter.list.submitList(videos)
+                        binding.tvNoVideo.gone()
+                    } else {
+                        binding.tvNoVideo.visible()
+                    }
                 }
             }
         }

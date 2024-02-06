@@ -14,7 +14,7 @@
     <item
         android:id="@+id/navBlogHomeUser"
         android:icon="@drawable/ic_home_blog"
-        android:title="@string/tv_menu_blog" />
+        android:title="@string/tv_menu_blogs" />
 
     <item
         android:id="@+id/navClubHomeUser"
