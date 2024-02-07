@@ -43,6 +43,10 @@ data class ItemEvent(
     @Expose
     var holdingStatusId: String? = null,
 
+    @SerializedName("holding_status_id")
+    @Expose
+    var holdingStatusIdNew: String? = null,
+
     var holdingStatusText: String? = null,
 
     @SerializedName("imageUrl")
@@ -72,6 +76,17 @@ data class ItemEvent(
     @SerializedName("startsAt")
     @Expose
     var startsAt: String? = null,
+
+    @SerializedName("starts_at")
+    @Expose
+    var startsAtNew: String? = null,
+
+    @SerializedName("finishes_at")
+    @Expose
+    var finishesAtNew: String? = null,
+
+
+
 
     @SerializedName("finishesAt")
     @Expose

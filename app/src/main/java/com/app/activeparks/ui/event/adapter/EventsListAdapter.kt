@@ -58,7 +58,7 @@ class EventsListAdapter(
                 EventTypes.ONLINE_TRAINING.type -> tvDescription.text =context.getString(R.string.online_training)
             }
 
-            when(item.holdingStatusId){
+            when(item.holdingStatusIdNew){
                 EventTypes.EVENTS_DURING.type -> tvTitle.text =context.getString(R.string.event_during)
                 EventTypes.EVENT_HAS_NOT_STARTED.type -> tvTitle.text =context.getString(R.string.event_has_not_started)
                 EventTypes.EVENT_FINISHED.type -> tvTitle.text =context.getString(R.string.event_finished)
@@ -77,6 +77,8 @@ class EventsListAdapter(
             }
 
             tvStartPoint.text = item.startAdressPoint
+            tvStartPoint.text = item.title
+            date.text = item.startsAtNew
 
         }
     }
