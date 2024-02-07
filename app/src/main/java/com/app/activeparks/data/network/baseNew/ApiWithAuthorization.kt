@@ -141,6 +141,12 @@ interface ApiWithAuthorization {
         @Query("filters[startsTo]") startsTo: String?,
     ): Response<EventResponse>
 
+    @GET("/api/v1/sport-events/{id}")
+    suspend fun getEventDetails(
+        @Path("id") id: String?
+    ): Response<ItemEvent>
+
+
     @POST("/api/v1/sport-events/")
     suspend fun createEmptyEvent(): Response<ItemEvent>
 

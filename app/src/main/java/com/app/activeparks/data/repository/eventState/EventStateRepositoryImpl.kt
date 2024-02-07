@@ -50,4 +50,8 @@ class EventStateRepositoryImpl(
 
     }
 
+    override suspend fun getEventDetails(id: String): ItemEvent? {
+        return networkManager.getEventDetails(id)
+    }
+
 }

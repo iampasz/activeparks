@@ -18,10 +18,10 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.ui.event.interfaces.EventScannerListener
 import com.app.activeparks.ui.event.util.EventTypes
 import com.app.activeparks.ui.event.viewmodel.EventViewModel
+import com.app.activeparks.ui.homeWithUser.fragments.event.HomeEventsViewModel
 import com.app.activeparks.ui.participants.ParticipantsViewModel
 import com.app.activeparks.ui.qr.QrCodeActivity
 import com.app.activeparks.ui.routepoint.RoutePointFragment
@@ -46,6 +46,7 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
     private lateinit var joinItem: MenuItem
 
     private val eventViewModel: EventViewModel by activityViewModel()
+    private val homeEventsViewModel: HomeEventsViewModel by activityViewModel()
     private val participantViewModel: ParticipantsViewModel by activityViewModel()
 
     private var mapsViewController: MapsViewController? = null
@@ -67,8 +68,6 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
     @SuppressLint("UseCompatLoadingForDrawables", "SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
 
         update()
         initNavigation()
@@ -150,6 +149,8 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
         eventViewModel.setCurrentId(eventId)
         eventViewModel.getUpdateEvent()
         eventViewModel.meetingRecords()
+
+        homeEventsViewModel.getEventDetails(eventId)
     }
 
     override fun onRefresh() {
@@ -203,19 +204,24 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
 
     @SuppressLint("SetTextI18n", "UseCompatLoadingForDrawables")
     private fun observe(){
-        eventViewModel.eventDetails.observe(
+
+
+        eventViewModel.location.observe(
             viewLifecycleOwner
-        ) { events: ItemEvent ->
+        ) { location: String? ->
+            binding.address.text = location
+        }
 
+        homeEventsViewModel.eventData.observe(viewLifecycleOwner){eventData ->
             try {
-                Glide.with(this).load(events.imageUrl).error(R.drawable.ic_prew)
+                Glide.with(this).load(eventData.imageUrl).error(R.drawable.ic_prew)
                     .into(binding.include.photo)
-                binding.include.nameEvent.text = events.title
+                binding.include.nameEvent.text = eventData.title
 
-                events.sportsground?.title?.let { title ->
+                eventData.sportsground?.title?.let { title ->
                     binding.include.typeEvent.text = title
                 } ?: run {
-                    events.routePoints?.takeIf { it.isNotEmpty() }?.let {
+                    eventData.routePoints?.takeIf { it.isNotEmpty() }?.let {
                         val lat = eventViewModel.address.location[0]
                         val lon = eventViewModel.address.location[1]
                         eventViewModel.location(lat, lon)
@@ -227,7 +233,7 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                     }
                 }
 
-                events.timeZoneDifference?.let { difference ->
+                eventData.timeZoneDifference?.let { difference ->
                     startTimer(difference)
                 }
 
@@ -235,7 +241,7 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                 @SuppressLint("SimpleDateFormat") val format =
                     SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 try {
-                    val date = events.startsAt?.let { format.parse(it) }
+                    val date = eventData.startsAt?.let { format.parse(it) }
                     binding.include.date.text = date?.let {
                         SimpleDateFormat(
                             "dd MMMM yyyy",
@@ -246,8 +252,8 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                     e.printStackTrace()
                 }
 
-                events.startsAt?.let { startsAt ->
-                    events.finishesAt?.let { finishesAt ->
+                eventData.startsAt?.let { startsAt ->
+                    eventData.finishesAt?.let { finishesAt ->
                         val startIndex = startsAt.length.coerceAtMost(startsAt.length - 3)
                         val endsIndex = finishesAt.length.coerceAtMost(finishesAt.length - 3)
                         val startsTime = startsAt.substring(11, startIndex)
@@ -257,8 +263,8 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                 }
 
 
-                binding.include.statusEvent.text = eventViewModel.statusMapper(events.holdingStatusId)
-                if (events.holdingStatusId?.contains(EventTypes.EVENTS_DURING.type) == true
+                binding.include.statusEvent.text = eventViewModel.statusMapper(eventData.holdingStatusId)
+                if (eventData.holdingStatusId?.contains(EventTypes.EVENTS_DURING.type) == true
                 ) {
                     binding.include.greanSquare.background =
                         resources.getDrawable(
@@ -267,14 +273,14 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                         )
                 }
 
-                if (events.typeId?.contains(EventTypes.ROUTE_TRAINING.type) == true
+                if (eventData.typeId?.contains(EventTypes.ROUTE_TRAINING.type) == true
                 ) {
                     mapsViewController?.setMarker(
                         eventViewModel.address.location[0],
                         eventViewModel.address.location[1]
                     )
 
-                } else if (events.typeId
+                } else if (eventData.typeId
                         ?.contains(EventTypes.SIMPLE_TRAINING.type) == true
                 ) {
                     mapsViewController?.setMarker(
@@ -283,7 +289,7 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                     )
                 }
 
-                events.eventUser?.let { eventUser ->
+                eventData.eventUser?.let { eventUser ->
                     joinItem.title = if (eventUser.isApproved) {
                         getString(R.string.leave)
                     } else {
@@ -292,24 +298,15 @@ class EventFragment : Fragment(), EventScannerListener, Html.ImageGetter,
                 } ?: run {
                     joinItem.title = getString(R.string.join)
                 }
-
-
             } catch (ignored: Exception) {
             }
 
-            events.memberAmount?.let { memberAmount ->
+            eventData.memberAmount?.let { memberAmount ->
                 if (memberAmount > 1) {
                     binding.include.gCounter.visible()
                     binding.include.counterText.text = "+${memberAmount - 1}"
                 }
             }
-
-        }
-
-        eventViewModel.location.observe(
-            viewLifecycleOwner
-        ) { location: String? ->
-            binding.address.text = location
         }
     }
 }

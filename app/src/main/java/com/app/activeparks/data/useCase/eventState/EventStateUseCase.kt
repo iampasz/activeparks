@@ -15,4 +15,6 @@ interface EventStateUseCase {
     suspend fun createEmptyEvent(): ItemEvent?
     suspend fun setDataEvent(id:String, itemEvent: ItemEvent): Boolean?
     suspend fun getEventsForDate(startData:String, endData: String): EventResponse?
+    suspend fun getEventDetails(id:String): ItemEvent?
+
 }
