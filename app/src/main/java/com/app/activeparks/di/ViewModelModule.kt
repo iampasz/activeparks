@@ -67,7 +67,7 @@ val viewModelModule = module {
     viewModel { HomeBlogViewModel(get()) }
     viewModel { HomeLocationViewModel(get()) }
     viewModel { HomeClubsViewModel(get()) }
-    viewModel { HomeEventsViewModel(get(), get()) }
+    viewModel { HomeEventsViewModel(get()) }
     viewModel { RegistrationViewModel(get(), androidContext()) }
 
     viewModel { EventViewModel(get()) }
