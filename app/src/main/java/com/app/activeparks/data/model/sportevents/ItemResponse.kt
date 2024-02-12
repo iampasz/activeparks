@@ -19,6 +19,9 @@ data class ItemResponse(
 	@field:SerializedName("title")
 	val title: String,
 
+	@field:SerializedName("typeId")
+	val typeId: String,
+
 	@field:SerializedName("qrCodeEvent")
 	val qrCodeEvent: String,
 

@@ -15,7 +15,7 @@ import com.app.activeparks.ui.news.util.NewsTypes
 import com.app.activeparks.util.LoadImage
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.removeFragment
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentBlogBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Suppress("DEPRECATION")
-class BlogFragment : Fragment(),  Html.ImageGetter {
+class BlogFragment : Fragment(), Html.ImageGetter {
 
     private lateinit var binding: FragmentBlogBinding
     private val blogViewModel: BlogViewModel by viewModel()
@@ -40,8 +40,6 @@ class BlogFragment : Fragment(),  Html.ImageGetter {
         blogId = arguments?.getString(NewsTypes.NEWS_ID.type, "") ?: ""
         clubId = arguments?.getString(NewsTypes.CLUB_ID.type, "") ?: ""
 
-
-
         binding = FragmentBlogBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -49,14 +47,8 @@ class BlogFragment : Fragment(),  Html.ImageGetter {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(clubId.isEmpty()){
-            blogViewModel.getNewsDetails(blogId)
-        }else{
-            blogViewModel.getClubNewsDetails(clubId, blogId)
-        }
-
-        onClick()
-        initView()
+        update()
+        initListener()
         observe()
     }
 
@@ -66,7 +58,11 @@ class BlogFragment : Fragment(),  Html.ImageGetter {
         blogViewModel.newsDetails.observe(viewLifecycleOwner) { news ->
 
             if (news.imageUrl.isNotEmpty()) {
-                Picasso.get().load(news.imageUrl).into(binding.include.photo)
+                Glide
+                    .with(binding.include.photo.context)
+                    .load(news.imageUrl)
+                    .error(R.drawable.ic_prew)
+                    .into(binding.include.photo)
             } else {
                 binding.include.photo.gone()
             }
@@ -83,23 +79,26 @@ class BlogFragment : Fragment(),  Html.ImageGetter {
             try {
                 val date = format.parse(news.publishedAt)
                 binding.include.date.text = (
-                    "Опубліковано: " + date?.let {
-                        SimpleDateFormat(
-                            "dd MMMM yyyy",
-                            Locale("uk", "UA")
-                        ).format(it)
-                    }
-                )
+                        "Опубліковано: " + date?.let {
+                            SimpleDateFormat(
+                                "dd MMMM yyyy",
+                                Locale("uk", "UA")
+                            ).format(it)
+                        }
+                        )
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
         }
 
-        blogViewModel.newsClubDetails.observe(viewLifecycleOwner){
-
-                news ->
-            Picasso.get().load(news.photo).into(binding.include.photo)
-
+        blogViewModel.newsClubDetails.observe(viewLifecycleOwner) {news ->
+            news?.photo?.let {
+                Glide
+                    .with(binding.include.photo.context)
+                    .load(news.photo)
+                    .error(R.drawable.ic_prew)
+                    .into(binding.include.photo)
+            }
             var web =
                 "<html><head><LINK href=\"https://ap.sportforall.gov.ua/images/index.css\" rel=\"stylesheet\"/></head><body>" + news.body + "</body></html>"
             web = web.replace("<img ", "<br><img ").replace("<img>", "")
@@ -121,15 +120,10 @@ class BlogFragment : Fragment(),  Html.ImageGetter {
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
-
         }
     }
 
-    private fun initView() {
-
-    }
-
-    private fun onClick() {
+    private fun initListener() {
         binding.close.setOnClickListener {
             parentFragmentManager.removeFragment(this)
         }
@@ -146,5 +140,13 @@ class BlogFragment : Fragment(),  Html.ImageGetter {
             binding.html.text = t
         }.execute(source, d)
         return d
+    }
+
+    private fun update(){
+        if (clubId.isEmpty()) {
+            blogViewModel.getNewsDetails(blogId)
+        } else {
+            blogViewModel.getClubNewsDetails(clubId, blogId)
+        }
     }
 }

@@ -13,7 +13,7 @@ import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.mainAddFragment
 import com.app.activeparks.util.extention.visible
 import com.technodreams.activeparks.databinding.FragmentHomeEventsBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class HomeEventsFragment : Fragment() {
 
@@ -25,7 +25,7 @@ class HomeEventsFragment : Fragment() {
         eventFragment.arguments = bundle
         mainAddFragment((requireActivity() as MainActivity), eventFragment)
     }
-    private val viewModel: HomeEventsViewModel by viewModel()
+    private val viewModel: HomeEventsViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,11 +38,14 @@ class HomeEventsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getEvents()
+        update()
         initView()
         initListener()
-        observe()
+        initObserve()
+    }
 
+    fun update(){
+        viewModel.getEvents()
     }
 
     private fun initListener() {
@@ -53,7 +56,7 @@ class HomeEventsFragment : Fragment() {
         }
     }
 
-    private fun observe() {
+    private fun initObserve() {
         with(viewModel) {
             eventList.observe(viewLifecycleOwner) { response ->
                 binding.pbEvents.gone()

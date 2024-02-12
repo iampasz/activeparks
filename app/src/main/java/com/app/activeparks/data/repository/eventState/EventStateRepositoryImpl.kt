@@ -45,4 +45,13 @@ class EventStateRepositoryImpl(
         return networkManager.setDataEvent(id, itemEvent)
     }
 
+    override suspend fun getEventsForDate(startData: String, endData: String): EventResponse? {
+        return networkManager.getEventsForDate(startData, endData)
+
+    }
+
+    override suspend fun getEventDetails(id: String): ItemEvent? {
+        return networkManager.getEventDetails(id)
+    }
+
 }

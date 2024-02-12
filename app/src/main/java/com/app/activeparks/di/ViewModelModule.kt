@@ -18,6 +18,7 @@ import com.app.activeparks.ui.homeWithUser.fragments.location.HomeLocationViewMo
 import com.app.activeparks.ui.news.BlogViewModel
 import com.app.activeparks.ui.news.NewsViewModel
 import com.app.activeparks.ui.participants.ParticipantsViewModel
+import com.app.activeparks.ui.participants.ParticipantsViewModelOld
 import com.app.activeparks.ui.profile.ProfileViewModel
 import com.app.activeparks.ui.registration.RegistrationViewModel
 import com.app.activeparks.ui.registration.fragments.forgotPassword.ForgotPasswordViewModel
@@ -66,10 +67,11 @@ val viewModelModule = module {
     viewModel { HomeBlogViewModel(get()) }
     viewModel { HomeLocationViewModel(get()) }
     viewModel { HomeClubsViewModel(get()) }
-    viewModel { HomeEventsViewModel(get(), get()) }
+    viewModel { HomeEventsViewModel(get()) }
     viewModel { RegistrationViewModel(get(), androidContext()) }
 
     viewModel { EventViewModel(get()) }
+    viewModel { ParticipantsViewModelOld(get()) }
     viewModel { ParticipantsViewModel(get()) }
     viewModel { MainEventViewModel(get(),get(),get()) }
     viewModel { ClubsViewModelKT(get()) }

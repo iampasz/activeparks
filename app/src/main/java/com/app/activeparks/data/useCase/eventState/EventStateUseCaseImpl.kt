@@ -39,6 +39,14 @@ class EventStateUseCaseImpl(
         return repository.setDataEvent(id, itemEvent)
     }
 
+    override suspend fun getEventsForDate(startData: String, endData: String): EventResponse? {
+        return repository.getEventsForDate(startData, endData)
+    }
+
+    override suspend fun getEventDetails(id: String): ItemEvent? {
+        return repository.getEventDetails(id)
+
+    }
 
 
 }

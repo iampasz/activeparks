@@ -24,13 +24,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.ViewHolder> {
+public class EventsListAdaperOld extends RecyclerView.Adapter<EventsListAdaperOld.ViewHolder> {
 
     private final List<ItemEvent> list;
     private final LayoutInflater inflater;
     private EventsListener eventListener;
 
-    public EventsListAdaper(Context context, List<ItemEvent> list){
+    public EventsListAdaperOld(Context context, List<ItemEvent> list){
         this.inflater = LayoutInflater.from(context);
         this.list = list;
     }
@@ -149,7 +149,7 @@ public class EventsListAdaper extends RecyclerView.Adapter<EventsListAdaper.View
         void onOpenMaps(double lat, double lon);
     }
 
-    public EventsListAdaper setOnEventListener(EventsListener eventListener){
+    public EventsListAdaperOld setOnEventListener(EventsListener eventListener){
         this.eventListener = eventListener;
         return this;
     }

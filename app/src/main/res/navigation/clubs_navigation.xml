@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/nav_club_blog"
-        android:name="com.app.activeparks.ui.homeWithUser.fragments.blog.HomeBlogFragment"
+        android:name="com.app.activeparks.ui.clubs.fragments.ClubsBlogListFragment"
         android:label="@string/tv_menu_blog"
         tools:layout="@layout/fragment_home_blog" />
 

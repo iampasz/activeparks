@@ -1,4 +1,4 @@
-package com.app.activeparks.ui.event.activity
+package com.app.activeparks.ui.clubs.fragments
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -7,7 +7,6 @@ import android.graphics.drawable.LevelListDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -22,10 +21,11 @@ import com.app.activeparks.data.model.clubs.UserInviteDeclaration
 import com.app.activeparks.data.storage.Preferences
 import com.app.activeparks.ui.clubs.ClubsViewModelKT
 import com.app.activeparks.ui.event.interfaces.EventScannerListener
+import com.app.activeparks.ui.participants.ParticipantsViewModel
 import com.app.activeparks.util.extention.gone
 import com.app.activeparks.util.extention.removeFragment
 import com.app.activeparks.util.extention.visible
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.FragmentClubBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -37,15 +37,15 @@ import java.util.Locale
 class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
     SwipeRefreshLayout.OnRefreshListener {
 
+    lateinit var binding: FragmentClubBinding
+
     private lateinit var eventMenu: Menu
     private lateinit var joinItem: MenuItem
-
     private val clubsViewModelKT: ClubsViewModelKT by activityViewModel()
-    lateinit var binding: FragmentClubBinding
+    private val participantsViewModel: ParticipantsViewModel by activityViewModel()
+
     var clubId = ""
-
-    var userInClub = false
-
+    private var userInClub = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +56,7 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
             .inflate(inflater, container, false)
 
         clubId = arguments?.getString("CLUB_ID", "") ?: ""
+        clubsViewModelKT.currentClubId.value = clubId
 
         return binding.root
     }
@@ -64,40 +65,29 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        eventMenu = binding.navView.menu
-        joinItem = eventMenu.findItem(R.id.nav_club_join)
-
-        binding.swipeRefreshLayout.setOnRefreshListener(this)
-
-        initNavigation()
-
-        binding.close.setOnClickListener {
-            onBackPressed()
-        }
-
-
-        onClick()
-        clubsViewModelKT.getClubsDetails(clubId)
-        initClickListener()
+        update()
+        initView()
+        initListener()
         observe()
     }
 
+    private fun initListener() {
+        val inviteToClubString = getString(R.string.invite_to_club)
+        val eventNameString = binding.include.nameEvent.text.toString()
+        val linkString = "https://ap.sportforall.gov.ua/fc-events/0/$clubId"
+        val joinToUsString = getString(R.string.join_to_us)
 
-    private fun initClickListener() {
         binding.share.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/plain"
             intent.putExtra(
-                Intent.EXTRA_SUBJECT,
-                "Хочу тебе запросити до заходу \"" + binding.include.nameEvent.text
-                    .toString() + "\""
-            )
-            intent.putExtra(
                 Intent.EXTRA_TEXT,
-                "Хочу тебе запросити до заходу \"" + binding.include.nameEvent.text
-                    .toString() + "\" \n\n https://ap.sportforall.gov.ua/fc-events/0/" + clubId + "\n\nПриєднуйся до нас! Та оздоровлюйся разом зі мною! \n\nРозроблено на завдання президента України для проекту “Активні парки”"
+                "$inviteToClubString  $eventNameString $linkString $joinToUsString"
             )
             startActivity(Intent.createChooser(intent, getString(R.string.app_name)))
+        }
+        binding.close.setOnClickListener {
+            parentFragmentManager.removeFragment(this@ClubFragment)
         }
     }
 
@@ -111,19 +101,23 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
     }
 
     override fun update() {
+        participantsViewModel.id = clubId
+        participantsViewModel.isEvent = false
         clubsViewModelKT.getClubsDetails(clubId)
-    }
-
-    private fun onBackPressed() {
-        parentFragmentManager.removeFragment(this@ClubFragment)
+        clubsViewModelKT.getClubNewsList(clubId)
+        clubsViewModelKT.getClubsDetails(clubId)
     }
 
     override fun onRefresh() {
-        binding.swipeRefreshLayout.setRefreshing(false)
+        binding.swipeRefreshLayout.isRefreshing = false
         clubsViewModelKT.getClubsDetails(clubId)
     }
 
-    private fun initNavigation() {
+    private fun initView() {
+
+        eventMenu = binding.navView.menu
+        joinItem = eventMenu.findItem(R.id.nav_club_join)
+        binding.swipeRefreshLayout.setOnRefreshListener(this)
 
         val navHostFragment =
             childFragmentManager.findFragmentById(R.id.nav_host_clubs) as NavHostFragment
@@ -143,41 +137,50 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
 
                     if (userInClub) {
                         clubsViewModelKT.getRejectUser(clubId, userInviteDeclaration)
-                        Log.i("TAG_JOIN_THE_CLUB","${userInClub} Користувача учасник клубу. Надсилаємо заявку на вихід з клубу")
                     } else {
                         clubsViewModelKT.getApplyUser(clubId, userInviteDeclaration)
-                        Log.i("TAG_JOIN_THE_CLUB","${userInClub} Користувача в клубі немає. Надсилаємо заявку на вступ")
                     }
                 }
             }
             true
         }
-    }
 
+    }
 
     private fun observe() {
 
         clubsViewModelKT.clubDetails.observe(viewLifecycleOwner) { clubs ->
 
-            Picasso.get().load(clubs.logoUrl).into(binding.include.photo)
+            clubs?.logoUrl?.let {
+                Glide
+                    .with(binding.include.photo.context)
+                    .load(clubs.logoUrl)
+                    .error(R.drawable.ic_prew)
+                    .into(binding.include.photo) }
+
+
+            clubs?.logoUrl?.let {
+                Glide
+                    .with(binding.include.photo.context)
+                    .load(clubs.logoUrl)
+                    .error(R.drawable.ic_prew)
+                    .into(binding.include.photo) }
+
+
             binding.countParticipant.text = clubs.memberAmount.toString()
             binding.description.text = clubs.description
             binding.include.nameEvent.text = clubs.name
 
-
             @SuppressLint("SimpleDateFormat") val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             try {
                 val date = format.parse(clubs.createdAt)!!
-                binding.createdDate.setText(
-                    SimpleDateFormat(
-                        "dd MMMM yyyy",
-                        Locale("uk", "UA")
-                    ).format(date)
-                )
+                binding.createdDate.text = SimpleDateFormat(
+                    "dd MMMM yyyy",
+                    Locale("uk", "UA")
+                ).format(date)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
-
 
             if (clubs.instagramUrl != null) {
                 binding.circleInstagram.visible()
@@ -220,61 +223,32 @@ class ClubFragment : Fragment(), EventScannerListener, Html.ImageGetter,
             }
 
             if (clubs.clubUser != null) {
-                Log.i("TAG_JOIN_THE_CLUB","${clubs.clubUser} Користувач учасник клубу")
                 joinItem.title = getString(R.string.cansel)
                 userInClub = true
             } else {
-                Log.i("TAG_JOIN_THE_CLUB","${clubs.clubUser} Користувача в клубі немає")
                 joinItem.title = getString(R.string.join)
                 userInClub = false
             }
         }
 
         clubsViewModelKT.requestToEntry.observe(viewLifecycleOwner) { result ->
-            Log.i("TAG_JOIN_THE_CLUB","Прийшла відповідь запиту на приєднання до клубу")
             if (result) {
                 joinItem.title = getString(R.string.cansel)
                 userInClub = true
-                Log.i("TAG_JOIN_THE_CLUB","Відповідь $result заявка надіслана")
             } else {
                 joinItem.title = getString(R.string.join)
                 userInClub = false
-                Log.i("TAG_JOIN_THE_CLUB","Відповідь $result заявка вже була надіслана")
             }
         }
 
         clubsViewModelKT.requestToCansel.observe(viewLifecycleOwner) { result ->
-            Log.i("TAG_JOIN_THE_CLUB","Прийшла відповідь запиту на відміну заявки до клубу")
             if (result) {
                 joinItem.title = getString(R.string.join)
-                Log.i("TAG_JOIN_THE_CLUB","Відповідь $result ви вийшли з клубу")
                 userInClub = false
             } else {
                 joinItem.title = getString(R.string.cansel)
-                Log.i("TAG_JOIN_THE_CLUB","Відповідь $result ви вже вийшли з клубу")
             }
         }
-    }
-
-    private fun onClick() {
-        binding.share.setOnClickListener {
-            shareClub()
-        }
-    }
-
-    private fun shareClub() {
-        val intent = Intent(Intent.ACTION_SEND)
-        intent.type = "text/plain"
-        intent.putExtra(
-            Intent.EXTRA_SUBJECT,
-            "Хочу тебе запросити до клубу \"" + binding.include.nameEvent.text.toString() + "\""
-        )
-        intent.putExtra(
-            Intent.EXTRA_TEXT,
-            "Хочу тебе запросити до клубу \"" + binding.include.nameEvent.text
-                .toString() + "\"  \n\n" + "https://ap.sportforall.gov.ua/fc/" + clubId + " \n\nПриєднуйся до нас! Та оздоровлюйся разом з нами! \n\nРозроблено на завдання президента України для проекту “Активні парки” "
-        )
-        startActivity(Intent.createChooser(intent, getString(R.string.app_name)))
     }
 
     override fun onResume() {

@@ -11,6 +11,7 @@ import com.app.activeparks.data.model.dictionaries.District;
 import com.app.activeparks.data.model.user.User;
 import com.app.activeparks.data.model.user.UserParticipants;
 import com.app.activeparks.data.storage.Preferences;
+import com.app.activeparks.ui.participants.util.ParticipantsTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class ParticipantsViewModel extends ViewModel {
+public class ParticipantsViewModelOld extends ViewModel {
 
     private final Preferences sharedPreferences;
     private final Repository repository;
@@ -33,7 +34,7 @@ public class ParticipantsViewModel extends ViewModel {
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public ParticipantsViewModel(Preferences sharedPreferences)   {
+    public ParticipantsViewModelOld(Preferences sharedPreferences)   {
         this.sharedPreferences = sharedPreferences;
         this.repository = new Repository(sharedPreferences);
     }
@@ -63,12 +64,7 @@ public class ParticipantsViewModel extends ViewModel {
         Disposable getEventUser = repository.getEventUser(id, type).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-
-                            Log.i("VIEWMODELINPART", type+"  type");
-
                             if (type) {
-                                Log.i("VIEWMODELINPART", result+"  result");
-                                Log.i("VIEWMODELINPART", userMapper(result)+"  userMapper(result)");
                                 mUserClubsHeads.setValue(userMapper(result));
                                 getEventUser(id, false);
                             }else {
@@ -149,44 +145,44 @@ public class ParticipantsViewModel extends ViewModel {
 
     ///EVENT
     public void acceptEventUser(String id, String user){
-        eventApplyingRequest(id, user, "accept");
+        eventApplyingRequest(id, user, ParticipantsTypes.ACCEPT.getType());
     }
 
     public void rejectEventUser(String id, String user){
-        eventApplyingRequest(id, user, "reject");
+        eventApplyingRequest(id, user, ParticipantsTypes.REJECT.getType());
     }
 
     public void leavetEventUser(String id, String user){
-        eventApplyingRequest(id, user, "leave");
+        eventApplyingRequest(id, user, ParticipantsTypes.LEAVE.getType());
     }
 
     public void eventSetActing(String id, String user){
-        eventApplyingRequest(id, user, "set-acting");
+        eventApplyingRequest(id, user, ParticipantsTypes.SET_ACTION.getType());
     }
 
     public void eventRemoveActing(String id, String user){
-        eventApplyingRequest(id, user, "remove-acting");
+        eventApplyingRequest(id, user, ParticipantsTypes.REMOVE_ACTION.getType());
     }
 
     ///CLUB
     public void acceptClubUser(String id, String user){
-        clubsApplyingRequest(id, user, "approve-user");
+        clubsApplyingRequest(id, user, ParticipantsTypes.APPROVE_USER.getType());
     }
 
     public void rejectClubUser(String id, String user){
-        clubsApplyingRequest(id, user, "reject-user");
+        clubsApplyingRequest(id, user, ParticipantsTypes.REJECT_USER.getType());
     }
 
     public void removeClubUser(String id, String user){
-        clubsApplyingRequest(id, user, "remove-user");
+        clubsApplyingRequest(id, user, ParticipantsTypes.REMOVE_USER.getType());
     }
 
     public void clubSetActing(String id, String user){
-        clubsApplyingRequest(id, user, "set-acting");
+        clubsApplyingRequest(id, user, ParticipantsTypes.SET_ACTION.getType());
     }
 
     public void clubRemoveActing(String id, String user){
-        clubsApplyingRequest(id, user, "remove-acting");
+        clubsApplyingRequest(id, user, ParticipantsTypes.REMOVE_ACTION.getType());
     }
 
     public void clubsApplyingRequest(String id, String user, String type){
@@ -206,13 +202,9 @@ public class ParticipantsViewModel extends ViewModel {
         compositeDisposable.add(eventApplyingRequest);
     }
 
-
-
-
     public UserParticipants userMapper(UserParticipants user){
         List<User> mUsertItem = new ArrayList<>();
         List<District> district = sharedPreferences.getDictionarie().getDistricts();
-        //List<Region> region = sharedPreferences.getDictionarie().getRegions();
         for (User u : user.getItems()) {
             for (District d : district) {
                 if (u.getDistrictId() != null && u.getDistrictId().equals(d.getId())) {

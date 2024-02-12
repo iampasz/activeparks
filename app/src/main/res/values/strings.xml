@@ -385,6 +385,13 @@
     <string name="tv_pause_mode">Режим паузи</string>
     <string name="tv_add_30_photos">Оберіть до 30 фото, які будуть відображатись в галереї</string>
     <string name="tv_add_max_photo_count">Ви додали максимальну кількість фото</string>
+    <string name="invite_to_event">Хочу тебе запросити до заходу</string>
+    <string name="invite_to_club">Хочу тебе запросити до клубу</string>
+    <string name="join_to_us">Приєднуйся до нас! Та оздоровлюйся разом зі мною! Розроблено на завдання президента України для проекту “Активні парки”</string>
+
+    <string name="applications">Заявки</string>
+    <string name="organizers">Організатори</string>
+    <string name="information_no_available">Інформація відсутня</string>
     <string name="tv_welcome_text">Долучіться до нашої спільноти, зареєструйтесь та отримайте повний функціонал</string>
     <string name="tv_personal_user_date"><![CDATA[<font color="#FFFFFF">Даю згоду на</font> <u><font color="#C5E505">передачу та обробку персональних данних</font></u>]]></string>
     <string name="tv_imt_title">ІМТ</string>
@@ -404,5 +411,9 @@
     <string name="tv_no_added_video">Не додали жодного відео</string>
     <string name="tv_imt_default">Індекс маси тіла</string>
 
+
+    <string name="event_finished">Захід закінчився</string>
+    <string name="event_during">Захід йде</string>
+    <string name="event_has_not_started">Захід ще не почався</string>
 
 </resources>

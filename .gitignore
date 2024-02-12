@@ -53,3 +53,4 @@ file-system.probe
 
 build.gradle
 .local.properties
+/app/src/main/java/com/app/activeparks/ui/clubs/fragments/mjs2.json

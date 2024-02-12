@@ -1,7 +1,6 @@
 package com.app.activeparks.data.network
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import com.app.activeparks.data.model.Default
 import com.app.activeparks.data.model.activity.ActivityItemResponse
@@ -41,6 +40,7 @@ import com.app.activeparks.data.model.uservideo.UserVideoItem
 import com.app.activeparks.data.model.uservideo.VideosResponse
 import com.app.activeparks.data.model.track.ListTrackResponse
 import com.app.activeparks.data.model.track.TrackResponse
+import com.app.activeparks.data.model.user.UserParticipants
 import com.app.activeparks.data.model.weather.WeatherResponse
 import com.app.activeparks.data.network.baseNew.ApiWithAuthorization
 import com.app.activeparks.data.network.baseNew.ApiWithOutAuthorization
@@ -338,6 +338,24 @@ class NetworkManagerImpl(
         }
     }
 
+    override suspend fun getEventsForDate(startData: String, endData: String): EventResponse? {
+
+        val response = apiWithAuthorization.getEventsForDate(startData, endData)
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getEventDetails(id: String): ItemEvent? {
+        val response = apiWithAuthorization.getEventDetails(id)
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
+        }
+        return response.body()
+    }
+
     override suspend fun getClubList(): ClubListResponse? {
         val response = apiWithAuthorization.getClubList()
 
@@ -356,7 +374,7 @@ class NetworkManagerImpl(
         return response.body()
     }
 
-    override suspend fun getClubsDetails(id:String): ItemClub? {
+    override suspend fun getClubsDetails(id: String): ItemClub? {
         val response = apiWithAuthorization.getClubsDetails(id)
         if (!response.isSuccessful) {
             Toast.makeText(context, response.parseErrorBody().error, Toast.LENGTH_LONG).show()
@@ -401,6 +419,17 @@ class NetworkManagerImpl(
                 }
             })
         }
+    }
+
+    override suspend fun getClubNewsList(clubId: String): NewsListResponse? {
+
+        val response = apiWithAuthorization.getClubNewsList(clubId)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
     }
 
 
@@ -459,11 +488,8 @@ class NetworkManagerImpl(
     ): Default? {
         val random = (Math.random() * 200).toInt()
         val name = "file$random"
-
         val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
-
         val body = MultipartBody.Part.createFormData("file", file.name, requestBody)
-
         val filename = type.toRequestBody("text/plain".toMediaTypeOrNull())
 
         val response =
@@ -687,7 +713,7 @@ class NetworkManagerImpl(
         return response.body()
     }
 
-    override suspend fun addFavoriteRouteActive(id: String): Boolean?  {
+    override suspend fun addFavoriteRouteActive(id: String): Boolean? {
         val response = apiWithAuthorization.addFavoriteRouteActive(id)
 
         if (!response.isSuccessful) {
@@ -697,7 +723,7 @@ class NetworkManagerImpl(
         return response.body()
     }
 
-    override suspend fun removeFavoriteRouteActive(id: String): Boolean?  {
+    override suspend fun removeFavoriteRouteActive(id: String): Boolean? {
         val response = apiWithAuthorization.removeFavoriteRouteActive(id)
 
         if (!response.isSuccessful) {
@@ -740,7 +766,74 @@ class NetworkManagerImpl(
         if (!response.isSuccessful) {
             toast(context, response.parseErrorBody().message.toString())
         }
+        return response.body()
+    }
 
+    //Partisipants
+    override suspend fun getUserApplying(id: String): UserParticipants? {
+        val response = apiWithAuthorization.getUserApplying(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getClubUsers(id: String, userType: String): UserParticipants? {
+        val response = apiWithAuthorization.getClubUsers(id, userType)
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+        return response.body()
+    }
+
+    override suspend fun getHeadsClubUsers(id: String): UserParticipants? {
+        val response = apiWithAuthorization.getHeadsClubUsers(id)
+
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+        return response.body()
+    }
+
+    override suspend fun getApplyingClubUsers(id: String): UserParticipants? {
+        val response = apiWithAuthorization.getApplyingClubUsers(id)
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+        return response.body()
+    }
+
+    override suspend fun getMembersClubUsers(id: String): UserParticipants? {
+        val response = apiWithAuthorization.getMembersClubUsers(id)
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+        return response.body()
+    }
+
+    override suspend fun getHeadsEventUsers(id: String): UserParticipants? {
+        val response = apiWithAuthorization.getHeadsEventUsers(id)
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+        return response.body()
+    }
+
+    override suspend fun getApplyingEventUsers(id: String): UserParticipants? {
+        val response = apiWithAuthorization.getApplyingEventUsers(id)
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
+        return response.body()
+    }
+
+    override suspend fun getMembersEventUsers(id: String): UserParticipants? {
+        val response = apiWithAuthorization.getMembersEventUsers(id)
+        if (!response.isSuccessful) {
+            Toast.makeText(context, response.parseErrorBody().message, Toast.LENGTH_LONG).show()
+        }
         return response.body()
     }
 }

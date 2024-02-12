@@ -15,40 +15,32 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.app.activeparks.ui.participants.adapter.UsersAdaper;
 import com.app.activeparks.ui.people.UserActivity;
+import com.app.activeparks.util.extention.StringTypes;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.technodreams.activeparks.R;
 import com.technodreams.activeparks.databinding.FragmentUsersBinding;
 
+public class ParticipantsFragmentOld extends Fragment {
 
-public class ParticipantsFragment extends Fragment {
-
-    public ParticipantsFragment() {
+    public ParticipantsFragmentOld() {
     }
 
-    public ParticipantsFragment(String id, boolean isAdmin, boolean event) {
+    public ParticipantsFragmentOld(String id, boolean isAdmin, boolean event) {
         this.id = id;
         this.isAdmin = isAdmin;
         this.isEvent = event;
     }
 
     private FragmentUsersBinding binding;
-    private ParticipantsViewModel viewModel;
+    private ParticipantsViewModelOld viewModel;
     private String id = null;
     private Boolean isAdmin = false;
-    private Boolean isEvent = true;
-
+    private Boolean isEvent = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
-
-      //  EventViewModel eventVM = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
-
-       // id = eventVM.getCurrentId().getValue();
-        id = "";
-
         viewModel =
-                new ViewModelProvider(this, new ParticipantsModelFactory(getContext())).get(ParticipantsViewModel.class);
+                new ViewModelProvider(this, new ParticipantsModelFactory(getContext())).get(ParticipantsViewModelOld.class);
 
         binding = FragmentUsersBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -65,13 +57,10 @@ public class ParticipantsFragment extends Fragment {
             viewModel.getEventUser(id, true);
             if (isAdmin) {
                 viewModel.getEventUserApplying(id);
-
             }
         } else {
-
             viewModel.getClubsUser(id);
             if (isAdmin) {
-
                 viewModel.getClubsUserApplying(id);
             }
         }
@@ -83,7 +72,7 @@ public class ParticipantsFragment extends Fragment {
             binding.listHeads.setAdapter(new UsersAdaper(getActivity(), item.getItems(), true, isAdmin ? 1 : 0).setOnClubsListener(new UsersAdaper.UsersListener() {
                 @Override
                 public void onInfo(String id) {
-                    startActivity(new Intent(getActivity(), UserActivity.class).putExtra("id", id));
+                    startActivity(new Intent(getActivity(), UserActivity.class).putExtra(StringTypes.ID.getType(), id));
                 }
 
                 @Override
@@ -102,7 +91,7 @@ public class ParticipantsFragment extends Fragment {
             binding.listMembers.setAdapter(new UsersAdaper(getActivity(), item.getItems(), true, isAdmin ? 1 : 0).setOnClubsListener(new UsersAdaper.UsersListener() {
                 @Override
                 public void onInfo(String id) {
-                    startActivity(new Intent(getActivity(), UserActivity.class).putExtra("id", id));
+                    startActivity(new Intent(getActivity(), UserActivity.class).putExtra(StringTypes.ID.getType(), id));
                 }
 
                 @Override
@@ -122,7 +111,7 @@ public class ParticipantsFragment extends Fragment {
             binding.listApplying.setAdapter(new UsersAdaper(getActivity(), item.getItems(), true, isAdmin ? 2  : 0).setOnClubsListener(new UsersAdaper.UsersListener() {
                 @Override
                 public void onInfo(String id) {
-                    startActivity(new Intent(getActivity(), UserActivity.class).putExtra("id", id));
+                    startActivity(new Intent(getActivity(), UserActivity.class).putExtra(StringTypes.ID.getType(), id));
                 }
 
                 @Override
@@ -153,12 +142,12 @@ public class ParticipantsFragment extends Fragment {
 
         TextView updateAction = dialog.findViewById(R.id.update_action);
         assert updateAction != null;
-        updateAction.setText(type ? "Зняти організатора" : "Зробити організатором");
+        updateAction.setText(!type ? "Зробити організатором" : "Зняти організатора");
         updateAction.setOnClickListener(view -> {
-            if (type) {
-                viewModel.removeActing(id, userId);
-            } else {
+            if (!type) {
                 viewModel.setActing(id, userId);
+            }else {
+                viewModel.removeActing(id, userId);
             }
             dialog.dismiss();
             new Handler(Looper.getMainLooper()).postDelayed(this::update, 500);

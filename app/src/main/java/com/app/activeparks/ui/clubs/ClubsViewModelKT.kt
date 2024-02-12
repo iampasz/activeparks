@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.activeparks.data.model.clubs.ClubsCombinedResponse
 import com.app.activeparks.data.model.clubs.ItemClub
 import com.app.activeparks.data.model.clubs.UserInviteDeclaration
+import com.app.activeparks.data.model.news.NewsListResponse
 import com.app.activeparks.data.useCase.clubs.ClubsUseCase
 import kotlinx.coroutines.launch
 
@@ -17,6 +18,8 @@ class ClubsViewModelKT(
     val clubDetails = MutableLiveData<ItemClub>()
     val requestToEntry = MutableLiveData<Boolean>()
     val requestToCansel = MutableLiveData<Boolean>()
+    val newsClubList = MutableLiveData<NewsListResponse>()
+    val currentClubId = MutableLiveData<String>()
 
     fun getCombinatedClubList() {
         viewModelScope.launch {
@@ -61,6 +64,18 @@ class ClubsViewModelKT(
             }.onSuccess { response ->
                 response?.let {
                     requestToCansel.value = it
+                }
+            }
+        }
+    }
+
+    fun getClubNewsList(clubId:String) {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                clubsUseCase.getClubNewsList(clubId)
+            }.onSuccess { response ->
+                response?.let {
+                    newsClubList.value = it
                 }
             }
         }
