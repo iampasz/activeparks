@@ -9,11 +9,11 @@ import java.util.Locale
 class ChangeDateType {
     companion object {
 
-        fun currentDate(): String {
-            val currentDateTime = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-            return currentDateTime.format(formatter)
-        }
+//        fun currentDate(): String {
+//            val currentDateTime = LocalDateTime.now()
+//            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+//            return currentDateTime.format(formatter)
+//        }
 
         fun formatCurrentDate(): String? {
             val currentDateTime = LocalDateTime.now()
@@ -58,6 +58,15 @@ class ChangeDateType {
             val startDate = LocalDateTime.parse(startDateText, formatter)
             val endDate = LocalDateTime.parse(endDateText, formatter)
             return !endDate.isBefore(startDate)
+        }
+
+        fun parseNewDateFormat(date:String) : String? {
+
+            val inputDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault())
+            val outputDateFormat = SimpleDateFormat("dd/MM/yy | HH:mm", Locale.getDefault())
+            val parsedDate = inputDateFormat.parse(date)
+
+            return parsedDate?.let { outputDateFormat.format(it) }
         }
 
 
