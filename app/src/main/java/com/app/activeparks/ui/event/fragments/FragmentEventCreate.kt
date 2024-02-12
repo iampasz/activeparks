@@ -253,7 +253,6 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
 
                 when (position) {
                     0 -> {
-                        binding.openFullMap.visible()
                         currentTrainingType = EventTypes.SIMPLE_TRAINING.type
                         markerType = 0
                     }
