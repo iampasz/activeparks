@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.app.activeparks.data.model.sportevents.ItemEvent
 import com.app.activeparks.ui.event.util.EventTypes
+import com.app.activeparks.util.ChangeDateType
 import com.bumptech.glide.Glide
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.ItemEventsBinding
@@ -78,7 +79,8 @@ class EventsListAdapter(
 
             tvStartPoint.text = item.startAdressPoint
             tvStartPoint.text = item.title
-            date.text = item.startsAtNew
+
+            date.text = item.startsAtNew?.let { ChangeDateType.parseNewDateFormat(it) }
 
         }
     }
