@@ -416,4 +416,6 @@
     <string name="event_during">Захід йде</string>
     <string name="event_has_not_started">Захід ще не почався</string>
 
+    <string name="relevant">АКТУАЛЬНЕ</string>
+
 </resources>

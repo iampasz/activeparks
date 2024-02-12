@@ -248,7 +248,7 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
                 id: Long
             ) {
 
-                binding.eventMap.visible()
+                binding.cardView2.visible()
                 binding.openFullMap.gone()
 
                 when (position) {
@@ -265,7 +265,7 @@ class FragmentEventCreate : Fragment(), Marker.OnMarkerDragListener {
                     }
 
                     2 -> {
-                        binding.eventMap.gone()
+                        binding.cardView2.gone()
                         currentTrainingType = EventTypes.ONLINE_TRAINING.type
                     }
                 }
