@@ -38,6 +38,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 import java.util.Objects
 
 
@@ -103,17 +104,20 @@ class EventListFragment : Fragment(), LocationListener, OnItemClickListener {
 
         val myTab = binding.selectFilter.newTab()
         myTab.setCustomView(R.layout.custom_tab)
-        myTab.customView?.findViewById<TextView>(R.id.tabText)?.text = "ЗА ВІДСТАННЮ"
+        myTab.customView?.findViewById<TextView>(R.id.tabText)?.text =
+            resources.getString(R.string.by_distance).uppercase(Locale.getDefault())
         myTab.customView?.findViewById<LinearLayout>(R.id.mybg)
             ?.setBackgroundResource(R.drawable.background_green)
 
         val myTab2 = binding.selectFilter.newTab()
         myTab2.setCustomView(R.layout.custom_tab)
-        myTab2.customView?.findViewById<TextView>(R.id.tabText)?.text = "ЗА ЧАСОМ"
+        myTab2.customView?.findViewById<TextView>(R.id.tabText)?.text =
+            resources.getString(R.string.by_time).uppercase(Locale.getDefault())
 
         val myTab3 = binding.selectFilter.newTab()
         myTab3.setCustomView(R.layout.custom_tab)
-        myTab3.customView?.findViewById<TextView>(R.id.tabText)?.text = "АКСТУАЛЬНЕ"
+        myTab3.customView?.findViewById<TextView>(R.id.tabText)?.text =
+            resources.getString(R.string.relevant).uppercase(Locale.getDefault())
 
         binding.selectFilter.addTab(myTab)
         binding.selectFilter.addTab(myTab2)
