@@ -288,7 +288,7 @@ interface ApiWithAuthorization {
         @Path("id") id: String
     ): Response<ResponseBody>
 
-    @GET("/api/v1/news?offset=0&limit=10&sort[sort_name]=value&filters[filter_name]=value")
+    @GET("/api/v1/news?offset=0&limit=9&sort[publishedAt]=desc")
     suspend fun getNews(): Response<NewsListResponse>
 
     @GET("/api/v1/news/{id}")
