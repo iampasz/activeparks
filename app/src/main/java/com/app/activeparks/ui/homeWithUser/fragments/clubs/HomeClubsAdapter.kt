@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.app.activeparks.data.model.clubs.ItemClub
+import com.app.activeparks.util.GeocodingAsyncTask
 import com.bumptech.glide.Glide
 import com.technodreams.activeparks.R
 import com.technodreams.activeparks.databinding.ItemHomeClubsListBinding
@@ -52,7 +53,7 @@ class HomeClubsAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: LevelOfActivityVH, position: Int) {
 
-        holder.itemView.setOnClickListener{
+        holder.itemView.setOnClickListener {
             clubs(list.currentList[position])
         }
 
@@ -66,8 +67,34 @@ class HomeClubsAdapter(
                 .error(R.drawable.ic_prew)
                 .into(ivNews)
 
-            tvLocation.text = "Location"
-            tvPeoples.text = item.memberAmount.toString()
+
+
+            if (item.location != null) {
+
+                val coordinates = item.location as List<*>
+                val latitude = coordinates[0] as Double
+                val longitude = coordinates[1]as Double
+
+                val adress = GeocodingAsyncTask().getCityName(ivNews.context, latitude, longitude)
+
+                town.text = adress
+            }
+
+
+
+            when (item.memberAmount) {
+                1 -> {
+                    participants.text = "${item.memberAmount} учасник"
+                }
+
+                2, 3, 4 -> {
+                    participants.text = "${item.memberAmount} учасники"
+                }
+
+                else -> {
+                    participants.text = "${item.memberAmount} учасників"
+                }
+            }
         }
     }
 }
