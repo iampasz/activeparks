@@ -1,76 +1,29 @@
 package com.app.activeparks.util
 
 import android.content.Context
+import android.location.Address
 import android.location.Geocoder
-import android.os.AsyncTask
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.osmdroid.util.GeoPoint
+import android.util.Log
+import java.io.IOException
 import java.util.Locale
 
-//class GeocodingAsyncTask(
-//    private val context: Context,
-//    private val coordinate: GeoPoint,
-//    private val callback: (String) -> Unit
-//) {
-//
-//      fun fetchDataAsync() {
-//
-//
-//        GlobalScope.launch(Dispatchers.Main) {
-//            val result = doInBackground()
-//            callback(result)
-//        }
-//    }
-//
-//    private  fun doInBackground(): String {
-//        val geocoder = Geocoder(context, Locale.getDefault())
-//        var address = ""
-//        try {
-//            val addresses = geocoder.getFromLocation(
-//                coordinate.latitude,
-//                coordinate.longitude,
-//                1
-//            )
-//
-//            if (addresses != null && addresses.isNotEmpty()) {
-//                address = addresses[0].getAddressLine(0) ?: ""
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-//        return address
-//    }
-//}
 
+@Suppress("DEPRECATION")
 class GeocodingAsyncTask {
 
-    suspend fun fetchData(
-        context: Context,
-        coordinate: GeoPoint
-    ): String {
-
-        val geocoder = Geocoder(context, Locale.getDefault())
-        var address = ""
+    fun getCityName(context: Context?, latitude: Double, longitude: Double): String? {
+        val geocoder = Geocoder(context!!, Locale.getDefault())
+        var cityName: String? = null
         try {
-
-            val addresses = geocoder.getFromLocation(
-                coordinate.latitude,
-                coordinate.longitude,
-                1
-            )
-
-
-
-            if (addresses != null) {
-                address = addresses[0].getAddressLine(0) ?: ""
+            val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
+            if (!addresses.isNullOrEmpty()) {
+                cityName = addresses[0].locality
             }
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             e.printStackTrace()
+            Log.e("LocationHelper", "Error getting city name: " + e.message)
         }
 
-        return address
+        return cityName
     }
 }
