@@ -9,7 +9,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class EventController(context: Context) {
+class EventController   (context: Context) {
 
     private val preferences: Preferences
     private val repository: Repository
